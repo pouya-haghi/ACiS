@@ -18,13 +18,6 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-//interface data_channel;
-//logic [63:0] inp1, inp2, out1;
-//endinterface
-
-//interface control_channel;
-//logic [1:0] op;
-//endinterface
 `ifndef MY_INTERFACE
     `define MY_INTERFACE
     `include "my_interface.vh"
@@ -39,7 +32,9 @@ module PE_typeA(
     always @(*) begin
     case(c_ch.op)
     2'b00: d_ch.out1 = d_ch.inp1 + d_ch.inp2;
-    2'b01: d_ch.out1 = d_ch.inp1 * d_ch.inp2;
+    2'b01: d_ch.out1 = d_ch.inp1 - d_ch.inp2;
+    2'b10: d_ch.out1 = d_ch.inp1 * d_ch.inp2;
+//    2'b11: d_ch.out1 = d_ch.inp1 * d_ch.inp2;
     default: d_ch.out1 = d_ch.inp1 + d_ch.inp2;
     endcase
     end

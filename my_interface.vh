@@ -1,5 +1,11 @@
+parameter dwidth_double = 64;
+parameter depth_RF = 4096;
+parameter dwidth_RFadd = $clog2(depth_RF);
+parameter SIMD_degree = 8;
+parameter phit_size = 512;
+
 interface data_channel;
-logic [63:0] inp1, inp2, out1;
+logic [dwidth_double-1:0] inp1, inp2, out1;
 endinterface
 
 interface control_channel;
