@@ -25,8 +25,8 @@
 
 module Reduction_unit_int(
     input logic [phit_size-1:0] inp1,
-    input clk,
-    input rst,
+    input logic clk,
+    input logic rst,
     output logic [dwidth_double-1:0] out1
     );
     

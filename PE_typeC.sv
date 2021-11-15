@@ -25,9 +25,13 @@
 
 module PE_typeC(
 // double-precision floating point processing
-    data_channel d_ch,
-    control_channel c_ch,
-    input clk
+//    data_channel d_ch,
+//    control_channel c_ch,
+    input logic [dwidth_double-1:0] inp1,
+    input logic [dwidth_double-1:0] inp2,
+    output logic [dwidth_double-1:0] out1,
+    input logic [1:0] op,
+    input logic clk
     );
     
     logic [63:0] o_floating_point_0;
