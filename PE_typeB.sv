@@ -28,9 +28,7 @@ module PE_typeB(
 //    data_channel d_ch,
 //    control_channel c_ch,
     input logic [dwidth_double-1:0] inp1,
-    input logic [dwidth_double-1:0] inp2,
     output logic [dwidth_double-1:0] out1,
-    input logic [1:0] op,
     input logic clk
     );
     
@@ -40,9 +38,9 @@ floating_point_1 int2double_inst_0 (
 // This ip converts integer (64 bits) to double
   .aclk(clk),                                  // input wire aclk
   .s_axis_a_tvalid(1'b1),            // input wire s_axis_a_tvalid
-  .s_axis_a_tdata(d_ch.inp1),              // input wire [63 : 0] s_axis_a_tdata
+  .s_axis_a_tdata(inp1),              // input wire [63 : 0] s_axis_a_tdata
   .m_axis_result_tvalid(t_valid),  // output wire m_axis_result_tvalid
-  .m_axis_result_tdata(d_ch.out1)    // output wire [63 : 0] m_axis_result_tdata
+  .m_axis_result_tdata(out1)    // output wire [63 : 0] m_axis_result_tdata
 );
     
 endmodule

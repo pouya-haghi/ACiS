@@ -35,11 +35,11 @@ module PE_typeA(
     
     always @(*) begin
     case(c_ch.op)
-    2'b00: d_ch.out1 = d_ch.inp1 + d_ch.inp2;
-    2'b01: d_ch.out1 = d_ch.inp1 - d_ch.inp2;
-    2'b10: d_ch.out1 = d_ch.inp1 * d_ch.inp2;
+    2'b00: out1 = inp1 + inp2;
+    2'b01: out1 = inp1 - inp2;
+    2'b10: out1 = inp1 * inp2;
 //    2'b11: d_ch.out1 = d_ch.inp1 * d_ch.inp2;
-    default: d_ch.out1 = d_ch.inp1 + d_ch.inp2;
+    default: out1 = inp1 + inp2;
     endcase
     end
     

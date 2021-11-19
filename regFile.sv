@@ -24,12 +24,12 @@
 `endif
 
 module regFile(
-    input logic [dwidth_double-1:0] d_in,
+    input logic [phit_size-1:0] d_in,
     input logic clk,
     input logic [dwidth_RFadd-1:0] rd_addr,
     input logic [dwidth_RFadd-1:0] wr_addr,
     input logic wen,
-    output logic [dwidth_double-1:0] d_out
+    output logic [phit_size-1:0] d_out
     );
     
     logic [dwidth_double-1:0] mem [depth_RF-1:0];
