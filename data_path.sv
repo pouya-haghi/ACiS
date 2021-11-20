@@ -91,7 +91,8 @@ module data_path(
     generate
     for (i=0; i<SIMD_degree; i++) begin
         PE_typeB PE_typeB_inst( .inp1(o_PE_typeA_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
-                                .out1(o_PE_typeB[((i+1)*dwidth_double)-1:i*dwidth_double]));
+                                .out1(o_PE_typeB[((i+1)*dwidth_double)-1:i*dwidth_double]),
+                                .clk(clk));
     end
     endgenerate
                 
@@ -105,6 +106,7 @@ module data_path(
         PE_typeC PE_typeC_inst0(  .inp1(i_PE_typeC_i0_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .inp2(i_PE_typeC_i1_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .out1(o_PE_typeC_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+                    .clk(clk),
                     .op(op[5:4]));
     end
     endgenerate
@@ -126,6 +128,7 @@ module data_path(
         PE_typeC PE_typeC_inst1(.inp1(i_PE_typeC_i0_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .inp2(i_PE_typeC_i1_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .out1(o_PE_typeC_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+                    .clk(clk),
                     .op(op[7:6]));
     end
     endgenerate
@@ -147,6 +150,7 @@ module data_path(
         PE_typeD PE_typeD_inst1(.inp1(i_PE_typeD_i0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .inp2(i_PE_typeD_i1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .out1(o_PE_typeD[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+                    .clk(clk),
                     .op(op[9:8]));
     end
     endgenerate

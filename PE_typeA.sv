@@ -34,7 +34,7 @@ module PE_typeA(
     );
     
     always @(*) begin
-    case(c_ch.op)
+    case(op)
     2'b00: out1 = inp1 + inp2;
     2'b01: out1 = inp1 - inp2;
     2'b10: out1 = inp1 * inp2;
