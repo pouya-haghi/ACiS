@@ -35,6 +35,8 @@ module data_path(
     input logic [(dwidth_RFadd*(num_col-1))-1:0] wr_addr_RF,
     input logic clk,
     output logic [phit_size-1:0] stream_out
+//    output wire [phit_size-1:0] stream_out_PEc, 
+//    output wire [phit_size-1:0] stream_out_PEa
     );
     
 //    data_channel d_ch0;
@@ -162,4 +164,7 @@ module data_path(
                 .wen(wen_RF[4]),
                 .d_out(o_RF5));
     assign stream_out = o_PE_typeD;
+ 
+//    assign stream_out_PEc = o_PE_typeC_n1;
+//    assign stream_out_PEa = o_PE_typeA_n0;
 endmodule
