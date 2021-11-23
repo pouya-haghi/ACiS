@@ -68,7 +68,7 @@ module data_path(
                 .wen(wen_RF[0]),
                 .d_out(o_RF0));
                 
-    //******************** second satge *********************            
+    //******************** second stage *********************            
     mux4 #(phit_size) mux4_inst2 (o_PE_typeA_n0, itr[2*phit_size-1:phit_size], imm[2*phit_size-1:phit_size], o_RF1, sel_mux4[5:4], i_PE_typeA_i0_n1);
     mux4 #(phit_size) mux4_inst3 (o_PE_typeA_n0, itr[2*phit_size-1:phit_size], imm[2*phit_size-1:phit_size], o_RF1, sel_mux4[7:6], i_PE_typeA_i1_n1);
     
@@ -88,7 +88,7 @@ module data_path(
                 .wen(wen_RF[1]),
                 .d_out(o_RF1));
                 
-    //**********************  third stage *********************
+//    **********************  third stage *********************
     
     generate
     for (i=0; i<SIMD_degree; i++) begin
@@ -163,7 +163,8 @@ module data_path(
                 .wr_addr(wr_addr_RF[5*dwidth_RFadd-1:4*dwidth_RFadd]),
                 .wen(wen_RF[4]),
                 .d_out(o_RF5));
-    assign stream_out = o_PE_typeD;
+//    assign stream_out = o_PE_typeD;
+    assign stream_out = o_PE_typeB;
  
 //    assign stream_out_PEc = o_PE_typeC_n1;
 //    assign stream_out_PEa = o_PE_typeA_n0;

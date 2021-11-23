@@ -6,19 +6,21 @@
 `endif
 
 //organized in 512 bit write to facilitate easy writing to the table (512 bit wr_data matches AXIS QDMA)
-module config_table(
+module state_table(
     input logic clk,
     input logic [dwidth_RFadd-1:0] rd_add,
     input logic [dwidth_RFadd-1:0] wr_add,
     input logic wr_en,
     input logic [phit_size-1:0] wr_data,
-    output logic [20:0] rd_data_ctrl,
-    output logic [phit_size-1:0] rd_data_imm
+    output logic [54:0] rd_data
     );
-    // valid || operation || operand1 || operand2 || R/W   || address || NoP (dont care) || Immedite data
-    // 1 bit || 3 bit     || 2 bit    || 2 bit    || 1 bit || 12 bit  || 491 bit         || 64*8 = 512 bit
-    
-    logic [(2*phit_size)-1:0] mem [depth_RF];
+    // valid || L (level) || CB ||  || SC   || #CB   || #SC    || Triggered on || NoP (dont care)
+    // 1 bit || 2 bit     || 5 bit || 5 bit || 5 bit || 5 bit  || 32 bit         || 457 bit
+    // CB (Control Block) is for defining a scope
+    // SC (Sub-Configuration) is for when parallelism is not enough and you need to do multiple operation with the same PE
+    // triggered on => is for knowing the number of loop iterations (we need a counter)
+    // NoP to fill the 512 bits
+    logic [phit_size-1:0] mem [depth_RF];
     
     //for simulation
     integer i;
@@ -35,7 +37,6 @@ module config_table(
     end
     
 //    mux16 #(state_table_width) mux16_inst0(mem, rd_addr, rd_data);
-    assign rd_data_ctrl = mem[rd_add][20:0];
-    assign rd_data_imm = mem[wr_add][1023:512];
-    //discard other bits
+    assign rd_data = mem[rd_add][54:0]; 
+    
 endmodule
