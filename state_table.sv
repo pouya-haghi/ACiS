@@ -12,12 +12,12 @@ module state_table(
     input logic [dwidth_RFadd-1:0] wr_add,
     input logic wr_en,
     input logic [phit_size-1:0] wr_data,
-    output logic [54:0] rd_data
+    output logic [entry_sz_state-1:0] rd_data
     );
-    // valid || L (level) || CB ||  || SC   || #CB   || #SC    || Triggered on || NoP (dont care)
-    // 1 bit || 2 bit     || 5 bit || 5 bit || 5 bit || 5 bit  || 32 bit         || 457 bit
-    // CB (Control Block) is for defining a scope
+    // valid || L (level) || SC    || #SC  || type_entry  || Triggered on || NoP (dont care)
+    // 1 bit || 2 bit  || 5 bit || 5 bit || 2bit  || 32 bit         || 465 bit
     // SC (Sub-Configuration) is for when parallelism is not enough and you need to do multiple operation with the same PE
+    // type_entry is the type of entry of the table (init, body, invalid)
     // triggered on => is for knowing the number of loop iterations (we need a counter)
     // NoP to fill the 512 bits
     logic [phit_size-1:0] mem [depth_RF];
@@ -37,6 +37,6 @@ module state_table(
     end
     
 //    mux16 #(state_table_width) mux16_inst0(mem, rd_addr, rd_data);
-    assign rd_data = mem[rd_add][54:0]; 
+    assign rd_data = mem[rd_add][entry_sz_state-1:0]; 
     
 endmodule

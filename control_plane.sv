@@ -31,7 +31,7 @@ module control_plane(
     input logic [phit_size-1:0] wr_data,
     output logic [(21*(num_col-1))-1:0] rd_data_ctrl,
     output logic [(phit_size*(num_col-1))-1:0] rd_data_imm,
-    output logic [54:0] rd_data_state
+    output logic [entry_sz_state-1:0] rd_data_state
     );
     
     //state_table
