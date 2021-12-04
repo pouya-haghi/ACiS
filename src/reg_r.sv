@@ -27,7 +27,8 @@ module reg_r #(parameter width=64)
     output  logic [width-1:0] q
     );
 
-always @(posedge clk)
+always @(posedge clk) begin
     if(rst)		q<=0;
     else		q<=d;
+end
 endmodule
