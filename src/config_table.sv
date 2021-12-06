@@ -36,6 +36,6 @@ module config_table(
     
 //    mux16 #(state_table_width) mux16_inst0(mem, rd_addr, rd_data);
     assign rd_data_ctrl = mem[rd_add][20:0];
-    assign rd_data_imm = mem[wr_add][1023:512];
+    assign rd_data_imm = mem[rd_add][1023:512];
     //discard other bits
 endmodule
