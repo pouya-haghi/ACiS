@@ -1,39 +1,24 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 11/10/2021 05:20:22 PM
-// Design Name: 
-// Module Name: PE_typeC
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
+
 `ifndef MY_INTERFACE
     `define MY_INTERFACE
     `include "my_interface.vh"
 `endif
 
-module PE_typeD(
+module PE_typeD #(parameter latency=57)(
 // double-precision floating point processing
     input logic [dwidth_double-1:0] inp1,
     input logic [dwidth_double-1:0] inp2,
     output logic [dwidth_double-1:0] out1,
     input logic [1:0] op,
-    input logic clk
+    input logic clk,
+    input logic rst
     );
     
-    logic [63:0] o_floating_point_0;
-    logic [63:0] o_floating_point_1;
+    logic [dwidth_double-1:0] o_floating_point_0;
+    logic [dwidth_double-1:0] o_floating_point_1;
+    logic [dwidth_double-1:0] t_reg_inp1, t_reg_inp2;
     logic t_valid0; // discard output valid signal
     logic t_valid1; // discard output valid signal
     
@@ -55,6 +40,22 @@ module PE_typeD(
       .m_axis_result_tdata(o_floating_point_1)    // output wire [63 : 0] m_axis_result_tdata
     );
 
-    assign out1 = (op[0])? o_floating_point_1 : o_floating_point_0;
+//    assign out1 = (op[0])? o_floating_point_1 : o_floating_point_0;
+    
+    register_pipe #(.width(dwidth_double), .numPipeStage(latency))
+        register_pipe_inst0 (inp1, clk, rst, t_reg_inp1);
+    
+    register_pipe #(.width(dwidth_double), .numPipeStage(latency))
+        register_pipe_inst1 (inp2, clk, rst, t_reg_inp2);
+        
+    always@(*) begin
+        case(op)
+            2'b00: out1 = t_reg_inp1; //NoP
+            2'b01: out1 = t_reg_inp2; //Nop
+            2'b10: out1 = o_floating_point_0;
+            2'b11: out1 = o_floating_point_1;
+            default: out1 = t_reg_inp1; //Nop
+        endcase
+    end
     
 endmodule

@@ -1,24 +1,9 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 11/23/2021 05:33:36 PM
-// Design Name: 
-// Module Name: top
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
+`ifndef MY_INTERFACE
+  `define MY_INTERFACE
+  `include "my_interface.vh"
+`endif
 
 module top(
     input logic [phit_size-1:0] inbound,
@@ -28,6 +13,7 @@ module top(
     input logic [num_col-1:0] wr_en_ctrl_plane,
     input logic [phit_size-1:0] wr_data_ctrl_plane, 
     input logic clk,
+    input logic rst,
     output logic [phit_size-1:0] stream_out,
     output logic [54:0] rd_data_state // needs another module   
     );
@@ -41,7 +27,10 @@ module top(
     logic [((num_col-1)*2)-1:0] op;                       
     logic [num_col-1:0] wen_RF;                           
     logic [(dwidth_RFadd*(num_col-1))-1:0] addr_RF;    
-//    logic [(dwidth_RFadd*(num_col-1))-1:0] wr_addr_RF;                
+//    logic [(dwidth_RFadd*(num_col-1))-1:0] wr_addr_RF;    
+
+    logic [dwidth_int-1:0] itr_k, itr_k_PEA1, itr_k_PEB, itr_k_PEC0, itr_k_PEC1, itr_k_PED;            
+    logic [dwidth_int-1:0] smart_ptr, smart_ptr_PEA1, smart_ptr_PEB, smart_ptr_PEC0, smart_ptr_PEC1, smart_ptr_PED;
     
     control_plane control_plane_inst0 (
     .clk(clk),
@@ -82,5 +71,39 @@ module top(
         end
     endgenerate
     
+    
+    // register_pipe for itr
+    // For now, lets only pipe itr_k, 
+    // in the next version, I will pipe itr_i, itr_j, itr_k and I need a mux at each stage to select which itr I need, also I need a field in the config table to tell me which itr do I need to select
+    register_pipe #(.width(dwidth_int), .numPipeStage(latencyPEA)) 
+        register_pipe_inst0(itr_k, clk, rst, itr_k_PEA1);
+        
+    register_pipe #(.width(dwidth_int), .numPipeStage(latencyPEA)) 
+        register_pipe_inst1(itr_k_PEA1, clk, rst, itr_k_PEB);
+        
+    register_pipe #(.width(dwidth_int), .numPipeStage(latencyPEB)) 
+        register_pipe_inst2(itr_k_PEB, clk, rst, itr_k_PEC0); 
+        
+    register_pipe #(.width(dwidth_int), .numPipeStage(latencyPEC)) 
+        register_pipe_inst3(itr_k_PEC0, clk, rst, itr_k_PEC1);     
+     
+    register_pipe #(.width(dwidth_int), .numPipeStage(latencyPEC)) 
+        register_pipe_inst4(itr_k_PEC1, clk, rst, itr_k_PED);  
+        
+    //register_pipe for smart_ptr
+    register_pipe #(.width(dwidth_RFadd), .numPipeStage(latencyPEA)) 
+        register_pipe_inst5(smart_ptr, clk, rst, smart_ptr_PEA1);
+        
+    register_pipe #(.width(dwidth_RFadd), .numPipeStage(latencyPEA)) 
+        register_pipe_inst6(smart_ptr_PEA1, clk, rst, smart_ptr_PEB);
+        
+    register_pipe #(.width(dwidth_RFadd), .numPipeStage(latencyPEB)) 
+        register_pipe_inst7(smart_ptr_PEB, clk, rst, smart_ptr_PEC0); 
+        
+    register_pipe #(.width(dwidth_RFadd), .numPipeStage(latencyPEC)) 
+        register_pipe_inst8(smart_ptr_PEC0, clk, rst, smart_ptr_PEC1);     
+     
+    register_pipe #(.width(dwidth_RFadd), .numPipeStage(latencyPEC)) 
+        register_pipe_inst9(smart_ptr_PEC1, clk, rst, smart_ptr_PED);   
     
 endmodule

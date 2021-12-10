@@ -10,24 +10,29 @@ module data_path(
     input logic [phit_size-1:0] stream_in,
     input logic [(2*phit_size)-1:0] itr,
     input logic [((num_col-1)*phit_size)-1:0] imm,
-    input logic [((num_col-1)*4)-1:0] sel_mux4,
-    input logic [((num_col-1)*2)-1:0] op,
+    input logic [((num_col)*4)-1:0] sel_mux4,
+    input logic [((num_col)*2)-1:0] op,
     input logic [num_col-1:0] wen_RF,
     input logic [(dwidth_RFadd*(num_col-1))-1:0] rd_addr_RF,
     input logic [(dwidth_RFadd*(num_col-1))-1:0] wr_addr_RF,
     input logic clk,
+    input logic rst,
+    output logic [phit_size-1:0] stream_out_PEa0,
+    output logic [phit_size-1:0] stream_out_PEa1,
+    output logic [phit_size-1:0] stream_out_PEb,
+    output logic [phit_size-1:0] stream_out_PEc0, 
+    output logic [phit_size-1:0] stream_out_PEc1,
     output logic [phit_size-1:0] stream_out
-//    output wire [phit_size-1:0] stream_out_PEc, 
-//    output wire [phit_size-1:0] stream_out_PEa
     );
     
 //    data_channel d_ch0;
 //    control_channel c_ch0;
     // TypeC: 
-    wire [phit_size-1:0] o_PE_typeA_n0, o_PE_typeA_n1, o_PE_typeB, o_PE_typeC_n0, o_PE_typeC_n1, o_PE_typeD;
-    wire [phit_size-1:0] i_PE_typeA_i0_n0, i_PE_typeA_i0_n1, i_PE_typeB, i_PE_typeC_i0_n0, i_PE_typeC_i0_n1, i_PE_typeD_i0;
-    wire [phit_size-1:0] i_PE_typeA_i1_n0, i_PE_typeA_i1_n1, i_PE_typeC_i1_n0, i_PE_typeC_i1_n1, i_PE_typeD_i1;
-    wire [phit_size-1:0] o_RF0, o_RF1, o_RF3, o_RF4, o_RF5;
+    logic [phit_size-1:0] o_PE_typeA_n0, o_PE_typeA_n1, o_PE_typeB, o_PE_typeC_n0, o_PE_typeC_n1, o_PE_typeD;
+    logic [phit_size-1:0] i_PE_typeA_i0_n0, i_PE_typeA_i0_n1, i_PE_typeB, i_PE_typeC_i0_n0, i_PE_typeC_i0_n1, i_PE_typeD_i0;
+    logic [phit_size-1:0] i_PE_typeA_i1_n0, i_PE_typeA_i1_n1, i_PE_typeC_i1_n0, i_PE_typeC_i1_n1, i_PE_typeD_i1;
+    logic [phit_size-1:0] o_RF0, o_RF1, o_RF3, o_RF4, o_RF5;
+    logic [phit_size-1:0] inbound_PEA1, inbound_PEB, inbound_PEC0, inbound_PEC1, inbound_PED;
     
     //******************** first stage *********************
     mux4 #(phit_size) mux4_inst0 (inbound, itr[phit_size-1:0], imm[phit_size-1:0], o_RF0, sel_mux4[1:0], i_PE_typeA_i0_n0);
@@ -36,8 +41,10 @@ module data_path(
     genvar i;
     generate
     for (i=0; i<SIMD_degree; i++) begin
-        PE_typeA PE_typeA_inst0(  .inp1(i_PE_typeA_i0_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+        PE_typeA #(latencyPEA) PE_typeA_inst0(.inp1(i_PE_typeA_i0_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .inp2(i_PE_typeA_i1_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+                    .clk(clk),
+                    .rst(rst),
                     .out1(o_PE_typeA_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .op(op[1:0]));
     end
@@ -56,8 +63,10 @@ module data_path(
     
     generate
     for (i=0; i<SIMD_degree; i++) begin
-        PE_typeA  PE_typeA_inst1(  .inp1(i_PE_typeA_i0_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
-                    .inp2(i_PE_typeA_i1_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+        PE_typeA  #(latencyPEA) PE_typeA_inst1(  .inp1(i_PE_typeA_i0_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+                    .inp2(i_PE_typeA_i1_n1[((i+1)*dwidth_double)-1:i*dwidth_double]),
+                    .clk(clk),
+                    .rst(rst), 
                     .out1(o_PE_typeA_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .op(op[3:2]));
     end
@@ -71,27 +80,31 @@ module data_path(
                 .d_out(o_RF1));
                 
 //    **********************  third stage *********************
+    mux4 #(phit_size) mux4_inst4 (o_PE_typeA_n1, inbound_PEB, 512'b0, 512'b0, sel_mux4[9:8], o_PE_typeA_n1);
     
     generate
     for (i=0; i<SIMD_degree; i++) begin
-        PE_typeB PE_typeB_inst( .inp1(o_PE_typeA_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+        PE_typeB #(latencyPEB) PE_typeB_inst(.inp1(o_PE_typeA_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                                 .out1(o_PE_typeB[((i+1)*dwidth_double)-1:i*dwidth_double]),
-                                .clk(clk));
+                                .clk(clk),
+                                .op(op[5:4]));
     end
     endgenerate
+    
+    
                 
     //********************  fourth stage **********************
     
-    mux4 #(phit_size) mux4_inst4 (o_PE_typeB, 0, imm[3*phit_size-1:2*phit_size], o_RF3, sel_mux4[9:8], i_PE_typeC_i0_n0);
-    mux4 #(phit_size) mux4_inst5 (o_PE_typeB, 0, imm[3*phit_size-1:2*phit_size], o_RF3, sel_mux4[11:10], i_PE_typeC_i1_n0);
+    mux4 #(phit_size) mux4_inst6 (o_PE_typeB, inbound_PEC0, imm[3*phit_size-1:2*phit_size], o_RF3, sel_mux4[13:12], i_PE_typeC_i0_n0);
+    mux4 #(phit_size) mux4_inst7 (o_PE_typeB, inbound_PEC0, imm[3*phit_size-1:2*phit_size], o_RF3, sel_mux4[15:14], i_PE_typeC_i1_n0);
     
     generate
     for (i=0; i<SIMD_degree; i++) begin
-        PE_typeC PE_typeC_inst0(  .inp1(i_PE_typeC_i0_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+        PE_typeC #(latencyPEC) PE_typeC_inst0(  .inp1(i_PE_typeC_i0_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .inp2(i_PE_typeC_i1_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .out1(o_PE_typeC_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .clk(clk),
-                    .op(op[5:4]));
+                    .op(op[7:6]));
     end
     endgenerate
     
@@ -104,16 +117,16 @@ module data_path(
     
         //********************  fifth stage **********************
     
-    mux4 #(phit_size) mux4_inst6 (o_PE_typeC_n0, 0, imm[4*phit_size-1:3*phit_size], o_RF4, sel_mux4[13:12], i_PE_typeC_i0_n1);
-    mux4 #(phit_size) mux4_inst7 (o_PE_typeC_n0, 0, imm[4*phit_size-1:3*phit_size], o_RF4, sel_mux4[15:14], i_PE_typeC_i1_n1);
+    mux4 #(phit_size) mux4_inst8 (o_PE_typeC_n0, inbound_PEC1, imm[4*phit_size-1:3*phit_size], o_RF4, sel_mux4[17:16], i_PE_typeC_i0_n1);
+    mux4 #(phit_size) mux4_inst9 (o_PE_typeC_n0, inbound_PEC1, imm[4*phit_size-1:3*phit_size], o_RF4, sel_mux4[19:18], i_PE_typeC_i1_n1);
     
     generate
     for (i=0; i<SIMD_degree; i++) begin
-        PE_typeC PE_typeC_inst1(.inp1(i_PE_typeC_i0_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+        PE_typeC #(latencyPEC) PE_typeC_inst1(.inp1(i_PE_typeC_i0_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .inp2(i_PE_typeC_i1_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .out1(o_PE_typeC_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .clk(clk),
-                    .op(op[7:6]));
+                    .op(op[9:8]));
     end
     endgenerate
     
@@ -126,16 +139,17 @@ module data_path(
                 
     //********************  sixth stage **********************
     
-    mux4 #(phit_size) mux4_inst8 (o_PE_typeC_n1, 0, imm[5*phit_size-1:4*phit_size], o_RF5, sel_mux4[17:16], i_PE_typeD_i0);
-    mux4 #(phit_size) mux4_inst9 (o_PE_typeC_n1, 0, imm[5*phit_size-1:4*phit_size], o_RF5, sel_mux4[19:18], i_PE_typeD_i1);
+    mux4 #(phit_size) mux4_inst10 (o_PE_typeC_n1, inbound_PED, imm[5*phit_size-1:4*phit_size], o_RF5, sel_mux4[21:20], i_PE_typeD_i0);
+    mux4 #(phit_size) mux4_inst11 (o_PE_typeC_n1, inbound_PED, imm[5*phit_size-1:4*phit_size], o_RF5, sel_mux4[23:22], i_PE_typeD_i1);
     
     generate
     for (i=0; i<SIMD_degree; i++) begin
-        PE_typeD PE_typeD_inst1(.inp1(i_PE_typeD_i0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+        PE_typeD #(latencyPED) PE_typeD_inst1(.inp1(i_PE_typeD_i0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .inp2(i_PE_typeD_i1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .out1(o_PE_typeD[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .clk(clk),
-                    .op(op[9:8]));
+                    .rst(rst),
+                    .op(op[11:10]));
     end
     endgenerate
     
@@ -145,8 +159,29 @@ module data_path(
                 .wr_addr(wr_addr_RF[5*dwidth_RFadd-1:4*dwidth_RFadd]),
                 .wen(wen_RF[4]),
                 .d_out(o_RF5));
-//    assign stream_out = o_PE_typeD;
-    assign stream_out = o_PE_typeB;
+                
+    register_pipe #(.width(phit_size), .numPipeStage(latencyPEA))   
+        register_pipe_inst0(.din(inbound), .clk(clk), .rst(rst), .dout(inbound_PEA1));  
+        
+    register_pipe #(.width(phit_size), .numPipeStage(latencyPEA)) 
+        register_pipe_inst1(.din(inbound_PEA1), .clk(clk), .rst(rst), .dout(inbound_PEB));
+        
+    register_pipe #(.width(phit_size), .numPipeStage(latencyPEB)) 
+        register_pipe_inst2(.din(inbound_PEB), .clk(clk), .rst(rst), .dout(inbound_PEC0)); 
+    
+    register_pipe #(.width(phit_size), .numPipeStage(latencyPEC)) 
+        register_pipe_inst3(.din(inbound_PEC0), .clk(clk), .rst(rst), .dout(inbound_PEC1));             
+    
+    register_pipe #(.width(phit_size), .numPipeStage(latencyPEC)) 
+        register_pipe_inst4(.din(inbound_PEC1), .clk(clk), .rst(rst), .dout(inbound_PED));    
+        
+        
+    assign stream_out_PEa0 = o_PE_typeA_n0;
+    assign stream_out_PEa1 = o_PE_typeA_n1;
+    assign stream_out_PEb = o_PE_typeB;
+    assign stream_out_PEc0 = o_PE_typeC_n0;
+    assign stream_out_PEc1 = o_PE_typeC_n1;
+    assign stream_out = o_PE_typeD;
  
 //    assign stream_out_PEc = o_PE_typeC_n1;
 //    assign stream_out_PEa = o_PE_typeA_n0;

@@ -3,12 +3,12 @@
     `include "my_interface.vh"
 `endif
 
-module (input logic [entry_sz_state-1:0] entry_table,
+module FSM(input logic [entry_sz_state-1:0] entry_table,
         input logic clk,
         input logic rst,
-        output logic [dwidth_double-1:0] itr_i, // outer-most loop
-        output logic [dwidth_double-1:0] itr_j,
-        output logic [dwidth_double-1:0] itr_k, // inner-most loop
+        output logic [dwidth_int-1:0] itr_i, // outer-most loop
+        output logic [dwidth_int-1:0] itr_j,
+        output logic [dwidth_int-1:0] itr_k, // inner-most loop
         output logic [dwidth_RFadd-1:0] smart_ptr, // ptr to state_table and config_table
         output logic done
         );
@@ -23,7 +23,7 @@ module (input logic [entry_sz_state-1:0] entry_table,
 // possible values for type_entry
 localparam [1:0] init = 2'b00; //initialization; when you just see the paranthesis in the for Loops
 localparam [1:0] bodyAndCheckEnd = 2'b01; // Body + end of for loop }
-localparam [1:0] level_k = 2'b00;
+localparam [1:0] level_k = 2'b00; // level_k (innermost) is L=0
 localparam [1:0] level_j = 2'b01;
 localparam [1:0] level_i = 2'b10;
 
@@ -60,7 +60,7 @@ always@(posedge clk) begin
     t_itr_i = 0;
     t_itr_j = 0;
     t_itr_k = 0;
-    cmp_i = 0;
+    cmp_i = 0; // cmp registers are used to store trigger_on from config tables which will be then compared to itr registers
     cmp_j = 0;
     cmp_k = 0;
     label_j = 0;
@@ -70,40 +70,52 @@ always@(posedge clk) begin
     if (valid && type_entry == init) begin// init type
       if (level == level_k) begin
         cmp_k = triggered_on; // write to cmp registers
+        t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
       end
       else if (level == level_j) begin
         cmp_j = triggered_on; // write to cmp registers
         label_j = t_smart_ptr + 1; // write the address of current state_table+1 to label registers
+        t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
       end
       else if (level == level_i) begin
         cmp_i = triggered_on; // write to cmp registers
         label_k = t_smart_ptr +1; // write the address of current state_table+1 to label registers
+        t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
       end
-      t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
     end
     else if (valid && type_entry == bodyAndCheckEnd) begin // bodyAndCheckEnd state
       if (sc == num_sc - 1) begin
-        if (cmp_k == t_itr_k + 1 && level == level_k) //check_end is true
-          t_itr_k = 0; // reset the current itr
-        else if (cmp_j == t_itr_j + 1 && level == level_j) // chceck_end is true
-          t_itr_j = 0; // reset the current itr
-        else if (cmp_i == t_itr_i + 1 && level == level_i) // check_end is true
-          t_itr_i = 0; // reset the current itr
-        t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
-        else if (cmp_k != t_itr_k + 1 && cmp_j != t_itr_j + 1 && cmp_i != t_itr_i + 1) begin //check_end is not true
-          if (level == level_k)
+        if (level == level_k) begin
+          if (cmp_k == t_itr_k + 1) begin //check_end is true
+            t_itr_k = 0; // reset the current itr
+            t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
+          end
+          else begin //check_end is not true
             t_itr_k = t_itr_k + 1; // increment current itr
-          else if (level == level_j) begin
+          end
+        end
+        else if (level == level_j) begin 
+          if (cmp_j == t_itr_j + 1) begin // chceck_end is true 
+            t_itr_j = 0; // reset the current itr
+            t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
+          end 
+          else begin //check_end is not true
             t_itr_j = t_itr_j + 1; // increment current itr
             t_smart_ptr = label_j; // jmp to current label
           end
-          else if (level == level_i) begin
-            t_itr_i = t_itr_i + 1; // increment current itr
-            t_smart_ptr = label_k; // jmp to current label
-          end
+        end
+        else if (level == level_i) begin 
+            if (cmp_i == t_itr_i + 1) begin // check_end is true
+                t_itr_i = 0; // reset the current itr
+                t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
+            end 
+            else begin //check_end is not true
+                t_itr_i = t_itr_i + 1; // increment current itr
+                t_smart_ptr = label_k; // jmp to current label
+            end
         end
       end
-      else
+      else // sc!= num_sc - 1
         t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
     end
   end
@@ -119,7 +131,7 @@ end
 
 assign smart_ptr = t_smart_ptr;
 
-assign itr_i = {dwidth_int{1'b0}, t_itr_i};
-assign itr_j = {dwidth_int{1'b0}, t_itr_j};
-assign itr_k = {dwidth_int{1'b0}, t_itr_k};
+assign itr_i = t_itr_i;
+assign itr_j = t_itr_j;
+assign itr_k = t_itr_k;
 endmodule
