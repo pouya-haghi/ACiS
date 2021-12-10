@@ -3,7 +3,8 @@
   `include "my_interface.vh"
 `endif
 
-module register_pipe #(parameter width=32)
+module register_pipe #(parameter width=32, 
+                       parameter numPipeStage = 6)
                       (input logic [width-1:0] din,
                       input logic clk,
                       input logic rst,
