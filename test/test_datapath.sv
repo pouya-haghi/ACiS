@@ -11,8 +11,8 @@ module test_datapath;
  reg [phit_size-1:0] stream_in;                   
  reg [(2*phit_size)-1:0] itr;                     
  reg [((num_col-1)*phit_size)-1:0] imm;           
- reg [((num_col-1)*4)-1:0] sel_mux4;              
- reg [((num_col-1)*2)-1:0] op;                    
+ reg [((num_col)*4)-1:0] sel_mux4;              
+ reg [((num_col)*2)-1:0] op;                    
  reg [num_col-1:0] wen_RF;                        
  reg [(dwidth_RFadd*(num_col-1))-1:0] rd_addr_RF; 
  reg [(dwidth_RFadd*(num_col-1))-1:0] wr_addr_RF; 
@@ -54,12 +54,14 @@ module test_datapath;
     sel_mux4 = {2'b00, 2'b00, // typeD //mux1, mux0
     2'b00, 2'b10, //typeC1 //mux1, mux0
     2'b00, 2'b10, //typeC0 //mux1, mux0
+    2'b00, 2'b00, //typeB //mux1, mux0
     2'b00, 2'b10, //typeA1 //mux1, mux0
     2'b00, 2'b10}; //typeA0 //mux1, mux0
    
     op = {2'b00, //typeD //div
     2'b00, // typeC1 //add 
     2'b00, // typeC0 //add
+    2'b01, // typeB //add
     2'b00, // typeA1 //add 
     2'b00}; // typeA0, add
     
