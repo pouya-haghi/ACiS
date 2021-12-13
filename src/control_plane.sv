@@ -1,23 +1,5 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 11/23/2021 09:55:46 AM
-// Design Name: 
-// Module Name: control_plane
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
+
 `ifndef MY_INTERFACE
     `define MY_INTERFACE
     `include "my_interface.vh"
@@ -25,18 +7,28 @@
 
 module control_plane(
     input logic clk, 
-    input logic [dwidth_RFadd-1:0] rd_add,
+    input logic rst,
     input logic [dwidth_RFadd-1:0] wr_add,
     input logic [num_col-1:0] wr_en,
     input logic [phit_size-1:0] wr_data,
     output logic [(21*(num_col-1))-1:0] rd_data_ctrl,
     output logic [(phit_size*(num_col-1))-1:0] rd_data_imm,
-    output logic [entry_sz_state-1:0] rd_data_state
+    output logic [entry_sz_state-1:0] rd_data_state,
+    output logic [dwidth_double-1:0] itr,
+    input logic start_inbound,
+    input logic start_stream_in,
+    output logic ready, // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
+    output logic done
     );
+    
+    logic [dwidth_RFadd-1:0] smart_ptr; // ptr to state_table and config_table
+    logic [dwidth_int-1:0] itr_i; // outer-most loop
+    logic [dwidth_int-1:0] itr_j;
+    logic [dwidth_int-1:0] itr_k; // inner-most loop
     
     //state_table
     state_table state_table_inst0 (.clk(clk),
-       .rd_add(rd_add),
+       .rd_add(smart_ptr),
        .wr_add(wr_add),
        .wr_en(wr_en[0]),
        .wr_data(wr_data),
@@ -49,7 +41,7 @@ module control_plane(
     generate 
         for(i=0; i<num_col-1; i++)
             config_table config_table_inst(.clk(clk), 
-            .rd_add(rd_add), 
+            .rd_add(smart_ptr), 
             .wr_add(wr_add), 
             .wr_en(wr_en[i+1]),
             .wr_data(wr_data),
@@ -58,6 +50,21 @@ module control_plane(
          // same rd_add, wr_add, wr_data but different wr_en
     endgenerate
     
-
+    FSM  FSM_inst0(.entry_table(rd_data_state),
+                   .clk(clk),
+                   .rst(rst),
+                   .itr_i(itr_i), // outer-most loop
+                   .itr_j(itr_j),
+                   .itr_k(itr_k), // inner-most loop
+                   .smart_ptr(smart_ptr), // ptr to state_table and config_table
+                   .done(done),
+                   .start_inbound(start_inbound),
+                   .start_stream_in(start_stream_in),
+                   .ready(ready));
+                   
+    // For now, we discard the other two itr (itr_j, itr_k) and only use itr_k
+    // TODO: use a mux and have all three itr forwarded
+    assign itr = {32'b0, itr_k};                
+    
     
 endmodule

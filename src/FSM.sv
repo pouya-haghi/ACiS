@@ -10,7 +10,10 @@ module FSM(input logic [entry_sz_state-1:0] entry_table,
         output logic [dwidth_int-1:0] itr_j,
         output logic [dwidth_int-1:0] itr_k, // inner-most loop
         output logic [dwidth_RFadd-1:0] smart_ptr, // ptr to state_table and config_table
-        output logic done
+        output logic done,
+        input logic start_inbound,
+        input logic start_stream_in,
+        output logic ready // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
         );
 
 // k (inner-most loop) is handled differently than i and j b/c check_end is always with body
@@ -27,7 +30,14 @@ localparam [1:0] level_k = 2'b00; // level_k (innermost) is L=0
 localparam [1:0] level_j = 2'b01;
 localparam [1:0] level_i = 2'b10;
 
+localparam [1:0] waiting = 2'b00;
+localparam [1:0] inbound_started = 2'b01;
+localparam [1:0] stream_in_started = 2'b10;
+localparam [1:0] ready_state = 2'b11;
+
+logic [1:0] next_state, curr_state;
 logic valid;
+logic t_done;
 logic [1:0] level;
 logic [4:0] sc;
 logic [4:0] num_sc;
@@ -48,7 +58,7 @@ logic [dwidth_RFadd-1:0] label_k;
 assign valid = entry_table[0];
 assign level = entry_table[2:1];
 assign sc = entry_table[7:3];
-asign num_sc = entry_table[12:8];
+assign num_sc = entry_table[12:8];
 assign type_entry = entry_table[14:13];
 assign triggered_on = entry_table[46:15];
 
@@ -122,16 +132,42 @@ always@(posedge clk) begin
 end
 
 always_comb begin
-  if(t_smart_ptr==0) done = 1'b0; // to avoid asserting done when we even havent started yet
+  if(t_smart_ptr==0) t_done = 1'b0; // to avoid asserting done when we even havent started yet
   else begin
-    if(valid) done = 1'b0;
-    else done = 1'b1;
+    if(valid) t_done = 1'b0;
+    else t_done = 1'b1;
   end
 end
 
 assign smart_ptr = t_smart_ptr;
+assign done = t_done;
 
 assign itr_i = t_itr_i;
 assign itr_j = t_itr_j;
 assign itr_k = t_itr_k;
+
+// state machine
+
+always@(posedge clk) begin
+    if (rst)
+        curr_state = waiting;
+    else 
+        curr_state = next_state;
+end
+
+always@(*) begin
+    if (curr_state == waiting && start_inbound == 1'b1) 
+        next_state = inbound_started;
+//    else if (curr_state == waiting && start_stream_in == 1'b1)
+//        next_state = stream_in_started;
+    else if (curr_state == inbound_started && start_stream_in == 1'b1)
+        next_state = ready_state;
+//    else if (curr_state == stream_in_started && start_inbound == 1'b1)
+//        next_state = ready_state;
+    else if (curr_state == ready_state && t_done == 1'b1)
+        next_state = waiting;
+end
+
+assign ready = (curr_state == waiting)? 1'b0: 1'b1;
+
 endmodule
