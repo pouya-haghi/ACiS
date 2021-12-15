@@ -15,8 +15,8 @@ module config_table(
     output logic [20:0] rd_data_ctrl,
     output logic [phit_size-1:0] rd_data_imm
     );
-    // valid || operation || operand1 || operand2 || R/W   || address || NoP (dont care) || Immedite data
-    // 1 bit || 3 bit     || 2 bit    || 2 bit    || 1 bit || 12 bit  || 491 bit         || 64*8 = 512 bit
+    // valid || operation || operand1 || operand2 || R/W   || address || itr/add          || NoP   || NoP (dont care) || Immedite data
+    // 1 bit || 3 bit     || 2 bit    || 2 bit    || 1 bit || 12 bit  || 1 bit (1 is itr) || 2 bit || 491 bit       || 64*8 = 512 bit
     
     logic [phit_size-1:0] mem1 [depth_RF];
     logic [phit_size-1:0] mem2 [depth_RF];

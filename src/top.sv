@@ -22,14 +22,14 @@ module top(
     logic [(phit_size*(num_col-1))-1:0] rd_data_imm;
        
     
-    logic [(2*phit_size)-1:0] itr;                                     
+    logic [((num_col-1)*dwidth_int)-1:0] itr;                                     
     logic [((num_col-1)*4)-1:0] sel_mux4;                 
     logic [((num_col-1)*2)-1:0] op;                       
     logic [num_col-1:0] wen_RF;                           
     logic [(dwidth_RFadd*(num_col-1))-1:0] addr_RF;    
 //    logic [(dwidth_RFadd*(num_col-1))-1:0] wr_addr_RF;    
 
-    logic [dwidth_int-1:0] itr_k, itr_k_PEA1, itr_k_PEB, itr_k_PEC0, itr_k_PEC1, itr_k_PED;            
+//    logic [dwidth_int-1:0] itr_k, itr_k_PEA1, itr_k_PEB, itr_k_PEC0, itr_k_PEC1, itr_k_PED;            
     logic [dwidth_int-1:0] smart_ptr, smart_ptr_PEA1, smart_ptr_PEB, smart_ptr_PEC0, smart_ptr_PEC1, smart_ptr_PED;
     
     control_plane control_plane_inst0 (
@@ -76,19 +76,19 @@ module top(
     // For now, lets only pipe itr_k, 
     // in the next version, I will pipe itr_i, itr_j, itr_k and I need a mux at each stage to select which itr I need, also I need a field in the config table to tell me which itr do I need to select
     register_pipe #(.width(dwidth_int), .numPipeStage(latencyPEA)) 
-        register_pipe_inst0(itr_k, clk, rst, itr_k_PEA1);
+        register_pipe_inst0(itr[dwidth_int-1:0], clk, rst, itr[(2*dwidth_int)-1:dwidth_int]);
         
-    register_pipe #(.width(dwidth_int), .numPipeStage(latencyPEA)) 
-        register_pipe_inst1(itr_k_PEA1, clk, rst, itr_k_PEB);
+    register_pipe #(.width(dwidth_int), .numPipeStage(latencyPEA+latencyPEB)) 
+        register_pipe_inst1(itr[(2*dwidth_int)-1:dwidth_int], clk, rst, itr[(3*dwidth_int)-1:2*dwidth_int]);
         
-    register_pipe #(.width(dwidth_int), .numPipeStage(latencyPEB)) 
-        register_pipe_inst2(itr_k_PEB, clk, rst, itr_k_PEC0); 
+//    register_pipe #(.width(dwidth_int), .numPipeStage(latencyPEB)) 
+//        register_pipe_inst2(itr_k_PEB, clk, rst, itr_k_PEC0); 
         
     register_pipe #(.width(dwidth_int), .numPipeStage(latencyPEC)) 
-        register_pipe_inst3(itr_k_PEC0, clk, rst, itr_k_PEC1);     
+        register_pipe_inst3(itr[(3*dwidth_int)-1:2*dwidth_int], clk, rst, itr[(4*dwidth_int)-1:3*dwidth_int]);     
      
     register_pipe #(.width(dwidth_int), .numPipeStage(latencyPEC)) 
-        register_pipe_inst4(itr_k_PEC1, clk, rst, itr_k_PED);  
+        register_pipe_inst4(itr[(4*dwidth_int)-1:3*dwidth_int], clk, rst, itr[(5*dwidth_int)-1:4*dwidth_int]);  
         
     //register_pipe for smart_ptr
     register_pipe #(.width(dwidth_RFadd), .numPipeStage(latencyPEA)) 

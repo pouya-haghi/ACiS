@@ -14,8 +14,8 @@ module state_table(
     input logic [phit_size-1:0] wr_data,
     output logic [entry_sz_state-1:0] rd_data
     );
-    // valid || L (level) || SC    || #SC  || type_entry  || Triggered on || NoP (dont care)
-    // 1 bit || 2 bit  || 5 bit || 5 bit || 2bit  || 32 bit         || 465 bit
+    // valid || L (level) || SC    || #SC  || type_entry || NoP || Triggered on || NoP (dont care)
+    // 1 bit || 2 bit  || 5 bit || 5 bit || 2bit       || 1 bit || 32 bit         || 465 bit
     // SC (Sub-Configuration) is for when parallelism is not enough and you need to do multiple operation with the same PE
     // type_entry is the type of entry of the table (init, body, invalid)
     // triggered on => is for knowing the number of loop iterations (we need a counter)

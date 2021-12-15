@@ -8,7 +8,8 @@
 module data_path(
     input logic [phit_size-1:0] inbound,
     input logic [phit_size-1:0] stream_in,
-    input logic [(2*phit_size)-1:0] itr,
+    input logic [((num_col-1)*dwidth_int)-1:0] itr,
+    input logic [num_col-2:0] isItr,
     input logic [((num_col-1)*phit_size)-1:0] imm,
     input logic [((num_col)*4)-1:0] sel_mux4,
     input logic [((num_col)*2)-1:0] op,
@@ -35,8 +36,8 @@ module data_path(
     logic [phit_size-1:0] inbound_PEA1, inbound_PEB, inbound_PEC0, inbound_PEC1, inbound_PED;
     
     //******************** first stage *********************
-    mux4 #(phit_size) mux4_inst0 (inbound, itr[phit_size-1:0], imm[phit_size-1:0], o_RF0, sel_mux4[1:0], i_PE_typeA_i0_n0);
-    mux4 #(phit_size) mux4_inst1 (stream_in, itr[phit_size-1:0], imm[phit_size-1:0], o_RF0, sel_mux4[3:2], i_PE_typeA_i1_n0);
+    mux4 #(phit_size) mux4_inst0 (inbound, {8{itr[dwidth_int-1:0]}}, imm[phit_size-1:0], o_RF0, sel_mux4[1:0], i_PE_typeA_i0_n0);
+    mux4 #(phit_size) mux4_inst1 (stream_in, {8{itr[dwidth_int-1:0]}}, imm[phit_size-1:0], o_RF0, sel_mux4[3:2], i_PE_typeA_i1_n0);
     
     genvar i;
     generate
@@ -52,14 +53,14 @@ module data_path(
     
     regFile RF_inst0( .d_in(o_PE_typeA_n0),
                 .clk(clk),
-                .rd_addr(rd_addr_RF[dwidth_RFadd-1:0]),
+                .rd_addr((isItr[0])?itr[dwidth_RFadd-1:0]:rd_addr_RF[dwidth_RFadd-1:0]),
                 .wr_addr(wr_addr_RF[dwidth_RFadd-1:0]),
                 .wen(wen_RF[0]),
                 .d_out(o_RF0));
                 
     //******************** second stage *********************            
-    mux4 #(phit_size) mux4_inst2 (o_PE_typeA_n0, itr[2*phit_size-1:phit_size], imm[2*phit_size-1:phit_size], o_RF1, sel_mux4[5:4], i_PE_typeA_i0_n1);
-    mux4 #(phit_size) mux4_inst3 (o_PE_typeA_n0, itr[2*phit_size-1:phit_size], imm[2*phit_size-1:phit_size], o_RF1, sel_mux4[7:6], i_PE_typeA_i1_n1);
+    mux4 #(phit_size) mux4_inst2 (o_PE_typeA_n0, {8{itr[(2*dwidth_int)-1:dwidth_int]}}, imm[2*phit_size-1:phit_size], o_RF1, sel_mux4[5:4], i_PE_typeA_i0_n1);
+    mux4 #(phit_size) mux4_inst3 (o_PE_typeA_n0, {8{itr[(2*dwidth_int)-1:dwidth_int]}}, imm[2*phit_size-1:phit_size], o_RF1, sel_mux4[7:6], i_PE_typeA_i1_n1);
     
     generate
     for (i=0; i<SIMD_degree; i++) begin
@@ -74,7 +75,7 @@ module data_path(
                 
     regFile RF_inst1(.d_in(o_PE_typeA_n1),
                 .clk(clk),
-                .rd_addr(rd_addr_RF[2*dwidth_RFadd-1:dwidth_RFadd]),
+                .rd_addr((isItr[1])?itr[(2*dwidth_RFadd)-1:dwidth_RFadd]:rd_addr_RF[2*dwidth_RFadd-1:dwidth_RFadd]),
                 .wr_addr(wr_addr_RF[2*dwidth_RFadd-1:dwidth_RFadd]),
                 .wen(wen_RF[1]),
                 .d_out(o_RF1));
@@ -110,7 +111,7 @@ module data_path(
     
     regFile RF_inst2(.d_in(o_PE_typeC_n0),
                 .clk(clk),
-                .rd_addr(rd_addr_RF[3*dwidth_RFadd-1:2*dwidth_RFadd]),
+                .rd_addr((isItr[2])?itr[(3*dwidth_RFadd)-1:2*dwidth_RFadd]:rd_addr_RF[3*dwidth_RFadd-1:2*dwidth_RFadd]),
                 .wr_addr(wr_addr_RF[3*dwidth_RFadd-1:2*dwidth_RFadd]),
                 .wen(wen_RF[2]),
                 .d_out(o_RF3));
@@ -132,7 +133,7 @@ module data_path(
     
         regFile RF_inst3(.d_in(o_PE_typeC_n1),
                 .clk(clk),
-                .rd_addr(rd_addr_RF[4*dwidth_RFadd-1:3*dwidth_RFadd]),
+                .rd_addr((isItr[3])?itr[(4*dwidth_RFadd)-1:3*dwidth_RFadd]:rd_addr_RF[4*dwidth_RFadd-1:3*dwidth_RFadd]),
                 .wr_addr(wr_addr_RF[4*dwidth_RFadd-1:3*dwidth_RFadd]),
                 .wen(wen_RF[3]),
                 .d_out(o_RF4));
@@ -155,7 +156,7 @@ module data_path(
     
         regFile RF_inst4(.d_in(o_PE_typeD),
                 .clk(clk),
-                .rd_addr(rd_addr_RF[5*dwidth_RFadd-1:4*dwidth_RFadd]),
+                .rd_addr((isItr[4])?itr[(5*dwidth_RFadd)-1:4*dwidth_RFadd]:rd_addr_RF[5*dwidth_RFadd-1:4*dwidth_RFadd]),
                 .wr_addr(wr_addr_RF[5*dwidth_RFadd-1:4*dwidth_RFadd]),
                 .wen(wen_RF[4]),
                 .d_out(o_RF5));

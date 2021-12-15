@@ -10,7 +10,7 @@ module runtimeLoadtable(
     input logic rst,
     input logic start,
     input logic [dwidth_RFadd-1:0] num_entry_config_table, //comes from a header specialized for packet processing 
-    input logic [dwidth_RFadd-1:0] num_entry_inbound,
+    input logic [dwidth_RFadd-1:0] num_entry_inbound, // dont set num_entry_inbound to zero
     output logic [dwidth_RFadd-1:0] wr_add_inbound,
     output logic [dwidth_RFadd-1:0] wr_add,
     output logic [num_col*2:0] wr_en,
@@ -20,7 +20,7 @@ module runtimeLoadtable(
     
     // This is the order of loading:
     // state_table: add =0 then add= 1 then add =...
-    // configuration table: First table: add=0 then add=1 then ... Second table:
+    // configuration table: First table: (first control [add=0] then [add=1] ...) then (immediate [add=0] then [add=1] ...)   Second table:
     // inbound data: first add=0, then add=1
     
     logic [1:0] curr_state, next_state;
@@ -59,20 +59,27 @@ module runtimeLoadtable(
     // generating wr_en for selecting the correct configuration/state tables
     always@(posedge clk) begin
         if (rst)
-            wr_en = 0;
+            wr_en = 0; 
             
         else begin
-            if (wr_add == num_entry_config_table - 1 && wr_en == ((num_col*2)+1)-1 && curr_state == execution)
-                wr_en = 0;
-            else if (wr_add == num_entry_config_table - 1 && curr_state == execution) 
-                wr_en = wr_en + 1;
+//            if (wr_add == num_entry_config_table - 1 && wr_en[(num_col*2)] == 1'b1 && curr_state == execution)
+//                wr_en = 0; 
+            if (wr_add == num_entry_config_table - 1 && curr_state == execution) begin
+                if (wr_en == 0)
+                     wr_en = 1;
+                else
+                    wr_en = (wr_en << 1);
+            end
+            else // done state
+                wr_en = 0; //avoid keeping wr_en high
         end
     end
     
     // Loading inbound data
     always@(posedge clk) begin
-        if (rst)
+        if (rst) begin
             wr_add_inbound = 0;
+        end
             
         else begin
             if (wr_add_inbound == num_entry_inbound - 1 && curr_state == finished_config_table) begin
@@ -83,6 +90,7 @@ module runtimeLoadtable(
             end
         end
     end
+    
     
     // state machine
     always @(posedge clk) begin
@@ -96,7 +104,7 @@ module runtimeLoadtable(
     always@(*) begin
         if (curr_state == init && start == 1'b1)
             next_state = execution;
-        else if (curr_state == execution && (wr_add == num_entry_config_table-1 && wr_en == ((num_col*2)+1)-1))
+        else if (curr_state == execution && (wr_add == num_entry_config_table-1 && wr_en[(num_col*2)] == 1'b1))
             next_state = finished_config_table;
         else if (curr_state == finished_config_table && wr_add_inbound == num_entry_inbound - 1)
             next_state = finished_inbound;

@@ -60,7 +60,7 @@ assign level = entry_table[2:1];
 assign sc = entry_table[7:3];
 assign num_sc = entry_table[12:8];
 assign type_entry = entry_table[14:13];
-assign triggered_on = entry_table[46:15];
+assign triggered_on = entry_table[47:16];
 
 
 always@(posedge clk) begin
@@ -146,8 +146,8 @@ assign itr_i = t_itr_i;
 assign itr_j = t_itr_j;
 assign itr_k = t_itr_k;
 
-// state machine
-
+// state machine for generating ready signal:
+// I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
 always@(posedge clk) begin
     if (rst)
         curr_state = waiting;
@@ -168,6 +168,6 @@ always@(*) begin
         next_state = waiting;
 end
 
-assign ready = (curr_state == waiting)? 1'b0: 1'b1;
+assign ready = (curr_state == inbound_started)? 1'b1: 1'b0;
 
 endmodule

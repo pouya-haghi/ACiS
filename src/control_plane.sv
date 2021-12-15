@@ -9,7 +9,7 @@ module control_plane(
     input logic clk, 
     input logic rst,
     input logic [phit_size-1:0] wr_data,
-    output logic [(21*(num_col-1))-1:0] rd_data_ctrl,
+    output logic [(24*(num_col))-1:0] rd_data_ctrl,
     output logic [(phit_size*(num_col-1))-1:0] rd_data_imm,
     output logic [entry_sz_state-1:0] rd_data_state,
     output logic [dwidth_double-1:0] itr,
@@ -46,13 +46,13 @@ module control_plane(
     // config_table
     genvar i;
     generate 
-        for(i=0; i<num_col-1; i++)
+        for(i=0; i<num_col; i++)
             config_table config_table_inst(.clk(clk), 
             .rd_add(smart_ptr), 
             .wr_add(wr_add), 
             .wr_en(wr_en[(2*i)+2:(2*i)+1]),
             .wr_data(wr_data),
-            .rd_data_ctrl(rd_data_ctrl[(21*(i+1))-1:21*i]),
+            .rd_data_ctrl(rd_data_ctrl[(24*(i+1))-1:21*i]),
             .rd_data_imm(rd_data_imm[(phit_size*(i+1))-1:phit_size*i]));
          // same rd_add, wr_add, wr_data but different wr_en
     endgenerate
@@ -79,16 +79,16 @@ module control_plane(
     // Load state table, configuration_tables, and inbound
     // revised: inbound buffer are mapped to the first half of each RF
     runtimeLoadtable(
-    .clk(clk), 
-    .rst(rst),
-    .start(start_loader),
-    .num_entry_config_table(num_entry_config_table), //comes from a header specialized for packet processing 
-    .num_entry_inbound(num_entry_inbound),
-    .wr_add_inbound(wr_add_RF),
-    .wr_add(wr_add),
-    .wr_en(wr_en),
-    .wr_en_inbound(wr_en_RF),
-    .done(done_loader)
+        .clk(clk), 
+        .rst(rst),
+        .start(start_loader),
+        .num_entry_config_table(num_entry_config_table), //comes from a header specialized for packet processing 
+        .num_entry_inbound(num_entry_inbound),
+        .wr_add_inbound(wr_add_RF),
+        .wr_add(wr_add),
+        .wr_en(wr_en),
+        .wr_en_inbound(wr_en_RF),
+        .done(done_loader)
     );    
     
     
