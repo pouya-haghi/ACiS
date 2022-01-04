@@ -20,7 +20,8 @@ module control_plane(
     output logic ready, // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
     output logic done,
     output logic wr_en_RF,
-    output logic [dwidth_RFadd-1:0] wr_add_RF
+    output logic [dwidth_RFadd-1:0] wr_add_RF,
+    output logic keep_start_stream_in
     );
     
     logic [dwidth_RFadd-1:0] smart_ptr; // ptr to state_table and config_table
@@ -52,7 +53,7 @@ module control_plane(
             .wr_add(wr_add), 
             .wr_en(wr_en[(2*i)+2:(2*i)+1]),
             .wr_data(wr_data),
-            .rd_data_ctrl(rd_data_ctrl[(24*(i+1))-1:21*i]),
+            .rd_data_ctrl(rd_data_ctrl[(24*(i+1))-1:24*i]),
             .rd_data_imm(rd_data_imm[(phit_size*(i+1))-1:phit_size*i]));
          // same rd_add, wr_add, wr_data but different wr_en
     endgenerate
@@ -69,7 +70,8 @@ module control_plane(
                    .done(done),
                    .start_inbound(done_loader),
                    .start_stream_in(start_stream_in),
-                   .ready(ready));
+                   .ready(ready),
+                   .keep_start_stream_in(keep_start_stream_in));
                    
     // For now, we discard the other two itr (itr_j, itr_k) and only use itr_k
     // TODO: use a mux and have all three itr forwarded
@@ -78,7 +80,7 @@ module control_plane(
     
     // Load state table, configuration_tables, and inbound
     // revised: inbound buffer are mapped to the first half of each RF
-    runtimeLoadtable(
+    runtimeLoadtable runtimeLoadtable_inst0(
         .clk(clk), 
         .rst(rst),
         .start(start_loader),
@@ -87,7 +89,7 @@ module control_plane(
         .wr_add_inbound(wr_add_RF),
         .wr_add(wr_add),
         .wr_en(wr_en),
-        .wr_en_inbound(wr_en_RF),
+        .wr_en_inbound(wr_en_RF), // b/c inbound buffer is mapped to RF
         .done(done_loader)
     );    
     

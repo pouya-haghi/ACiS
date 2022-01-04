@@ -13,7 +13,9 @@ module FSM(input logic [entry_sz_state-1:0] entry_table,
         output logic done,
         input logic start_inbound,
         input logic start_stream_in,
-        output logic ready // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
+        output logic ready, // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
+//        output logic [1:0] o_curr_state // DEBUG
+        output logic keep_start_stream_in // // if start_stream_in becomes one but keep_start_stream_in is one, do not deassert start_stream_in
         );
 
 // k (inner-most loop) is handled differently than i and j b/c check_end is always with body
@@ -37,7 +39,7 @@ localparam [1:0] ready_state = 2'b11;
 
 logic [1:0] next_state, curr_state;
 logic valid;
-logic t_done;
+logic t_done, t_done_d1; // t_done_d1 is one clk delayed of t_done
 logic [1:0] level;
 logic [4:0] sc;
 logic [4:0] num_sc;
@@ -77,7 +79,9 @@ always@(posedge clk) begin
     label_k = 0;
   end
   else begin
-    if (valid && type_entry == init) begin// init type
+    if (valid == 1'b0)
+        t_smart_ptr = 0; // valid = 0 => pull t_smart_ptr back to zero (useful at the end of comp)
+    else if (valid && type_entry == init) begin// init type
       if (level == level_k) begin
         cmp_k = triggered_on; // write to cmp registers
         t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
@@ -131,6 +135,13 @@ always@(posedge clk) begin
   end
 end
 
+//always@(posedge clk) begin
+//    if (rst)
+//        t_done_d1 <= 1'b0;
+//    else
+//        t_done_d1 <= t_done;
+//end
+
 always_comb begin
   if(t_smart_ptr==0) t_done = 1'b0; // to avoid asserting done when we even havent started yet
   else begin
@@ -140,6 +151,7 @@ always_comb begin
 end
 
 assign smart_ptr = t_smart_ptr;
+//assign done = t_done & (~t_done_d1);
 assign done = t_done;
 
 assign itr_i = t_itr_i;
@@ -156,18 +168,22 @@ always@(posedge clk) begin
 end
 
 always@(*) begin
-    if (curr_state == waiting && start_inbound == 1'b1) 
+    if (curr_state == waiting && start_inbound == 1'b0)
+        next_state = waiting;
+    else if (curr_state == waiting && start_inbound == 1'b1) 
         next_state = inbound_started;
 //    else if (curr_state == waiting && start_stream_in == 1'b1)
 //        next_state = stream_in_started;
-    else if (curr_state == inbound_started && start_stream_in == 1'b1)
+    else if (curr_state == inbound_started && start_inbound == 1'b0 && start_stream_in == 1'b1)
         next_state = ready_state;
 //    else if (curr_state == stream_in_started && start_inbound == 1'b1)
 //        next_state = ready_state;
-    else if (curr_state == ready_state && t_done == 1'b1)
+    else if (curr_state == ready_state && start_stream_in == 1'b0 && done == 1'b1)
         next_state = waiting;
 end
 
-assign ready = (curr_state == inbound_started)? 1'b1: 1'b0;
+assign ready = (curr_state == inbound_started || curr_state == ready_state)? 1'b1: 1'b0;
+assign keep_start_stream_in = (curr_state != inbound_started)? 1'b1: 1'b0; // if start_stream_in becomes 1 but keep_start_stream_in is one, do not deassert start_stream_in
+//assign o_curr_state = curr_state;
 
 endmodule

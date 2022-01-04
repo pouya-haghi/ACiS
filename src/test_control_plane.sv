@@ -8,7 +8,7 @@ module test_control_plane;
     reg start_stream_in;
     reg [dwidth_RFadd-1:0] num_entry_config_table; //comes from a header specialized for packet processing 
     reg [dwidth_RFadd-1:0] num_entry_inbound;
-    wire [(21*(num_col-1))-1:0] rd_data_ctrl;
+    wire [(24*(num_col))-1:0] rd_data_ctrl;
     wire [(phit_size*(num_col-1))-1:0] rd_data_imm;
     wire [entry_sz_state-1:0] rd_data_state;
     wire [dwidth_double-1:0] itr;
@@ -16,11 +16,19 @@ module test_control_plane;
     wire done;
     wire wr_en_RF;
     wire [dwidth_RFadd-1:0] wr_add_RF;
+    wire keep_start_stream_in;
     //
     
-    integer i;       
+    wire [23:0] rd_data_ctrl_PEC0;
+    wire [phit_size-1:0] rd_data_imm_PEC0;
+    
+    integer i;      
+    parameter num_entry_inb = 16; 
            
  control_plane control_plane_inst0 (.*);
+ 
+ assign rd_data_ctrl_PEC0 = rd_data_ctrl[(4*24)-1:3*24];
+ assign rd_data_imm_PEC0 = rd_data_imm[(3*phit_size)-1:2*phit_size];
  
  always begin
         clk = 1;
@@ -37,7 +45,7 @@ module test_control_plane;
     rst = 1;
     wr_data = 0;
     num_entry_config_table = 2;
-    num_entry_inbound = 1;
+    num_entry_inbound = 16;
     
     #20;
     rst = 0;
@@ -111,9 +119,22 @@ module test_control_plane;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
     #20;
     // ----------inbound buffer--------
-    wr_data = 512'hF; //state_immediate second entry
+    // 16 entries // All inbound data are 1
+    for (i=0; i<num_entry_inb; i++) begin
+        wr_data = 512'd1; 
+        #20;
+    end
     
-
+    #160;
+    start_stream_in = 0; // deassert again (ideally we should do it based on keep_start_stream_in
+    // ----------- stream_in ---------
+    // 16 entries // All stream_in are 2
+//    for (i=0; i<num_entry_inb; i++) begin
+//        stream_in = 512'd2; 
+//        #20;
+//    end  
+    
+    // expected output is: 2*1 + 2*1 + ... = 32
     
     #2000;
     $finish;
