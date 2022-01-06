@@ -32,9 +32,9 @@ module test_control_plane;
  
  always begin
         clk = 1;
-        #5;
+        #10;
         clk = 0;
-        #5;
+        #10;
     end
     
  initial begin
@@ -44,15 +44,16 @@ module test_control_plane;
     #40; 
     rst = 1;
     wr_data = 0;
-    num_entry_config_table = 2;
+    num_entry_config_table = 2; // 6 stage * 2 entry * 2 separate config tables
     num_entry_inbound = 16;
     
     #20;
     rst = 0;
     // FIR example
-    start_loader = 1;
+    start_loader = 1'b1;
     // ----------state table----------
     #20; // delay for one cycle to sample start_loader
+    start_loader = 1'b0;
     wr_data[511:464] = 48'h8000_00000010; //state_immediate; first entry
     #20;
     wr_data[511:464] = 48'h8002_00000000; //state_immediate; second entry
@@ -63,6 +64,7 @@ module test_control_plane;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
     #20;
     wr_data[511:464] = 48'h880000_000000; // state_dontcare; second entry
+    #20;
     // immediate data
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
     #20;
@@ -74,6 +76,7 @@ module test_control_plane;
     #20;
     wr_data[511:464] = 48'h880000_000000; // state_dontcare; second entry
     // immediate data
+    #20;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
     #20;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
@@ -84,6 +87,7 @@ module test_control_plane;
     #20;
     wr_data[511:464] = 48'h800000_000000; // state_dontcare; second entry
     // immediate data
+    #20;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
     #20;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
@@ -94,6 +98,7 @@ module test_control_plane;
     #20;
     wr_data[511:464] = 48'h908004_000000; // state_dontcare; second entry
     // immediate data
+    #20;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
     #20;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
@@ -104,6 +109,7 @@ module test_control_plane;
     #20;
     wr_data[511:464] = 48'hA00000_000000; // state_dontcare; second entry
     // immediate data
+    #20;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
     #20;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
@@ -114,6 +120,7 @@ module test_control_plane;
     #20;
     wr_data[511:464] = 48'h900000_000000; // state_dontcare; second entry
     // immediate data
+    #20;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
     #20;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
