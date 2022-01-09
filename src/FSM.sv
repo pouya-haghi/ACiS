@@ -10,10 +10,10 @@ module FSM(input logic [entry_sz_state-1:0] entry_table,
         output logic [dwidth_int-1:0] itr_j,
         output logic [dwidth_int-1:0] itr_k, // inner-most loop
         output logic [dwidth_RFadd-1:0] smart_ptr, // ptr to state_table and config_table
-        output logic done,
-        input logic start_inbound,
+//        output logic done,
+        input logic done_loader,
         input logic start_stream_in,
-        output logic ready_stream_in // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
+        output logic ready_stream_in // I have to wait (backpressure to stream_in) if done_loader has not been asserted yet
 //        output logic [1:0] o_curr_state // DEBUG
 //        output logic keep_start_stream_in // // if start_stream_in becomes one but keep_start_stream_in is one, do not deassert start_stream_in
         );
@@ -145,6 +145,8 @@ end
 //        t_done_d1 <= t_done;
 //end
 
+// we indicate the end of prcessing when we have reached an invalid state table entry
+// done is asseted one cycle b/c once it is valid the next is invalid
 always_comb begin
   if(t_smart_ptr==0) 
     t_done = 1'b0; // to avoid asserting done when we even havent started yet
@@ -158,14 +160,14 @@ end
 
 assign smart_ptr = t_smart_ptr;
 //assign done = t_done & (~t_done_d1);
-assign done = t_done;
+//assign done = t_done;
 
 assign itr_i = t_itr_i;
 assign itr_j = t_itr_j;
 assign itr_k = t_itr_k;
 
 // state machine for generating ready signal:
-// I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
+// I have to wait (backpressure to stream_in) if done_loader has not been asserted yet
 always_ff @(posedge clk) begin
     if (rst)
         curr_state <= waiting;
@@ -174,25 +176,25 @@ always_ff @(posedge clk) begin
 end
 
 always_comb begin
-    if (curr_state == waiting && start_inbound == 1'b0)
+    if (curr_state == waiting && done_loader == 1'b0)
         next_state = waiting;
-    else if (curr_state == waiting && start_inbound == 1'b1) 
+    else if (curr_state == waiting && done_loader == 1'b1) 
         next_state = inbound_started;
 //    else if (curr_state == waiting && start_stream_in == 1'b1)
 //        next_state = stream_in_started;
-    else if (curr_state == inbound_started && start_inbound == 1'b0 && start_stream_in == 1'b1)
+    else if (curr_state == inbound_started && done_loader == 1'b0 && start_stream_in == 1'b1)
         next_state = ready_state_hold;
-//    else if (curr_state == stream_in_started && start_inbound == 1'b1)
+//    else if (curr_state == stream_in_started && done_loader == 1'b1)
 //        next_state = ready_state;
     else if (curr_state == ready_state_hold && start_stream_in == 1'b0)
         next_state = ready_state;
-    else if (curr_state == ready_state && done == 1'b1)
+    else if (curr_state == ready_state && t_done == 1'b1)
         next_state = waiting;
 end
 
 //assign ready = (curr_state == inbound_started || curr_state == ready_state)? 1'b1: 1'b0;
 //assign keep_start_stream_in = (curr_state != inbound_started)? 1'b1: 1'b0; // if start_stream_in becomes 1 but keep_start_stream_in is one, do not deassert start_stream_in
-assign ready_stream_in = (curr_state == ready_state_hold) ? 1'b1: 1'b0; // 4-phase handshaking for ready_stream_in and start_stream_in. when ready becomes high start should be low and the next cycle after deasserting start, stream-in should send valid data.
+assign ready_stream_in = (curr_state == ready_state_hold || (curr_state == ready_state && t_done == 1'b0)) ? 1'b1: 1'b0; // 4-phase handshaking for ready_stream_in and start_stream_in. when ready becomes high start should be low and the next cycle after deasserting start, stream-in should send valid data.
 //assign o_curr_state = curr_state;
 
 endmodule

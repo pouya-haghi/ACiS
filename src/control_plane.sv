@@ -13,16 +13,16 @@ module control_plane(
     output logic [(phit_size*(num_col))-1:0] rd_data_imm,
     output logic [entry_sz_state-1:0] rd_data_state,
     output logic [dwidth_double-1:0] itr,
+    // start_loader and done_loader (which is done internally by runtimeLoadTable) are single cycle pulse but start_stream_in and ready_stream_in are handshaking signals
     input logic start_loader, // start signal to write to state/config tables and inbound
     input logic start_stream_in,
     input logic [dwidth_RFadd-1:0] num_entry_config_table, //comes from a header specialized for packet processing 
     input logic [dwidth_RFadd-1:0] num_entry_inbound,
     output logic ready_stream_in, // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
     // 4-phase handshaking for ready_stream_in and start_stream_in. when ready becomes high start should be low and the next cycle after deasserting start, stream-in should send valid data.
-    output logic done,
+//    output logic done,
     output logic wr_en_RF,
     output logic [dwidth_RFadd-1:0] wr_add_RF
-//    output logic keep_start_stream_in
     );
     
     logic [dwidth_RFadd-1:0] smart_ptr; // ptr to state_table and config_table
@@ -60,7 +60,7 @@ module control_plane(
     endgenerate
     
     
-    
+    // prioritize completion of loading tables over stream_in and asserts smart_ptr
     FSM  FSM_inst0(.entry_table(rd_data_state),
                    .clk(clk),
                    .rst(rst),
@@ -68,7 +68,7 @@ module control_plane(
                    .itr_j(itr_j),
                    .itr_k(itr_k), // inner-most loop
                    .smart_ptr(smart_ptr), // ptr to state_table and config_table
-                   .done(done),
+//                   .done(done),
                    .start_inbound(done_loader),
                    .start_stream_in(start_stream_in),
                    .ready_stream_in(ready_stream_in)

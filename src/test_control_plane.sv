@@ -17,7 +17,7 @@ module test_control_plane;
     wire [entry_sz_state-1:0] rd_data_state;
     wire [dwidth_double-1:0] itr;
     wire ready_stream_in; // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
-    wire done;
+//    wire done;
     wire wr_en_RF;
     wire [dwidth_RFadd-1:0] wr_add_RF;
 //    wire keep_start_stream_in;
