@@ -12,7 +12,7 @@ module test_control_plane;
     reg start_stream_in;
     reg [dwidth_RFadd-1:0] num_entry_config_table; //comes from a header specialized for packet processing 
     reg [dwidth_RFadd-1:0] num_entry_inbound;
-    wire [(24*(num_col))-1:0] rd_data_ctrl;
+    wire [(sz_config*(num_col))-1:0] rd_data_ctrl;
     wire [(phit_size*(num_col))-1:0] rd_data_imm;
     wire [entry_sz_state-1:0] rd_data_state;
     wire [dwidth_double-1:0] itr;
@@ -23,8 +23,10 @@ module test_control_plane;
 //    wire keep_start_stream_in;
     //
     
-    wire [23:0] rd_data_ctrl_PEC0;
+    wire [sz_config-1:0] rd_data_ctrl_PEC0;
     wire [phit_size-1:0] rd_data_imm_PEC0;
+    
+    wire [47:0] wr_data_part;
     
     integer i;      
     parameter num_entry_inb = 16; 
@@ -33,6 +35,7 @@ module test_control_plane;
  
  assign rd_data_ctrl_PEC0 = rd_data_ctrl[(4*24)-1:3*24];
  assign rd_data_imm_PEC0 = rd_data_imm[(3*phit_size)-1:2*phit_size];
+ assign wr_data_part = wr_data[511:464];
  
  always begin
         clk = 1;

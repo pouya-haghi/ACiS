@@ -69,7 +69,7 @@ module control_plane(
                    .itr_k(itr_k), // inner-most loop
                    .smart_ptr(smart_ptr), // ptr to state_table and config_table
 //                   .done(done),
-                   .start_inbound(done_loader),
+                   .done_loader(done_loader),
                    .start_stream_in(start_stream_in),
                    .ready_stream_in(ready_stream_in)
 //                   .keep_start_stream_in(keep_start_stream_in)
