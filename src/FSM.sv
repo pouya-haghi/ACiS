@@ -13,9 +13,9 @@ module FSM(input logic [entry_sz_state-1:0] entry_table,
         output logic done,
         input logic start_inbound,
         input logic start_stream_in,
-        output logic ready, // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
+        output logic ready_stream_in // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
 //        output logic [1:0] o_curr_state // DEBUG
-        output logic keep_start_stream_in // // if start_stream_in becomes one but keep_start_stream_in is one, do not deassert start_stream_in
+//        output logic keep_start_stream_in // // if start_stream_in becomes one but keep_start_stream_in is one, do not deassert start_stream_in
         );
 
 // k (inner-most loop) is handled differently than i and j b/c check_end is always with body
@@ -34,7 +34,8 @@ localparam [1:0] level_i = 2'b10;
 
 localparam [1:0] waiting = 2'b00;
 localparam [1:0] inbound_started = 2'b01;
-localparam [1:0] stream_in_started = 2'b10;
+//localparam [1:0] stream_in_started = 2'b10;
+localparam [1:0] ready_state_hold = 2'b10;
 localparam [1:0] ready_state = 2'b11;
 
 logic [1:0] next_state, curr_state;
@@ -57,12 +58,12 @@ logic [dwidth_RFadd-1:0] label_k;
 
 
 //assignments
-assign valid = entry_table[0];
-assign level = entry_table[2:1];
-assign sc = entry_table[7:3];
-assign num_sc = entry_table[12:8];
-assign type_entry = entry_table[14:13];
-assign triggered_on = entry_table[47:16];
+assign valid = entry_table[47];
+assign level = entry_table[46:45];
+assign sc = entry_table[44:40];
+assign num_sc = entry_table[39:35];
+assign type_entry = entry_table[34:33];
+assign triggered_on = entry_table[31:0];
 
 
 always@(posedge clk) begin
@@ -79,9 +80,11 @@ always@(posedge clk) begin
     label_k = 0;
   end
   else begin
-    if (valid == 1'b0)
+    if (curr_state != ready_state)
+        t_smart_ptr = 0; // do not proceed
+    else if (curr_state == ready_state && valid == 1'b0)
         t_smart_ptr = 0; // valid = 0 => pull t_smart_ptr back to zero (useful at the end of comp)
-    else if (valid && type_entry == init) begin// init type
+    else if (curr_state == ready_state && valid && type_entry == init) begin// init type
       if (level == level_k) begin
         cmp_k = triggered_on; // write to cmp registers
         t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
@@ -97,7 +100,7 @@ always@(posedge clk) begin
         t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
       end
     end
-    else if (valid && type_entry == bodyAndCheckEnd) begin // bodyAndCheckEnd state
+    else if (curr_state == ready_state && valid && type_entry == bodyAndCheckEnd) begin // bodyAndCheckEnd state
       if (sc == num_sc - 1) begin
         if (level == level_k) begin
           if (cmp_k == t_itr_k + 1) begin //check_end is true
@@ -175,15 +178,18 @@ always@(*) begin
 //    else if (curr_state == waiting && start_stream_in == 1'b1)
 //        next_state = stream_in_started;
     else if (curr_state == inbound_started && start_inbound == 1'b0 && start_stream_in == 1'b1)
-        next_state = ready_state;
+        next_state = ready_state_hold;
 //    else if (curr_state == stream_in_started && start_inbound == 1'b1)
 //        next_state = ready_state;
-    else if (curr_state == ready_state && start_stream_in == 1'b0 && done == 1'b1)
+    else if (curr_state == ready_state_hold && start_stream_in == 1'b0)
+        next_state = ready_state;
+    else if (curr_state == ready_state && done == 1'b1)
         next_state = waiting;
 end
 
-assign ready = (curr_state == inbound_started || curr_state == ready_state)? 1'b1: 1'b0;
-assign keep_start_stream_in = (curr_state != inbound_started)? 1'b1: 1'b0; // if start_stream_in becomes 1 but keep_start_stream_in is one, do not deassert start_stream_in
+//assign ready = (curr_state == inbound_started || curr_state == ready_state)? 1'b1: 1'b0;
+//assign keep_start_stream_in = (curr_state != inbound_started)? 1'b1: 1'b0; // if start_stream_in becomes 1 but keep_start_stream_in is one, do not deassert start_stream_in
+assign ready_stream_in = (curr_state == ready_state_hold) ? 1'b1: 1'b0; // 4-phase handshaking for ready_stream_in and start_stream_in. when ready becomes high start should be low and the next cycle after deasserting start, stream-in should send valid data.
 //assign o_curr_state = curr_state;
 
 endmodule

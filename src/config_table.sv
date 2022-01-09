@@ -12,7 +12,7 @@ module config_table(
     input logic [dwidth_RFadd-1:0] wr_add,
     input logic [1:0] wr_en,
     input logic [phit_size-1:0] wr_data,
-    output logic [23:0] rd_data_ctrl,
+    output logic [sz_config-1:0] rd_data_ctrl,
     output logic [phit_size-1:0] rd_data_imm
     );
     // valid || operation || operand1 || operand2 || R/W   || address || itr/add          || NoP   || NoP (dont care) || Immedite data
@@ -40,7 +40,7 @@ module config_table(
     end
     
 //    mux16 #(state_table_width) mux16_inst0(mem, rd_addr, rd_data);
-    assign rd_data_ctrl = mem1[rd_add][511:488];
+    assign rd_data_ctrl = mem1[rd_add][phit_size-1:phit_size-sz_config];//488
     assign rd_data_imm = mem2[rd_add];
     //discard other bits
 endmodule

@@ -37,6 +37,6 @@ module state_table(
     end
     
 //    mux16 #(state_table_width) mux16_inst0(mem, rd_addr, rd_data);
-    assign rd_data = mem[rd_add][entry_sz_state-1:0]; 
+    assign rd_data = mem[rd_add][phit_size-1:phit_size-entry_sz_state]; 
     
 endmodule

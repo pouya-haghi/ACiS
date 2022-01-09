@@ -9,19 +9,20 @@ module control_plane(
     input logic clk, 
     input logic rst,
     input logic [phit_size-1:0] wr_data,
-    output logic [(24*(num_col))-1:0] rd_data_ctrl,
-    output logic [(phit_size*(num_col-1))-1:0] rd_data_imm,
+    output logic [(sz_config*(num_col))-1:0] rd_data_ctrl,
+    output logic [(phit_size*(num_col))-1:0] rd_data_imm,
     output logic [entry_sz_state-1:0] rd_data_state,
     output logic [dwidth_double-1:0] itr,
     input logic start_loader, // start signal to write to state/config tables and inbound
     input logic start_stream_in,
     input logic [dwidth_RFadd-1:0] num_entry_config_table, //comes from a header specialized for packet processing 
     input logic [dwidth_RFadd-1:0] num_entry_inbound,
-    output logic ready, // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
+    output logic ready_stream_in, // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
+    // 4-phase handshaking for ready_stream_in and start_stream_in. when ready becomes high start should be low and the next cycle after deasserting start, stream-in should send valid data.
     output logic done,
     output logic wr_en_RF,
-    output logic [dwidth_RFadd-1:0] wr_add_RF,
-    output logic keep_start_stream_in
+    output logic [dwidth_RFadd-1:0] wr_add_RF
+//    output logic keep_start_stream_in
     );
     
     logic [dwidth_RFadd-1:0] smart_ptr; // ptr to state_table and config_table
@@ -53,7 +54,7 @@ module control_plane(
             .wr_add(wr_add), 
             .wr_en(wr_en[(2*i)+2:(2*i)+1]),
             .wr_data(wr_data),
-            .rd_data_ctrl(rd_data_ctrl[(24*(i+1))-1:24*i]),
+            .rd_data_ctrl(rd_data_ctrl[(sz_config*(i+1))-1:sz_config*i]),
             .rd_data_imm(rd_data_imm[(phit_size*(i+1))-1:phit_size*i]));
          // same rd_add, wr_add, wr_data but different wr_en
     endgenerate
@@ -70,8 +71,9 @@ module control_plane(
                    .done(done),
                    .start_inbound(done_loader),
                    .start_stream_in(start_stream_in),
-                   .ready(ready),
-                   .keep_start_stream_in(keep_start_stream_in));
+                   .ready_stream_in(ready_stream_in)
+//                   .keep_start_stream_in(keep_start_stream_in)
+                   );
                    
     // For now, we discard the other two itr (itr_j, itr_k) and only use itr_k
     // TODO: use a mux and have all three itr forwarded

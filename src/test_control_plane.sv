@@ -1,4 +1,8 @@
 `timescale 1ns / 1ps
+`ifndef MY_INTERFACE
+    `define MY_INTERFACE
+    `include "my_interface.vh"
+`endif
 
 module test_control_plane;
     reg clk; 
@@ -9,14 +13,14 @@ module test_control_plane;
     reg [dwidth_RFadd-1:0] num_entry_config_table; //comes from a header specialized for packet processing 
     reg [dwidth_RFadd-1:0] num_entry_inbound;
     wire [(24*(num_col))-1:0] rd_data_ctrl;
-    wire [(phit_size*(num_col-1))-1:0] rd_data_imm;
+    wire [(phit_size*(num_col))-1:0] rd_data_imm;
     wire [entry_sz_state-1:0] rd_data_state;
     wire [dwidth_double-1:0] itr;
-    wire ready; // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
+    wire ready_stream_in; // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
     wire done;
     wire wr_en_RF;
     wire [dwidth_RFadd-1:0] wr_add_RF;
-    wire keep_start_stream_in;
+//    wire keep_start_stream_in;
     //
     
     wire [23:0] rd_data_ctrl_PEC0;
@@ -41,7 +45,7 @@ module test_control_plane;
     rst = 0;
     start_loader = 0;
     start_stream_in = 1; // I want to check that stream-in should not come (ready=0) until after loading tables
-    #40; 
+    #30; 
     rst = 1;
     wr_data = 0;
     num_entry_config_table = 2; // 6 stage * 2 entry * 2 separate config tables
@@ -54,6 +58,8 @@ module test_control_plane;
     // ----------state table----------
     #20; // delay for one cycle to sample start_loader
     start_loader = 1'b0;
+    #20; // one clock delay b/c we have just pulled down start_loader
+    #20; // one clk delay to capture wr_add
     wr_data[511:464] = 48'h8000_00000010; //state_immediate; first entry
     #20;
     wr_data[511:464] = 48'h8002_00000000; //state_immediate; second entry
@@ -74,6 +80,7 @@ module test_control_plane;
     // ctrl data
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
     #20;
+//    $finish;
     wr_data[511:464] = 48'h880000_000000; // state_dontcare; second entry
     // immediate data
     #20;
@@ -143,7 +150,7 @@ module test_control_plane;
     
     // expected output is: 2*1 + 2*1 + ... = 32
     
-    #2000;
+    #2100;
     $finish;
     
  end
