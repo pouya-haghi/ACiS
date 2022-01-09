@@ -48,7 +48,7 @@ module PE_typeD #(parameter latency=57)(
     register_pipe #(.width(dwidth_double), .numPipeStage(latency))
         register_pipe_inst1 (inp2, clk, rst, t_reg_inp2);
         
-    always@(*) begin
+    always_comb begin
         case(op)
             2'b00: out1 = t_reg_inp1; //NoP
             2'b01: out1 = t_reg_inp2; //Nop

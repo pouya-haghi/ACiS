@@ -61,7 +61,7 @@ floating_point_accumulator fp_acc_inst0 (
 
     assign i_fp_acc = (op[1])? inp2 : inp1;
 
-    always@(*) begin
+    always_comb begin
     case(op)
         2'b00: out1 = o_fp_add;
         2'b01: out1 = o_fp_acc;

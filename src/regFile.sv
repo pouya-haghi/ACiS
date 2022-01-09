@@ -37,12 +37,12 @@ module regFile(
     
     // This is for simulation
     initial begin
-    for (i=0;i<depth_RF;i=i+1)
-        mem[i] <= 0;
+        for (i=0;i<depth_RF;i=i+1)
+            mem[i] <= 0;
     end
     // End of simulation
     
-    always@(posedge clk) begin
+    always_ff @(posedge clk) begin
         if(wen) 
             mem[wr_addr] <= d_in;
     end

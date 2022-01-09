@@ -66,74 +66,74 @@ assign type_entry = entry_table[34:33];
 assign triggered_on = entry_table[31:0];
 
 
-always@(posedge clk) begin
+always_ff @(posedge clk) begin
   if(rst) begin
     // They are all registers
-    t_smart_ptr = 0;
-    t_itr_i = 0;
-    t_itr_j = 0;
-    t_itr_k = 0;
-    cmp_i = 0; // cmp registers are used to store trigger_on from config tables which will be then compared to itr registers
-    cmp_j = 0;
-    cmp_k = 0;
-    label_j = 0;
-    label_k = 0;
+    t_smart_ptr <= 0;
+    t_itr_i <= 0;
+    t_itr_j <= 0;
+    t_itr_k <= 0;
+    cmp_i <= 0; // cmp registers are used to store trigger_on from config tables which will be then compared to itr registers
+    cmp_j <= 0;
+    cmp_k <= 0;
+    label_j <= 0;
+    label_k <= 0;
   end
   else begin
     if (curr_state != ready_state)
-        t_smart_ptr = 0; // do not proceed
+        t_smart_ptr <= 0; // do not proceed
     else if (curr_state == ready_state && valid == 1'b0)
-        t_smart_ptr = 0; // valid = 0 => pull t_smart_ptr back to zero (useful at the end of comp)
+        t_smart_ptr <= 0; // valid = 0 => pull t_smart_ptr back to zero (useful at the end of comp)
     else if (curr_state == ready_state && valid && type_entry == init) begin// init type
       if (level == level_k) begin
-        cmp_k = triggered_on; // write to cmp registers
-        t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
+        cmp_k <= triggered_on; // write to cmp registers
+        t_smart_ptr <= t_smart_ptr + 1; // increment smart_ptr
       end
       else if (level == level_j) begin
-        cmp_j = triggered_on; // write to cmp registers
-        label_j = t_smart_ptr + 1; // write the address of current state_table+1 to label registers
-        t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
+        cmp_j <= triggered_on; // write to cmp registers
+        label_j <= t_smart_ptr + 1; // write the address of current state_table+1 to label registers
+        t_smart_ptr <= t_smart_ptr + 1; // increment smart_ptr
       end
       else if (level == level_i) begin
-        cmp_i = triggered_on; // write to cmp registers
-        label_k = t_smart_ptr +1; // write the address of current state_table+1 to label registers
-        t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
+        cmp_i <= triggered_on; // write to cmp registers
+        label_k <= t_smart_ptr +1; // write the address of current state_table+1 to label registers
+        t_smart_ptr <= t_smart_ptr + 1; // increment smart_ptr
       end
     end
     else if (curr_state == ready_state && valid && type_entry == bodyAndCheckEnd) begin // bodyAndCheckEnd state
       if (sc == num_sc - 1) begin
         if (level == level_k) begin
           if (cmp_k == t_itr_k + 1) begin //check_end is true
-            t_itr_k = 0; // reset the current itr
-            t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
+            t_itr_k <= 0; // reset the current itr
+            t_smart_ptr <= t_smart_ptr + 1; // increment smart_ptr
           end
           else begin //check_end is not true
-            t_itr_k = t_itr_k + 1; // increment current itr
+            t_itr_k <= t_itr_k + 1; // increment current itr
           end
         end
         else if (level == level_j) begin 
           if (cmp_j == t_itr_j + 1) begin // chceck_end is true 
-            t_itr_j = 0; // reset the current itr
-            t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
+            t_itr_j <= 0; // reset the current itr
+            t_smart_ptr <= t_smart_ptr + 1; // increment smart_ptr
           end 
           else begin //check_end is not true
-            t_itr_j = t_itr_j + 1; // increment current itr
-            t_smart_ptr = label_j; // jmp to current label
+            t_itr_j <= t_itr_j + 1; // increment current itr
+            t_smart_ptr <= label_j; // jmp to current label
           end
         end
         else if (level == level_i) begin 
             if (cmp_i == t_itr_i + 1) begin // check_end is true
-                t_itr_i = 0; // reset the current itr
-                t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
+                t_itr_i <= 0; // reset the current itr
+                t_smart_ptr <= t_smart_ptr + 1; // increment smart_ptr
             end 
             else begin //check_end is not true
-                t_itr_i = t_itr_i + 1; // increment current itr
-                t_smart_ptr = label_k; // jmp to current label
+                t_itr_i <= t_itr_i + 1; // increment current itr
+                t_smart_ptr <= label_k; // jmp to current label
             end
         end
       end
       else // sc!= num_sc - 1
-        t_smart_ptr = t_smart_ptr + 1; // increment smart_ptr
+        t_smart_ptr <= t_smart_ptr + 1; // increment smart_ptr
     end
   end
 end
@@ -146,10 +146,13 @@ end
 //end
 
 always_comb begin
-  if(t_smart_ptr==0) t_done = 1'b0; // to avoid asserting done when we even havent started yet
+  if(t_smart_ptr==0) 
+    t_done = 1'b0; // to avoid asserting done when we even havent started yet
   else begin
-    if(valid) t_done = 1'b0;
-    else t_done = 1'b1;
+    if(valid) 
+        t_done = 1'b0;
+    else 
+        t_done = 1'b1;
   end
 end
 
@@ -163,14 +166,14 @@ assign itr_k = t_itr_k;
 
 // state machine for generating ready signal:
 // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
-always@(posedge clk) begin
+always_ff @(posedge clk) begin
     if (rst)
-        curr_state = waiting;
+        curr_state <= waiting;
     else 
-        curr_state = next_state;
+        curr_state <= next_state;
 end
 
-always@(*) begin
+always_comb begin
     if (curr_state == waiting && start_inbound == 1'b0)
         next_state = waiting;
     else if (curr_state == waiting && start_inbound == 1'b1) 

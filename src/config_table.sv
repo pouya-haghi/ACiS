@@ -25,8 +25,8 @@ module config_table(
     integer i;
     initial begin
         for (i=0; i<depth_RF; i=i+1) begin
-            mem1 [i] = 0;
-            mem2 [i] = 0;
+            mem1 [i] <= 0;
+            mem2 [i] <= 0;
         end
 //        mem = 0;
     end
@@ -34,9 +34,9 @@ module config_table(
     
     always@(posedge clk) begin
         if (wr_en[0])  
-            mem1[wr_add] = wr_data;
+            mem1[wr_add] <= wr_data;
         else if (wr_en[1])
-            mem2[wr_add] = wr_data;
+            mem2[wr_add] <= wr_data;
     end
     
 //    mux16 #(state_table_width) mux16_inst0(mem, rd_addr, rd_data);

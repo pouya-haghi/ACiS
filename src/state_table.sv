@@ -26,14 +26,14 @@ module state_table(
     integer i;
     initial begin
         for (i=0; i<depth_RF; i=i+1)
-            mem [i] = 0;
+            mem [i] <= 0;
 //        mem = 0;
     end
     // end simulation
     
-    always@(posedge clk) begin
+    always_ff @(posedge clk) begin
         if (wr_en)  
-            mem[wr_add] = wr_data;
+            mem[wr_add] <= wr_data;
     end
     
 //    mux16 #(state_table_width) mux16_inst0(mem, rd_addr, rd_data);

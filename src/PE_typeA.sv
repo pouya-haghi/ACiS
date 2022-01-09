@@ -54,7 +54,7 @@ register_pipe #(.width(dwidth_int),.numPipeStage(latency))
     register_pipe_inst1(inp2[(2*dwidth_int)-1:dwidth_int], clk, rst, t_reg_inp2);
 
 
-    always @(*) begin
+    always_comb begin
         case(op)
             2'b00: out1 = {t_reg_inp1, t_add}; // Add with zero propagates inp1
             2'b01: out1 = {t_reg_inp2, t_add}; // Sub with zero propagates inp2
