@@ -14,8 +14,8 @@ module test_control_plane;
     reg [dwidth_RFadd-1:0] num_entry_inbound;
     wire [(sz_config*(num_col))-1:0] rd_data_ctrl;
     wire [(phit_size*(num_col))-1:0] rd_data_imm;
-    wire [entry_sz_state-1:0] rd_data_state;
-    wire [dwidth_double-1:0] itr;
+//    wire [entry_sz_state-1:0] rd_data_state;
+    wire [(dwidth_double*num_col)-1:0] itr;
     wire ready_stream_in; // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
 //    wire done;
     wire wr_en_RF;
@@ -65,76 +65,87 @@ module test_control_plane;
     #20; // one clk delay to capture wr_add
     wr_data[511:464] = 48'h8000_00000010; //state_immediate; first entry
     #20;
-    wr_data[511:464] = 48'h8002_00000000; //state_immediate; second entry
+    wr_data[511:464] = 48'h800A_00000000; //state_immediate; second entry
     #20;
     // ----------config table--------
     //  -----PEA0-----
     // ctrl data
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
+    wr_data[63:0] = '0; // immediate
     #20;
     wr_data[511:464] = 48'h880000_000000; // state_dontcare; second entry
+    wr_data[63:0] = '0; // immediate
     #20;
     // immediate data
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
-    #20;
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
-    #20;
+//    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
+//    #20;
+//    wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
+//    #20;
     // ------PEA1----
     // ctrl data
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
+    wr_data[63:0] = '0; // immediate
     #20;
-//    $finish;
     wr_data[511:464] = 48'h880000_000000; // state_dontcare; second entry
+    wr_data[63:0] = '0; // immediate
+    #20;
     // immediate data
-    #20;
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
-    #20;
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
-    #20;
+//    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
+//    #20;
+//    wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
+//    #20;
     // ------PEB-----
     // ctrl data
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
+    wr_data[63:0] = '0; // immediate
     #20;
     wr_data[511:464] = 48'h800000_000000; // state_dontcare; second entry
+    wr_data[63:0] = '0; // immediate
+    #20;
     // immediate data
-    #20;
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
-    #20;
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
-    #20;
+//    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
+//    #20;
+//    wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
+//    #20;
     // ------PEC0----
     // ctrl data
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
+    wr_data[63:0] = '0; // immediate
     #20;
-    wr_data[511:464] = 48'h908004_000000; // state_dontcare; second entry
+    wr_data[511:464] = 48'h900004_000000; // state_dontcare; second entry
+    wr_data[63:0] = '0; // immediate
+    #20;
     // immediate data
-    #20;
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
-    #20;
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
-    #20;
+//    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
+//    #20;
+//    wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
+//    #20;
     // ------PEC1----
     // ctrl data
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
+    wr_data[63:0] = '0; // immediate
     #20;
     wr_data[511:464] = 48'hA00000_000000; // state_dontcare; second entry
+    wr_data[63:0] = '0; // immediate
+    #20;
     // immediate data
-    #20;
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
-    #20;
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
-    #20;
+//    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
+//    #20;
+//    wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
+//    #20;
     // ------PED----
     // ctrl data
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
+    wr_data[63:0] = '0; // immediate
     #20;
     wr_data[511:464] = 48'h900000_000000; // state_dontcare; second entry
+    wr_data[63:0] = '0; // immediate
+    #20;
     // immediate data
-    #20;
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
-    #20;
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
-    #20;
+//    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
+//    #20;
+//    wr_data[511:464] = 48'h000000_000000; // state_dontcare; second entry
+//    #20;
     // ----------inbound buffer--------
     // 16 entries // All inbound data are 1
     for (i=0; i<num_entry_inb; i++) begin

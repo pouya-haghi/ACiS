@@ -80,10 +80,21 @@ always_ff @(posedge clk) begin
     label_k <= 0;
   end
   else begin
-    if (curr_state != ready_state)
+    if (curr_state != ready_state) begin
         t_smart_ptr <= 0; // do not proceed
+        t_itr_i <= 0;
+        t_itr_j <= 0;
+        t_itr_k <= 0;
+        cmp_i <= 0; // cmp registers are used to store trigger_on from config tables which will be then compared to itr registers
+        cmp_j <= 0;
+        cmp_k <= 0;
+        label_j <= 0;
+        label_k <= 0;
+    end
+        
     else if (curr_state == ready_state && valid == 1'b0)
         t_smart_ptr <= 0; // valid = 0 => pull t_smart_ptr back to zero (useful at the end of comp)
+    
     else if (curr_state == ready_state && valid && type_entry == init) begin// init type
       if (level == level_k) begin
         cmp_k <= triggered_on; // write to cmp registers
@@ -96,10 +107,11 @@ always_ff @(posedge clk) begin
       end
       else if (level == level_i) begin
         cmp_i <= triggered_on; // write to cmp registers
-        label_k <= t_smart_ptr +1; // write the address of current state_table+1 to label registers
+        label_k <= t_smart_ptr + 1; // write the address of current state_table+1 to label registers
         t_smart_ptr <= t_smart_ptr + 1; // increment smart_ptr
       end
     end
+    
     else if (curr_state == ready_state && valid && type_entry == bodyAndCheckEnd) begin // bodyAndCheckEnd state
       if (sc == num_sc - 1) begin
         if (level == level_k) begin

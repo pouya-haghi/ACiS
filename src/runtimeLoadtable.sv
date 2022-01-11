@@ -13,7 +13,7 @@ module runtimeLoadtable(
     input logic [dwidth_RFadd-1:0] num_entry_inbound, // dont set num_entry_inbound to zero
     output logic [dwidth_RFadd-1:0] wr_add_inbound, // this is for inbound
     output logic [dwidth_RFadd-1:0] wr_add, // this is for config table
-    output logic [num_col*2:0] wr_en,
+    output logic [num_col:0] wr_en,
     output logic wr_en_inbound,
     output logic done
     );
@@ -114,7 +114,7 @@ module runtimeLoadtable(
             next_state = execution_hold;
         else if (curr_state == execution_hold && start == 1'b0) // detect a pulse
             next_state = execution;
-        else if (curr_state == execution && (wr_add == t_num_entry_config_table && wr_en[(num_col*2)] == 1'b1))
+        else if (curr_state == execution && (wr_add == t_num_entry_config_table && wr_en[num_col] == 1'b1))
             next_state = finished_config_table;
         else if (curr_state == finished_config_table && wr_add_inbound == num_entry_inbound - 1)
             next_state = finished_inbound;
