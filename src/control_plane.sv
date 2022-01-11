@@ -24,7 +24,7 @@ module control_plane(
     output logic [dwidth_RFadd-1:0] wr_add_RF_runtimeLoadTable // it is drived by runtimeLoadTable
     );
     
-    logic [dwidth_RFadd-1:0] smart_ptr; // ptr to state_table and config_table
+    logic [(dwidth_RFadd*num_col)-1:0] smart_ptr; // ptr to state_table and config_table
     logic [dwidth_int-1:0] itr_i; // outer-most loop
     logic [dwidth_int-1:0] itr_j;
     logic [dwidth_int-1:0] itr_k; // inner-most loop
@@ -37,7 +37,7 @@ module control_plane(
     
     //state_table
     state_table state_table_inst0 (.clk(clk),
-       .rd_add(smart_ptr),
+       .rd_add(smart_ptr[dwidth_RFadd-1:0]),
        .wr_add(wr_add),
        .wr_en(wr_en[0]),
        .wr_data(wr_data),
@@ -50,7 +50,7 @@ module control_plane(
     generate 
         for(i=0; i<num_col; i++)
             config_table config_table_inst(.clk(clk), 
-            .rd_add(smart_ptr), 
+            .rd_add(smart_ptr[(dwidth_RFadd*(i+1))-1:dwidth_RFadd*i]), 
             .wr_add(wr_add), 
             .wr_en(wr_en[i+1]),
             .wr_data(wr_data),
@@ -67,7 +67,7 @@ module control_plane(
                    .itr_i(itr_i), // outer-most loop
                    .itr_j(itr_j),
                    .itr_k(itr_k), // inner-most loop
-                   .smart_ptr(smart_ptr), // ptr to state_table and config_table
+                   .smart_ptr(smart_ptr[dwidth_RFadd-1:0]), // ptr to state_table and config_table
 //                   .done(done),
                    .done_loader(done_loader),
                    .start_stream_in(start_stream_in),
@@ -117,19 +117,34 @@ module control_plane(
         
     //register_pipe for smart_ptr
     register_pipe #(.width(dwidth_RFadd), .numPipeStage(latencyPEA)) 
-        register_pipe_inst5(smart_ptr, clk, rst, smart_ptr_PEA1);
+        register_pipe_inst5(smart_ptr[dwidth_RFadd-1:0], 
+        clk, 
+        rst, 
+        smart_ptr[(dwidth_RFadd*2)-1:dwidth_RFadd]);
         
     register_pipe #(.width(dwidth_RFadd), .numPipeStage(latencyPEA)) 
-        register_pipe_inst6(smart_ptr_PEA1, clk, rst, smart_ptr_PEB);
+        register_pipe_inst6(smart_ptr[(dwidth_RFadd*2)-1:dwidth_RFadd], 
+        clk, 
+        rst, 
+        smart_ptr[(dwidth_RFadd*3)-1:dwidth_RFadd*2]);
         
     register_pipe #(.width(dwidth_RFadd), .numPipeStage(latencyPEB)) 
-        register_pipe_inst7(smart_ptr_PEB, clk, rst, smart_ptr_PEC0); 
+        register_pipe_inst7(smart_ptr[(dwidth_RFadd*3)-1:dwidth_RFadd*2], 
+        clk, 
+        rst, 
+        smart_ptr[(dwidth_RFadd*4)-1:dwidth_RFadd*3]); 
         
     register_pipe #(.width(dwidth_RFadd), .numPipeStage(latencyPEC)) 
-        register_pipe_inst8(smart_ptr_PEC0, clk, rst, smart_ptr_PEC1);     
+        register_pipe_inst8(smart_ptr[(dwidth_RFadd*4)-1:dwidth_RFadd*3], 
+        clk, 
+        rst, 
+        smart_ptr[(dwidth_RFadd*5)-1:dwidth_RFadd*4]);     
      
     register_pipe #(.width(dwidth_RFadd), .numPipeStage(latencyPEC)) 
-        register_pipe_inst9(smart_ptr_PEC1, clk, rst, smart_ptr_PED); 
+        register_pipe_inst9(smart_ptr[(dwidth_RFadd*5)-1:dwidth_RFadd*4], 
+        clk, 
+        rst, 
+        smart_ptr[(dwidth_RFadd*6)-1:dwidth_RFadd*5]); 
     
     
 endmodule

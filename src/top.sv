@@ -11,9 +11,6 @@ module top(
     // In the new version, there is no inbound
 //    input logic [phit_size-1:0] inbound,
     input logic [phit_size-1:0] stream_in,
-    input logic [dwidth_RFadd-1:0] rd_addr_ctrl_plane,
-    input logic [dwidth_RFadd-1:0] wr_addr_ctrl_plane,
-    input logic [num_col-1:0] wr_en_ctrl_plane,
     input logic [phit_size-1:0] wr_data_ctrl_plane, // should I merge it to stream_in b/c I have onle one QDMA? 
     input logic clk,
     input logic rst,
@@ -25,7 +22,6 @@ module top(
     input logic [dwidth_RFadd-1:0] num_entry_inbound,
     output logic ready_stream_in // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
     // 4-phase handshaking for ready_stream_in and start_stream_in. when ready becomes high start should be low and the next cycle after deasserting start, stream-in should send valid data.
-    
     );
                                                              
     logic [(sz_config*(num_col))-1:0] rd_data_ctrl;      
@@ -45,7 +41,7 @@ module top(
     logic [num_col-1:0] wen_RF;                           
 
 //    logic [dwidth_int-1:0] itr_k, itr_k_PEA1, itr_k_PEB, itr_k_PEC0, itr_k_PEC1, itr_k_PED;            
-    logic [dwidth_int-1:0] smart_ptr, smart_ptr_PEA1, smart_ptr_PEB, smart_ptr_PEC0, smart_ptr_PEC1, smart_ptr_PED;
+//    logic [dwidth_int-1:0] smart_ptr, smart_ptr_PEA1, smart_ptr_PEB, smart_ptr_PEC0, smart_ptr_PEC1, smart_ptr_PED;
     
     control_plane control_plane_inst0 (
     .clk(clk),
