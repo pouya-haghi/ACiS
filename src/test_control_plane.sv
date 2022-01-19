@@ -13,7 +13,7 @@ module test_control_plane;
     reg [dwidth_RFadd-1:0] num_entry_config_table; //comes from a header specialized for packet processing 
     reg [dwidth_RFadd-1:0] num_entry_inbound;
     wire [(sz_config*(num_col))-1:0] rd_data_ctrl;
-    wire [(phit_size*(num_col))-1:0] rd_data_imm;
+    wire [(dwidth_double*(num_col))-1:0] rd_data_imm;
 //    wire [entry_sz_state-1:0] rd_data_state;
     wire [(dwidth_double*num_col)-1:0] itr;
     wire ready_stream_in; // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
@@ -34,7 +34,7 @@ module test_control_plane;
  control_plane control_plane_inst0 (.*);
  
  assign rd_data_ctrl_PEC0 = rd_data_ctrl[(4*24)-1:3*24];
- assign rd_data_imm_PEC0 = rd_data_imm[(3*phit_size)-1:2*phit_size];
+ assign rd_data_imm_PEC0 = rd_data_imm[(3*dwidth_double)-1:2*dwidth_double];
  assign wr_data_part = wr_data[511:464];
  
  always begin
