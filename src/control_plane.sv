@@ -77,7 +77,7 @@ module control_plane(
                    
     // For now, we discard the other two itr (itr_j, itr_k) and only use itr_k
     // TODO: use a mux and have all three itr forwarded
-    assign itr = {32'b0, itr_k};     
+    assign itr[dwidth_double-1:0] = {32'b0, itr_k};     
     
     
     // Load state table, configuration_tables, and inbound

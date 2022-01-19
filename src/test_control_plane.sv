@@ -18,8 +18,8 @@ module test_control_plane;
     wire [(dwidth_double*num_col)-1:0] itr;
     wire ready_stream_in; // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
 //    wire done;
-    wire wr_en_RF;
-    wire [dwidth_RFadd-1:0] wr_add_RF;
+    wire wr_en_RF_runtimeLoadTable;
+    wire [dwidth_RFadd-1:0] wr_add_RF_runtimeLoadTable;
 //    wire keep_start_stream_in;
     //
     

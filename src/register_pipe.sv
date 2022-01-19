@@ -8,7 +8,7 @@ module register_pipe #(parameter width=32,
                       (input logic [width-1:0] din,
                       input logic clk,
                       input logic rst,
-                      output logic [(numPipeStage*width)-1:0] dout
+                      output logic [width-1:0] dout
                       );
   logic [((numPipeStage+1)*width)-1:0] t_dout;
   assign t_dout[width-1:0] = din;

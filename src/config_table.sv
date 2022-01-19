@@ -5,6 +5,7 @@
     `include "my_interface.vh"
 `endif
 
+// TODO: map manually the tables to BRAMs b/c BRAMs were not implied
 //organized in 512 bit write to facilitate easy writing to the table (512 bit wr_data matches AXIS QDMA)
 module config_table(
     input logic clk,

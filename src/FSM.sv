@@ -187,21 +187,25 @@ always_ff @(posedge clk) begin
         curr_state <= next_state;
 end
 
-always_comb begin
-    if (curr_state == waiting && done_loader == 1'b0)
-        next_state = waiting;
-    else if (curr_state == waiting && done_loader == 1'b1) 
-        next_state = inbound_started;
-//    else if (curr_state == waiting && start_stream_in == 1'b1)
-//        next_state = stream_in_started;
-    else if (curr_state == inbound_started && done_loader == 1'b0 && start_stream_in == 1'b1)
-        next_state = ready_state_hold;
-//    else if (curr_state == stream_in_started && done_loader == 1'b1)
+//    if (curr_state == waiting && done_loader == 1'b0)
+//        next_state = waiting;
+//    else if (curr_state == waiting && done_loader == 1'b1) 
+//        next_state = inbound_started;
+//    else if (curr_state == inbound_started && done_loader == 1'b0 && start_stream_in == 1'b1)
+//        next_state = ready_state_hold;
+//    else if (curr_state == ready_state_hold && start_stream_in == 1'b0)
 //        next_state = ready_state;
-    else if (curr_state == ready_state_hold && start_stream_in == 1'b0)
-        next_state = ready_state;
-    else if (curr_state == ready_state && t_done == 1'b1)
-        next_state = waiting;
+//    else if (curr_state == ready_state && t_done == 1'b1)
+//        next_state = waiting;
+
+always_comb begin
+    case(curr_state)
+        waiting: next_state = (done_loader) ? inbound_started: waiting;
+        inbound_started: next_state = (start_stream_in && !done_loader)? ready_state_hold: inbound_started;
+        ready_state_hold: next_state = (!start_stream_in)? ready_state: ready_state_hold;
+        ready_state: next_state = (t_done) ? waiting: ready_state;
+        default: next_state = waiting;
+    endcase
 end
 
 //assign ready = (curr_state == inbound_started || curr_state == ready_state)? 1'b1: 1'b0;

@@ -109,17 +109,26 @@ module runtimeLoadtable(
             
     end
     
+//        if (curr_state == init && start == 1'b1)
+//            next_state = execution_hold;
+//        else if (curr_state == execution_hold && start == 1'b0) // detect a pulse
+//            next_state = execution;
+//        else if (curr_state == execution && (wr_add == t_num_entry_config_table && wr_en[num_col] == 1'b1))
+//            next_state = finished_config_table;
+//        else if (curr_state == finished_config_table && wr_add_inbound == num_entry_inbound - 1)
+//            next_state = finished_inbound;
+//        else if (curr_state == finished_inbound) // we assert done for one clock cycle
+//            next_state = init;
+    
     always_comb begin
-        if (curr_state == init && start == 1'b1)
-            next_state = execution_hold;
-        else if (curr_state == execution_hold && start == 1'b0) // detect a pulse
-            next_state = execution;
-        else if (curr_state == execution && (wr_add == t_num_entry_config_table && wr_en[num_col] == 1'b1))
-            next_state = finished_config_table;
-        else if (curr_state == finished_config_table && wr_add_inbound == num_entry_inbound - 1)
-            next_state = finished_inbound;
-        else if (curr_state == finished_inbound) // we assert done for one clock cycle
-            next_state = init;
+       case(curr_state)
+       init: next_state = (start)? execution_hold: init;
+       execution_hold: next_state = (!start)? execution: execution_hold;
+       execution: next_state = (wr_add == t_num_entry_config_table && wr_en[num_col] == 1'b1)? finished_config_table: execution;
+       finished_config_table: next_state = (wr_add_inbound == num_entry_inbound - 1)? finished_inbound: finished_config_table;
+       finished_inbound: next_state = init;
+       default: next_state = init;
+       endcase
     end
     
     assign done = (curr_state == finished_inbound)? 1'b1: 1'b0; // we assert done for one clock cycle
