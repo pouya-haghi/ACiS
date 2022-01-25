@@ -21,20 +21,20 @@ module data_path(
     input logic [(dwidth_RFadd*(num_col))-1:0] wr_addr_RF,
     input logic clk,
     input logic rst,
-    output logic [phit_size-1:0] stream_out
+    output logic [phit_size-1:0] stream_out,
     // TODO: support for outbound
     // DEBUG
-//    output logic [phit_size-1:0] stream_out_PEa0,
-//    output logic [phit_size-1:0] stream_out_PEa1,
-//    output logic [phit_size-1:0] stream_out_PEb,
-//    output logic [phit_size-1:0] stream_out_PEc0, 
-//    output logic [phit_size-1:0] stream_out_PEc1
+    output logic [phit_size-1:0] stream_out_PEa0,
+    output logic [phit_size-1:0] stream_out_PEa1,
+    output logic [phit_size-1:0] stream_out_PEb,
+    output logic [phit_size-1:0] stream_out_PEc0, 
+    output logic [phit_size-1:0] stream_out_PEc1
     );
     
 //    data_channel d_ch0;
 //    control_channel c_ch0;
     // TypeC: 
-    logic [phit_size-1:0] o_PE_typeA_n0, o_PE_typeA_n1, o_PE_typeB, o_PE_typeC_n0, o_PE_typeC_n1, o_PE_typeD;
+    logic [phit_size-1:0] o_PE_typeA_n0, o_PE_typeA_n1, o_PE_typeA_n2, o_PE_typeB, o_PE_typeC_n0, o_PE_typeC_n1, o_PE_typeD;
     logic [phit_size-1:0] i_PE_typeA_i0_n0, i_PE_typeA_i0_n1, i_PE_typeB, i_PE_typeC_i0_n0, i_PE_typeC_i0_n1, i_PE_typeD_i0;
     logic [phit_size-1:0] i_PE_typeA_i1_n0, i_PE_typeA_i1_n1, i_PE_typeC_i1_n0, i_PE_typeC_i1_n1, i_PE_typeD_i1;
     logic [phit_size-1:0] o_RF0, o_RF1, o_RF3, o_RF4, o_RF5;
@@ -88,13 +88,14 @@ module data_path(
                 .d_out(o_RF1));
                 
 //    **********************  third stage *********************
-    mux4 #(phit_size) mux4_inst4 (o_PE_typeA_n1, {phit_size{1'b0}}, {phit_size{1'b0}}, {phit_size{1'b0}}, sel_mux4[11:10], o_PE_typeA_n1);
+    mux4 #(phit_size) mux4_inst4 (o_PE_typeA_n1, {phit_size{1'b0}}, {phit_size{1'b0}}, {phit_size{1'b0}}, sel_mux4[11:10], i_PE_typeB);
     
     generate
     for (i=0; i<SIMD_degree; i++) begin
-        PE_typeB #(latencyPEB) PE_typeB_inst(.inp1(o_PE_typeA_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+        PE_typeB #(latencyPEB) PE_typeB_inst(.inp1(i_PE_typeB[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                                 .out1(o_PE_typeB[((i+1)*dwidth_double)-1:i*dwidth_double]),
                                 .clk(clk),
+                                .rst(rst),
                                 .op(op[5:4]));
     end
     endgenerate
@@ -186,11 +187,11 @@ module data_path(
         
     assign stream_out = o_PE_typeD;
     // DEBUG    
-//    assign stream_out_PEa0 = o_PE_typeA_n0;
-//    assign stream_out_PEa1 = o_PE_typeA_n1;
-//    assign stream_out_PEb = o_PE_typeB;
-//    assign stream_out_PEc0 = o_PE_typeC_n0;
-//    assign stream_out_PEc1 = o_PE_typeC_n1;
+    assign stream_out_PEa0 = o_PE_typeA_n0;
+    assign stream_out_PEa1 = o_PE_typeA_n1;
+    assign stream_out_PEb = o_PE_typeB;
+    assign stream_out_PEc0 = o_PE_typeC_n0;
+    assign stream_out_PEc1 = o_PE_typeC_n1;
     
  
 //    assign stream_out_PEc = o_PE_typeC_n1;

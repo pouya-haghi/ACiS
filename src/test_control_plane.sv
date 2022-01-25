@@ -112,7 +112,7 @@ module test_control_plane;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
     wr_data[63:0] = '0; // immediate
     #20;
-    wr_data[511:464] = 48'h900004_000000; // state_dontcare; second entry
+    wr_data[511:464] = 48'hA00004_000000; // state_dontcare; second entry
     wr_data[63:0] = '0; // immediate
     #20;
     // immediate data
@@ -125,7 +125,7 @@ module test_control_plane;
     wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
     wr_data[63:0] = '0; // immediate
     #20;
-    wr_data[511:464] = 48'hA00000_000000; // state_dontcare; second entry
+    wr_data[511:464] = 48'h900000_000000; // state_dontcare; second entry
     wr_data[63:0] = '0; // immediate
     #20;
     // immediate data

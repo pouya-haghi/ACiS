@@ -20,8 +20,13 @@ module top(
     input logic start_stream_in,
     input logic [dwidth_RFadd-1:0] num_entry_config_table, //comes from a header specialized for packet processing 
     input logic [dwidth_RFadd-1:0] num_entry_inbound,
-    output logic ready_stream_in // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
+    output logic ready_stream_in, // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
     // 4-phase handshaking for ready_stream_in and start_stream_in. when ready becomes high start should be low and the next cycle after deasserting start, stream-in should send valid data.
+    output logic [phit_size-1:0] stream_out_PEa0,
+    output logic [phit_size-1:0] stream_out_PEa1,
+    output logic [phit_size-1:0] stream_out_PEb,
+    output logic [phit_size-1:0] stream_out_PEc0, 
+    output logic [phit_size-1:0] stream_out_PEc1
     );
                                                              
     logic [(sz_config*(num_col))-1:0] rd_data_ctrl;      
@@ -93,7 +98,12 @@ module top(
     .wen_RF(wen_RF),
     .rd_addr_RF(rd_addr_RF_config_table),
     .wr_addr_RF(wr_addr_RF),
-    .stream_out(stream_out)
+    .stream_out(stream_out),
+    .stream_out_PEa0(stream_out_PEa0),
+    .stream_out_PEa1(stream_out_PEa1),
+    .stream_out_PEb(stream_out_PEb),
+    .stream_out_PEc0(stream_out_PEc0), 
+    .stream_out_PEc1(stream_out_PEc1)
     );
       
     

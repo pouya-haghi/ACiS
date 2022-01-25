@@ -1,23 +1,5 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 11/10/2021 05:20:22 PM
-// Design Name: 
-// Module Name: PE_typeC
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
+
 `ifndef MY_INTERFACE
     `define MY_INTERFACE
     `include "my_interface.vh"
@@ -30,11 +12,12 @@ module PE_typeB #(parameter latency=4)(
     input logic [dwidth_double-1:0] inp1,
     output logic [dwidth_double-1:0] out1,
     input logic clk,
-    input logic op[1:0]
+    input rst,
+    input logic [1:0] op
     );
     
     logic t_valid; // discard output valid signal
-    logic [dwidth_double-1:0] t_out1;
+    logic [dwidth_double-1:0] t_out1, t_reg_inp1;
     
 floating_point_1 int2double_inst_0 (
 // This ip converts integer (64 bits) to double
@@ -45,6 +28,9 @@ floating_point_1 int2double_inst_0 (
   .m_axis_result_tdata(t_out1)    // output wire [63 : 0] m_axis_result_tdata
 );
 
-    assign out1 = (op[0])? t_out1 : inp1;
+    register_pipe #(.width(dwidth_double), .numPipeStage(latency))
+        register_pipe_inst0 (inp1, clk, rst, t_reg_inp1);
+
+    assign out1 = (op[0])? t_out1 : t_reg_inp1;
     
 endmodule

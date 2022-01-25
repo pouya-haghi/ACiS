@@ -32,7 +32,7 @@ module regFile(
     output logic [phit_size-1:0] d_out
     );
     
-    logic [dwidth_double-1:0] mem [depth_RF-1:0];
+    logic [phit_size-1:0] mem [depth_RF-1:0];
     integer i;
     
     // This is for simulation

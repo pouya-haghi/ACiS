@@ -21,6 +21,6 @@ module register_pipe #(parameter width=32,
                                 t_dout[(width*(i+2))-1:width*(i+1)]);
     end
   endgenerate
-  assign dout = t_dout[((numPipeStage+1)*width)-1:width];
+  assign dout = t_dout[((numPipeStage+1)*width)-1:numPipeStage*width];
 
 endmodule // register_pipe
