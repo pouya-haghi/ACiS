@@ -21,6 +21,8 @@ module data_path(
     input logic [(dwidth_RFadd*(num_col))-1:0] wr_addr_RF,
     input logic clk,
     input logic rst,
+    input logic wr_en_RF_runtimeLoadTable,
+    input logic [phit_size-1:0] wr_data, // will be mapped to RFs
     output logic [phit_size-1:0] stream_out,
     // TODO: support for outbound
     // DEBUG
@@ -58,7 +60,7 @@ module data_path(
     end
     endgenerate
     
-    regFile RF_inst0( .d_in(o_PE_typeA_n0),
+    regFile RF_inst0( .d_in((wr_en_RF_runtimeLoadTable)?wr_data:o_PE_typeA_n0),
                 .clk(clk),
                 .rd_addr((isItr[0])?itr[dwidth_RFadd-1:0]:rd_addr_RF[dwidth_RFadd-1:0]),
                 .wr_addr(wr_addr_RF[dwidth_RFadd-1:0]),
@@ -80,7 +82,7 @@ module data_path(
     end
     endgenerate
                 
-    regFile RF_inst1(.d_in(o_PE_typeA_n1),
+    regFile RF_inst1(.d_in((wr_en_RF_runtimeLoadTable)?wr_data:o_PE_typeA_n1),
                 .clk(clk),
                 .rd_addr((isItr[1])?itr[dwidth_double+dwidth_RFadd-1:dwidth_double]:rd_addr_RF[2*dwidth_RFadd-1:dwidth_RFadd]),
                 .wr_addr(wr_addr_RF[2*dwidth_RFadd-1:dwidth_RFadd]),
@@ -109,7 +111,7 @@ module data_path(
     
     generate
     for (i=0; i<SIMD_degree; i++) begin
-        PE_typeC #(latencyPEC) PE_typeC_inst0(  .inp1(i_PE_typeC_i0_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+        PE_typeC #(latencyPEC) PE_typeC_inst0(.inp1(i_PE_typeC_i0_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .inp2(i_PE_typeC_i1_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .out1(o_PE_typeC_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .clk(clk),
@@ -117,7 +119,7 @@ module data_path(
     end
     endgenerate
     
-    regFile RF_inst2(.d_in(o_PE_typeC_n0),
+    regFile RF_inst2(.d_in((wr_en_RF_runtimeLoadTable)?wr_data:o_PE_typeC_n0),
                 .clk(clk),
                 .rd_addr((isItr[3])?itr[(3*dwidth_double)+dwidth_RFadd-1:(3*dwidth_double)]:rd_addr_RF[4*dwidth_RFadd-1:3*dwidth_RFadd]),
                 .wr_addr(wr_addr_RF[4*dwidth_RFadd-1:3*dwidth_RFadd]),
@@ -139,7 +141,7 @@ module data_path(
     end
     endgenerate
     
-        regFile RF_inst3(.d_in(o_PE_typeC_n1),
+        regFile RF_inst3(.d_in((wr_en_RF_runtimeLoadTable)?wr_data:o_PE_typeC_n1),
                 .clk(clk),
                 .rd_addr((isItr[4])?itr[(4*dwidth_double)+dwidth_RFadd-1:(4*dwidth_double)]:rd_addr_RF[5*dwidth_RFadd-1:4*dwidth_RFadd]),
                 .wr_addr(wr_addr_RF[5*dwidth_RFadd-1:4*dwidth_RFadd]),
@@ -162,7 +164,7 @@ module data_path(
     end
     endgenerate
     
-        regFile RF_inst4(.d_in(o_PE_typeD),
+        regFile RF_inst4(.d_in((wr_en_RF_runtimeLoadTable)?wr_data:o_PE_typeD),
                 .clk(clk),
                 .rd_addr((isItr[5])?itr[(5*dwidth_double)+dwidth_RFadd-1:(5*dwidth_double)]:rd_addr_RF[6*dwidth_RFadd-1:5*dwidth_RFadd]),
                 .wr_addr(wr_addr_RF[6*dwidth_RFadd-1:5*dwidth_RFadd]),

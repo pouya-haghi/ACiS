@@ -13,7 +13,7 @@ module runtimeLoadtable(
     input logic [dwidth_RFadd-1:0] num_entry_inbound, // dont set num_entry_inbound to zero
     output logic [dwidth_RFadd-1:0] wr_add_inbound, // this is for inbound
     output logic [dwidth_RFadd-1:0] wr_add, // this is for config table
-    output logic [num_col:0] wr_en,
+    output logic [num_col:0] wr_en, // for state_table and config tables
     output logic wr_en_inbound,
     output logic done
     );

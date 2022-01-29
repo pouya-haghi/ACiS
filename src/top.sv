@@ -98,6 +98,8 @@ module top(
     .wen_RF(wen_RF),
     .rd_addr_RF(rd_addr_RF_config_table),
     .wr_addr_RF(wr_addr_RF),
+    .wr_data(wr_data_ctrl_plane), // will be mapped to RFs
+    .wr_en_RF_runtimeLoadTable(wr_en_RF_runtimeLoadTable), // to select what is the source of data for RF data_in
     .stream_out(stream_out),
     .stream_out_PEa0(stream_out_PEa0),
     .stream_out_PEa1(stream_out_PEa1),
