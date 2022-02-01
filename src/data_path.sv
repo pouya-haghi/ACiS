@@ -11,6 +11,7 @@ module data_path(
     // In the new version, there is no inbound
 //    input logic [phit_size-1:0] inbound,
     input logic [phit_size-1:0] stream_in,
+    input logic [SIMD_degree-1:0] t_stream_in_valid,
     input logic [((num_col)*dwidth_double)-1:0] itr,
     input logic [num_col-1:0] isItr,
     input logic [((num_col)*dwidth_double)-1:0] imm,
@@ -24,6 +25,7 @@ module data_path(
     input logic wr_en_RF_runtimeLoadTable,
     input logic [phit_size-1:0] wr_data, // will be mapped to RFs
     output logic [phit_size-1:0] stream_out,
+    output logic [SIMD_degree-1:0] t_stream_out_valid,
     // TODO: support for outbound
     // DEBUG
     output logic [phit_size-1:0] stream_out_PEa0,
@@ -48,14 +50,19 @@ module data_path(
     mux4 #(phit_size) mux4_inst0 ({phit_size{1'b0}}, {SIMD_degree{itr[dwidth_double-1:0]}}, {SIMD_degree{imm[dwidth_double-1:0]}}, o_RF0, sel_mux4[3:2], i_PE_typeA_i0_n0);
     mux4 #(phit_size) mux4_inst1 (stream_in, {SIMD_degree{itr[dwidth_double-1:0]}}, {SIMD_degree{imm[dwidth_double-1:0]}}, o_RF0, sel_mux4[1:0], i_PE_typeA_i1_n0);
     
+    logic [SIMD_degree-1:0] t_valid_inp_PEa1, t_valid_inp_PEb, t_valid_inp_PEc0, t_valid_inp_PEc1, t_valid_inp_PEd;
+    
     genvar i;
     generate
     for (i=0; i<SIMD_degree; i++) begin
         PE_typeA #(latencyPEA) PE_typeA_inst0(.inp1(i_PE_typeA_i0_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .inp2(i_PE_typeA_i1_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+                    .t_valid_inp1(t_stream_in_valid[i]),
+                    .t_valid_inp2(t_stream_in_valid[i]),
                     .clk(clk),
                     .rst(rst),
                     .out1(o_PE_typeA_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+                    .t_valid_out1(t_valid_inp_PEa1[i]),
                     .op(op[1:0]));
     end
     endgenerate
@@ -75,9 +82,12 @@ module data_path(
     for (i=0; i<SIMD_degree; i++) begin
         PE_typeA  #(latencyPEA) PE_typeA_inst1(  .inp1(i_PE_typeA_i0_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .inp2(i_PE_typeA_i1_n1[((i+1)*dwidth_double)-1:i*dwidth_double]),
+                    .t_valid_inp1(t_valid_inp_PEa1[i]),
+                    .t_valid_inp2(t_valid_inp_PEa1[i]),
                     .clk(clk),
                     .rst(rst), 
                     .out1(o_PE_typeA_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+                    .t_valid_out1(t_valid_inp_PEb[i]),
                     .op(op[3:2]));
     end
     endgenerate
@@ -96,6 +106,8 @@ module data_path(
     for (i=0; i<SIMD_degree; i++) begin
         PE_typeB #(latencyPEB) PE_typeB_inst(.inp1(i_PE_typeB[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                                 .out1(o_PE_typeB[((i+1)*dwidth_double)-1:i*dwidth_double]),
+                                .t_valid_inp1(t_valid_inp_PEb[i]),
+                                .t_valid_out1(t_valid_inp_PEc0[i]),
                                 .clk(clk),
                                 .rst(rst),
                                 .op(op[5:4]));
@@ -113,7 +125,10 @@ module data_path(
     for (i=0; i<SIMD_degree; i++) begin
         PE_typeC #(latencyPEC) PE_typeC_inst0(.inp1(i_PE_typeC_i0_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .inp2(i_PE_typeC_i1_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
-                    .out1(o_PE_typeC_n0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+                    .t_valid_inp1(t_valid_inp_PEc0[i]),
+                    .t_valid_inp2(t_valid_inp_PEc0[i]),
+                    .out1(o_PE_typeC_n0[((i+1)*dwidth_double)-1:i*dwidth_double]),
+                    .t_valid_out1(t_valid_inp_PEc1[i]), 
                     .clk(clk),
                     .op(op[7:6]));
     end
@@ -135,7 +150,10 @@ module data_path(
     for (i=0; i<SIMD_degree; i++) begin
         PE_typeC #(latencyPEC) PE_typeC_inst1(.inp1(i_PE_typeC_i0_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .inp2(i_PE_typeC_i1_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+                    .t_valid_inp1(t_valid_inp_PEc1[i]),
+                    .t_valid_inp2(t_valid_inp_PEc1[i]),
                     .out1(o_PE_typeC_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+                    .t_valid_out1(t_valid_inp_PEd[i]),
                     .clk(clk),
                     .op(op[9:8]));
     end
@@ -157,7 +175,10 @@ module data_path(
     for (i=0; i<SIMD_degree; i++) begin
         PE_typeD #(latencyPED) PE_typeD_inst1(.inp1(i_PE_typeD_i0[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .inp2(i_PE_typeD_i1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+                    .t_valid_inp1(t_valid_inp_PEd[i]),
+                    .t_valid_inp2(t_valid_inp_PEd[i]),
                     .out1(o_PE_typeD[((i+1)*dwidth_double)-1:i*dwidth_double]), 
+                    .t_valid_out1(t_stream_out_valid[i]),
                     .clk(clk),
                     .rst(rst),
                     .op(op[11:10]));

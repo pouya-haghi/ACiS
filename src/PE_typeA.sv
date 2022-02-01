@@ -12,15 +12,22 @@ module PE_typeA #(parameter latency = 6)(
 //    control_channel c_ch,
     input logic [dwidth_double-1:0] inp1,
     input logic [dwidth_double-1:0] inp2,
+    input logic t_valid_inp1,
+    input logic t_valid_inp2,
     input logic clk,
     input logic rst,
     output logic [dwidth_double-1:0] out1,
-    input logic [1:0] op
+    input logic [1:0] op,
+    output t_valid_out1
     );
     
     logic [dwidth_double-1:0] t_add;
     logic [dwidth_int-1:0] t_reg_inp1, t_reg_inp2;
     logic [dwidth_double-1:0] t_mul, t_add_extended;
+    logic temp_valid;
+    assign temp_valid = t_valid_inp1 & t_valid_inp2;
+    register_pipe #(.width(1), .numPipeStage(latency))
+    register_pipe_inst0 (temp_valid, clk, rst, t_valid_out1);
     
 //    always @(*) begin
 //    case(op)

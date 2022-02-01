@@ -10,7 +10,10 @@ module PE_typeD #(parameter latency=57)(
 // double-precision floating point processing
     input logic [dwidth_double-1:0] inp1,
     input logic [dwidth_double-1:0] inp2,
+    input logic t_valid_inp1,
+    input logic t_valid_inp2,
     output logic [dwidth_double-1:0] out1,
+    output logic t_valid_out1,
     input logic [1:0] op,
     input logic clk,
     input logic rst
@@ -21,6 +24,7 @@ module PE_typeD #(parameter latency=57)(
     logic [dwidth_double-1:0] t_reg_inp1, t_reg_inp2;
     logic t_valid0; // discard output valid signal
     logic t_valid1; // discard output valid signal
+    logic t_valid_reg1, t_valid_reg2;
     
     floating_point_div fp_div_inst0 (
       .aclk(clk),                                  // input wire aclk
@@ -47,14 +51,30 @@ module PE_typeD #(parameter latency=57)(
     
     register_pipe #(.width(dwidth_double), .numPipeStage(latency))
         register_pipe_inst1 (inp2, clk, rst, t_reg_inp2);
-        
+    
+    register_pipe #(.width(1), .numPipeStage(latency))
+        register_pipe_inst2 (t_valid_inp1, clk, rst, t_valid_reg1);
+            
+    register_pipe #(.width(1), .numPipeStage(latency))
+        register_pipe_inst3 (t_valid_inp2, clk, rst, t_valid_reg2);
+                
     always_comb begin
         case(op)
-            2'b00: out1 = t_reg_inp1; //NoP
-            2'b01: out1 = t_reg_inp2; //Nop
-            2'b10: out1 = o_floating_point_0;
-            2'b11: out1 = o_floating_point_1;
-            default: out1 = t_reg_inp1; //Nop
+            2'b00: begin out1 = t_reg_inp1; //NoP
+                         t_valid_out1 = t_valid_reg1;
+            end
+            2'b01: begin out1 = t_reg_inp2; //Nop
+                         t_valid_out1 = t_valid_reg2;
+            end
+            2'b10: begin out1 = o_floating_point_0;
+                         t_valid_out1 = t_valid0;
+            end
+            2'b11: begin out1 = o_floating_point_1;
+                         t_valid_out1 = t_valid1;
+            end
+            default: begin out1 = t_reg_inp1; //Nop
+                           t_valid_out1 = t_valid_reg1;
+            end
         endcase
     end
     

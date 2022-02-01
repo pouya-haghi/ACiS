@@ -10,11 +10,13 @@ module top(
     // different HL collective and their value is loaded to the tables at runtime.
     // In the new version, there is no inbound
 //    input logic [phit_size-1:0] inbound,
+    input logic [SIMD_degree-1:0] t_stream_in_valid,
     input logic [phit_size-1:0] stream_in,
     input logic [phit_size-1:0] wr_data_ctrl_plane, // should I merge it to stream_in b/c I have onle one QDMA? 
     input logic clk,
     input logic rst,
     output logic [phit_size-1:0] stream_out,
+    output logic [SIMD_degree-1:0] t_stream_out_valid,
     // start_loader and done_loader (which is done internally by runtimeLoadTable) are single cycle pulse but start_stream_in and ready_stream_in are handshaking signals
     input logic start_loader, // start signal to write to state/config tables and inbound
     input logic start_stream_in,
@@ -89,6 +91,7 @@ module top(
     data_path data_path_inst0 (
     .clk(clk),
     .rst(rst),
+    .t_stream_in_valid(t_stream_in_valid),
     .stream_in(stream_in),
     .itr(itr),
     .isItr(isItr),
@@ -101,6 +104,7 @@ module top(
     .wr_data(wr_data_ctrl_plane), // will be mapped to RFs
     .wr_en_RF_runtimeLoadTable(wr_en_RF_runtimeLoadTable), // to select what is the source of data for RF data_in
     .stream_out(stream_out),
+    .t_stream_out_valid(t_stream_out_valid),
     .stream_out_PEa0(stream_out_PEa0),
     .stream_out_PEa1(stream_out_PEa1),
     .stream_out_PEb(stream_out_PEb),
