@@ -38,43 +38,43 @@ module test_control_plane;
  assign wr_data_part = wr_data[511:464];
  
  always begin
-        clk = 1;
+        clk <= 1;
         #10;
-        clk = 0;
+        clk <= 0;
         #10;
     end
     
  initial begin
-    rst = 0;
-    start_loader = 0;
-    start_stream_in = 1; // I want to check that stream-in should not come (ready=0) until after loading tables
+    rst <= 0;
+    start_loader <= 0;
+    start_stream_in <= 1; // I want to check that stream-in should not come (ready=0) until after loading tables
     #30; 
-    rst = 1;
-    wr_data = 0;
-    num_entry_config_table = 2; // 6 stage * 2 entry * 2 separate config tables
-    num_entry_inbound = 16;
+    rst <= 1;
+    wr_data <= 0;
+    num_entry_config_table <= 2; // 6 stage * 2 entry * 2 separate config tables
+    num_entry_inbound <= 16;
     
     #20;
-    rst = 0;
+    rst <= 0;
     // FIR example
-    start_loader = 1'b1;
+    start_loader <= 1'b1;
     // ----------state table----------
     #20; // delay for one cycle to sample start_loader
-    start_loader = 1'b0;
+    start_loader <= 1'b0;
     #20; // one clock delay b/c we have just pulled down start_loader
     #20; // one clk delay to capture wr_add
-    wr_data[511:464] = 48'h8000_00000010; //state_immediate; first entry
+    wr_data[511:464] <= 48'h8000_00000010; //state_immediate; first entry
     #20;
-    wr_data[511:464] = 48'h800A_00000000; //state_immediate; second entry
+    wr_data[511:464] <= 48'h800A_00000000; //state_immediate; second entry
     #20;
     // ----------config table--------
     //  -----PEA0-----
     // ctrl data
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
+    wr_data[511:464] <= 48'h000000_000000; // state_dontcare; first entry
     wr_data[63:0] = '0; // immediate
     #20;
-    wr_data[511:464] = 48'h880000_000000; // state_dontcare; second entry
-    wr_data[63:0] = '0; // immediate
+    wr_data[511:464] <= 48'h880000_000000; // state_dontcare; second entry
+    wr_data[63:0] <= '0; // immediate
     #20;
     // immediate data
 //    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
@@ -83,11 +83,11 @@ module test_control_plane;
 //    #20;
     // ------PEA1----
     // ctrl data
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
-    wr_data[63:0] = '0; // immediate
+    wr_data[511:464] <= 48'h000000_000000; // state_dontcare; first entry
+    wr_data[63:0] <= '0; // immediate
     #20;
-    wr_data[511:464] = 48'h880000_000000; // state_dontcare; second entry
-    wr_data[63:0] = '0; // immediate
+    wr_data[511:464] <= 48'h880000_000000; // state_dontcare; second entry
+    wr_data[63:0] <= '0; // immediate
     #20;
     // immediate data
 //    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
@@ -96,11 +96,11 @@ module test_control_plane;
 //    #20;
     // ------PEB-----
     // ctrl data
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
-    wr_data[63:0] = '0; // immediate
+    wr_data[511:464] <= 48'h000000_000000; // state_dontcare; first entry
+    wr_data[63:0] <= '0; // immediate
     #20;
-    wr_data[511:464] = 48'h800000_000000; // state_dontcare; second entry
-    wr_data[63:0] = '0; // immediate
+    wr_data[511:464] <= 48'h800000_000000; // state_dontcare; second entry
+    wr_data[63:0] <= '0; // immediate
     #20;
     // immediate data
 //    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
@@ -109,11 +109,11 @@ module test_control_plane;
 //    #20;
     // ------PEC0----
     // ctrl data
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
-    wr_data[63:0] = '0; // immediate
+    wr_data[511:464] <= 48'h000000_000000; // state_dontcare; first entry
+    wr_data[63:0] <= '0; // immediate
     #20;
-    wr_data[511:464] = 48'hA00004_000000; // state_dontcare; second entry
-    wr_data[63:0] = '0; // immediate
+    wr_data[511:464] <= 48'hA00004_000000; // state_dontcare; second entry
+    wr_data[63:0] <= '0; // immediate
     #20;
     // immediate data
 //    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
@@ -122,11 +122,11 @@ module test_control_plane;
 //    #20;
     // ------PEC1----
     // ctrl data
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
-    wr_data[63:0] = '0; // immediate
+    wr_data[511:464] <= 48'h000000_000000; // state_dontcare; first entry
+    wr_data[63:0] <= '0; // immediate
     #20;
-    wr_data[511:464] = 48'h900000_000000; // state_dontcare; second entry
-    wr_data[63:0] = '0; // immediate
+    wr_data[511:464] <= 48'h900000_000000; // state_dontcare; second entry
+    wr_data[63:0] <= '0; // immediate
     #20;
     // immediate data
 //    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
@@ -135,11 +135,11 @@ module test_control_plane;
 //    #20;
     // ------PED----
     // ctrl data
-    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
-    wr_data[63:0] = '0; // immediate
+    wr_data[511:464] <= 48'h000000_000000; // state_dontcare; first entry
+    wr_data[63:0] <= '0; // immediate
     #20;
-    wr_data[511:464] = 48'h900000_000000; // state_dontcare; second entry
-    wr_data[63:0] = '0; // immediate
+    wr_data[511:464] <= 48'h900000_000000; // state_dontcare; second entry
+    wr_data[63:0] <= '0; // immediate
     #20;
     // immediate data
 //    wr_data[511:464] = 48'h000000_000000; // state_dontcare; first entry
@@ -149,7 +149,7 @@ module test_control_plane;
     // ----------inbound buffer--------
     // 16 entries // All inbound data are 1
     for (i=0; i<num_entry_inb; i++) begin
-        wr_data = 512'd1; 
+        wr_data <= 512'd1; 
         #20;
     end
     

@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 `ifndef MY_INTERFACE
     `define MY_INTERFACE
     `include "my_interface.vh"

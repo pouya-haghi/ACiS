@@ -20,13 +20,14 @@ module PE_typeB #(parameter latency=4)(
     
     logic temp_valid; // discard output valid signal
     logic [dwidth_double-1:0] t_out1, t_reg_inp1;
+    logic t_valid_out_PE;
     
 floating_point_1 int2double_inst_0 (
 // This ip converts integer (64 bits) to double
   .aclk(clk),                                  // input wire aclk
   .s_axis_a_tvalid(t_valid_inp1),            // input wire s_axis_a_tvalid
   .s_axis_a_tdata(inp1),              // input wire [63 : 0] s_axis_a_tdata
-  .m_axis_result_tvalid(t_valid_out1),  // output wire m_axis_result_tvalid
+  .m_axis_result_tvalid(t_valid_out_PE),  // output wire m_axis_result_tvalid
   .m_axis_result_tdata(t_out1)    // output wire [63 : 0] m_axis_result_tdata
 );
 
@@ -37,6 +38,6 @@ floating_point_1 int2double_inst_0 (
         register_pipe_inst1 (t_valid_inp1, clk, rst, temp_valid);    
 
     assign out1 = (op[0])? t_out1 : t_reg_inp1;
-    assign t_valid_out1 = (op[0])? t_valid_out1 : temp_valid;
+    assign t_valid_out1 = (op[0])? t_valid_out_PE : temp_valid;
     
 endmodule

@@ -29,6 +29,7 @@ module PE_typeA #(parameter latency = 6)(
     register_pipe #(.width(1), .numPipeStage(latency))
     register_pipe_inst0 (temp_valid, clk, rst, t_valid_out1);
     
+
 //    always @(*) begin
 //    case(op)
 //    2'b00: out1 = inp1 + inp2;
