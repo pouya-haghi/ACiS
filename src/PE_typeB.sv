@@ -13,9 +13,9 @@ module PE_typeB #(parameter latency=4)(
     input logic t_valid_inp1,
     output logic [dwidth_double-1:0] out1,
     input logic clk,
-    input rst,
+    input logic rst,
     input logic [1:0] op,
-    output t_valid_out1
+    output logic t_valid_out1
     );
     
     logic temp_valid; // discard output valid signal
@@ -25,7 +25,7 @@ module PE_typeB #(parameter latency=4)(
 floating_point_1 int2double_inst_0 (
 // This ip converts integer (64 bits) to double
   .aclk(clk),                                  // input wire aclk
-  .s_axis_a_tvalid(t_valid_inp1),            // input wire s_axis_a_tvalid
+  .s_axis_a_tvalid(t_valid_inp1 && op[0]),            // input wire s_axis_a_tvalid
   .s_axis_a_tdata(inp1),              // input wire [63 : 0] s_axis_a_tdata
   .m_axis_result_tvalid(t_valid_out_PE),  // output wire m_axis_result_tvalid
   .m_axis_result_tdata(t_out1)    // output wire [63 : 0] m_axis_result_tdata
@@ -35,9 +35,23 @@ floating_point_1 int2double_inst_0 (
         register_pipe_inst0 (inp1, clk, rst, t_reg_inp1);
         
    register_pipe #(.width(1), .numPipeStage(latency))
-        register_pipe_inst1 (t_valid_inp1, clk, rst, temp_valid);    
-
-    assign out1 = (op[0])? t_out1 : t_reg_inp1;
-    assign t_valid_out1 = (op[0])? t_valid_out_PE : temp_valid;
+        register_pipe_inst1 (t_valid_inp1 && (~op[0]), clk, rst, temp_valid);    
+    
+    always_comb begin
+        case({t_valid_out_PE, temp_valid})
+        2'b10: begin
+            t_valid_out1 = 1'b1;
+            out1 = t_out1;
+        end
+        2'b01: begin
+            t_valid_out1 = 1'b1;
+            out1 = t_reg_inp1;        
+        end
+        default: begin
+            t_valid_out1 = 1'b0;
+            out1 = t_out1;            
+        end
+        endcase
+    end
     
 endmodule

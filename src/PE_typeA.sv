@@ -18,29 +18,25 @@ module PE_typeA #(parameter latency = 6)(
     input logic rst,
     output logic [dwidth_double-1:0] out1,
     input logic [1:0] op,
-    output t_valid_out1
+    output logic t_valid_out1
     );
     
     logic [dwidth_double-1:0] t_add;
     logic [dwidth_int-1:0] t_reg_inp1, t_reg_inp2;
     logic [dwidth_double-1:0] t_mul, t_add_extended;
     logic temp_valid;
-    assign temp_valid = t_valid_inp1 & t_valid_inp2;
-    register_pipe #(.width(1), .numPipeStage(latency))
-    register_pipe_inst0 (temp_valid, clk, rst, t_valid_out1);
+    logic t_valid_add, t_valid_mul;
     
-
-//    always @(*) begin
-//    case(op)
-//    2'b00: out1 = inp1 + inp2;
-//    2'b01: out1 = inp1 - inp2;
-//    2'b10: out1 = inp1 * inp2;
-////    2'b11: out1 = inp1 * inp2;
-//    default: out1 = inp1 + inp2;
-//    endcase
-//    end
-
-  c_addsub_1 addsub_inst0 (
+    assign temp_valid = t_valid_inp1 & t_valid_inp2;
+    
+    // implementing output t_valid
+    register_pipe #(.width(1), .numPipeStage(latency))
+    register_pipe_inst0 (temp_valid && (!op[1]), clk, rst, t_valid_add);
+    
+    register_pipe #(.width(1), .numPipeStage(latency))
+    register_pipe_inst1 (temp_valid && (op[1]), clk, rst, t_valid_mul);    
+    
+c_addsub_1 addsub_inst0 (
   .A(inp1),      // input wire [63 : 0] A
   .B(inp2),      // input wire [63 : 0] B
   .CLK(clk),  // input wire CLK
@@ -50,27 +46,27 @@ module PE_typeA #(parameter latency = 6)(
 
 //assign t_add = inp1 + inp2;
 
-   mult_int_0 mult_inst0 (
+mult_int_0 mult_inst0 (
   .CLK(clk),  // input wire CLK
   .A(inp1[dwidth_int-1:0]),      // input wire [31 : 0] A
   .B(inp2[dwidth_int-1:0]),      // input wire [31 : 0] B
   .P(t_mul)      // output wire [63 : 0] P
 ); 
-
-//register_pipe #(.width(dwidth_int),.numPipeStage(latency))
-//    register_pipe_inst0(inp1[(2*dwidth_int)-1:dwidth_int], clk, rst, t_reg_inp1);
     
-//register_pipe #(.width(dwidth_int),.numPipeStage(latency))
-//    register_pipe_inst1(inp2[(2*dwidth_int)-1:dwidth_int], clk, rst, t_reg_inp2);
-
-
     always_comb begin
-        case(op)
-            2'b00: out1 = t_add; // Add with zero propagates inp1
-            2'b01: out1 = t_add; // Sub with zero propagates inp2
-            2'b10: out1 = t_mul;
-            2'b11: out1 = t_mul;
-            default: out1 = t_add;
+        case({t_valid_add, t_valid_mul})
+        2'b10: begin
+            t_valid_out1 = 1'b1;
+            out1 = t_add;
+        end
+        2'b01: begin
+            t_valid_out1 = 1'b1;
+            out1 = t_mul;        
+        end
+        default: begin
+            t_valid_out1 = 1'b0;
+            out1 = t_add;            
+        end
         endcase
     end
     

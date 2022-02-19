@@ -4,7 +4,7 @@
     `include "my_interface.vh"
 `endif
 
-module test_top;
+module test_top_IS;
     // inputs
     reg clk; 
     reg rst;
@@ -66,7 +66,7 @@ module test_top;
     num_entry_inbound <= 16;
     #30; 
     rst <= 1;
-    #60; //20
+    #20;
     rst <= 0;
     // FIR example
     start_loader <= 1'b1;
@@ -75,7 +75,7 @@ module test_top;
     start_loader <= 1'b0;
     #20; // one clock delay b/c we have just pulled down start_loader
     #20; // one clk delay to capture wr_add
-    wr_data_ctrl_plane[511:464] <= 48'h8000_00000010; //state_immediate; first entry
+    wr_data_ctrl_plane[511:464] <= 48'h8000_00000080; //state_immediate; first entry
     #20;
     wr_data_ctrl_plane[511:464] <= 48'h800A_00000000; //state_immediate; second entry
     #20;
@@ -167,7 +167,7 @@ module test_top;
     
     #160;
     start_stream_in <= 0; // deassert again (ideally we should do it based on keep_start_stream_in
-    #40; // one clock delay b/c in FSM I have to transition from ready_hold to ready state
+    #20; // one clock delay b/c in FSM I have to transition from ready_hold to ready state
     t_stream_in_valid <= {SIMD_degree{1'b1}};
     // ----------- stream_in ---------
     // 16 entries // All stream_in are 2

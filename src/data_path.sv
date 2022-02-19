@@ -129,6 +129,7 @@ module data_path(
                     .t_valid_inp2(t_valid_inp_PEc0[i]),
                     .out1(o_PE_typeC_n0[((i+1)*dwidth_double)-1:i*dwidth_double]),
                     .t_valid_out1(t_valid_inp_PEc1[i]), 
+                    .rst(rst),
                     .clk(clk),
                     .op(op[7:6]));
     end
@@ -155,6 +156,7 @@ module data_path(
                     .out1(o_PE_typeC_n1[((i+1)*dwidth_double)-1:i*dwidth_double]), 
                     .t_valid_out1(t_valid_inp_PEd[i]),
                     .clk(clk),
+                    .rst(rst),
                     .op(op[9:8]));
     end
     endgenerate
