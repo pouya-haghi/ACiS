@@ -29,6 +29,7 @@ module PE_typeD #(parameter latency=57)(
     
     floating_point_div fp_div_inst0 (
       .aclk(clk),                                  // input wire aclk
+      .aresetn(!rst),
       .s_axis_a_tvalid(t_valid_inp1 & op[1] & (~op[0])),            // input wire s_axis_a_tvalid
       .s_axis_a_tdata(inp1),              // input wire [63 : 0] s_axis_a_tdata
       .s_axis_b_tvalid(t_valid_inp2 & op[1] & (~op[0])),            // input wire s_axis_b_tvalid
@@ -39,6 +40,7 @@ module PE_typeD #(parameter latency=57)(
 
     floating_point_sqrt fp_sqrt_inst0 (
       .aclk(clk),                                  // input wire aclk
+      .aresetn(!rst),
       .s_axis_a_tvalid(t_valid_inp1 & t_valid_inp2 & op[0] & op[1]),            // input wire s_axis_a_tvalid
       .s_axis_a_tdata(inp1),              // input wire [63 : 0] s_axis_a_tdata
       .m_axis_result_tvalid(t_valid1),  // output wire m_axis_result_tvalid

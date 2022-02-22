@@ -25,6 +25,7 @@ module PE_typeB #(parameter latency=4)(
 floating_point_1 int2double_inst_0 (
 // This ip converts integer (64 bits) to double
   .aclk(clk),                                  // input wire aclk
+  .aresetn(!rst),
   .s_axis_a_tvalid(t_valid_inp1 && op[0]),            // input wire s_axis_a_tvalid
   .s_axis_a_tdata(inp1),              // input wire [63 : 0] s_axis_a_tdata
   .m_axis_result_tvalid(t_valid_out_PE),  // output wire m_axis_result_tvalid

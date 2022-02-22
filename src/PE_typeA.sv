@@ -40,6 +40,7 @@ c_addsub_1 addsub_inst0 (
   .A(inp1),      // input wire [63 : 0] A
   .B(inp2),      // input wire [63 : 0] B
   .CLK(clk),  // input wire CLK
+  .SCLR(rst),
   .ADD(!op[0]),  // input wire ADD
   .S(t_add)      // output wire [31 : 0] S
 );
@@ -48,6 +49,7 @@ c_addsub_1 addsub_inst0 (
 
 mult_int_0 mult_inst0 (
   .CLK(clk),  // input wire CLK
+  .SCLR(rst),
   .A(inp1[dwidth_int-1:0]),      // input wire [31 : 0] A
   .B(inp2[dwidth_int-1:0]),      // input wire [31 : 0] B
   .P(t_mul)      // output wire [63 : 0] P
