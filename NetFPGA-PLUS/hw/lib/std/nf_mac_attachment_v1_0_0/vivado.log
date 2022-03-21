@@ -1,0 +1,231 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:47 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Thu Mar 10 19:40:23 2022
+# Process ID: 94356
+# Current directory: /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/std/nf_mac_attachment_v1_0_0
+# Command line: vivado -mode batch -source nf_mac_attachment_tcl.tcl
+# Log file: /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/std/nf_mac_attachment_v1_0_0/vivado.log
+# Journal file: /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/std/nf_mac_attachment_v1_0_0/vivado.jou
+#-----------------------------------------------------------
+source nf_mac_attachment_tcl.tcl
+# set device          $::env(DEVICE)
+# set ip_name 		{nf_mac_attachment}
+# set lib_name 		{NetFPGA}
+# set vendor_name 	{NetFPGA}
+# set ip_display_name 	{nf_mac_attachment}
+# set ip_description 	{10G Ethernet attachment for NetFPGA NFPLUS}
+# set vendor_display_name {NetFPGA}
+# set vendor_company_url 	{http://www.netfpga.org}
+# set ip_version 		{1.0}
+# set proj_dir 		./ip_proj
+# set_param project.singleFileAddWarning.Threshold 500
+# set subcore_names {\
+# 		nf_axis_converter\
+# 		fallthrough_small_fifo\
+# }
+# set source_dir { \
+# 		hdl\
+# }
+# set VerilogFiles [list]
+# set VerilogFiles [concat \
+# 			[glob -nocomplain hdl]]
+# set rtl_dirs	[list]
+# set rtl_dirs	[concat \
+# 			hdl]
+# set top_module_name {nf_mac_attachment}
+# set top_module_file ./hdl/$top_module_name.v
+# puts "top_file: $top_module_file \n"
+top_file: ./hdl/nf_mac_attachment.v 
+
+# set bus_interfaces {\
+# 	xilinx.com:signal:clock:1.0\
+# 	xilinx.com:signal:reset:1.0\	
+# 	xilinx.com:interface:axis_rtl:1.0\
+# }
+# create_project -name ${ip_name} -force -dir "./${proj_dir}" -part ${device} 
+create_project: Time (s): cpu = 00:00:03 ; elapsed = 00:00:11 . Memory (MB): peak = 2452.699 ; gain = 2.023 ; free physical = 54075 ; free virtual = 165485
+# set_property source_mgmt_mode All [current_project] 
+# set_property top $top_module_name [current_fileset]
+# set_property ip_repo_paths $::env(NFPLUS_FOLDER)/hw/lib  [current_fileset]
+# update_ip_catalog
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib'.
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/std/nf_mac_attachment_v1_0_0/ip_proj'.)
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/ad/eng/opt/Xilinx/Vivado/2020.2/data/ip'.
+update_ip_catalog: Time (s): cpu = 00:00:02 ; elapsed = 00:00:12 . Memory (MB): peak = 2452.699 ; gain = 0.000 ; free physical = 54066 ; free virtual = 165475
+# foreach rtl_dir $rtl_dirs {
+#         set_property include_dirs $rtl_dirs [current_fileset]
+# }
+# foreach verilog_file $VerilogFiles {
+# 	add_files -norecurse ${verilog_file}
+# }
+# update_compile_order -fileset sources_1
+# update_compile_order -fileset sim_1
+# create_ip -name fifo_generator -vendor xilinx.com -library ip -version 13.2 -module_name fifo_generator_1_9 -dir ./${proj_dir}
+# set_property -dict [list \
+# 	CONFIG.Component_Name {fifo_generator_1_9} \
+# 	CONFIG.Fifo_Implementation {Independent_Clocks_Block_RAM} \
+# 	CONFIG.Performance_Options {First_Word_Fall_Through} \
+# 	CONFIG.Input_Data_Width {1} \
+# 	CONFIG.Input_Depth {16} \
+# 	CONFIG.Output_Data_Width {1} \
+# 	CONFIG.Output_Depth {16} \
+# 	CONFIG.Reset_Type {Asynchronous_Reset} \
+# 	CONFIG.Full_Flags_Reset_Value {1} \
+# 	CONFIG.Data_Count_Width {4} \
+# 	CONFIG.Write_Data_Count_Width {4} \
+# 	CONFIG.Read_Data_Count_Width {4} \
+# 	CONFIG.Full_Threshold_Assert_Value {15} \
+# 	CONFIG.Full_Threshold_Negate_Value {14} \
+# 	CONFIG.Empty_Threshold_Assert_Value {4} \
+# 	CONFIG.Empty_Threshold_Negate_Value {5} \
+# 	CONFIG.Enable_Safety_Circuit {true}] [get_ips fifo_generator_1_9]
+WARNING: [Vivado 12-3523] Attempt to change 'Component_Name' from 'fifo_generator_1_9' to 'fifo_generator_1_9' is not allowed and is ignored.
+# generate_target {instantiation_template} [get_files ./${proj_dir}/fifo_generator_1_9/fifo_generator_1_9.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'fifo_generator_1_9'...
+# generate_target all [get_files  ./${proj_dir}/fifo_generator_1_9/fifo_generator_1_9.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'fifo_generator_1_9'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'fifo_generator_1_9'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'fifo_generator_1_9'...
+# ipx::package_project -force -import_files ./${proj_dir}/fifo_generator_1_9/fifo_generator_1_9.xci
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+WARNING: [IP_Flow 19-4656] Synthesis file group is packaged with a Dependency property value 'hdl' although it may not be recognized as a synthesis -include_dir property after IP delivery.
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_M_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 'm_axis_fifo_tdata'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_M_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 'm_axis_fifo_tkeep'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_S_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 's_axis_fifo_tdata'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_S_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 's_axis_fifo_tkeep'
+INFO: [IP_Flow 19-1842] HDL Parser: Found include file "hdl/nf_mac_attachment_cpu_regs_defines.v" from the top-level HDL file.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_mac' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_pipe' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_mac' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_pipe' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'S_AXI' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'S_AXI_ARESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aresetn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'S_AXI_ACLK' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'S_AXI_ARESETN': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'axis_aresetn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'S_AXI_ACLK': Added interface parameter 'ASSOCIATED_BUSIF' with value 'S_AXI'.
+INFO: [IP_Flow 19-4728] Bus Interface 'S_AXI_ACLK': Added interface parameter 'ASSOCIATED_RESET' with value 'S_AXI_ARESETN'.
+INFO: [IP_Flow 19-4728] Bus Interface 'axis_aclk': Added interface parameter 'ASSOCIATED_RESET' with value 'axis_aresetn'.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_mac': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_pipe': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_mac': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_pipe': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axis_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-3238] Range of address space is set to a full 4G (Address Block 'reg0' of Memory Map 'S_AXI').  Consider reducing this by setting the range of the address block to a lower number, or alternatively reduce the number of bits on the address line in your HDL's top level file interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+# ipx::package_project
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+WARNING: [IP_Flow 19-4656] Synthesis file group is packaged with a Dependency property value 'hdl' although it may not be recognized as a synthesis -include_dir property after IP delivery.
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_M_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 'm_axis_fifo_tdata'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_M_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 'm_axis_fifo_tkeep'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_S_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 's_axis_fifo_tdata'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_S_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 's_axis_fifo_tkeep'
+INFO: [IP_Flow 19-1842] HDL Parser: Found include file "hdl/nf_mac_attachment_cpu_regs_defines.v" from the top-level HDL file.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_mac' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_pipe' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_mac' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_pipe' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'S_AXI' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'S_AXI_ARESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aresetn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'S_AXI_ACLK' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'S_AXI_ARESETN': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'axis_aresetn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'S_AXI_ACLK': Added interface parameter 'ASSOCIATED_BUSIF' with value 'S_AXI'.
+INFO: [IP_Flow 19-4728] Bus Interface 'S_AXI_ACLK': Added interface parameter 'ASSOCIATED_RESET' with value 'S_AXI_ARESETN'.
+INFO: [IP_Flow 19-4728] Bus Interface 'axis_aclk': Added interface parameter 'ASSOCIATED_RESET' with value 'axis_aresetn'.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_mac': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_pipe': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_mac': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_pipe': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axis_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-3238] Range of address space is set to a full 4G (Address Block 'reg0' of Memory Map 'S_AXI').  Consider reducing this by setting the range of the address block to a lower number, or alternatively reduce the number of bits on the address line in your HDL's top level file interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+# set_property name 			${ip_name} [ipx::current_core]
+# set_property library 			${lib_name} [ipx::current_core]
+# set_property vendor_display_name 	${vendor_display_name} [ipx::current_core]
+# set_property company_url 		${vendor_company_url} [ipx::current_core]
+# set_property vendor 			${vendor_name} [ipx::current_core]
+# set_property supported_families {{virtexuplus} {Production} {virtexuplushbm} {Production}} [ipx::current_core]
+# set_property taxonomy 			{{/NetFPGA/Generic}} [ipx::current_core]
+# set_property version 			${ip_version} [ipx::current_core]
+# set_property display_name 		${ip_display_name} [ipx::current_core]
+# set_property description 		${ip_description} [ipx::current_core]
+# ipx::add_subcore NetFPGA:NetFPGA:nf_axis_converter:1.0 [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+# ipx::add_subcore NetFPGA:NetFPGA:nf_axis_converter:1.0 [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+# ipx::add_subcore NetFPGA:NetFPGA:fallthrough_small_fifo:1.0 [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+# ipx::add_subcore NetFPGA:NetFPGA:fallthrough_small_fifo:1.0 [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+# ipx::infer_user_parameters [ipx::current_core]
+# ipx::remove_all_hdl_parameter [ipx::current_core]
+# ipx::add_model_parameters_from_hdl [ipx::current_core] -top_level_hdl_file $top_module_file -top_module_name $top_module_name
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_M_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 'm_axis_fifo_tdata'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_M_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 'm_axis_fifo_tkeep'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_S_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 's_axis_fifo_tdata'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_S_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 's_axis_fifo_tkeep'
+# ipx::infer_user_parameters [ipx::current_core]
+# set_property value_validation_type list [ipx::get_user_parameters C_M_AXIS_DATA_WIDTH -of_objects [ipx::current_core]]
+# set_property value_validation_list {1024 512 256 64} [ipx::get_user_parameters C_M_AXIS_DATA_WIDTH -of_objects [ipx::current_core]]
+# set_property value_validation_type list [ipx::get_user_parameters C_S_AXIS_DATA_WIDTH -of_objects [ipx::current_core]]
+# set_property value_validation_list {1024 512 256 64} [ipx::get_user_parameters C_S_AXIS_DATA_WIDTH -of_objects [ipx::current_core]]
+# set_property value_validation_type list [ipx::get_user_parameters C_DEFAULT_VALUE_ENABLE -of_objects [ipx::current_core]]
+# set_property value_validation_list {0 1} [ipx::get_user_parameters C_DEFAULT_VALUE_ENABLE -of_objects [ipx::current_core]]
+# set_property value_validation_type list [ipx::get_user_parameters C_M_AXIS_TUSER_WIDTH -of_objects [ipx::current_core]]
+# set_property value_validation_list 128 [ipx::get_user_parameters C_M_AXIS_TUSER_WIDTH -of_objects [ipx::current_core]]
+# set_property value_validation_type list [ipx::get_user_parameters C_S_AXIS_TUSER_WIDTH -of_objects [ipx::current_core]]
+# set_property value_validation_list 128 [ipx::get_user_parameters C_S_AXIS_TUSER_WIDTH -of_objects [ipx::current_core]]
+# set_property value_validation_type list [ipx::get_user_parameters C_DEFAULT_VALUE_ENABLE -of_objects [ipx::current_core]]
+# set_property value_validation_list {0 1} [ipx::get_user_parameters C_DEFAULT_VALUE_ENABLE -of_objects [ipx::current_core]]
+# ipx::remove_all_port [ipx::current_core]
+# ipx::add_ports_from_hdl [ipx::current_core] -top_level_hdl_file $top_module_file -top_module_name $top_module_name
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_M_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 'm_axis_fifo_tdata'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_M_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 'm_axis_fifo_tkeep'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_S_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 's_axis_fifo_tdata'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'C_S_AXIS_DATA_WIDTH_INTERNAL' by 512 for port or parameter 's_axis_fifo_tkeep'
+# foreach bus_standard ${bus_interfaces} {
+# 	ipx::infer_bus_interfaces ${bus_standard} [ipx::current_core]
+# }
+INFO: [IP_Flow 19-3166] Bus Interface 'S_AXI': References existing memory map 'S_AXI'.
+INFO: [IP_Flow 19-3166] Bus Interface 'S_AXI': References existing memory map 'S_AXI'.
+INFO: [IP_Flow 19-3166] Bus Interface 'S_AXI': References existing memory map 'S_AXI'.
+# ipx::add_bus_interface clk156 [ipx::current_core]
+# set_property abstraction_type_vlnv xilinx.com:signal:clock_rtl:1.0 [ipx::get_bus_interfaces clk156 -of_objects [ipx::current_core]]
+# set_property bus_type_vlnv xilinx.com:signal:clock:1.0 [ipx::get_bus_interfaces clk156 -of_objects [ipx::current_core]]
+# set_property interface_mode slave [ipx::get_bus_interfaces clk156 -of_objects [ipx::current_core]]
+# ipx::add_port_map CLK [ipx::get_bus_interfaces clk156 -of_objects [ipx::current_core]]
+# set_property physical_name clk156 [ipx::get_port_maps CLK -of_objects [ipx::get_bus_interfaces clk156 -of_objects [ipx::current_core]]]
+# ipx::add_bus_parameter ASSOCIATED_BUSIF [ipx::get_bus_interfaces clk156 -of_objects [ipx::current_core]]
+# set_property value m_axis_mac:s_axis_mac [ipx::get_bus_parameters ASSOCIATED_BUSIF -of_objects [ipx::get_bus_interfaces clk156 -of_objects [ipx::current_core]]]
+# ipx::add_bus_interface areset_clk156 [ipx::current_core]
+# set_property abstraction_type_vlnv xilinx.com:signal:reset_rtl:1.0 [ipx::get_bus_interfaces areset_clk156 -of_objects [ipx::current_core]]
+# set_property bus_type_vlnv xilinx.com:signal:reset:1.0 [ipx::get_bus_interfaces areset_clk156 -of_objects [ipx::current_core]]
+# set_property interface_mode slave [ipx::get_bus_interfaces areset_clk156 -of_objects [ipx::current_core]]
+# ipx::add_port_map RST [ipx::get_bus_interfaces areset_clk156 -of_objects [ipx::current_core]]
+# set_property physical_name areset_clk156 [ipx::get_port_maps RST -of_objects [ipx::get_bus_interfaces areset_clk156 -of_objects [ipx::current_core]]]
+# ipx::add_bus_parameter POLARITY [ipx::get_bus_interfaces areset_clk156 -of_objects [ipx::current_core]]
+# set_property value ACTIVE_HIGH [ipx::get_bus_parameters POLARITY -of_objects [ipx::get_bus_interfaces areset_clk156 -of_objects [ipx::current_core]]]
+# ipx::add_bus_parameter ASSOCIATED_BUSIF [ipx::get_bus_interfaces axis_aclk -of_objects [ipx::current_core]]
+# set_property value m_axis_pipe:s_axis_pipe [ipx::get_bus_parameters ASSOCIATED_BUSIF -of_objects [ipx::get_bus_interfaces axis_aclk -of_objects [ipx::current_core]]]
+# ipx::add_bus_parameter TDATA_NUM_BYTES [ipx::get_bus_interfaces m_axis_pipe -of_objects [ipx::current_core]]
+# set_property description {TDATA Width (bytes)} [ipx::get_bus_parameters TDATA_NUM_BYTES -of_objects [ipx::get_bus_interfaces m_axis_pipe -of_objects [ipx::current_core]]]
+# set_property value 32 [ipx::get_bus_parameters TDATA_NUM_BYTES -of_objects [ipx::get_bus_interfaces m_axis_pipe -of_objects [ipx::current_core]]]
+# ipx::check_integrity [ipx::current_core]
+CRITICAL WARNING: [IP_Flow 19-3834] Port 'm_axis_pipe_tdata': Port mapped to the logical port 'TDATA' of 'xilinx.com:interface:axis:1.0' interface must have a width of multiples of 8 bits.  The current port width is '1'.
+WARNING: [IP_Flow 19-3238] Range of address space is set to a full 4G (Address Block 'reg0' of Memory Map 'S_AXI').  Consider reducing this by setting the range of the address block to a lower number, or alternatively reduce the number of bits on the address line in your HDL's top level file interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+INFO: [Ipptcl 7-1486] check_integrity: Integrity check passed.
+# write_peripheral [ipx::current_core]
+# ipx::create_xgui_files [ipx::current_core]
+# ipx::update_checksums [ipx::current_core]
+# ipx::save_core [ipx::current_core]
+# close_project
+# exit
+INFO: [Common 17-206] Exiting Vivado at Thu Mar 10 19:41:40 2022...

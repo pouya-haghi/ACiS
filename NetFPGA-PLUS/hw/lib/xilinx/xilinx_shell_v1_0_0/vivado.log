@@ -1,0 +1,1303 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:47 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Thu Mar 10 19:29:36 2022
+# Process ID: 91615
+# Current directory: /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0
+# Command line: vivado -mode batch -source xilinx_shell.tcl
+# Log file: /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/vivado.log
+# Journal file: /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/vivado.jou
+#-----------------------------------------------------------
+source xilinx_shell.tcl
+# set design xilinx_shell
+# set top open_nic_shell
+# set device $::env(DEVICE)
+# set board $::env(BOARD)
+# set board_name $::env(BOARD_NAME)
+# set proj_dir ./ip_proj
+# set ip_version 1.0
+# set lib_name xilinx
+# set proj ./proj
+# create_project -name ${design} -force -dir "./${proj_dir}" -part ${device} -ip
+create_project: Time (s): cpu = 00:00:02 ; elapsed = 00:00:06 . Memory (MB): peak = 2468.523 ; gain = 2.023 ; free physical = 54188 ; free virtual = 165452
+# set_property BOARD_PART $board [current_project]
+# set_property source_mgmt_mode All [current_project]  
+# set_property top ${top} [current_fileset]
+# set_property ip_repo_paths $::env(NFPLUS_FOLDER)/hw/lib/  [current_fileset]
+# set_property verilog_define { {__synthesis__} } [current_fileset]
+# puts "Creating Xiilnx Xilinx OpenNIC Shell IP"
+Creating Xiilnx Xilinx OpenNIC Shell IP
+# set num_phys_func 2
+# set num_queue     2048
+# set min_pkt_len   64
+# set max_pkt_len   1518
+# read_verilog -sv "./hdl/open_nic_shell.sv"
+# read_verilog     "open-nic-shell/src/open_nic_shell_macros.vh"
+# read_verilog     "open-nic-shell/src/cmac_subsystem/cmac_subsystem_address_map.v"
+# read_verilog -sv "open-nic-shell/src/cmac_subsystem/cmac_subsystem_cmac_wrapper.sv"
+# read_verilog -sv "open-nic-shell/src/cmac_subsystem/cmac_subsystem.sv"
+# read_verilog -sv "open-nic-shell/src/qdma_subsystem/qdma_subsystem_address_map.sv"
+# read_verilog -sv "open-nic-shell/src/qdma_subsystem/qdma_subsystem_c2h.sv"
+# read_verilog -sv "open-nic-shell/src/qdma_subsystem/qdma_subsystem_function_register.sv"
+# read_verilog -sv "open-nic-shell/src/qdma_subsystem/qdma_subsystem_function.sv"
+# read_verilog -sv "open-nic-shell/src/qdma_subsystem/qdma_subsystem_h2c.sv"
+# read_verilog -sv "open-nic-shell/src/qdma_subsystem/qdma_subsystem_hash.sv"
+# read_verilog     "open-nic-shell/src/qdma_subsystem/qdma_subsystem_qdma_wrapper.v"
+# read_verilog -sv "open-nic-shell/src/qdma_subsystem/qdma_subsystem_register.sv"
+# read_verilog -sv "open-nic-shell/src/qdma_subsystem/qdma_subsystem.sv"
+# read_verilog -sv "open-nic-shell/src/system_config/system_config_address_map.sv"
+# read_verilog     "open-nic-shell/src/system_config/system_config_register.v"
+# read_verilog -sv "open-nic-shell/src/system_config/system_config.sv"
+# read_verilog -sv "open-nic-shell/src/utility/axi_lite_register.sv"
+# read_verilog -sv "open-nic-shell/src/utility/axi_lite_slave.sv"
+# read_verilog -sv "open-nic-shell/src/utility/axi_stream_packet_buffer.sv"
+# read_verilog -sv "open-nic-shell/src/utility/axi_stream_packet_fifo.sv"
+# read_verilog -sv "open-nic-shell/src/utility/axi_stream_register_slice.sv"
+# read_verilog -sv "open-nic-shell/src/utility/axi_stream_size_counter.sv"
+# read_verilog     "open-nic-shell/src/utility/crc32.v"
+# read_verilog -sv "open-nic-shell/src/utility/generic_reset.sv"
+# read_verilog -sv "open-nic-shell/src/utility/level_trigger_cdc.sv"
+# read_verilog -sv "open-nic-shell/src/utility/rr_arbiter.sv"
+# update_compile_order -fileset sources_1
+# update_compile_order -fileset sim_1
+# ipx::package_project
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_buffer.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_fifo.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/level_trigger_cdc.sv'.
+WARNING: [IP_Flow 19-5101] Packaging a component with a SystemVerilog top file is not fully supported. Please refer to UG1118 'Creating and Packaging Custom IP'.
+INFO: [IP_Flow 19-1842] HDL Parser: Found include file "open-nic-shell/src/open_nic_shell_macros.vh" from the top-level HDL file.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib'.
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/ip_proj'.)
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/ad/eng/opt/Xilinx/Vivado/2020.2/data/ip'.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_adap_tx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_cmac_rx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_adap_rx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_cmac_tx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_rx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_tx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_cmac_rx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_qdma_h2c' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_rx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_tx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_cmac_tx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_qdma_c2h' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box0' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box1' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'pcie_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'user_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axil_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'cmac_clk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'pcie_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'user_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_rx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_tx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_cmac_rx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_qdma_h2c': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_rx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_tx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_cmac_tx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_qdma_c2h': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box0': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box1': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3157] Bus Interface 'pcie_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'pcie_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-3157] Bus Interface 'user_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'user_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axil_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axil_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axis_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axis_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'cmac_clk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'cmac_clk': FREQ_HZ bus parameter is missing for output clock interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+ipx::package_project: Time (s): cpu = 00:00:02 ; elapsed = 00:00:10 . Memory (MB): peak = 2502.527 ; gain = 0.023 ; free physical = 54167 ; free virtual = 165432
+# if {[file exists ${proj}]} {
+# 	file delete -force ${proj}
+# 	file mkdir ${proj}
+# } else {
+# 	file mkdir ${proj}
+# }
+# set ip_build_dir ${proj}
+# if {[string match $board_name "au280"]} {
+# 	source "open-nic-shell/src/cmac_subsystem/vivado_ip/cmac_usplus_0_au280.tcl"
+# } elseif {[string match $board_name "au250"]} {
+# 	source "vivado_ip/cmac_usplus_0_au250.tcl"
+# } elseif {[string match $board_name "au200"]} {
+# 	source "vivado_ip/cmac_usplus_0_au250.tcl"
+# } elseif {[string match $board_name "vcu1525"]} {
+# 	source "vivado_ip/cmac_usplus_0_vcu1525.tcl"
+# }
+## set cmac_usplus cmac_usplus_0
+## create_ip -name cmac_usplus -vendor xilinx.com -library ip -module_name $cmac_usplus -dir ${ip_build_dir}
+INFO: [Device 21-403] Loading part xcu280-fsvh2892-2L-e
+create_ip: Time (s): cpu = 00:00:12 ; elapsed = 00:00:46 . Memory (MB): peak = 3268.180 ; gain = 765.652 ; free physical = 52961 ; free virtual = 164228
+## set_property -dict {
+##     CONFIG.CMAC_CAUI4_MODE {1}
+##     CONFIG.NUM_LANES {4x25}
+##     CONFIG.GT_REF_CLK_FREQ {156.25}
+##     CONFIG.USER_INTERFACE {AXIS}
+##     CONFIG.GT_DRP_CLK {125.00}
+##     CONFIG.ENABLE_AXI_INTERFACE {1}
+##     CONFIG.INCLUDE_STATISTICS_COUNTERS {1}
+##     CONFIG.CMAC_CORE_SELECT {CMACE4_X0Y6}
+##     CONFIG.GT_GROUP_SELECT {X0Y40~X0Y43}
+##     CONFIG.LANE1_GT_LOC {X0Y40}
+##     CONFIG.LANE2_GT_LOC {X0Y41}
+##     CONFIG.LANE3_GT_LOC {X0Y42}
+##     CONFIG.LANE4_GT_LOC {X0Y43}
+##     CONFIG.LANE5_GT_LOC {NA}
+##     CONFIG.LANE6_GT_LOC {NA}
+##     CONFIG.LANE7_GT_LOC {NA}
+##     CONFIG.LANE8_GT_LOC {NA}
+##     CONFIG.LANE9_GT_LOC {NA}
+##     CONFIG.LANE10_GT_LOC {NA}
+##     CONFIG.RX_GT_BUFFER {1}
+##     CONFIG.GT_RX_BUFFER_BYPASS {0}
+##     CONFIG.INS_LOSS_NYQ {20}
+##     CONFIG.INCLUDE_RS_FEC {1}
+##     CONFIG.ENABLE_PIPELINE_REG {1}
+##     CONFIG.ETHERNET_BOARD_INTERFACE {qsfp0_4x}
+##     CONFIG.DIFFCLK_BOARD_INTERFACE {qsfp0_156mhz}
+## } [get_ips $cmac_usplus]
+## set_property CONFIG.RX_MIN_PACKET_LEN $min_pkt_len [get_ips $cmac_usplus]
+## set_property CONFIG.RX_MAX_PACKET_LEN $max_pkt_len [get_ips $cmac_usplus]
+# generate_target {instantiation_template} [get_files ./${proj}/${cmac_usplus}/${cmac_usplus}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'cmac_usplus_0'...
+# generate_target all [get_files ./${proj}/${cmac_usplus}/${cmac_usplus}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'cmac_usplus_0'...
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'cmac_usplus_0'...
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+INFO: [IP_Flow 19-1686] Generating 'Implementation' target for IP 'cmac_usplus_0'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'cmac_usplus_0'...
+generate_target: Time (s): cpu = 00:00:12 ; elapsed = 00:00:34 . Memory (MB): peak = 3268.180 ; gain = 0.000 ; free physical = 52904 ; free virtual = 164182
+# ipx::package_project -force -import_files ./${proj}/${cmac_usplus}/${cmac_usplus}.xci
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+WARNING: [IP_Flow 19-4963] cmac_usplus_0 has board value specified. The packaged IP will be restricted to usage with board 'xilinx.com:au280:part0:1.1'
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_buffer.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_fifo.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/level_trigger_cdc.sv'.
+WARNING: [IP_Flow 19-5101] Packaging a component with a SystemVerilog top file is not fully supported. Please refer to UG1118 'Creating and Packaging Custom IP'.
+INFO: [IP_Flow 19-1842] HDL Parser: Found include file "open-nic-shell/src/open_nic_shell_macros.vh" from the top-level HDL file.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_adap_tx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_cmac_rx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_adap_rx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_cmac_tx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_rx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_tx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_cmac_rx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_qdma_h2c' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_rx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_tx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_cmac_tx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_qdma_c2h' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box0' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box1' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'pcie_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'user_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axil_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'cmac_clk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'pcie_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'user_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_rx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_tx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_cmac_rx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_qdma_h2c': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_rx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_tx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_cmac_tx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_qdma_c2h': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box0': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box1': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3157] Bus Interface 'pcie_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'pcie_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-3157] Bus Interface 'user_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'user_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axil_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axil_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axis_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axis_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'cmac_clk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'cmac_clk': FREQ_HZ bus parameter is missing for output clock interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+# if {[string match $board_name "au280"]} {
+# 	source "open-nic-shell/src/cmac_subsystem/vivado_ip/cmac_usplus_1_au280.tcl"
+# } elseif {[string match $board_name "au250"]} {
+# 	source "vivado_ip/cmac_usplus_1_au250.tcl"
+# } elseif {[string match $board_name "au200"]} {
+# 	source "vivado_ip/cmac_usplus_1_au250.tcl"
+# } elseif {[string match $board_name "vcu1525"]} {
+# 	source "vivado_ip/cmac_usplus_1_vcu1525.tcl"
+# }
+## set cmac_usplus cmac_usplus_1
+## create_ip -name cmac_usplus -vendor xilinx.com -library ip -module_name $cmac_usplus -dir ${ip_build_dir}
+## set_property -dict {
+##     CONFIG.CMAC_CAUI4_MODE {1}
+##     CONFIG.NUM_LANES {4x25}
+##     CONFIG.GT_REF_CLK_FREQ {156.25}
+##     CONFIG.USER_INTERFACE {AXIS}
+##     CONFIG.GT_DRP_CLK {125.00}
+##     CONFIG.ENABLE_AXI_INTERFACE {1}
+##     CONFIG.INCLUDE_STATISTICS_COUNTERS {1}
+##     CONFIG.CMAC_CORE_SELECT {CMACE4_X0Y7}
+##     CONFIG.GT_GROUP_SELECT {X0Y44~X0Y47}
+##     CONFIG.LANE1_GT_LOC {X0Y40}
+##     CONFIG.LANE2_GT_LOC {X0Y41}
+##     CONFIG.LANE3_GT_LOC {X0Y42}
+##     CONFIG.LANE4_GT_LOC {X0Y43}
+##     CONFIG.LANE5_GT_LOC {NA}
+##     CONFIG.LANE6_GT_LOC {NA}
+##     CONFIG.LANE7_GT_LOC {NA}
+##     CONFIG.LANE8_GT_LOC {NA}
+##     CONFIG.LANE9_GT_LOC {NA}
+##     CONFIG.LANE10_GT_LOC {NA}
+##     CONFIG.RX_GT_BUFFER {1}
+##     CONFIG.GT_RX_BUFFER_BYPASS {0}
+##     CONFIG.INS_LOSS_NYQ {20}
+##     CONFIG.INCLUDE_RS_FEC {1}
+##     CONFIG.ENABLE_PIPELINE_REG {1}
+##     CONFIG.ETHERNET_BOARD_INTERFACE {qsfp1_4x}
+##     CONFIG.DIFFCLK_BOARD_INTERFACE {qsfp1_156mhz}
+## } [get_ips $cmac_usplus]
+## set_property CONFIG.RX_MIN_PACKET_LEN $min_pkt_len [get_ips $cmac_usplus]
+## set_property CONFIG.RX_MAX_PACKET_LEN $max_pkt_len [get_ips $cmac_usplus]
+# generate_target {instantiation_template} [get_files ./${proj}/${cmac_usplus}/${cmac_usplus}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'cmac_usplus_1'...
+# generate_target all [get_files ./${proj}/${cmac_usplus}/${cmac_usplus}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'cmac_usplus_1'...
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'cmac_usplus_1'...
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+WARNING: [IP_Flow 19-650] IP license key 'cmac_an_lt@2020.05' is enabled with a Design_Linking license.
+INFO: [IP_Flow 19-1686] Generating 'Implementation' target for IP 'cmac_usplus_1'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'cmac_usplus_1'...
+generate_target: Time (s): cpu = 00:00:12 ; elapsed = 00:00:21 . Memory (MB): peak = 3290.121 ; gain = 2.969 ; free physical = 52879 ; free virtual = 164171
+# ipx::package_project -force -import_files ./${proj}/${cmac_usplus}/${cmac_usplus}.xci
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+WARNING: [IP_Flow 19-4963] cmac_usplus_0 has board value specified. The packaged IP will be restricted to usage with board 'xilinx.com:au280:part0:1.1'
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_buffer.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_fifo.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/level_trigger_cdc.sv'.
+WARNING: [IP_Flow 19-5101] Packaging a component with a SystemVerilog top file is not fully supported. Please refer to UG1118 'Creating and Packaging Custom IP'.
+INFO: [IP_Flow 19-1842] HDL Parser: Found include file "open-nic-shell/src/open_nic_shell_macros.vh" from the top-level HDL file.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_adap_tx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_cmac_rx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_adap_rx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_cmac_tx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_rx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_tx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_cmac_rx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_qdma_h2c' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_rx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_tx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_cmac_tx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_qdma_c2h' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box0' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box1' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'pcie_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'user_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axil_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'cmac_clk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'pcie_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'user_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_rx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_tx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_cmac_rx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_qdma_h2c': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_rx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_tx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_cmac_tx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_qdma_c2h': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box0': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box1': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3157] Bus Interface 'pcie_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'pcie_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-3157] Bus Interface 'user_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'user_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axil_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axil_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axis_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axis_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'cmac_clk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'cmac_clk': FREQ_HZ bus parameter is missing for output clock interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+# source "open-nic-shell/src/cmac_subsystem/vivado_ip/cmac_subsystem_axi_crossbar.tcl"
+## set axi_crossbar cmac_subsystem_axi_crossbar
+## create_ip -name axi_crossbar -vendor xilinx.com -library ip -module_name $axi_crossbar -dir ${ip_build_dir}
+WARNING: [IP_Flow 19-4832] The IP name 'cmac_subsystem_axi_crossbar' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
+## set_property -dict { 
+##     CONFIG.NUM_MI {2}
+##     CONFIG.PROTOCOL {AXI4LITE}
+##     CONFIG.CONNECTIVITY_MODE {SASD}
+##     CONFIG.R_REGISTER {1}
+##     CONFIG.S00_WRITE_ACCEPTANCE {1}
+##     CONFIG.S01_WRITE_ACCEPTANCE {1}
+##     CONFIG.S02_WRITE_ACCEPTANCE {1}
+##     CONFIG.S03_WRITE_ACCEPTANCE {1}
+##     CONFIG.S04_WRITE_ACCEPTANCE {1}
+##     CONFIG.S05_WRITE_ACCEPTANCE {1}
+##     CONFIG.S06_WRITE_ACCEPTANCE {1}
+##     CONFIG.S07_WRITE_ACCEPTANCE {1}
+##     CONFIG.S08_WRITE_ACCEPTANCE {1}
+##     CONFIG.S09_WRITE_ACCEPTANCE {1}
+##     CONFIG.S10_WRITE_ACCEPTANCE {1}
+##     CONFIG.S11_WRITE_ACCEPTANCE {1}
+##     CONFIG.S12_WRITE_ACCEPTANCE {1}
+##     CONFIG.S13_WRITE_ACCEPTANCE {1}
+##     CONFIG.S14_WRITE_ACCEPTANCE {1}
+##     CONFIG.S15_WRITE_ACCEPTANCE {1}
+##     CONFIG.S00_READ_ACCEPTANCE {1}
+##     CONFIG.S01_READ_ACCEPTANCE {1}
+##     CONFIG.S02_READ_ACCEPTANCE {1}
+##     CONFIG.S03_READ_ACCEPTANCE {1}
+##     CONFIG.S04_READ_ACCEPTANCE {1}
+##     CONFIG.S05_READ_ACCEPTANCE {1}
+##     CONFIG.S06_READ_ACCEPTANCE {1}
+##     CONFIG.S07_READ_ACCEPTANCE {1}
+##     CONFIG.S08_READ_ACCEPTANCE {1}
+##     CONFIG.S09_READ_ACCEPTANCE {1}
+##     CONFIG.S10_READ_ACCEPTANCE {1}
+##     CONFIG.S11_READ_ACCEPTANCE {1}
+##     CONFIG.S12_READ_ACCEPTANCE {1}
+##     CONFIG.S13_READ_ACCEPTANCE {1}
+##     CONFIG.S14_READ_ACCEPTANCE {1}
+##     CONFIG.S15_READ_ACCEPTANCE {1}
+##     CONFIG.M00_WRITE_ISSUING {1}
+##     CONFIG.M01_WRITE_ISSUING {1}
+##     CONFIG.M02_WRITE_ISSUING {1}
+##     CONFIG.M03_WRITE_ISSUING {1}
+##     CONFIG.M04_WRITE_ISSUING {1}
+##     CONFIG.M05_WRITE_ISSUING {1}
+##     CONFIG.M06_WRITE_ISSUING {1}
+##     CONFIG.M07_WRITE_ISSUING {1}
+##     CONFIG.M08_WRITE_ISSUING {1}
+##     CONFIG.M09_WRITE_ISSUING {1}
+##     CONFIG.M10_WRITE_ISSUING {1}
+##     CONFIG.M11_WRITE_ISSUING {1}
+##     CONFIG.M12_WRITE_ISSUING {1}
+##     CONFIG.M13_WRITE_ISSUING {1}
+##     CONFIG.M14_WRITE_ISSUING {1}
+##     CONFIG.M15_WRITE_ISSUING {1}
+##     CONFIG.M00_READ_ISSUING {1}
+##     CONFIG.M01_READ_ISSUING {1}
+##     CONFIG.M02_READ_ISSUING {1}
+##     CONFIG.M03_READ_ISSUING {1}
+##     CONFIG.M04_READ_ISSUING {1}
+##     CONFIG.M05_READ_ISSUING {1}
+##     CONFIG.M06_READ_ISSUING {1}
+##     CONFIG.M07_READ_ISSUING {1}
+##     CONFIG.M08_READ_ISSUING {1}
+##     CONFIG.M09_READ_ISSUING {1}
+##     CONFIG.M10_READ_ISSUING {1}
+##     CONFIG.M11_READ_ISSUING {1}
+##     CONFIG.M12_READ_ISSUING {1}
+##     CONFIG.M13_READ_ISSUING {1}
+##     CONFIG.M14_READ_ISSUING {1}
+##     CONFIG.M15_READ_ISSUING {1}
+##     CONFIG.S00_SINGLE_THREAD {1}
+##     CONFIG.M01_A00_BASE_ADDR {0x0000000000002000}
+##     CONFIG.M00_A00_ADDR_WIDTH {13}
+## } [get_ips $axi_crossbar]
+# generate_target {instantiation_template} [get_files ./${proj}/${axi_crossbar}/${axi_crossbar}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'cmac_subsystem_axi_crossbar'...
+# generate_target all [get_files ./${proj}/${axi_crossbar}/${axi_crossbar}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'cmac_subsystem_axi_crossbar'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'cmac_subsystem_axi_crossbar'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'cmac_subsystem_axi_crossbar'...
+# ipx::package_project -force -import_files ./${proj}/${axi_crossbar}/${axi_crossbar}.xci
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+WARNING: [IP_Flow 19-4963] cmac_usplus_0 has board value specified. The packaged IP will be restricted to usage with board 'xilinx.com:au280:part0:1.1'
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_buffer.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_fifo.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/level_trigger_cdc.sv'.
+WARNING: [IP_Flow 19-5101] Packaging a component with a SystemVerilog top file is not fully supported. Please refer to UG1118 'Creating and Packaging Custom IP'.
+INFO: [IP_Flow 19-1842] HDL Parser: Found include file "open-nic-shell/src/open_nic_shell_macros.vh" from the top-level HDL file.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_adap_tx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_cmac_rx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_adap_rx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_cmac_tx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_rx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_tx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_cmac_rx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_qdma_h2c' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_rx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_tx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_cmac_tx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_qdma_c2h' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box0' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box1' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'pcie_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'user_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axil_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'cmac_clk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'pcie_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'user_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_rx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_tx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_cmac_rx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_qdma_h2c': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_rx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_tx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_cmac_tx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_qdma_c2h': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box0': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box1': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3157] Bus Interface 'pcie_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'pcie_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-3157] Bus Interface 'user_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'user_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axil_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axil_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axis_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axis_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'cmac_clk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'cmac_clk': FREQ_HZ bus parameter is missing for output clock interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+# source "vivado_ip/qdma_subsystem_axi_cdc.tcl"
+## set axi_clock_converter qdma_subsystem_axi_cdc
+## create_ip -name axi_clock_converter -vendor xilinx.com -library ip -module_name $axi_clock_converter -dir ${ip_build_dir}
+## set_property -dict {
+##     CONFIG.PROTOCOL {AXI4LITE}
+##     CONFIG.DATA_WIDTH {32}
+##     CONFIG.ID_WIDTH {0}
+##     CONFIG.AWUSER_WIDTH {0}
+##     CONFIG.ARUSER_WIDTH {0}
+##     CONFIG.RUSER_WIDTH {0}
+##     CONFIG.WUSER_WIDTH {0}
+##     CONFIG.BUSER_WIDTH {0}
+##     CONFIG.SI_CLK.FREQ_HZ {250000000}
+##     CONFIG.MI_CLK.FREQ_HZ {250000000}
+##     CONFIG.ACLK_ASYNC {1}
+##     CONFIG.SYNCHRONIZATION_STAGES {2}
+## } [get_ips $axi_clock_converter]
+# generate_target {instantiation_template} [get_files ./${proj}/${axi_clock_converter}/${axi_clock_converter}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'qdma_subsystem_axi_cdc'...
+# generate_target all [get_files ./${proj}/${axi_clock_converter}/${axi_clock_converter}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'qdma_subsystem_axi_cdc'...
+WARNING: [IP_Flow 19-4994] Overwriting existing constraint file '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/proj/qdma_subsystem_axi_cdc/qdma_subsystem_axi_cdc_ooc.xdc'
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'qdma_subsystem_axi_cdc'...
+WARNING: [IP_Flow 19-5611] Unable to find an associated reset port for the interface 'S_AXI'. A default connection has been created.
+WARNING: [IP_Flow 19-5611] Unable to find an associated reset port for the interface 'M_AXI'. A default connection has been created.
+INFO: [IP_Flow 19-1686] Generating 'Implementation' target for IP 'qdma_subsystem_axi_cdc'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'qdma_subsystem_axi_cdc'...
+# ipx::package_project -force -import_files ./${proj}/${axi_clock_converter}/${axi_clock_converter}.xci
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+WARNING: [IP_Flow 19-4963] cmac_usplus_0 has board value specified. The packaged IP will be restricted to usage with board 'xilinx.com:au280:part0:1.1'
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_buffer.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_fifo.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/level_trigger_cdc.sv'.
+WARNING: [IP_Flow 19-5101] Packaging a component with a SystemVerilog top file is not fully supported. Please refer to UG1118 'Creating and Packaging Custom IP'.
+INFO: [IP_Flow 19-1842] HDL Parser: Found include file "open-nic-shell/src/open_nic_shell_macros.vh" from the top-level HDL file.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_adap_tx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_cmac_rx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_adap_rx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_cmac_tx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_rx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_tx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_cmac_rx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_qdma_h2c' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_rx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_tx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_cmac_tx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_qdma_c2h' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box0' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box1' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'pcie_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'user_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axil_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'cmac_clk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'pcie_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'user_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_rx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_tx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_cmac_rx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_qdma_h2c': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_rx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_tx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_cmac_tx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_qdma_c2h': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box0': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box1': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3157] Bus Interface 'pcie_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'pcie_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-3157] Bus Interface 'user_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'user_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axil_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axil_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axis_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axis_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'cmac_clk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'cmac_clk': FREQ_HZ bus parameter is missing for output clock interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+# source "open-nic-shell/src/qdma_subsystem/vivado_ip/qdma_subsystem_axi_crossbar.tcl"
+## set axi_crossbar qdma_subsystem_axi_crossbar
+## create_ip -name axi_crossbar -vendor xilinx.com -library ip -module_name $axi_crossbar -dir ${ip_build_dir}
+WARNING: [IP_Flow 19-4832] The IP name 'qdma_subsystem_axi_crossbar' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
+## set_property CONFIG.NUM_MI [expr {$num_phys_func + 1}] [get_ips $axi_crossbar]
+## for {set i 0} {$i < $num_phys_func} {incr i} {
+##     set_property "CONFIG.M0${i}_A00_BASE_ADDR" "0x000000000000${i}000" [get_ips $axi_crossbar]
+##     set_property "CONFIG.M0${i}_A00_ADDR_WIDTH" {12} [get_ips $axi_crossbar]
+## }
+## set_property "CONFIG.M0${num_phys_func}_A00_BASE_ADDR" {0x0000000000004000} [get_ips $axi_crossbar]
+## set_property "CONFIG.M0${num_phys_func}_A00_ADDR_WIDTH" {12} [get_ips $axi_crossbar]
+## set_property -dict { 
+##     CONFIG.PROTOCOL {AXI4LITE}
+##     CONFIG.CONNECTIVITY_MODE {SASD}
+##     CONFIG.R_REGISTER {1}
+##     CONFIG.S00_WRITE_ACCEPTANCE {1}
+##     CONFIG.S01_WRITE_ACCEPTANCE {1}
+##     CONFIG.S02_WRITE_ACCEPTANCE {1}
+##     CONFIG.S03_WRITE_ACCEPTANCE {1}
+##     CONFIG.S04_WRITE_ACCEPTANCE {1}
+##     CONFIG.S05_WRITE_ACCEPTANCE {1}
+##     CONFIG.S06_WRITE_ACCEPTANCE {1}
+##     CONFIG.S07_WRITE_ACCEPTANCE {1}
+##     CONFIG.S08_WRITE_ACCEPTANCE {1}
+##     CONFIG.S09_WRITE_ACCEPTANCE {1}
+##     CONFIG.S10_WRITE_ACCEPTANCE {1}
+##     CONFIG.S11_WRITE_ACCEPTANCE {1}
+##     CONFIG.S12_WRITE_ACCEPTANCE {1}
+##     CONFIG.S13_WRITE_ACCEPTANCE {1}
+##     CONFIG.S14_WRITE_ACCEPTANCE {1}
+##     CONFIG.S15_WRITE_ACCEPTANCE {1}
+##     CONFIG.S00_READ_ACCEPTANCE {1}
+##     CONFIG.S01_READ_ACCEPTANCE {1}
+##     CONFIG.S02_READ_ACCEPTANCE {1}
+##     CONFIG.S03_READ_ACCEPTANCE {1}
+##     CONFIG.S04_READ_ACCEPTANCE {1}
+##     CONFIG.S05_READ_ACCEPTANCE {1}
+##     CONFIG.S06_READ_ACCEPTANCE {1}
+##     CONFIG.S07_READ_ACCEPTANCE {1}
+##     CONFIG.S08_READ_ACCEPTANCE {1}
+##     CONFIG.S09_READ_ACCEPTANCE {1}
+##     CONFIG.S10_READ_ACCEPTANCE {1}
+##     CONFIG.S11_READ_ACCEPTANCE {1}
+##     CONFIG.S12_READ_ACCEPTANCE {1}
+##     CONFIG.S13_READ_ACCEPTANCE {1}
+##     CONFIG.S14_READ_ACCEPTANCE {1}
+##     CONFIG.S15_READ_ACCEPTANCE {1}
+##     CONFIG.M00_WRITE_ISSUING {1}
+##     CONFIG.M01_WRITE_ISSUING {1}
+##     CONFIG.M02_WRITE_ISSUING {1}
+##     CONFIG.M03_WRITE_ISSUING {1}
+##     CONFIG.M04_WRITE_ISSUING {1}
+##     CONFIG.M05_WRITE_ISSUING {1}
+##     CONFIG.M06_WRITE_ISSUING {1}
+##     CONFIG.M07_WRITE_ISSUING {1}
+##     CONFIG.M08_WRITE_ISSUING {1}
+##     CONFIG.M09_WRITE_ISSUING {1}
+##     CONFIG.M10_WRITE_ISSUING {1}
+##     CONFIG.M11_WRITE_ISSUING {1}
+##     CONFIG.M12_WRITE_ISSUING {1}
+##     CONFIG.M13_WRITE_ISSUING {1}
+##     CONFIG.M14_WRITE_ISSUING {1}
+##     CONFIG.M15_WRITE_ISSUING {1}
+##     CONFIG.M00_READ_ISSUING {1}
+##     CONFIG.M01_READ_ISSUING {1}
+##     CONFIG.M02_READ_ISSUING {1}
+##     CONFIG.M03_READ_ISSUING {1}
+##     CONFIG.M04_READ_ISSUING {1}
+##     CONFIG.M05_READ_ISSUING {1}
+##     CONFIG.M06_READ_ISSUING {1}
+##     CONFIG.M07_READ_ISSUING {1}
+##     CONFIG.M08_READ_ISSUING {1}
+##     CONFIG.M09_READ_ISSUING {1}
+##     CONFIG.M10_READ_ISSUING {1}
+##     CONFIG.M11_READ_ISSUING {1}
+##     CONFIG.M12_READ_ISSUING {1}
+##     CONFIG.M13_READ_ISSUING {1}
+##     CONFIG.M14_READ_ISSUING {1}
+##     CONFIG.M15_READ_ISSUING {1}
+##     CONFIG.S00_SINGLE_THREAD {1}
+## } [get_ips $axi_crossbar]
+# generate_target {instantiation_template} [get_files ./${proj}/${axi_crossbar}/${axi_crossbar}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'qdma_subsystem_axi_crossbar'...
+# generate_target all [get_files ./${proj}/${axi_crossbar}/${axi_crossbar}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'qdma_subsystem_axi_crossbar'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'qdma_subsystem_axi_crossbar'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'qdma_subsystem_axi_crossbar'...
+# ipx::package_project -force -import_files ./${proj}/${axi_crossbar}/${axi_crossbar}.xci
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+WARNING: [IP_Flow 19-4963] cmac_usplus_0 has board value specified. The packaged IP will be restricted to usage with board 'xilinx.com:au280:part0:1.1'
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_buffer.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_fifo.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/level_trigger_cdc.sv'.
+WARNING: [IP_Flow 19-5101] Packaging a component with a SystemVerilog top file is not fully supported. Please refer to UG1118 'Creating and Packaging Custom IP'.
+INFO: [IP_Flow 19-1842] HDL Parser: Found include file "open-nic-shell/src/open_nic_shell_macros.vh" from the top-level HDL file.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_adap_tx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_cmac_rx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_adap_rx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_cmac_tx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_rx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_tx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_cmac_rx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_qdma_h2c' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_rx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_tx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_cmac_tx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_qdma_c2h' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box0' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box1' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'pcie_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'user_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axil_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'cmac_clk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'pcie_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'user_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_rx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_tx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_cmac_rx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_qdma_h2c': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_rx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_tx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_cmac_tx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_qdma_c2h': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box0': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box1': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3157] Bus Interface 'pcie_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'pcie_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-3157] Bus Interface 'user_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'user_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axil_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axil_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axis_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axis_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'cmac_clk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'cmac_clk': FREQ_HZ bus parameter is missing for output clock interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+# source "vivado_ip/qdma_subsystem_clk_div.tcl"
+## set clk_wiz qdma_subsystem_clk_div
+## create_ip -name clk_wiz -vendor xilinx.com -library ip -module_name $clk_wiz -dir ${ip_build_dir}
+create_ip: Time (s): cpu = 00:00:12 ; elapsed = 00:00:42 . Memory (MB): peak = 3603.777 ; gain = 269.770 ; free physical = 52534 ; free virtual = 163891
+## set_property -dict {
+##   CONFIG.PRIMITIVE {Auto}
+##   CONFIG.USE_PHASE_ALIGNMENT {true}
+##   CONFIG.PRIM_IN_FREQ {250}
+##   CONFIG.SECONDARY_SOURCE {Single_ended_clock_capable_pin}
+##   CONFIG.CLKIN1_JITTER_PS {40.0}
+##   CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {250.000} 
+##   CONFIG.CLKOUT1_DRIVES {Buffer}
+##   CONFIG.CLKOUT2_DRIVES {Buffer}
+##   CONFIG.CLKOUT3_DRIVES {Buffer}
+##   CONFIG.CLKOUT4_DRIVES {Buffer}
+##   CONFIG.CLKOUT5_DRIVES {Buffer}
+##   CONFIG.CLKOUT6_DRIVES {Buffer}
+##   CONFIG.CLKOUT7_DRIVES {Buffer}
+##   CONFIG.FEEDBACK_SOURCE {FDBK_AUTO}
+##   CONFIG.USE_LOCKED {true}
+##   CONFIG.USE_RESET {false}
+##   CONFIG.MMCM_BANDWIDTH {OPTIMIZED}
+##   CONFIG.MMCM_CLKIN1_PERIOD {4.000}
+##   CONFIG.MMCM_CLKIN2_PERIOD {10.0}
+##   CONFIG.MMCM_COMPENSATION {AUTO}
+##   CONFIG.AUTO_PRIMITIVE {MMCM}
+##   CONFIG.MMCM_DIVCLK_DIVIDE {1} 
+##   CONFIG.MMCM_CLKFBOUT_MULT_F {4.750} 
+##   CONFIG.MMCM_CLKIN1_PERIOD {4.000} 
+##   CONFIG.MMCM_CLKIN2_PERIOD {10.0} 
+##   CONFIG.MMCM_CLKOUT0_DIVIDE_F {4.750} 
+##   CONFIG.CLKOUT1_JITTER {85.152} 
+##   CONFIG.CLKOUT1_PHASE_ERROR {78.266}
+## } [get_ips $clk_wiz]
+# generate_target {instantiation_template} [get_files ./${proj}/${clk_wiz}/${clk_wiz}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'qdma_subsystem_clk_div'...
+# generate_target all [get_files ./${proj}/${clk_wiz}/${clk_wiz}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'qdma_subsystem_clk_div'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'qdma_subsystem_clk_div'...
+INFO: [IP_Flow 19-1686] Generating 'Implementation' target for IP 'qdma_subsystem_clk_div'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'qdma_subsystem_clk_div'...
+generate_target: Time (s): cpu = 00:00:00.68 ; elapsed = 00:00:09 . Memory (MB): peak = 3603.777 ; gain = 0.000 ; free physical = 52529 ; free virtual = 163887
+# ipx::package_project -force -import_files ./${proj}/${clk_wiz}/${clk_wiz}.xci
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+WARNING: [IP_Flow 19-4963] cmac_usplus_0 has board value specified. The packaged IP will be restricted to usage with board 'xilinx.com:au280:part0:1.1'
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_buffer.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_fifo.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/level_trigger_cdc.sv'.
+WARNING: [IP_Flow 19-5101] Packaging a component with a SystemVerilog top file is not fully supported. Please refer to UG1118 'Creating and Packaging Custom IP'.
+INFO: [IP_Flow 19-1842] HDL Parser: Found include file "open-nic-shell/src/open_nic_shell_macros.vh" from the top-level HDL file.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_adap_tx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_cmac_rx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_adap_rx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_cmac_tx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_rx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_tx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_cmac_rx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_qdma_h2c' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_rx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_tx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_cmac_tx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_qdma_c2h' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box0' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box1' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'pcie_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'user_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axil_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'cmac_clk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'pcie_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'user_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_rx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_tx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_cmac_rx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_qdma_h2c': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_rx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_tx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_cmac_tx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_qdma_c2h': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box0': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box1': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3157] Bus Interface 'pcie_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'pcie_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-3157] Bus Interface 'user_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'user_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axil_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axil_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axis_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axis_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'cmac_clk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'cmac_clk': FREQ_HZ bus parameter is missing for output clock interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+ipx::package_project: Time (s): cpu = 00:00:01 ; elapsed = 00:00:09 . Memory (MB): peak = 3627.785 ; gain = 24.008 ; free physical = 52527 ; free virtual = 163885
+# source "open-nic-shell/src/qdma_subsystem/vivado_ip/qdma_subsystem_c2h_ecc.tcl"
+## set ecc qdma_subsystem_c2h_ecc
+## create_ip -name ecc -vendor xilinx.com -library ip -module_name $ecc -dir ${ip_build_dir}
+## set_property -dict { 
+##     CONFIG.C_USE_CLK_ENABLE {true}
+##     CONFIG.C_REG_OUTPUT {true}
+##     CONFIG.C_REG_INPUT {false}
+##     CONFIG.C_CHK_BIT_WIDTH {7}
+##     CONFIG.C_DATA_WIDTH {57}
+##     CONFIG.C_ECC_MODE {Encoder}
+## } [get_ips $ecc]
+INFO: [xilinx.com:ip:ecc:2.0-1] qdma_subsystem_c2h_ecc: before
+# generate_target {instantiation_template} [get_files ./${proj}/${ecc}/${ecc}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'qdma_subsystem_c2h_ecc'...
+# generate_target all [get_files ./${proj}/${ecc}/${ecc}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'qdma_subsystem_c2h_ecc'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'qdma_subsystem_c2h_ecc'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'qdma_subsystem_c2h_ecc'...
+# ipx::package_project -force -import_files ./${proj}/${ecc}/${ecc}.xci
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+WARNING: [IP_Flow 19-4963] cmac_usplus_0 has board value specified. The packaged IP will be restricted to usage with board 'xilinx.com:au280:part0:1.1'
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_buffer.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_fifo.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/level_trigger_cdc.sv'.
+WARNING: [IP_Flow 19-5101] Packaging a component with a SystemVerilog top file is not fully supported. Please refer to UG1118 'Creating and Packaging Custom IP'.
+INFO: [IP_Flow 19-1842] HDL Parser: Found include file "open-nic-shell/src/open_nic_shell_macros.vh" from the top-level HDL file.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_adap_tx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_cmac_rx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_adap_rx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_cmac_tx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_rx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_tx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_cmac_rx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_qdma_h2c' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_rx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_tx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_cmac_tx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_qdma_c2h' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box0' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box1' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'pcie_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'user_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axil_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'cmac_clk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'pcie_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'user_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_rx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_tx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_cmac_rx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_qdma_h2c': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_rx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_tx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_cmac_tx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_qdma_c2h': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box0': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box1': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3157] Bus Interface 'pcie_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'pcie_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-3157] Bus Interface 'user_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'user_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axil_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axil_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axis_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axis_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'cmac_clk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'cmac_clk': FREQ_HZ bus parameter is missing for output clock interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+# if {[string match $board_name "au280"]} {
+# 	source "open-nic-shell/src/qdma_subsystem/vivado_ip/qdma_no_sriov_au280.tcl"
+# } elseif {[string match $board_name "au250"]} {
+# 	source "open-nic-shell/src/qdma_subsystem/vivado_ip/qdma_no_sriov_au250.tcl"
+# } elseif {[string match $board_name "au200"]} {
+# 	source "vivado_ip/qdma_no_sriov_au200.tcl"
+# } elseif {[string match $board_name "vcu1525"]} {
+# 	source "vivado_ip/qdma_no_sriov_vcu1525.tcl"
+# }
+## set qdma qdma_no_sriov
+## create_ip -name qdma -vendor xilinx.com -library ip -module_name $qdma -dir ${ip_build_dir}
+## set_property -dict {
+##     CONFIG.mode_selection {Advanced}
+##     CONFIG.pl_link_cap_max_link_width {X16}
+##     CONFIG.pl_link_cap_max_link_speed {8.0_GT/s}
+##     CONFIG.en_transceiver_status_ports {false}
+##     CONFIG.dsc_byp_mode {Descriptor_bypass_and_internal}
+##     CONFIG.testname {st}
+##     CONFIG.pf1_pciebar2axibar_2 {0x0000000000000000}
+##     CONFIG.pf2_pciebar2axibar_2 {0x0000000000000000}
+##     CONFIG.pf3_pciebar2axibar_2 {0x0000000000000000}
+##     CONFIG.dma_reset_source_sel {Phy_Ready}
+##     CONFIG.pf0_bar2_scale_qdma {Megabytes}
+##     CONFIG.pf0_bar2_size_qdma {1}
+##     CONFIG.pf1_bar2_scale_qdma {Megabytes}
+##     CONFIG.pf1_bar2_size_qdma {1}
+##     CONFIG.pf2_bar2_scale_qdma {Megabytes}
+##     CONFIG.pf2_bar2_size_qdma {1}
+##     CONFIG.pf3_bar2_scale_qdma {Megabytes}
+##     CONFIG.pf3_bar2_size_qdma {1}
+##     CONFIG.PF0_MSIX_CAP_TABLE_SIZE_qdma {009}
+##     CONFIG.PF1_MSIX_CAP_TABLE_SIZE_qdma {008}
+##     CONFIG.PF2_MSIX_CAP_TABLE_SIZE_qdma {008}
+##     CONFIG.PF3_MSIX_CAP_TABLE_SIZE_qdma {008}
+##     CONFIG.dma_intf_sel_qdma {AXI_Stream_with_Completion}
+##     CONFIG.en_axi_mm_qdma {false}
+##     CONFIG.SYS_RST_N_BOARD_INTERFACE {pcie_perstn}
+##     CONFIG.PCIE_BOARD_INTERFACE {pci_express_x16}
+##     CONFIG.xlnx_ref_board {AU280}
+## } [get_ips $qdma]
+## set_property CONFIG.tl_pf_enable_reg $num_phys_func [get_ips $qdma]
+WARNING: [IP_Flow 19-3374] An attempt to modify the value of disabled parameter 'PF3_INTERRUPT_PIN' from 'NONE' to 'INTA' has been ignored for IP 'qdma_no_sriov/qdma_no_sriov_pcie4c_ip'
+WARNING: [IP_Flow 19-3374] An attempt to modify the value of disabled parameter 'PF2_INTERRUPT_PIN' from 'NONE' to 'INTA' has been ignored for IP 'qdma_no_sriov/qdma_no_sriov_pcie4c_ip'
+## set_property CONFIG.num_queues $num_queue [get_ips $qdma]
+WARNING: [IP_Flow 19-3374] An attempt to modify the value of disabled parameter 'PF3_INTERRUPT_PIN' from 'NONE' to 'INTA' has been ignored for IP 'qdma_no_sriov/qdma_no_sriov_pcie4c_ip'
+WARNING: [IP_Flow 19-3374] An attempt to modify the value of disabled parameter 'PF2_INTERRUPT_PIN' from 'NONE' to 'INTA' has been ignored for IP 'qdma_no_sriov/qdma_no_sriov_pcie4c_ip'
+# generate_target {instantiation_template} [get_files ./${proj}/${qdma}/${qdma}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'qdma_no_sriov'...
+# generate_target all [get_files ./${proj}/${qdma}/${qdma}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'qdma_no_sriov'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'qdma_no_sriov'...
+INFO: [IP_Flow 19-1686] Generating 'Implementation' target for IP 'qdma_no_sriov'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'qdma_no_sriov'...
+generate_target: Time (s): cpu = 00:00:12 ; elapsed = 00:00:37 . Memory (MB): peak = 3699.027 ; gain = 8.906 ; free physical = 52403 ; free virtual = 163792
+# ipx::package_project -force -import_files ./${proj}/${qdma}/${qdma}.xci
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+WARNING: [IP_Flow 19-4963] cmac_usplus_0 has board value specified. The packaged IP will be restricted to usage with board 'xilinx.com:au280:part0:1.1'
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_buffer.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_fifo.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/level_trigger_cdc.sv'.
+WARNING: [IP_Flow 19-5101] Packaging a component with a SystemVerilog top file is not fully supported. Please refer to UG1118 'Creating and Packaging Custom IP'.
+INFO: [IP_Flow 19-1842] HDL Parser: Found include file "open-nic-shell/src/open_nic_shell_macros.vh" from the top-level HDL file.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_adap_tx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_cmac_rx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_adap_rx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_cmac_tx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_rx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_tx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_cmac_rx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_qdma_h2c' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_rx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_tx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_cmac_tx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_qdma_c2h' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box0' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box1' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'pcie_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'user_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axil_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'cmac_clk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'pcie_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'user_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_rx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_tx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_cmac_rx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_qdma_h2c': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_rx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_tx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_cmac_tx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_qdma_c2h': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box0': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box1': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3157] Bus Interface 'pcie_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'pcie_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-3157] Bus Interface 'user_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'user_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axil_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axil_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axis_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axis_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'cmac_clk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'cmac_clk': FREQ_HZ bus parameter is missing for output clock interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+# source "open-nic-shell/src/system_config/vivado_ip/system_config_axi_crossbar.tcl"
+## set axi_crossbar system_config_axi_crossbar
+## create_ip -name axi_crossbar -vendor xilinx.com -library ip -module_name $axi_crossbar -dir ${ip_build_dir}
+WARNING: [IP_Flow 19-4832] The IP name 'system_config_axi_crossbar' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
+## set_property -dict { 
+##     CONFIG.ADDR_RANGES {3}
+##     CONFIG.NUM_MI {8}
+##     CONFIG.PROTOCOL {AXI4LITE}
+##     CONFIG.CONNECTIVITY_MODE {SASD}
+##     CONFIG.R_REGISTER {1}
+##     CONFIG.S00_WRITE_ACCEPTANCE {1}
+##     CONFIG.S01_WRITE_ACCEPTANCE {1}
+##     CONFIG.S02_WRITE_ACCEPTANCE {1}
+##     CONFIG.S03_WRITE_ACCEPTANCE {1}
+##     CONFIG.S04_WRITE_ACCEPTANCE {1}
+##     CONFIG.S05_WRITE_ACCEPTANCE {1}
+##     CONFIG.S06_WRITE_ACCEPTANCE {1}
+##     CONFIG.S07_WRITE_ACCEPTANCE {1}
+##     CONFIG.S08_WRITE_ACCEPTANCE {1}
+##     CONFIG.S09_WRITE_ACCEPTANCE {1}
+##     CONFIG.S10_WRITE_ACCEPTANCE {1}
+##     CONFIG.S11_WRITE_ACCEPTANCE {1}
+##     CONFIG.S12_WRITE_ACCEPTANCE {1}
+##     CONFIG.S13_WRITE_ACCEPTANCE {1}
+##     CONFIG.S14_WRITE_ACCEPTANCE {1}
+##     CONFIG.S15_WRITE_ACCEPTANCE {1}
+##     CONFIG.S00_READ_ACCEPTANCE {1}
+##     CONFIG.S01_READ_ACCEPTANCE {1}
+##     CONFIG.S02_READ_ACCEPTANCE {1}
+##     CONFIG.S03_READ_ACCEPTANCE {1}
+##     CONFIG.S04_READ_ACCEPTANCE {1}
+##     CONFIG.S05_READ_ACCEPTANCE {1}
+##     CONFIG.S06_READ_ACCEPTANCE {1}
+##     CONFIG.S07_READ_ACCEPTANCE {1}
+##     CONFIG.S08_READ_ACCEPTANCE {1}
+##     CONFIG.S09_READ_ACCEPTANCE {1}
+##     CONFIG.S10_READ_ACCEPTANCE {1}
+##     CONFIG.S11_READ_ACCEPTANCE {1}
+##     CONFIG.S12_READ_ACCEPTANCE {1}
+##     CONFIG.S13_READ_ACCEPTANCE {1}
+##     CONFIG.S14_READ_ACCEPTANCE {1}
+##     CONFIG.S15_READ_ACCEPTANCE {1}
+##     CONFIG.M00_WRITE_ISSUING {1}
+##     CONFIG.M01_WRITE_ISSUING {1}
+##     CONFIG.M02_WRITE_ISSUING {1}
+##     CONFIG.M03_WRITE_ISSUING {1}
+##     CONFIG.M04_WRITE_ISSUING {1}
+##     CONFIG.M05_WRITE_ISSUING {1}
+##     CONFIG.M06_WRITE_ISSUING {1}
+##     CONFIG.M07_WRITE_ISSUING {1}
+##     CONFIG.M08_WRITE_ISSUING {1}
+##     CONFIG.M09_WRITE_ISSUING {1}
+##     CONFIG.M10_WRITE_ISSUING {1}
+##     CONFIG.M11_WRITE_ISSUING {1}
+##     CONFIG.M12_WRITE_ISSUING {1}
+##     CONFIG.M13_WRITE_ISSUING {1}
+##     CONFIG.M14_WRITE_ISSUING {1}
+##     CONFIG.M15_WRITE_ISSUING {1}
+##     CONFIG.M00_READ_ISSUING {1}
+##     CONFIG.M01_READ_ISSUING {1}
+##     CONFIG.M02_READ_ISSUING {1}
+##     CONFIG.M03_READ_ISSUING {1}
+##     CONFIG.M04_READ_ISSUING {1}
+##     CONFIG.M05_READ_ISSUING {1}
+##     CONFIG.M06_READ_ISSUING {1}
+##     CONFIG.M07_READ_ISSUING {1}
+##     CONFIG.M08_READ_ISSUING {1}
+##     CONFIG.M09_READ_ISSUING {1}
+##     CONFIG.M10_READ_ISSUING {1}
+##     CONFIG.M11_READ_ISSUING {1}
+##     CONFIG.M12_READ_ISSUING {1}
+##     CONFIG.M13_READ_ISSUING {1}
+##     CONFIG.M14_READ_ISSUING {1}
+##     CONFIG.M15_READ_ISSUING {1}
+##     CONFIG.S00_SINGLE_THREAD {1}
+##     CONFIG.M01_A00_BASE_ADDR {0x0000000000001000}
+##     CONFIG.M01_A01_BASE_ADDR {0x0000000000002000}
+##     CONFIG.M01_A02_BASE_ADDR {0x0000000000004000}
+##     CONFIG.M02_A00_BASE_ADDR {0x0000000000008000}
+##     CONFIG.M02_A01_BASE_ADDR {0x000000000000A000}
+##     CONFIG.M03_A00_BASE_ADDR {0x000000000000B000}
+##     CONFIG.M04_A00_BASE_ADDR {0x000000000000C000}
+##     CONFIG.M04_A01_BASE_ADDR {0x000000000000E000}
+##     CONFIG.M05_A00_BASE_ADDR {0x000000000000F000}
+##     CONFIG.M06_A00_BASE_ADDR {0x0000000000010000}
+##     CONFIG.M06_A01_BASE_ADDR {0x0000000000020000}
+##     CONFIG.M07_A00_BASE_ADDR {0x0000000000040000}
+##     CONFIG.M07_A01_BASE_ADDR {0x0000000000080000}
+##     CONFIG.M01_A00_ADDR_WIDTH {12}
+##     CONFIG.M01_A01_ADDR_WIDTH {13}
+##     CONFIG.M01_A02_ADDR_WIDTH {13}
+##     CONFIG.M02_A00_ADDR_WIDTH {13}
+##     CONFIG.M02_A01_ADDR_WIDTH {12}
+##     CONFIG.M03_A00_ADDR_WIDTH {12}
+##     CONFIG.M04_A00_ADDR_WIDTH {13}
+##     CONFIG.M04_A01_ADDR_WIDTH {12}
+##     CONFIG.M05_A00_ADDR_WIDTH {12}
+##     CONFIG.M06_A00_ADDR_WIDTH {16}
+##     CONFIG.M06_A01_ADDR_WIDTH {17}
+##     CONFIG.M07_A00_ADDR_WIDTH {18}
+##     CONFIG.M07_A01_ADDR_WIDTH {19}
+## } [get_ips $axi_crossbar]
+# generate_target {instantiation_template} [get_files ./${proj}/${axi_crossbar}/${axi_crossbar}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'system_config_axi_crossbar'...
+# generate_target all [get_files ./${proj}/${axi_crossbar}/${axi_crossbar}.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'system_config_axi_crossbar'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'system_config_axi_crossbar'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'system_config_axi_crossbar'...
+# ipx::package_project -force -import_files ./${proj}/${axi_crossbar}/${axi_crossbar}.xci
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+WARNING: [IP_Flow 19-4963] cmac_usplus_0 has board value specified. The packaged IP will be restricted to usage with board 'xilinx.com:au280:part0:1.1'
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_buffer.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/axi_stream_packet_fifo.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/open-nic-shell/src/utility/level_trigger_cdc.sv'.
+WARNING: [IP_Flow 19-5101] Packaging a component with a SystemVerilog top file is not fully supported. Please refer to UG1118 'Creating and Packaging Custom IP'.
+INFO: [IP_Flow 19-1842] HDL Parser: Found include file "open-nic-shell/src/open_nic_shell_macros.vh" from the top-level HDL file.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 'm_axis_adap_rx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_adap_tx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 'm_axis_cmac_rx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 'm_axis_qdma_h2c_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_adap_rx_322mhz_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_CMAC_PORT) - 1):0' is present in all ports of the interface 's_axis_adap_tx_250mhz_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '(NUM_CMAC_PORT - 1):0' is present in all ports of the interface 's_axis_cmac_tx_err'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_dst'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_size'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+WARNING: [IP_Flow 19-5150] The Range '((16 * NUM_PHYS_FUNC) - 1):0' is present in all ports of the interface 's_axis_qdma_c2h_src'. It is assumed that this is meant to declare an array of interface. However, the IP Packager does not currently support Interface Arrays of variable length (based on a parameter). Please change the range to be a constant if you want IP Packager to infer this as an interface array.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_rx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_adap_tx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_cmac_rx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axis_qdma_h2c' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_rx_322mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_adap_tx_250mhz' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_cmac_tx' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 's_axis_qdma_c2h' of definition 'xilinx.com:interface:axis:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box0' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'm_axil_box1' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'pcie_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'user_rstn' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axil_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'axis_aclk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'cmac_clk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'pcie_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'user_rstn': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_rx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_tx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_cmac_rx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_qdma_h2c': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_rx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_tx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_cmac_tx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_qdma_c2h': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box0': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box1': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3157] Bus Interface 'pcie_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'pcie_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-3157] Bus Interface 'user_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'user_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axil_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axil_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axis_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axis_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'cmac_clk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'cmac_clk': FREQ_HZ bus parameter is missing for output clock interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+# update_ip_catalog -rebuild 
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib'.
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/xilinx_shell_v1_0_0/ip_proj'.)
+# ipx::infer_user_parameters [ipx::current_core]
+# set_property name ${design} [ipx::current_core]
+# set_property library ${lib_name} [ipx::current_core]
+# set_property vendor_display_name {xilinx} [ipx::current_core]
+# set_property company_url {http://www.xilinx.com} [ipx::current_core]
+# set_property vendor {xilinx} [ipx::current_core]
+# set_property supported_families {{virtexuplus} {Production} {virtexuplushbm} {Production}} [ipx::current_core]
+# set_property taxonomy {{/NetFPGA/Generic}} [ipx::current_core]
+# set_property version ${ip_version} [ipx::current_core]
+# set_property display_name ${design} [ipx::current_core]
+# set_property description ${design} [ipx::current_core]
+# ipx::infer_user_parameters [ipx::current_core]
+# ipx::add_user_parameter {MAX_PKT_LEN} [ipx::current_core]
+# set_property value_resolve_type {user} [ipx::get_user_parameters MAX_PKT_LEN]
+# set_property display_name {MAX_PKT_LEN} [ipx::get_user_parameters MAX_PKT_LEN]
+# set_property value {1518} [ipx::get_user_parameters MAX_PKT_LEN]
+# set_property value_format {bitstring} [ipx::get_user_parameters MAX_PKT_LEN]
+# ipx::add_user_parameter {MIN_PKT_LEN} [ipx::current_core]
+# set_property value_resolve_type {user} [ipx::get_user_parameters MIN_PKT_LEN]
+# set_property display_name {MIN_PKT_LEN} [ipx::get_user_parameters MIN_PKT_LEN]
+# set_property value {64} [ipx::get_user_parameters MIN_PKT_LEN]
+# set_property value_format {bitstring} [ipx::get_user_parameters MIN_PKT_LEN]
+# ipx::add_user_parameter {NUM_QUEUE} [ipx::current_core]
+# set_property value_resolve_type {user} [ipx::get_user_parameters NUM_QUEUE]
+# set_property display_name {NUM_QUEUE} [ipx::get_user_parameters NUM_QUEUE]
+# set_property value {2048} [ipx::get_user_parameters NUM_QUEUE]
+# set_property value_format {bitstring} [ipx::get_user_parameters NUM_QUEUE]
+# ipx::add_user_parameter {NUM_PHYS_FUNC} [ipx::current_core]
+# set_property value_resolve_type {user} [ipx::get_user_parameters NUM_PHYS_FUNC]
+# set_property display_name {NUM_PHYS_FUNC} [ipx::get_user_parameters NUM_PHYS_FUNC]
+# set_property value {2} [ipx::get_user_parameters NUM_PHYS_FUNC]
+# set_property value_format {bitstring} [ipx::get_user_parameters NUM_PHYS_FUNC]
+# ipx::add_user_parameter {NUM_CMAC_PORT} [ipx::current_core]
+# set_property value_resolve_type {user} [ipx::get_user_parameters NUM_CMAC_PORT]
+# set_property display_name {NUM_CMAC_PORT} [ipx::get_user_parameters NUM_CMAC_PORT]
+# set_property value {2} [ipx::get_user_parameters NUM_CMAC_PORT]
+# set_property value_format {bitstring} [ipx::get_user_parameters NUM_CMAC_PORT]
+# ipx::add_user_parameter {USE_PHYS_FUNC} [ipx::current_core]
+# set_property value_resolve_type {user} [ipx::get_user_parameters USE_PHYS_FUNC]
+# set_property display_name {USE_PHYS_FUNC} [ipx::get_user_parameters USE_PHYS_FUNC]
+# set_property value {1} [ipx::get_user_parameters USE_PHYS_FUNC]
+# set_property value_format {bitstring} [ipx::get_user_parameters USE_PHYS_FUNC]
+# ipx::infer_user_parameters [ipx::current_core]
+# ipx::check_integrity [ipx::current_core]
+INFO: [IP_Flow 19-861] XGUI layout file basename "xgui/open_nic_shell_v1_0.tcl" does not have the current IP <name>_v<version> format. If the IP name or version was changed recently, recreate this file to update the file format.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_rx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_adap_tx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_cmac_rx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axis_qdma_h2c': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_rx_322mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_adap_tx_250mhz': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_cmac_tx': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 's_axis_qdma_c2h': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box0': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3158] Bus Interface 'm_axil_box1': FREQ_HZ bus parameter missing from AXI interface when interface is not associated to a clock.
+WARNING: [IP_Flow 19-3157] Bus Interface 'pcie_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'pcie_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-3157] Bus Interface 'user_rstn': Bus parameter POLARITY is ACTIVE_LOW but port 'user_rstn' is not *resetn - please double check the POLARITY setting.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axil_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axil_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'axis_aclk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'axis_aclk': FREQ_HZ bus parameter is missing for output clock interface.
+WARNING: [IP_Flow 19-5661] Bus Interface 'cmac_clk' does not have any bus interfaces associated with it.
+WARNING: [IP_Flow 19-4751] Bus Interface 'cmac_clk': FREQ_HZ bus parameter is missing for output clock interface.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+INFO: [Ipptcl 7-1486] check_integrity: Integrity check passed.
+# ipx::save_core [ipx::current_core]
+# update_ip_catalog
+INFO: [IP_Flow 19-1839] IP Catalog is up to date.
+# close_project
+INFO: [Common 17-206] Exiting Vivado at Thu Mar 10 19:36:15 2022...

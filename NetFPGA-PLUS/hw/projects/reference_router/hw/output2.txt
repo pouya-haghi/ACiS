@@ -1,0 +1,32 @@
+rm -rf proj_* vivado*.* *.*~ .Xil* /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../hw/projects/reference_router/hw/ip_repo/ /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../hw/projects/reference_router/hw/project/
+rm -rf *[0-9]_{stim,expected,log}.axi
+rm -f *.axi
+rm -f portconfig.sim
+rm -f nf_register_defines.h reg_defines.h
+rm -f seed
+rm -f *.log
+rm -f ../test/Makefile
+rm -rf ../test/*.log
+rm -rf ../test/*.axi
+rm -rf ../test/seed
+rm -rf ../test/*.sim
+rm -rf ../test/proj_*
+rm -rf ../test/ip_repo
+rm -f ../test/vivado*.*
+rm -f ../test/*_*_*/reg_defines_reference_router.py
+rm -f ../test/*_*_*/reg_defines_reference_router.pyc
+cp -f /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../hw/projects/reference_router/test/reg_defines_reference_router.py /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../hw/projects/reference_router/test/both_lpm_generic/reg_defines_reference_router.py
+vivado -mode gui -source ../../../projects/reference_router/hw/tcl/reference_router_sim.tcl -tclargs both_lpm_generic
+
+****** Vivado v2020.2 (64-bit)
+  **** SW Build 3064766 on Wed Nov 18 09:12:47 MST 2020
+  **** IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+start_gui
+INFO: [Common 17-206] Exiting Vivado at Wed Mar 16 13:57:01 2022...
+/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../tools/scripts/nf_sim_reconcile_axi_logs.py
+loading libsume..
+/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../tools/scripts/nf_sim_registers_axi_logs.py
+Check registers
+Hey,  /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw

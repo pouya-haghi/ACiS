@@ -1,0 +1,1191 @@
+rm -rf proj_* vivado*.* *.*~ .Xil* /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../hw/projects/reference_router/hw/ip_repo/ /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../hw/projects/reference_router/hw/project/
+rm -rf *[0-9]_{stim,expected,log}.axi
+rm -f *.axi
+rm -f portconfig.sim
+rm -f nf_register_defines.h reg_defines.h
+rm -f seed
+rm -f *.log
+rm -f ../test/Makefile
+rm -rf ../test/*.log
+rm -rf ../test/*.axi
+rm -rf ../test/seed
+rm -rf ../test/*.sim
+rm -rf ../test/proj_*
+rm -rf ../test/ip_repo
+rm -f ../test/vivado*.*
+rm -f ../test/*_*_*/reg_defines_reference_router.py
+rm -f ../test/*_*_*/reg_defines_reference_router.pyc
+vivado -mode batch -source ../../../projects/reference_router/hw/tcl/reference_router_sim.tcl -tclargs both_lpm_generic
+
+****** Vivado v2020.2 (64-bit)
+  **** SW Build 3064766 on Wed Nov 18 09:12:47 MST 2020
+  **** IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source ../../../projects/reference_router/hw/tcl/reference_router_sim.tcl
+# set design $::env(NF_PROJECT_NAME) 
+# set top top_sim
+# set sim_top top_tb
+# set device $::env(DEVICE)
+# set board  $::env(BOARD)
+# set board_name  $::env(BOARD_NAME)
+# set proj_dir ./project
+# set public_repo_dir $::env(NFPLUS_FOLDER)/hw/lib/
+# set repo_dir ./ip_repo
+# set project_constraints ./constraints/${board_name}_switch.xdc
+# set test_name [lindex $argv 0] 
+# source $::env(NF_DESIGN_DIR)/hw/tcl/$::env(NF_PROJECT_NAME)_defines.tcl
+## set M00_BASEADDR 0x00010000
+## set M00_HIGHADDR 0x00010FFF
+## set M00_SIZEADDR 0x1000
+## set M01_BASEADDR 0x00020000
+## set M01_HIGHADDR 0x00020FFF
+## set M01_SIZEADDR 0x1000
+## set M02_BASEADDR 0x00030000
+## set M02_HIGHADDR 0x00030FFF
+## set M02_SIZEADDR 0x1000
+## set INPUT_ARBITER_BASEADDR $M00_BASEADDR
+## set INPUT_ARBITER_HIGHADDR $M00_HIGHADDR
+## set INPUT_ARBITER_SIZEADDR $M00_SIZEADDR
+## set OUTPUT_QUEUES_BASEADDR $M02_BASEADDR
+## set OUTPUT_QUEUES_HIGHADDR $M02_HIGHADDR
+## set OUTPUT_QUEUES_SIZEADDR $M02_SIZEADDR
+## set OUTPUT_PORT_LOOKUP_BASEADDR $M01_BASEADDR
+## set OUTPUT_PORT_LOOKUP_HIGHADDR $M01_HIGHADDR
+## set OUTPUT_PORT_LOOKUP_SIZEADDR $M01_SIZEADDR
+# set_param general.maxThreads 8
+# set datapath_width_bit    1024
+# create_project -name ${design} -force -dir "./${proj_dir}" -part ${device}
+create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:40 . Memory (MB): peak = 2397.043 ; gain = 2.023 ; free physical = 50075 ; free virtual = 162875
+# set_property board_part ${board} [current_project]
+# set_property source_mgmt_mode DisplayOnly [current_project]
+# set_property top ${top} [current_fileset]
+# puts "Creating User Datapath reference project"
+Creating User Datapath reference project
+# create_fileset -constrset -quiet constraints
+# file copy ${public_repo_dir}/ ${repo_dir}
+# set_property ip_repo_paths ${repo_dir} [current_fileset]
+# update_ip_catalog
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/ip_repo'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/ad/eng/opt/Xilinx/Vivado/2020.2/data/ip'.
+update_ip_catalog: Time (s): cpu = 00:00:02 ; elapsed = 00:01:51 . Memory (MB): peak = 2397.043 ; gain = 0.000 ; free physical = 49879 ; free virtual = 162859
+# create_ip -name router_output_port_lookup -vendor NetFPGA -library NetFPGA -module_name router_output_port_lookup_ip
+WARNING: [IP_Flow 19-4832] The IP name 'router_output_port_lookup_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
+create_ip: Time (s): cpu = 00:00:00.39 ; elapsed = 00:00:28 . Memory (MB): peak = 2440.055 ; gain = 43.012 ; free physical = 49867 ; free virtual = 162848
+# set_property CONFIG.C_M_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips router_output_port_lookup_ip]
+# set_property CONFIG.C_S_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips router_output_port_lookup_ip]
+# set_property generate_synth_checkpoint false [get_files router_output_port_lookup_ip.xci]
+# reset_target all [get_ips router_output_port_lookup_ip]
+# generate_target all [get_ips router_output_port_lookup_ip]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'router_output_port_lookup_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'router_output_port_lookup_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'router_output_port_lookup_ip'...
+generate_target: Time (s): cpu = 00:00:00.14 ; elapsed = 00:01:20 . Memory (MB): peak = 2440.055 ; gain = 0.000 ; free physical = 49863 ; free virtual = 162845
+# create_ip -name input_arbiter -vendor NetFPGA -library NetFPGA -module_name input_arbiter_ip
+create_ip: Time (s): cpu = 00:00:00.09 ; elapsed = 00:00:14 . Memory (MB): peak = 2440.055 ; gain = 0.000 ; free physical = 49855 ; free virtual = 162837
+# set_property CONFIG.C_M_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips input_arbiter_ip]
+# set_property CONFIG.C_S_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips input_arbiter_ip]
+# set_property generate_synth_checkpoint false [get_files input_arbiter_ip.xci]
+# reset_target all [get_ips input_arbiter_ip]
+# generate_target all [get_ips input_arbiter_ip]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'input_arbiter_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'input_arbiter_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'input_arbiter_ip'...
+generate_target: Time (s): cpu = 00:00:00.04 ; elapsed = 00:00:08 . Memory (MB): peak = 2440.055 ; gain = 0.000 ; free physical = 49856 ; free virtual = 162838
+# create_ip -name output_queues -vendor NetFPGA -library NetFPGA -module_name output_queues_ip
+create_ip: Time (s): cpu = 00:00:00.10 ; elapsed = 00:00:10 . Memory (MB): peak = 2440.055 ; gain = 0.000 ; free physical = 49854 ; free virtual = 162837
+# set_property CONFIG.C_M_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips output_queues_ip]
+# set_property CONFIG.C_S_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips output_queues_ip]
+# set_property generate_synth_checkpoint false [get_files output_queues_ip.xci]
+# reset_target all [get_ips output_queues_ip]
+# generate_target all [get_ips output_queues_ip]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'output_queues_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'output_queues_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'output_queues_ip'...
+generate_target: Time (s): cpu = 00:00:00.05 ; elapsed = 00:00:09 . Memory (MB): peak = 2440.055 ; gain = 0.000 ; free physical = 49850 ; free virtual = 162832
+# create_ip -name nf_endianess_manager  -vendor NetFPGA -library NetFPGA -module_name nf_endianess_manager_ip
+create_ip: Time (s): cpu = 00:00:00.08 ; elapsed = 00:00:12 . Memory (MB): peak = 2440.055 ; gain = 0.000 ; free physical = 49851 ; free virtual = 162833
+# set_property CONFIG.C_M_AXIS_TDATA_WIDTH ${datapath_width_bit} [get_ips nf_endianess_manager_ip]
+# set_property CONFIG.C_S_AXIS_TDATA_WIDTH ${datapath_width_bit} [get_ips nf_endianess_manager_ip]
+# set_property generate_synth_checkpoint false [get_files nf_endianess_manager_ip.xci]
+# reset_target all [get_ips nf_endianess_manager_ip]
+# generate_target all [get_ips nf_endianess_manager_ip]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'nf_endianess_manager_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'nf_endianess_manager_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'nf_endianess_manager_ip'...
+generate_target: Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:07 . Memory (MB): peak = 2440.055 ; gain = 0.000 ; free physical = 49850 ; free virtual = 162833
+# create_ip -name nf_mac_attachment -vendor NetFPGA -library NetFPGA -module_name nf_mac_attachment_ip
+create_ip: Time (s): cpu = 00:00:00.17 ; elapsed = 00:00:14 . Memory (MB): peak = 2440.055 ; gain = 0.000 ; free physical = 49846 ; free virtual = 162829
+# set_property CONFIG.C_M_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips nf_mac_attachment_ip]
+# set_property CONFIG.C_S_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips nf_mac_attachment_ip]
+# set_property generate_synth_checkpoint false [get_files nf_mac_attachment_ip.xci]
+# reset_target all [get_ips nf_mac_attachment_ip]
+# generate_target all [get_ips nf_mac_attachment_ip]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'nf_mac_attachment_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'nf_mac_attachment_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'nf_mac_attachment_ip'...
+generate_target: Time (s): cpu = 00:00:01 ; elapsed = 00:00:40 . Memory (MB): peak = 2461.199 ; gain = 21.145 ; free physical = 49816 ; free virtual = 162819
+# create_ip -name nf_mac_attachment -vendor NetFPGA -library NetFPGA -module_name nf_mac_attachment_dma_ip
+# set_property CONFIG.C_M_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips nf_mac_attachment_dma_ip]
+# set_property CONFIG.C_S_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips nf_mac_attachment_dma_ip]
+# set_property CONFIG.C_DEFAULT_VALUE_ENABLE 0 [get_ips nf_mac_attachment_dma_ip]
+# set_property generate_synth_checkpoint false [get_files nf_mac_attachment_dma_ip.xci]
+# reset_target all [get_ips nf_mac_attachment_dma_ip]
+# generate_target all [get_ips nf_mac_attachment_dma_ip]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'nf_mac_attachment_dma_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'nf_mac_attachment_dma_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'nf_mac_attachment_dma_ip'...
+generate_target: Time (s): cpu = 00:00:00.39 ; elapsed = 00:00:39 . Memory (MB): peak = 2461.199 ; gain = 0.000 ; free physical = 49787 ; free virtual = 162810
+# create_ip -name barrier -vendor NetFPGA -library NetFPGA -module_name barrier_ip
+create_ip: Time (s): cpu = 00:00:00.07 ; elapsed = 00:00:09 . Memory (MB): peak = 2461.199 ; gain = 0.000 ; free physical = 49787 ; free virtual = 162810
+# reset_target all [get_ips barrier_ip]
+# generate_target all [get_ips barrier_ip]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'barrier_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'barrier_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'barrier_ip'...
+# create_ip -name axis_sim_record -vendor NetFPGA -library NetFPGA -module_name axis_sim_record_ip0
+create_ip: Time (s): cpu = 00:00:00.07 ; elapsed = 00:00:08 . Memory (MB): peak = 2461.199 ; gain = 0.000 ; free physical = 49786 ; free virtual = 162809
+# set_property -dict [list CONFIG.OUTPUT_FILE $::env(NF_DESIGN_DIR)/test/nf_interface_0_log.axi] [get_ips axis_sim_record_ip0]
+# reset_target all [get_ips axis_sim_record_ip0]
+# generate_target all [get_ips axis_sim_record_ip0]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axis_sim_record_ip0'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'axis_sim_record_ip0'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'axis_sim_record_ip0'...
+# create_ip -name axis_sim_record -vendor NetFPGA -library NetFPGA -module_name axis_sim_record_ip1
+# set_property -dict [list CONFIG.OUTPUT_FILE $::env(NF_DESIGN_DIR)/test/nf_interface_1_log.axi] [get_ips axis_sim_record_ip1]
+# reset_target all [get_ips axis_sim_record_ip1]
+# generate_target all [get_ips axis_sim_record_ip1]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axis_sim_record_ip1'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'axis_sim_record_ip1'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'axis_sim_record_ip1'...
+# create_ip -name axis_sim_record -vendor NetFPGA -library NetFPGA -module_name axis_sim_record_ip2
+# set_property -dict [list CONFIG.OUTPUT_FILE $::env(NF_DESIGN_DIR)/test/dma_0_log.axi] [get_ips axis_sim_record_ip2]
+# reset_target all [get_ips axis_sim_record_ip2]
+# generate_target all [get_ips axis_sim_record_ip2]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axis_sim_record_ip2'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'axis_sim_record_ip2'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'axis_sim_record_ip2'...
+# create_ip -name axis_sim_stim -vendor NetFPGA -library NetFPGA -module_name axis_sim_stim_ip0
+create_ip: Time (s): cpu = 00:00:00.06 ; elapsed = 00:00:07 . Memory (MB): peak = 2461.199 ; gain = 0.000 ; free physical = 49783 ; free virtual = 162806
+# set_property -dict [list CONFIG.input_file $::env(NF_DESIGN_DIR)/test/nf_interface_0_stim.axi] [get_ips axis_sim_stim_ip0]
+# generate_target all [get_ips axis_sim_stim_ip0]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axis_sim_stim_ip0'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'axis_sim_stim_ip0'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'axis_sim_stim_ip0'...
+# create_ip -name axis_sim_stim -vendor NetFPGA -library NetFPGA -module_name axis_sim_stim_ip1
+# set_property -dict [list CONFIG.input_file $::env(NF_DESIGN_DIR)/test/nf_interface_1_stim.axi] [get_ips axis_sim_stim_ip1]
+# generate_target all [get_ips axis_sim_stim_ip1]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axis_sim_stim_ip1'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'axis_sim_stim_ip1'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'axis_sim_stim_ip1'...
+# create_ip -name axis_sim_stim -vendor NetFPGA -library NetFPGA -module_name axis_sim_stim_ip2
+# set_property -dict [list CONFIG.input_file $::env(NF_DESIGN_DIR)/test/dma_0_stim.axi] [get_ips axis_sim_stim_ip2]
+# generate_target all [get_ips axis_sim_stim_ip2]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axis_sim_stim_ip2'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'axis_sim_stim_ip2'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'axis_sim_stim_ip2'...
+# create_ip -name axi_sim_transactor -vendor NetFPGA -library NetFPGA -module_name axi_sim_transactor_ip
+# set_property -dict [list CONFIG.STIM_FILE $::env(NF_DESIGN_DIR)/test/reg_stim.axi CONFIG.EXPECT_FILE $::env(NF_DESIGN_DIR)/test/reg_expect.axi CONFIG.LOG_FILE $::env(NF_DESIGN_DIR)/test/reg_stim.log] [get_ips axi_sim_transactor_ip]
+# reset_target all [get_ips axi_sim_transactor_ip]
+# generate_target all [get_ips axi_sim_transactor_ip]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axi_sim_transactor_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'axi_sim_transactor_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'axi_sim_transactor_ip'...
+generate_target: Time (s): cpu = 00:00:00.05 ; elapsed = 00:00:07 . Memory (MB): peak = 2461.199 ; gain = 0.000 ; free physical = 49780 ; free virtual = 162804
+# create_ip -name axi_crossbar -vendor xilinx.com -library ip -module_name axi_crossbar_0
+create_ip: Time (s): cpu = 00:00:00.69 ; elapsed = 00:00:10 . Memory (MB): peak = 2461.199 ; gain = 0.000 ; free physical = 49752 ; free virtual = 162779
+# set_property -dict [list \
+# CONFIG.NUM_MI {3}                            \
+# CONFIG.PROTOCOL {AXI4LITE}                   \
+# CONFIG.CONNECTIVITY_MODE {SASD}              \
+# CONFIG.R_REGISTER {1}                        \
+# CONFIG.S00_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S01_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S02_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S03_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S04_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S05_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S06_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S07_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S08_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S09_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S10_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S11_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S12_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S13_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S14_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S15_WRITE_ACCEPTANCE {1}              \
+# CONFIG.S00_READ_ACCEPTANCE {1}               \
+# CONFIG.S01_READ_ACCEPTANCE {1}               \
+# CONFIG.S02_READ_ACCEPTANCE {1}               \
+# CONFIG.S03_READ_ACCEPTANCE {1}               \
+# CONFIG.S04_READ_ACCEPTANCE {1}               \
+# CONFIG.S05_READ_ACCEPTANCE {1}               \
+# CONFIG.S06_READ_ACCEPTANCE {1}               \
+# CONFIG.S07_READ_ACCEPTANCE {1}               \
+# CONFIG.S08_READ_ACCEPTANCE {1}               \
+# CONFIG.S09_READ_ACCEPTANCE {1}               \
+# CONFIG.S10_READ_ACCEPTANCE {1}               \
+# CONFIG.S11_READ_ACCEPTANCE {1}               \
+# CONFIG.S12_READ_ACCEPTANCE {1}               \
+# CONFIG.S13_READ_ACCEPTANCE {1}               \
+# CONFIG.S14_READ_ACCEPTANCE {1}               \
+# CONFIG.S15_READ_ACCEPTANCE {1}               \
+# CONFIG.M00_WRITE_ISSUING {1}                 \
+# CONFIG.M01_WRITE_ISSUING {1}                 \
+# CONFIG.M02_WRITE_ISSUING {1}                 \
+# CONFIG.M03_WRITE_ISSUING {1}                 \
+# CONFIG.M04_WRITE_ISSUING {1}                 \
+# CONFIG.M05_WRITE_ISSUING {1}                 \
+# CONFIG.M06_WRITE_ISSUING {1}                 \
+# CONFIG.M07_WRITE_ISSUING {1}                 \
+# CONFIG.M08_WRITE_ISSUING {1}                 \
+# CONFIG.M09_WRITE_ISSUING {1}                 \
+# CONFIG.M10_WRITE_ISSUING {1}                 \
+# CONFIG.M11_WRITE_ISSUING {1}                 \
+# CONFIG.M12_WRITE_ISSUING {1}                 \
+# CONFIG.M13_WRITE_ISSUING {1}                 \
+# CONFIG.M14_WRITE_ISSUING {1}                 \
+# CONFIG.M15_WRITE_ISSUING {1}                 \
+# CONFIG.M00_READ_ISSUING {1}                  \
+# CONFIG.M01_READ_ISSUING {1}                  \
+# CONFIG.M02_READ_ISSUING {1}                  \
+# CONFIG.M03_READ_ISSUING {1}                  \
+# CONFIG.M04_READ_ISSUING {1}                  \
+# CONFIG.M05_READ_ISSUING {1}                  \
+# CONFIG.M06_READ_ISSUING {1}                  \
+# CONFIG.M07_READ_ISSUING {1}                  \
+# CONFIG.M08_READ_ISSUING {1}                  \
+# CONFIG.M09_READ_ISSUING {1}                  \
+# CONFIG.M10_READ_ISSUING {1}                  \
+# CONFIG.M11_READ_ISSUING {1}                  \
+# CONFIG.M12_READ_ISSUING {1}                  \
+# CONFIG.M13_READ_ISSUING {1}                  \
+# CONFIG.M14_READ_ISSUING {1}                  \
+# CONFIG.M15_READ_ISSUING {1}                  \
+# CONFIG.S00_SINGLE_THREAD {1}                 \
+# CONFIG.M00_A00_ADDR_WIDTH {16}               \
+# CONFIG.M01_A00_ADDR_WIDTH {16}               \
+# CONFIG.M02_A00_ADDR_WIDTH {16}               \
+# CONFIG.M00_A00_BASE_ADDR {0x0000000000010000}\
+# CONFIG.M01_A00_BASE_ADDR {0x0000000000020000}\
+# CONFIG.M02_A00_BASE_ADDR {0x0000000000030000}] [get_ips axi_crossbar_0]
+# set_property generate_synth_checkpoint false [get_files axi_crossbar_0.xci]
+# reset_target all [get_ips axi_crossbar_0]
+# generate_target all [get_ips axi_crossbar_0]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'axi_crossbar_0'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'axi_crossbar_0'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'axi_crossbar_0'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'axi_crossbar_0'...
+generate_target: Time (s): cpu = 00:00:00.36 ; elapsed = 00:00:19 . Memory (MB): peak = 2461.199 ; gain = 0.000 ; free physical = 49723 ; free virtual = 162769
+# read_verilog "$::env(NF_DESIGN_DIR)/hw/hdl/nf_datapath.v"
+# read_verilog "$::env(NF_DESIGN_DIR)/hw/hdl/top_sim.v"
+# read_verilog "$::env(NF_DESIGN_DIR)/hw/hdl/top_tb.v"
+# update_compile_order -fileset sources_1
+update_compile_order: Time (s): cpu = 00:00:01 ; elapsed = 00:00:19 . Memory (MB): peak = 2581.254 ; gain = 120.055 ; free physical = 49723 ; free virtual = 162770
+# update_compile_order -fileset sim_1
+update_compile_order: Time (s): cpu = 00:00:01 ; elapsed = 00:00:08 . Memory (MB): peak = 2581.254 ; gain = 0.000 ; free physical = 49718 ; free virtual = 162764
+# set_property top ${sim_top} [get_filesets sim_1]
+# set_property include_dirs ${proj_dir} [get_filesets sim_1]
+# set_property simulator_language Mixed [current_project]
+# set_property verilog_define { {SIMULATION=1} } [get_filesets sim_1]
+# set_property -name xsim.more_options -value {-testplusarg TESTNAME=basic_test} -objects [get_filesets sim_1]
+# set_property runtime {} [get_filesets sim_1]
+# set_property target_simulator xsim [current_project]
+# set_property compxlib.compiled_library_dir {} [current_project]
+WARNING: [Common 17-599] Property 'compxlib.compiled_library_dir' is deprecated for object type 'project'. Use 'compxlib.<simulator>_compiled_library_dir'.
+# set_property top_lib xil_defaultlib [get_filesets sim_1]
+# update_compile_order -fileset sim_1
+update_compile_order: Time (s): cpu = 00:00:21 ; elapsed = 00:00:52 . Memory (MB): peak = 2693.309 ; gain = 112.055 ; free physical = 49702 ; free virtual = 162748
+# unset env(PYTHONPATH)
+# unset env(PYTHONHOME)
+# set env(PYTHONPATH) ".:$::env(NFPLUS_FOLDER)/tools/scripts/:$::env(NFPLUS_FOLDER)/tools/scripts/NFTest:$::env(NFPLUS_FOLDER)/hw/projects/reference_router/lib"
+# set output [exec $::env(PYTHON_BNRY) $::env(NF_DESIGN_DIR)/test/${test_name}/run.py]
+# puts $output
+loading libsume..
+# launch_simulation -simset sim_1 -mode behavioral
+Command: launch_simulation -simset sim_1 -mode behavioral
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File '/ad/eng/linux/opt/Xilinx/Vivado/2020.2/data/xsim/xsim.ini' copied to run dir:'/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-20] The project contains locked or custom IPs. The pre-compiled version of these IPs will not be referenced and the sources from these IP libraries will be compiled locally.
+INFO: [SIM-utils-54] Inspecting design source files for 'top_tb' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-100] Fetching design files from 'sources_1'...(this may take a while)...
+INFO: [USF-XSim-101] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.sim/sim_1/behav/xsim'
+xvlog --incr --relax -prj top_tb_vlog.prj
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/barrier_ip/hdl/barrier.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module barrier
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/barrier_ip/sim/barrier_ip.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module barrier_ip
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/simulation/fifo_generator_vlog_beh.v" into library fifo_generator_v13_2_5
+INFO: [VRFC 10-311] analyzing module fifo_generator_vlog_beh
+INFO: [VRFC 10-2458] undeclared symbol wr_rst_busy_i, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/simulation/fifo_generator_vlog_beh.v:1249]
+INFO: [VRFC 10-2458] undeclared symbol wr_eop_ad, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/simulation/fifo_generator_vlog_beh.v:1331]
+INFO: [VRFC 10-2458] undeclared symbol rd_eop_ad, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/simulation/fifo_generator_vlog_beh.v:1332]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_axis, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/simulation/fifo_generator_vlog_beh.v:1574]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_wach, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/simulation/fifo_generator_vlog_beh.v:2099]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_wdch, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/simulation/fifo_generator_vlog_beh.v:2319]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_wrch, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/simulation/fifo_generator_vlog_beh.v:2486]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_rach, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/simulation/fifo_generator_vlog_beh.v:2866]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_rdch, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/simulation/fifo_generator_vlog_beh.v:3099]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_CONV_VER
+INFO: [VRFC 10-2458] undeclared symbol safety_ckt_rd_rst, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/simulation/fifo_generator_vlog_beh.v:4153]
+INFO: [VRFC 10-2458] undeclared symbol safety_ckt_rd_rst, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/simulation/fifo_generator_vlog_beh.v:4361]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_sync_stage
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_bhv_ver_as
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_beh_ver_ll_afifo
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_bhv_ver_ss
+INFO: [VRFC 10-2458] undeclared symbol srst_wrst_busy, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/simulation/fifo_generator_vlog_beh.v:7793]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_bhv_ver_preload0
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_axic_reg_slice
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/hdl/fifo_generator_v13_2_rfs.v" into library fifo_generator_v13_2_5
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5
+INFO: [VRFC 10-2458] undeclared symbol sleep_i, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/hdl/fifo_generator_v13_2_rfs.v:519]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axi_crossbar_0/sim/axi_crossbar_0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module axi_crossbar_0
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v" into library fifo_generator_v13_2_5
+INFO: [VRFC 10-311] analyzing module fifo_generator_vlog_beh
+INFO: [VRFC 10-2458] undeclared symbol wr_rst_busy_i, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:1249]
+INFO: [VRFC 10-2458] undeclared symbol wr_eop_ad, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:1331]
+INFO: [VRFC 10-2458] undeclared symbol rd_eop_ad, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:1332]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_axis, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:1574]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_wach, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:2099]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_wdch, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:2319]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_wrch, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:2486]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_rach, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:2866]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_rdch, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:3099]
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_vlog_beh' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:98]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_CONV_VER
+INFO: [VRFC 10-2458] undeclared symbol safety_ckt_rd_rst, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:4153]
+INFO: [VRFC 10-2458] undeclared symbol safety_ckt_rd_rst, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:4361]
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_CONV_VER' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:3366]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_sync_stage
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_sync_stage' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:4938]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_bhv_ver_as
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_bhv_ver_as' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:4959]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_beh_ver_ll_afifo
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_beh_ver_ll_afifo' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:6937]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_bhv_ver_ss
+INFO: [VRFC 10-2458] undeclared symbol srst_wrst_busy, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:7793]
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_bhv_ver_ss' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:7065]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_bhv_ver_preload0
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_bhv_ver_preload0' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:9206]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_axic_reg_slice
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_axic_reg_slice' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:10324]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/hdl/fifo_generator_v13_2_rfs.v" into library fifo_generator_v13_2_5
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5
+INFO: [VRFC 10-2458] undeclared symbol sleep_i, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/hdl/fifo_generator_v13_2_rfs.v:519]
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/hdl/fifo_generator_v13_2_rfs.v:74]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/sim/fifo_generator_1_9.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fifo_generator_1_9
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/small_fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module small_fifo
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/fallthrough_small_fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fallthrough_small_fifo
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/axis_fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module axis_fifo
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/nf_axis_converter_main.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module nf_axis_converter_main
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/nf_axis_converter.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module nf_axis_converter
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/data_synch.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module data_sync_block
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/nf_mac_attachment_cpu_regs.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module nf_mac_attachment_cpu_regs
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/rx_queue.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module rx_queue
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/tx_queue.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tx_queue
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/nf_mac_attachment.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module nf_mac_attachment
+INFO: [VRFC 10-2458] undeclared symbol fifo_wr_en, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/nf_mac_attachment.v:221]
+INFO: [VRFC 10-2458] undeclared symbol rx_pkt_drop, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/nf_mac_attachment.v:222]
+INFO: [VRFC 10-2458] undeclared symbol rx_bad_frame, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/nf_mac_attachment.v:223]
+INFO: [VRFC 10-2458] undeclared symbol rx_good_frame, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/hdl/nf_mac_attachment.v:224]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_ip/sim/nf_mac_attachment_ip.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module nf_mac_attachment_ip
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v" into library fifo_generator_v13_2_5
+INFO: [VRFC 10-311] analyzing module fifo_generator_vlog_beh
+INFO: [VRFC 10-2458] undeclared symbol wr_rst_busy_i, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:1249]
+INFO: [VRFC 10-2458] undeclared symbol wr_eop_ad, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:1331]
+INFO: [VRFC 10-2458] undeclared symbol rd_eop_ad, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:1332]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_axis, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:1574]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_wach, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:2099]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_wdch, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:2319]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_wrch, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:2486]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_rach, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:2866]
+INFO: [VRFC 10-2458] undeclared symbol rd_rst_busy_rdch, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:3099]
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_vlog_beh' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:98]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_CONV_VER
+INFO: [VRFC 10-2458] undeclared symbol safety_ckt_rd_rst, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:4153]
+INFO: [VRFC 10-2458] undeclared symbol safety_ckt_rd_rst, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:4361]
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_CONV_VER' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:3366]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_sync_stage
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_sync_stage' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:4938]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_bhv_ver_as
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_bhv_ver_as' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:4959]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_beh_ver_ll_afifo
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_beh_ver_ll_afifo' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:6937]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_bhv_ver_ss
+INFO: [VRFC 10-2458] undeclared symbol srst_wrst_busy, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:7793]
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_bhv_ver_ss' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:7065]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_bhv_ver_preload0
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_bhv_ver_preload0' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:9206]
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5_axic_reg_slice
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5_axic_reg_slice' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/simulation/fifo_generator_vlog_beh.v:10324]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/hdl/fifo_generator_v13_2_rfs.v" into library fifo_generator_v13_2_5
+INFO: [VRFC 10-311] analyzing module fifo_generator_v13_2_5
+INFO: [VRFC 10-2458] undeclared symbol sleep_i, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/hdl/fifo_generator_v13_2_rfs.v:519]
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_v13_2_5' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/hdl/fifo_generator_v13_2_rfs.v:74]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/ip_proj/fifo_generator_1_9/sim/fifo_generator_1_9.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fifo_generator_1_9
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fifo_generator_1_9' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/ip_proj/fifo_generator_1_9/sim/fifo_generator_1_9.v:56]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/small_fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module small_fifo
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'small_fifo' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/small_fifo.v:42]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/fallthrough_small_fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fallthrough_small_fifo
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fallthrough_small_fifo' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/fallthrough_small_fifo.v:44]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/axis_fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module axis_fifo
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'axis_fifo' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/axis_fifo.v:47]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/nf_axis_converter_main.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module nf_axis_converter_main
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'nf_axis_converter_main' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/nf_axis_converter_main.v:55]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/nf_axis_converter.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module nf_axis_converter
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'nf_axis_converter' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/nf_axis_converter.v:50]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/data_synch.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module data_sync_block
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'data_sync_block' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/data_synch.v:31]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/nf_mac_attachment_cpu_regs.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module nf_mac_attachment_cpu_regs
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'nf_mac_attachment_cpu_regs' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/nf_mac_attachment_cpu_regs.v:34]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/rx_queue.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module rx_queue
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'rx_queue' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/rx_queue.v:35]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/tx_queue.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tx_queue
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'tx_queue' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/tx_queue.v:37]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/nf_mac_attachment.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module nf_mac_attachment
+INFO: [VRFC 10-2458] undeclared symbol fifo_wr_en, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/nf_mac_attachment.v:221]
+INFO: [VRFC 10-2458] undeclared symbol rx_pkt_drop, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/nf_mac_attachment.v:222]
+INFO: [VRFC 10-2458] undeclared symbol rx_bad_frame, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/nf_mac_attachment.v:223]
+INFO: [VRFC 10-2458] undeclared symbol rx_good_frame, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/nf_mac_attachment.v:224]
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'nf_mac_attachment' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/nf_mac_attachment.v:36]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/sim/nf_mac_attachment_dma_ip.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module nf_mac_attachment_dma_ip
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_record_ip2/hdl/axis_sim_record.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module axis_sim_record
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_record_ip2/sim/axis_sim_record_ip2.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module axis_sim_record_ip2
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_record_ip1/hdl/axis_sim_record.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module axis_sim_record
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'axis_sim_record' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_record_ip1/hdl/axis_sim_record.v:52]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_record_ip1/sim/axis_sim_record_ip1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module axis_sim_record_ip1
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_record_ip0/hdl/axis_sim_record.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module axis_sim_record
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'axis_sim_record' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_record_ip0/hdl/axis_sim_record.v:52]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_record_ip0/sim/axis_sim_record_ip0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module axis_sim_record_ip0
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/output_queues_ip/hdl/small_fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module small_fifo
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'small_fifo' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/output_queues_ip/hdl/small_fifo.v:42]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/output_queues_ip/hdl/fallthrough_small_fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fallthrough_small_fifo
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fallthrough_small_fifo' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/output_queues_ip/hdl/fallthrough_small_fifo.v:44]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/output_queues_ip/hdl/output_queues_cpu_regs.v" into library xil_defaultlib
+WARNING: [VRFC 10-3507] macro 'REG_ID_DEFAULT' redefined [../../../../reference_router.gen/sources_1/ip/output_queues_ip/hdl/output_queues_cpu_regs_defines.v:42]
+INFO: [VRFC 10-311] analyzing module output_queues_cpu_regs
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/output_queues_ip/hdl/output_queues.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module output_queues
+INFO: [VRFC 10-2458] undeclared symbol resetn_sync, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/output_queues_ip/hdl/output_queues.v:557]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/output_queues_ip/sim/output_queues_ip.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module output_queues_ip
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/verilog/cam_wrapper.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cam_wrapper
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/verilog/cam.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cam
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/verilog/tcam_wrapper.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tcam_wrapper
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/verilog/tcam.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tcam
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/dest_ip_filter.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dest_ip_filter
+INFO: [VRFC 10-2458] undeclared symbol lookup_ack, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/dest_ip_filter.v:142]
+INFO: [VRFC 10-2458] undeclared symbol lookup_hit, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/dest_ip_filter.v:143]
+INFO: [VRFC 10-2458] undeclared symbol empty, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/dest_ip_filter.v:214]
+INFO: [VRFC 10-2458] undeclared symbol filter_fifo_nearly_full, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/dest_ip_filter.v:255]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/eth_parser.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module eth_parser
+INFO: [VRFC 10-2458] undeclared symbol empty, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/eth_parser.v:151]
+INFO: [VRFC 10-2458] undeclared symbol parser_fifo_nearly_full, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/eth_parser.v:192]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/ip_arp.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module ip_arp
+INFO: [VRFC 10-2458] undeclared symbol lookup_ack, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/ip_arp.v:142]
+INFO: [VRFC 10-2458] undeclared symbol lookup_hit, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/ip_arp.v:143]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/ip_checksum_ttl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module ip_checksum_ttl
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/ip_lpm.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module ip_lpm
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/op_lut_hdr_parser.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module op_lut_hdr_parser
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/op_lut_process_sm.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module op_lut_process_sm
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module output_port_lookup
+INFO: [VRFC 10-2458] undeclared symbol in_fifo_rd_en, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:216]
+INFO: [VRFC 10-2458] undeclared symbol in_fifo_empty, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:218]
+INFO: [VRFC 10-2458] undeclared symbol word_IP_DST_HI, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:245]
+INFO: [VRFC 10-2458] undeclared symbol word_IP_DST_LO, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:246]
+INFO: [VRFC 10-2458] undeclared symbol is_arp_pkt, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:264]
+INFO: [VRFC 10-2458] undeclared symbol is_ip_pkt, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:265]
+INFO: [VRFC 10-2458] undeclared symbol is_for_us, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:266]
+INFO: [VRFC 10-2458] undeclared symbol is_broadcast, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:267]
+INFO: [VRFC 10-2458] undeclared symbol rd_preprocess_info, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:271]
+INFO: [VRFC 10-2458] undeclared symbol eth_parser_info_vld, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:274]
+INFO: [VRFC 10-2458] undeclared symbol lpm_vld, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:306]
+INFO: [VRFC 10-2458] undeclared symbol lpm_hit, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:307]
+INFO: [VRFC 10-2458] undeclared symbol arp_mac_vld, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:364]
+INFO: [VRFC 10-2458] undeclared symbol arp_lookup_hit, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:366]
+INFO: [VRFC 10-2458] undeclared symbol lpm_lookup_hit, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:367]
+INFO: [VRFC 10-2458] undeclared symbol dest_ip_hit, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:400]
+INFO: [VRFC 10-2458] undeclared symbol dest_ip_filter_vld, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:401]
+INFO: [VRFC 10-2458] undeclared symbol ip_checksum_vld, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:435]
+INFO: [VRFC 10-2458] undeclared symbol ip_checksum_is_good, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:436]
+INFO: [VRFC 10-2458] undeclared symbol ip_hdr_has_options, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:437]
+INFO: [VRFC 10-2458] undeclared symbol ip_ttl_is_good, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:438]
+INFO: [VRFC 10-2458] undeclared symbol is_from_cpu, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:461]
+INFO: [VRFC 10-2458] undeclared symbol is_from_cpu_vld, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup.v:466]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup_cpu_regs.v" into library xil_defaultlib
+WARNING: [VRFC 10-3507] macro 'REG_ID_DEFAULT' redefined [../../../../reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/output_port_lookup_cpu_regs_defines.v:41]
+INFO: [VRFC 10-311] analyzing module output_port_lookup_cpu_regs
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/preprocess_control.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module preprocess_control
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/unencoded_cam_lut_sm.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module unencoded_cam_lut_sm
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/router_output_port_lookup.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module router_output_port_lookup
+INFO: [VRFC 10-2458] undeclared symbol resetn_sync, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/router_output_port_lookup.v:475]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/sim/router_output_port_lookup_ip.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module router_output_port_lookup_ip
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_endianess_manager_ip/hdl/bridge.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bridge
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_endianess_manager_ip/hdl/nf_endianess_manager.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module nf_endianess_manager
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_endianess_manager_ip/sim/nf_endianess_manager_ip.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module nf_endianess_manager_ip
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/input_arbiter_ip/hdl/small_fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module small_fifo
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'small_fifo' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/input_arbiter_ip/hdl/small_fifo.v:42]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/input_arbiter_ip/hdl/fallthrough_small_fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fallthrough_small_fifo
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'fallthrough_small_fifo' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/input_arbiter_ip/hdl/fallthrough_small_fifo.v:44]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/input_arbiter_ip/hdl/input_arbiter_cpu_regs.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module input_arbiter_cpu_regs
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/input_arbiter_ip/hdl/input_arbiter.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module input_arbiter
+INFO: [VRFC 10-2458] undeclared symbol resetn_sync, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/input_arbiter_ip/hdl/input_arbiter.v:356]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/input_arbiter_ip/sim/input_arbiter_ip.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module input_arbiter_ip
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/nf_datapath.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module nf_datapath
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_sim.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_sim
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_tb
+INFO: [VRFC 10-2458] undeclared symbol pcie_7x_mgt_rxn, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:113]
+INFO: [VRFC 10-2458] undeclared symbol pcie_7x_mgt_rxp, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:114]
+INFO: [VRFC 10-2458] undeclared symbol pcie_7x_mgt_txn, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:115]
+INFO: [VRFC 10-2458] undeclared symbol pcie_7x_mgt_txp, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:116]
+INFO: [VRFC 10-2458] undeclared symbol rxp, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:119]
+INFO: [VRFC 10-2458] undeclared symbol rxn, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:120]
+INFO: [VRFC 10-2458] undeclared symbol txp, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:121]
+INFO: [VRFC 10-2458] undeclared symbol txn, assumed default net type wire [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:122]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl
+xvhdl --incr --relax -prj top_tb_vhdl.prj
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/lib_pkg_v1_0_2/hdl/lib_pkg_v1_0_rfs.vhd" into library lib_pkg_v1_0_2
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/lib_srl_fifo_v1_0_2/hdl/lib_srl_fifo_v1_0_rfs.vhd" into library lib_srl_fifo_v1_0_2
+INFO: [VRFC 10-3107] analyzing entity 'cntr_incr_decr_addn_f'
+INFO: [VRFC 10-3107] analyzing entity 'dynshreg_f'
+INFO: [VRFC 10-3107] analyzing entity 'srl_fifo_rbu_f'
+INFO: [VRFC 10-3107] analyzing entity 'srl_fifo_f'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axi_sim_transactor_ip/hdl/lib_srl_fifo_v1_0_rfs.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cntr_incr_decr_addn_f'
+INFO: [VRFC 10-3107] analyzing entity 'dynshreg_f'
+INFO: [VRFC 10-3107] analyzing entity 'srl_fifo_rbu_f'
+INFO: [VRFC 10-3107] analyzing entity 'srl_fifo_f'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axi_sim_transactor_ip/hdl/lib_pkg_v1_0_rfs.vhd" into library xil_defaultlib
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axi_sim_transactor_ip/hdl/axis_sim_pkg/axis_sim_pkg.vhd" into library xil_defaultlib
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axi_sim_transactor_ip/hdl/transactor_fifos.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'transactor_fifos'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axi_sim_transactor_ip/hdl/axi_sim_transactor.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'axi_sim_transactor'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axi_sim_transactor_ip/sim/axi_sim_transactor_ip.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'axi_sim_transactor_ip'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/hdl/fifo_generator_v13_2_rfs.vhd" into library fifo_generator_v13_2_5
+INFO: [VRFC 10-3107] analyzing entity 'input_blk'
+INFO: [VRFC 10-3107] analyzing entity 'output_blk'
+INFO: [VRFC 10-3107] analyzing entity 'shft_wrapper'
+INFO: [VRFC 10-3107] analyzing entity 'shft_ram'
+INFO: [VRFC 10-3107] analyzing entity 'wr_pf_as'
+INFO: [VRFC 10-3107] analyzing entity 'wr_pf_ss'
+INFO: [VRFC 10-3107] analyzing entity 'rd_pe_as'
+INFO: [VRFC 10-3107] analyzing entity 'rd_pe_ss'
+INFO: [VRFC 10-3107] analyzing entity 'synchronizer_ff'
+INFO: [VRFC 10-3107] analyzing entity 'delay'
+INFO: [VRFC 10-3107] analyzing entity 'bin_cntr'
+INFO: [VRFC 10-3107] analyzing entity 'clk_x_pntrs_builtin'
+INFO: [VRFC 10-3107] analyzing entity 'logic_builtin'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_prim'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_extdepth'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_top'
+INFO: [VRFC 10-3107] analyzing entity 'reset_builtin'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_prim_v6'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_extdepth_v6'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_extdepth_low_latency'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_top_v6'
+INFO: [VRFC 10-3107] analyzing entity 'fifo_generator_v13_2_5_builtin'
+INFO: [VRFC 10-3107] analyzing entity 'bram_sync_reg'
+INFO: [VRFC 10-3107] analyzing entity 'bram_fifo_rstlogic'
+INFO: [VRFC 10-3107] analyzing entity 'reset_blk_ramfifo'
+INFO: [VRFC 10-3107] analyzing entity 'axi_reg_slice'
+INFO: [VRFC 10-3107] analyzing entity 'fifo_generator_top'
+INFO: [VRFC 10-3107] analyzing entity 'fifo_generator_v13_2_5_synth'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/nf_mac_attachment_ip/ip_proj/fifo_generator_1_9/hdl/fifo_generator_v13_2_rfs.vhd" into library fifo_generator_v13_2_5
+INFO: [VRFC 10-3107] analyzing entity 'input_blk'
+INFO: [VRFC 10-3107] analyzing entity 'output_blk'
+INFO: [VRFC 10-3107] analyzing entity 'shft_wrapper'
+INFO: [VRFC 10-3107] analyzing entity 'shft_ram'
+INFO: [VRFC 10-3107] analyzing entity 'wr_pf_as'
+INFO: [VRFC 10-3107] analyzing entity 'wr_pf_ss'
+INFO: [VRFC 10-3107] analyzing entity 'rd_pe_as'
+INFO: [VRFC 10-3107] analyzing entity 'rd_pe_ss'
+INFO: [VRFC 10-3107] analyzing entity 'synchronizer_ff'
+INFO: [VRFC 10-3107] analyzing entity 'delay'
+INFO: [VRFC 10-3107] analyzing entity 'bin_cntr'
+INFO: [VRFC 10-3107] analyzing entity 'clk_x_pntrs_builtin'
+INFO: [VRFC 10-3107] analyzing entity 'logic_builtin'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_prim'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_extdepth'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_top'
+INFO: [VRFC 10-3107] analyzing entity 'reset_builtin'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_prim_v6'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_extdepth_v6'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_extdepth_low_latency'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_top_v6'
+INFO: [VRFC 10-3107] analyzing entity 'fifo_generator_v13_2_5_builtin'
+INFO: [VRFC 10-3107] analyzing entity 'bram_sync_reg'
+INFO: [VRFC 10-3107] analyzing entity 'bram_fifo_rstlogic'
+INFO: [VRFC 10-3107] analyzing entity 'reset_blk_ramfifo'
+INFO: [VRFC 10-3107] analyzing entity 'axi_reg_slice'
+INFO: [VRFC 10-3107] analyzing entity 'fifo_generator_top'
+INFO: [VRFC 10-3107] analyzing entity 'fifo_generator_v13_2_5_synth'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.ip_user_files/ipstatic/fifo_generator_1_9/hdl/fifo_generator_v13_2_rfs.vhd" into library fifo_generator_v13_2_5
+INFO: [VRFC 10-3107] analyzing entity 'input_blk'
+INFO: [VRFC 10-3107] analyzing entity 'output_blk'
+INFO: [VRFC 10-3107] analyzing entity 'shft_wrapper'
+INFO: [VRFC 10-3107] analyzing entity 'shft_ram'
+INFO: [VRFC 10-3107] analyzing entity 'wr_pf_as'
+INFO: [VRFC 10-3107] analyzing entity 'wr_pf_ss'
+INFO: [VRFC 10-3107] analyzing entity 'rd_pe_as'
+INFO: [VRFC 10-3107] analyzing entity 'rd_pe_ss'
+INFO: [VRFC 10-3107] analyzing entity 'synchronizer_ff'
+INFO: [VRFC 10-3107] analyzing entity 'delay'
+INFO: [VRFC 10-3107] analyzing entity 'bin_cntr'
+INFO: [VRFC 10-3107] analyzing entity 'clk_x_pntrs_builtin'
+INFO: [VRFC 10-3107] analyzing entity 'logic_builtin'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_prim'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_extdepth'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_top'
+INFO: [VRFC 10-3107] analyzing entity 'reset_builtin'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_prim_v6'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_extdepth_v6'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_extdepth_low_latency'
+INFO: [VRFC 10-3107] analyzing entity 'builtin_top_v6'
+INFO: [VRFC 10-3107] analyzing entity 'fifo_generator_v13_2_5_builtin'
+INFO: [VRFC 10-3107] analyzing entity 'bram_sync_reg'
+INFO: [VRFC 10-3107] analyzing entity 'bram_fifo_rstlogic'
+INFO: [VRFC 10-3107] analyzing entity 'reset_blk_ramfifo'
+INFO: [VRFC 10-3107] analyzing entity 'axi_reg_slice'
+INFO: [VRFC 10-3107] analyzing entity 'fifo_generator_top'
+INFO: [VRFC 10-3107] analyzing entity 'fifo_generator_v13_2_5_synth'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip2/hdl/axis_sim_pkg/axis_sim_pkg.vhd" into library xil_defaultlib
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip2/hdl/axis_sim_stim.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'axis_sim_stim'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip2/sim/axis_sim_stim_ip2.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'axis_sim_stim_ip2'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip1/hdl/axis_sim_pkg/axis_sim_pkg.vhd" into library xil_defaultlib
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip1/hdl/axis_sim_stim.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'axis_sim_stim'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip1/sim/axis_sim_stim_ip1.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'axis_sim_stim_ip1'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip0/hdl/axis_sim_pkg/axis_sim_pkg.vhd" into library xil_defaultlib
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip0/hdl/axis_sim_stim.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'axis_sim_stim'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip0/sim/axis_sim_stim_ip0.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'axis_sim_stim_ip0'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_init_file_pack_xst.vhd" into library xil_defaultlib
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_pkg.vhd" into library xil_defaultlib
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_control.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_control'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_decoder.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_decoder'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_input_ternary_ternenc.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_input_ternary_ternenc'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_input_ternary.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_input_ternary'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_input.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_input'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_match_enc.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_match_enc'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_mem_srl16_wrcomp.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_srl16_wrcomp'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_mem_srl16_ternwrcomp.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_srl16_ternwrcomp'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_mem_srl16_block_word.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_srl16_block_word'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_mem_srl16_block.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_srl16_block'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_mem_srl16.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_srl16'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/dmem.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'dmem'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_mem_blk_extdepth_prim.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_blk_extdepth_prim'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_mem_blk_extdepth.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_blk_extdepth'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_mem_blk.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_blk'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_mem.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_regouts.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_regouts'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_rtl.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_rtl'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/cam/cam_top.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_top'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_init_file_pack_xst.vhd" into library xil_defaultlib
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_pkg.vhd" into library xil_defaultlib
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_control.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_control'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_decoder.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_decoder'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_input_ternary_ternenc.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_input_ternary_ternenc'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_input_ternary.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_input_ternary'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_input.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_input'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_match_enc.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_match_enc'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_mem_srl16_wrcomp.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_srl16_wrcomp'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_mem_srl16_ternwrcomp.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_srl16_ternwrcomp'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_mem_srl16_block_word.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_srl16_block_word'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_mem_srl16_block.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_srl16_block'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_mem_srl16.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_srl16'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/dmem.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'dmem'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_mem_blk_extdepth_prim.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_blk_extdepth_prim'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_mem_blk_extdepth.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_blk_extdepth'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_mem_blk.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem_blk'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_mem.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_mem'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_regouts.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_regouts'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_rtl.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_rtl'
+INFO: [VRFC 10-163] Analyzing VHDL file "/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/vhdl/tcam/cam_top.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cam_top'
+Waiting for jobs to finish...
+No pending jobs, compilation finished.
+run_program: Time (s): cpu = 00:00:06 ; elapsed = 00:02:18 . Memory (MB): peak = 2693.309 ; gain = 0.000 ; free physical = 49679 ; free virtual = 162739
+INFO: [USF-XSim-69] 'compile' step finished in '138' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.sim/sim_1/behav/xsim'
+xelab -wto 8c276b8748944be2b4916bef6843730e --incr --debug typical --relax --mt 8 -d SIMULATION=1 -L xil_defaultlib -L lib_pkg_v1_0_2 -L lib_srl_fifo_v1_0_2 -L generic_baseblocks_v2_1_0 -L axi_infrastructure_v1_1_0 -L axi_register_slice_v2_1_22 -L fifo_generator_v13_2_5 -L axi_data_fifo_v2_1_21 -L axi_crossbar_v2_1_23 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot top_tb_behav xil_defaultlib.top_tb xil_defaultlib.glbl -log elaborate.log
+Vivado Simulator 2020.2
+Copyright 1986-1999, 2001-2020 Xilinx, Inc. All Rights Reserved.
+Running: /ad/eng/opt/Xilinx/Vivado/2020.2/bin/unwrapped/lnx64.o/xelab -wto 8c276b8748944be2b4916bef6843730e --incr --debug typical --relax --mt 8 -d SIMULATION=1 -L xil_defaultlib -L lib_pkg_v1_0_2 -L lib_srl_fifo_v1_0_2 -L generic_baseblocks_v2_1_0 -L axi_infrastructure_v1_1_0 -L axi_register_slice_v2_1_22 -L fifo_generator_v13_2_5 -L axi_data_fifo_v2_1_21 -L axi_crossbar_v2_1_23 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot top_tb_behav xil_defaultlib.top_tb xil_defaultlib.glbl -log elaborate.log 
+Using 8 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 16 for port 'pcie_rxn' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:113]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 16 for port 'pcie_rxp' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:114]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 16 for port 'pcie_txn' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:115]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 16 for port 'pcie_txp' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:116]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'qsfp0_rxp' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:119]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'qsfp0_rxn' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:120]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'qsfp0_txp' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:121]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'qsfp0_txn' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:122]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 12 for port 'S_AXI_AWADDR' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/nf_datapath.v:222]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 12 for port 'S_AXI_ARADDR' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/nf_datapath.v:228]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 12 for port 'S_AXI_AWADDR' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/nf_datapath.v:294]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 12 for port 'S_AXI_ARADDR' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/nf_datapath.v:300]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 12 for port 'S_AXI_AWADDR' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/nf_datapath.v:357]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 12 for port 'S_AXI_ARADDR' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/nf_datapath.v:363]
+WARNING: [VRFC 10-3091] actual bit length 705 differs from formal bit length 1089 for port 'din' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/tx_queue.v:122]
+WARNING: [VRFC 10-3091] actual bit length 705 differs from formal bit length 1089 for port 'dout' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/nf_mac_attachment_dma_ip/hdl/tx_queue.v:133]
+WARNING: [VRFC 10-3091] actual bit length 128 differs from formal bit length 1 for port 's_axis_mac_tuser_err' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_sim.v:563]
+WARNING: [VRFC 10-3091] actual bit length 5 differs from formal bit length 2 for port 'activity_stim' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_sim.v:667]
+WARNING: [VRFC 10-3091] actual bit length 5 differs from formal bit length 2 for port 'activity_rec' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_sim.v:668]
+WARNING: [VRFC 10-3091] actual bit length 5 differs from formal bit length 2 for port 'barrier_req' [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_sim.v:671]
+WARNING: [VRFC 10-5021] port 'qsfp1_rxp' is not connected on this instance [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_tb.v:94]
+WARNING: [VRFC 10-5021] port 'S_AXI_ACLK' is not connected on this instance [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_sim.v:464]
+WARNING: [VRFC 10-5021] port 'S_AXI_ACLK' is not connected on this instance [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_sim.v:506]
+WARNING: [VRFC 10-5021] port 'S_AXI_ACLK' is not connected on this instance [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/hdl/top_sim.v:548]
+WARNING: [VRFC 10-5021] port 'injectsbiterr' is not connected on this instance [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/router_output_port_lookup_ip/hdl/ip_checksum_ttl.v:78]
+WARNING: [VRFC 10-3705] select index 2 into 'activity_stim' is out of bounds [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/barrier_ip/hdl/barrier.v:74]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 100fs
+Compiling package std.standard
+Compiling package std.textio
+Compiling package ieee.std_logic_1164
+Compiling package xil_defaultlib.cam_init_file_pack_xst
+Compiling package xil_defaultlib.cam_pkg
+Compiling package synopsys.attributes
+Compiling package ieee.std_logic_misc
+Compiling package ieee.std_logic_arith
+Compiling package ieee.std_logic_unsigned
+Compiling package ieee.numeric_std
+Compiling package unisim.vcomponents
+Compiling package ieee.vital_timing
+Compiling package ieee.vital_primitives
+Compiling package unisim.vpkg
+Compiling package unimacro.vcomponents
+Compiling package ieee.std_logic_signed
+Compiling package ieee.std_logic_textio
+Compiling package xil_defaultlib.axis_sim_pkg
+Compiling package lib_pkg_v1_0_2.lib_pkg
+Compiling module unisims_ver.IBUF
+Compiling module unisims_ver.IBUFDS_GTE2
+Compiling module xil_defaultlib.small_fifo(WIDTH=1281,MAX_DEPTH_...
+Compiling module xil_defaultlib.fallthrough_small_fifo(WIDTH=128...
+Compiling module xil_defaultlib.input_arbiter_cpu_regs(C_S_AXI_A...
+Compiling module xil_defaultlib.input_arbiter(C_M_AXIS_DATA_WIDT...
+Compiling module xil_defaultlib.input_arbiter_ip
+Compiling module xil_defaultlib.bridge(C_AXIS_DATA_WIDTH=1024)
+Compiling module xil_defaultlib.nf_endianess_manager(C_S_AXIS_TD...
+Compiling module xil_defaultlib.nf_endianess_manager_ip
+Compiling module xpm.xpm_fifo_rst_default
+Compiling module xpm.xpm_fifo_reg_bit
+Compiling module xpm.xpm_counter_updn(COUNTER_WIDTH=5...
+Compiling module xpm.xpm_counter_updn
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_counter_updn(COUNTER_WIDTH=2...
+Compiling module xpm.xpm_fifo_base(FIFO_WRITE_DEPTH=1...
+Compiling module xpm.xpm_fifo_sync(FIFO_WRITE_DEPTH=1...
+Compiling module xil_defaultlib.preprocess_control(C_S_AXIS_DATA...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_fifo_base(FIFO_WRITE_DEPTH=1...
+Compiling module xpm.xpm_fifo_sync(FIFO_WRITE_DEPTH=1...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_fifo_base(FIFO_WRITE_DEPTH=1...
+Compiling module xpm.xpm_fifo_sync(FIFO_WRITE_DEPTH=1...
+Compiling module xil_defaultlib.eth_parser(C_S_AXIS_DATA_WIDTH=1...
+Compiling architecture xilinx of entity xil_defaultlib.cam_input_ternary_ternenc [\cam_input_ternary_ternenc(c_ter...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_input_ternary [\cam_input_ternary(c_din_width=3...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_input [\cam_input(c_din_width=32,c_data...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem_srl16_ternwrcomp [cam_mem_srl16_ternwrcomp_default]
+Compiling architecture xilinx of entity xil_defaultlib.cam_decoder [\cam_decoder(c_dec_sel_width=5,c...]
+Compiling architecture srl16e_v of entity unisim.SRL16E [\SRL16E(0,15)\]
+Compiling architecture muxcy_v of entity unisim.MUXCY [muxcy_default]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem_srl16_block_word [\cam_mem_srl16_block_word(c_init...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem_srl16_block [\cam_mem_srl16_block(c_depth=32,...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem_srl16 [\cam_mem_srl16(c_depth=32,c_init...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem [\cam_mem(c_depth=32,c_init_width...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_match_enc [\cam_match_enc(c_addr_type=1,c_d...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_control [\cam_control(c_rd_data_mask_widt...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_rtl [\cam_rtl(c_addr_type=1,c_cmp_dat...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_top [\cam_top(c_addr_type=1,c_depth=3...]
+Compiling module xil_defaultlib.tcam_wrapper(C_TCAM_ADDR_WIDTH=5...
+Compiling module xil_defaultlib.tcam(C_TCAM_ADDR_TYPE=1,C_TCAM_M...
+Compiling module xil_defaultlib.unencoded_cam_lut_sm(DATA_WIDTH=...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_fifo_base(FIFO_WRITE_DEPTH=1...
+Compiling module xpm.xpm_fifo_sync(FIFO_WRITE_DEPTH=1...
+Compiling module xil_defaultlib.ip_lpm(C_S_AXIS_DATA_WIDTH=1024)
+Compiling architecture xilinx of entity xil_defaultlib.cam_input [\cam_input(c_din_width=32,c_data...]
+Compiling architecture xilinx of entity xil_defaultlib.dmem [\dmem(c_width=32,c_depth=32,c_wr...]
+Compiling architecture rb36_internal_vhdl_v of entity unisim.RB36_INTERNAL_VHDL [\RB36_INTERNAL_VHDL(init_a="0000...]
+Compiling architecture ramb36e1_v of entity unisim.RAMB36E1 [\RAMB36E1(read_width_a=1,read_wi...]
+Compiling architecture ramb36_v of entity unisim.RAMB36 [\RAMB36(read_width_a=1,read_widt...]
+Compiling architecture bram_v of entity unimacro.BRAM_TDP_MACRO [\BRAM_TDP_MACRO(bram_size="36Kb"...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem_blk_extdepth_prim [\cam_mem_blk_extdepth_prim(c_dep...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem_blk_extdepth [\cam_mem_blk_extdepth(c_depth=32...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem_blk_extdepth_prim [\cam_mem_blk_extdepth_prim(c_dep...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem_blk_extdepth [\cam_mem_blk_extdepth(c_depth=32...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem_blk_extdepth_prim [\cam_mem_blk_extdepth_prim(c_dep...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem_blk_extdepth [\cam_mem_blk_extdepth(c_depth=32...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem_blk_extdepth_prim [\cam_mem_blk_extdepth_prim(c_dep...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem_blk_extdepth [\cam_mem_blk_extdepth(c_depth=32...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem_blk [\cam_mem_blk(c_depth=32,c_init_v...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_mem [\cam_mem(c_depth=32,c_init_width...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_match_enc [\cam_match_enc(c_addr_type=1,c_d...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_control [\cam_control(c_mem_type=1,c_rd_d...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_rtl [\cam_rtl(c_addr_type=1,c_cmp_dat...]
+Compiling architecture xilinx of entity xil_defaultlib.cam_top [\cam_top(c_addr_type=1,c_depth=3...]
+Compiling module xil_defaultlib.cam_wrapper(C_TCAM_ADDR_WIDTH=5,...
+Compiling module xil_defaultlib.cam(C_TCAM_ADDR_TYPE=1,C_TCAM_MA...
+Compiling module xil_defaultlib.unencoded_cam_lut_sm(DATA_WIDTH=...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_fifo_base(FIFO_WRITE_DEPTH=1...
+Compiling module xpm.xpm_fifo_sync(FIFO_WRITE_DEPTH=1...
+Compiling module xil_defaultlib.ip_arp_default
+Compiling module xil_defaultlib.unencoded_cam_lut_sm(DATA_WIDTH=...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_fifo_base(FIFO_WRITE_DEPTH=1...
+Compiling module xpm.xpm_fifo_sync(FIFO_WRITE_DEPTH=1...
+Compiling module xil_defaultlib.dest_ip_filter(C_S_AXIS_DATA_WID...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_fifo_base(FIFO_WRITE_DEPTH=1...
+Compiling module xpm.xpm_fifo_sync(FIFO_WRITE_DEPTH=1...
+Compiling module xil_defaultlib.ip_checksum_ttl(C_S_AXIS_DATA_WI...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_fifo_base(FIFO_WRITE_DEPTH=1...
+Compiling module xpm.xpm_fifo_sync(FIFO_WRITE_DEPTH=1...
+Compiling module xil_defaultlib.op_lut_hdr_parser(C_S_AXIS_DATA_...
+Compiling module xil_defaultlib.op_lut_process_sm(C_S_AXIS_DATA_...
+Compiling module xil_defaultlib.output_port_lookup(C_M_AXIS_DATA...
+Compiling module xil_defaultlib.output_port_lookup_cpu_regs(C_S_...
+Compiling module xil_defaultlib.router_output_port_lookup(C_M_AX...
+Compiling module xil_defaultlib.router_output_port_lookup_ip
+Compiling module xil_defaultlib.small_fifo(WIDTH=1153,MAX_DEPTH_...
+Compiling module xil_defaultlib.fallthrough_small_fifo(WIDTH=115...
+Compiling module xil_defaultlib.small_fifo(WIDTH=128,MAX_DEPTH_B...
+Compiling module xil_defaultlib.fallthrough_small_fifo(WIDTH=128...
+Compiling module xil_defaultlib.output_queues_cpu_regs(C_S_AXI_A...
+Compiling module xil_defaultlib.output_queues(C_M_AXIS_DATA_WIDT...
+Compiling module xil_defaultlib.output_queues_ip
+Compiling module xil_defaultlib.nf_datapath(C_M_AXIS_DATA_WIDTH=...
+Compiling architecture rtl of entity xil_defaultlib.axis_sim_stim [\axis_sim_stim(input_file="/ad/e...]
+Compiling architecture axis_sim_stim_ip0_arch of entity xil_defaultlib.axis_sim_stim_ip0 [axis_sim_stim_ip0_default]
+Compiling architecture rtl of entity xil_defaultlib.axis_sim_stim [\axis_sim_stim(input_file="/ad/e...]
+Compiling architecture axis_sim_stim_ip1_arch of entity xil_defaultlib.axis_sim_stim_ip1 [axis_sim_stim_ip1_default]
+Compiling architecture rtl of entity xil_defaultlib.axis_sim_stim [\axis_sim_stim(input_file="/ad/e...]
+Compiling architecture axis_sim_stim_ip2_arch of entity xil_defaultlib.axis_sim_stim_ip2 [axis_sim_stim_ip2_default]
+Compiling module xil_defaultlib.axis_sim_record(OUTPUT_FILE="/ad...
+Compiling module xil_defaultlib.axis_sim_record_ip0
+Compiling module xil_defaultlib.axis_sim_record(OUTPUT_FILE="/ad...
+Compiling module xil_defaultlib.axis_sim_record_ip1
+Compiling module xil_defaultlib.axis_sim_record(OUTPUT_FILE="/ad...
+Compiling module xil_defaultlib.axis_sim_record_ip2
+Compiling module xil_defaultlib.data_sync_block(C_NUM_SYNC_REGS=...
+Compiling module xpm.xpm_cdc_sync_rst(DEST_SYNC_FF=2,...
+Compiling module xpm.xpm_fifo_rst(COMMON_CLOCK=0)
+Compiling module xpm.xpm_counter_updn(COUNTER_WIDTH=8...
+Compiling module xpm.xpm_counter_updn(COUNTER_WIDTH=7...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_cdc_gray(DEST_SYNC_FF=2,INIT...
+Compiling module xpm.xpm_fifo_reg_vec(REG_WIDTH=7)
+Compiling module xpm.xpm_cdc_gray(INIT_SYNC_FF=1,WIDT...
+Compiling module xpm.xpm_fifo_reg_vec(REG_WIDTH=8)
+Compiling module xpm.xpm_cdc_gray(DEST_SYNC_FF=2,INIT...
+Compiling module xpm.xpm_fifo_base(COMMON_CLOCK=0,FIF...
+Compiling module xpm.xpm_fifo_async(FIFO_WRITE_DEPTH=...
+Compiling module xil_defaultlib.rx_queue
+Compiling module xpm.xpm_counter_updn(COUNTER_WIDTH=6...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_fifo_base(FIFO_WRITE_DEPTH=6...
+Compiling module xpm.xpm_fifo_sync(FIFO_WRITE_DEPTH=6...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_fifo_base(FIFO_WRITE_DEPTH=3...
+Compiling module xpm.xpm_fifo_sync(FIFO_WRITE_DEPTH=3...
+Compiling module xil_defaultlib.nf_axis_converter_main(C_M_AXIS_...
+Compiling module xil_defaultlib.small_fifo(WIDTH=1153,MAX_DEPTH_...
+Compiling module xil_defaultlib.fallthrough_small_fifo(WIDTH=115...
+Compiling module xil_defaultlib.small_fifo(WIDTH=128,MAX_DEPTH_B...
+Compiling module xil_defaultlib.fallthrough_small_fifo(WIDTH=128...
+Compiling module xil_defaultlib.axis_fifo(C_AXIS_DATA_WIDTH=1024...
+Compiling module xil_defaultlib.nf_axis_converter(C_M_AXIS_DATA_...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_fifo_base(FIFO_WRITE_DEPTH=3...
+Compiling module xpm.xpm_fifo_sync(FIFO_WRITE_DEPTH=3...
+Compiling module xil_defaultlib.nf_axis_converter_main(C_S_AXIS_...
+Compiling module xil_defaultlib.small_fifo(WIDTH=577,MAX_DEPTH_B...
+Compiling module xil_defaultlib.fallthrough_small_fifo(WIDTH=577...
+Compiling module xil_defaultlib.axis_fifo(C_AXIS_DATA_WIDTH=512)
+Compiling module xil_defaultlib.nf_axis_converter(C_S_AXIS_DATA_...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_fifo_base(COMMON_CLOCK=0,FIF...
+Compiling module xpm.xpm_fifo_async(FIFO_WRITE_DEPTH=...
+Compiling module fifo_generator_v13_2_5.fifo_generator_v13_2_5_sync_stag...
+Compiling module fifo_generator_v13_2_5.fifo_generator_v13_2_5_bhv_ver_a...
+Compiling module fifo_generator_v13_2_5.fifo_generator_v13_2_5_bhv_ver_p...
+Compiling module fifo_generator_v13_2_5.fifo_generator_v13_2_5_CONV_VER(...
+Compiling module fifo_generator_v13_2_5.fifo_generator_vlog_beh(C_DATA_C...
+Compiling module xil_defaultlib.fifo_generator_1_9
+Compiling module xil_defaultlib.tx_queue(C_S_AXIS_TUSER_WIDTH=12...
+Compiling module xil_defaultlib.nf_mac_attachment_cpu_regs
+Compiling module xil_defaultlib.nf_mac_attachment(C_M_AXIS_DATA_...
+Compiling module xil_defaultlib.nf_mac_attachment_dma_ip
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_fifo_base(FIFO_WRITE_DEPTH=3...
+Compiling module xpm.xpm_fifo_sync(FIFO_WRITE_DEPTH=3...
+Compiling module xil_defaultlib.nf_axis_converter_main(C_M_AXIS_...
+Compiling module xil_defaultlib.nf_axis_converter(C_M_AXIS_DATA_...
+Compiling module xil_defaultlib.nf_mac_attachment(C_M_AXIS_DATA_...
+Compiling module xil_defaultlib.nf_mac_attachment_ip
+Compiling module axi_crossbar_v2_1_23.axi_crossbar_v2_1_23_addr_arbite...
+Compiling module generic_baseblocks_v2_1_0.generic_baseblocks_v2_1_0_carry_...
+Compiling module generic_baseblocks_v2_1_0.generic_baseblocks_v2_1_0_compar...
+Compiling module generic_baseblocks_v2_1_0.generic_baseblocks_v2_1_0_compar...
+Compiling module generic_baseblocks_v2_1_0.generic_baseblocks_v2_1_0_compar...
+Compiling module axi_crossbar_v2_1_23.axi_crossbar_v2_1_23_addr_decode...
+Compiling module axi_crossbar_v2_1_23.axi_crossbar_v2_1_23_splitter(C_...
+Compiling module axi_crossbar_v2_1_23.axi_crossbar_v2_1_23_splitter
+Compiling module generic_baseblocks_v2_1_0.generic_baseblocks_v2_1_0_mux_en...
+Compiling module generic_baseblocks_v2_1_0.generic_baseblocks_v2_1_0_mux_en...
+Compiling module generic_baseblocks_v2_1_0.generic_baseblocks_v2_1_0_mux_en...
+Compiling module axi_register_slice_v2_1_22.axi_register_slice_v2_1_22_axic_...
+Compiling module generic_baseblocks_v2_1_0.generic_baseblocks_v2_1_0_mux_en...
+Compiling module axi_crossbar_v2_1_23.axi_crossbar_v2_1_23_decerr_slav...
+Compiling module axi_crossbar_v2_1_23.axi_crossbar_v2_1_23_crossbar_sa...
+Compiling module axi_crossbar_v2_1_23.axi_crossbar_v2_1_23_axi_crossba...
+Compiling module xil_defaultlib.axi_crossbar_0
+Compiling architecture imp of entity lib_srl_fifo_v1_0_2.cntr_incr_decr_addn_f [\cntr_incr_decr_addn_f(c_size=5)...]
+Compiling architecture behavioral of entity lib_srl_fifo_v1_0_2.dynshreg_f [\dynshreg_f(c_depth=16,c_dwidth=...]
+Compiling architecture imp of entity lib_srl_fifo_v1_0_2.srl_fifo_rbu_f [\srl_fifo_rbu_f(c_dwidth=64)(1,8...]
+Compiling architecture imp of entity lib_srl_fifo_v1_0_2.srl_fifo_f [\srl_fifo_f(c_dwidth=64)(1,8)\]
+Compiling architecture behavioral of entity lib_srl_fifo_v1_0_2.dynshreg_f [\dynshreg_f(c_depth=16,c_dwidth=...]
+Compiling architecture imp of entity lib_srl_fifo_v1_0_2.srl_fifo_rbu_f [\srl_fifo_rbu_f(c_dwidth=32)(1,8...]
+Compiling architecture imp of entity lib_srl_fifo_v1_0_2.srl_fifo_f [\srl_fifo_f(c_dwidth=32)(1,8)\]
+Compiling architecture behavioral of entity lib_srl_fifo_v1_0_2.dynshreg_f [\dynshreg_f(c_depth=16,c_dwidth=...]
+Compiling architecture imp of entity lib_srl_fifo_v1_0_2.srl_fifo_rbu_f [\srl_fifo_rbu_f(c_dwidth=36)(1,8...]
+Compiling architecture imp of entity lib_srl_fifo_v1_0_2.srl_fifo_f [\srl_fifo_f(c_dwidth=36)(1,8)\]
+Compiling architecture rtl of entity xil_defaultlib.transactor_fifos [transactor_fifos_default]
+Compiling architecture rtl of entity xil_defaultlib.axi_sim_transactor [\axi_sim_transactor(stim_file="/...]
+Compiling architecture axi_sim_transactor_ip_arch of entity xil_defaultlib.axi_sim_transactor_ip [axi_sim_transactor_ip_default]
+WARNING: [VRFC 10-3705] select index 2 into 'activity_stim' is out of bounds [/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/barrier_ip/hdl/barrier.v:74]
+Compiling module xil_defaultlib.barrier
+Compiling module xil_defaultlib.barrier_ip
+Compiling module xil_defaultlib.top_sim(KEEP_WIDTH=16)
+Compiling module xil_defaultlib.top_tb
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot top_tb_behav
+
+****** Webtalk v2020.2 (64-bit)
+  **** SW Build 3064766 on Wed Nov 18 09:12:47 MST 2020
+  **** IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.sim/sim_1/behav/xsim/xsim.dir/top_tb_behav/webtalk/xsim_webtalk.tcl -notrace
+INFO: [Common 17-186] '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.sim/sim_1/behav/xsim/xsim.dir/top_tb_behav/webtalk/usage_statistics_ext_xsim.xml' has been successfully sent to Xilinx on Tue Mar 15 17:46:42 2022. For additional details about this file, please refer to the WebTalk help file at /ad/eng/opt/Xilinx/Vivado/2020.2/doc/webtalk_introduction.html.
+webtalk_transmit: Time (s): cpu = 00:00:01 ; elapsed = 00:00:08 . Memory (MB): peak = 530.945 ; gain = 0.000 ; free physical = 48976 ; free virtual = 162055
+INFO: [Common 17-206] Exiting Webtalk at Tue Mar 15 17:46:42 2022...
+run_program: Time (s): cpu = 00:00:29 ; elapsed = 00:02:48 . Memory (MB): peak = 2693.309 ; gain = 0.000 ; free physical = 49629 ; free virtual = 162708
+INFO: [USF-XSim-69] 'elaborate' step finished in '168' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in '/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "top_tb_behav -key {Behavioral:sim_1:Functional:top_tb} -tclbatch {top_tb.tcl} -log {simulate.log} -testplusarg TESTNAME=basic_test"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2020.2
+Warning: File /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../hw/projects/reference_router/test/nf_interface_0_stim.axi could not be opened
+on HDL file /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip2/hdl/axis_sim_stim.vhd line 82
+Warning: File /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../hw/projects/reference_router/test/nf_interface_1_stim.axi could not be opened
+on HDL file /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip2/hdl/axis_sim_stim.vhd line 82
+Warning: File /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../hw/projects/reference_router/test/dma_0_stim.axi could not be opened
+on HDL file /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip2/hdl/axis_sim_stim.vhd line 82
+Warning: File /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../hw/projects/reference_router/test/reg_stim.axi could not be opened
+on HDL file /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axi_sim_transactor_ip/hdl/axi_sim_transactor.vhd line 102
+Warning: File /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../hw/projects/reference_router/test/reg_expect.axi could not be opened
+on HDL file /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axi_sim_transactor_ip/hdl/axi_sim_transactor.vhd line 103
+Time resolution is 100 fs
+source top_tb.tcl
+## current_wave_config
+xsim: Time (s): cpu = 00:00:00.07 ; elapsed = 00:00:09 . Memory (MB): peak = 2693.309 ; gain = 0.000 ; free physical = 49616 ; free virtual = 162697
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'top_tb_behav' loaded.
+launch_simulation: Time (s): cpu = 00:00:37 ; elapsed = 00:06:39 . Memory (MB): peak = 2693.309 ; gain = 0.000 ; free physical = 49616 ; free virtual = 162697
+# run 60us
+WARNING: Behavioral models for independent clock FIFO configurations do not model synchronization delays. The behavioral models are functionally correct, and will represent the behavior of the configured FIFO. See the FIFO Generator User Guide for more information.
+WARNING: Behavioral models for independent clock FIFO configurations do not model synchronization delays. The behavioral models are functionally correct, and will represent the behavior of the configured FIFO. See the FIFO Generator User Guide for more information.
+WARNING: Behavioral models for independent clock FIFO configurations do not model synchronization delays. The behavioral models are functionally correct, and will represent the behavior of the configured FIFO. See the FIFO Generator User Guide for more information.
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/nf_datapath_0/output_port_lookup_1/inst/output_port_lookup/input_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_314  Scope: top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.eth_parser.eth_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/nf_datapath_0/output_port_lookup_1/inst/output_port_lookup/eth_parser/eth_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_374  Scope: top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.eth_parser.eth_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.eth_parser.parser_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/nf_datapath_0/output_port_lookup_1/inst/output_port_lookup/eth_parser/parser_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_432  Scope: top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.eth_parser.parser_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.ip_lpm.dest_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/nf_datapath_0/output_port_lookup_1/inst/output_port_lookup/ip_lpm/dest_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_496  Scope: top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.ip_lpm.dest_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.ip_arp.arp_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/nf_datapath_0/output_port_lookup_1/inst/output_port_lookup/ip_arp/arp_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_560  Scope: top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.ip_arp.arp_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.dest_ip_filter.dest_ip_filter_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/nf_datapath_0/output_port_lookup_1/inst/output_port_lookup/dest_ip_filter/dest_ip_filter_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_621  Scope: top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.dest_ip_filter.dest_ip_filter_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.dest_ip_filter.dest_fifo2.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/nf_datapath_0/output_port_lookup_1/inst/output_port_lookup/dest_ip_filter/dest_fifo2/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_496  Scope: top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.dest_ip_filter.dest_fifo2.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.ip_checksum_ttl.info_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/nf_datapath_0/output_port_lookup_1/inst/output_port_lookup/ip_checksum_ttl/info_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_739  Scope: top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.ip_checksum_ttl.info_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.ip_checksum_ttl.cksm_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/nf_datapath_0/output_port_lookup_1/inst/output_port_lookup/ip_checksum_ttl/cksm_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_621  Scope: top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.ip_checksum_ttl.cksm_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.op_lut_hdr_parser.is_from_cpu_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/nf_datapath_0/output_port_lookup_1/inst/output_port_lookup/op_lut_hdr_parser/is_from_cpu_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_856  Scope: top_tb.top_sim.nf_datapath_0.output_port_lookup_1.inst.output_port_lookup.op_lut_hdr_parser.is_from_cpu_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_dma.inst.rx_fifo_intf.u_rxqueue.\gnuram_async_fifo.xpm_fifo_base_inst .\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_dma/inst/rx_fifo_intf/u_rxqueue/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1015  Scope: top_tb.top_sim.u_nf_attachment_dma.inst.rx_fifo_intf.u_rxqueue.\gnuram_async_fifo.xpm_fifo_base_inst .\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_dma.inst.converter_rx.nf_converter.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_dma/inst/converter_rx/nf_converter/input_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1123  Scope: top_tb.top_sim.u_nf_attachment_dma.inst.converter_rx.nf_converter.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_dma.inst.converter_rx.nf_converter.\DEFAULT_VALUE_DISABLE.info_fifo .xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_dma/inst/converter_rx/nf_converter/DEFAULT_VALUE_DISABLE.info_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1184  Scope: top_tb.top_sim.u_nf_attachment_dma.inst.converter_rx.nf_converter.\DEFAULT_VALUE_DISABLE.info_fifo .xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_dma.inst.converter_tx.nf_converter.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_dma/inst/converter_tx/nf_converter/input_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1256  Scope: top_tb.top_sim.u_nf_attachment_dma.inst.converter_tx.nf_converter.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_dma.inst.converter_tx.nf_converter.\DEFAULT_VALUE_DISABLE.info_fifo .xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_dma/inst/converter_tx/nf_converter/DEFAULT_VALUE_DISABLE.info_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1184  Scope: top_tb.top_sim.u_nf_attachment_dma.inst.converter_tx.nf_converter.\DEFAULT_VALUE_DISABLE.info_fifo .xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_dma.inst.tx_fifo_intf.u_tx_fifo.\gnuram_async_fifo.xpm_fifo_base_inst .\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_dma/inst/tx_fifo_intf/u_tx_fifo/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1404  Scope: top_tb.top_sim.u_nf_attachment_dma.inst.tx_fifo_intf.u_tx_fifo.\gnuram_async_fifo.xpm_fifo_base_inst .\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_0.inst.rx_fifo_intf.u_rxqueue.\gnuram_async_fifo.xpm_fifo_base_inst .\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_0/inst/rx_fifo_intf/u_rxqueue/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1015  Scope: top_tb.top_sim.u_nf_attachment_0.inst.rx_fifo_intf.u_rxqueue.\gnuram_async_fifo.xpm_fifo_base_inst .\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_0.inst.converter_rx.nf_converter.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_0/inst/converter_rx/nf_converter/input_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1123  Scope: top_tb.top_sim.u_nf_attachment_0.inst.converter_rx.nf_converter.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_0.inst.converter_rx.nf_converter.\DEFAULT_VALUE_ENABLE.info_fifo .xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_0/inst/converter_rx/nf_converter/DEFAULT_VALUE_ENABLE.info_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1785  Scope: top_tb.top_sim.u_nf_attachment_0.inst.converter_rx.nf_converter.\DEFAULT_VALUE_ENABLE.info_fifo .xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_0.inst.converter_tx.nf_converter.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_0/inst/converter_tx/nf_converter/input_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1256  Scope: top_tb.top_sim.u_nf_attachment_0.inst.converter_tx.nf_converter.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_0.inst.converter_tx.nf_converter.\DEFAULT_VALUE_DISABLE.info_fifo .xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_0/inst/converter_tx/nf_converter/DEFAULT_VALUE_DISABLE.info_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1184  Scope: top_tb.top_sim.u_nf_attachment_0.inst.converter_tx.nf_converter.\DEFAULT_VALUE_DISABLE.info_fifo .xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_0.inst.tx_fifo_intf.u_tx_fifo.\gnuram_async_fifo.xpm_fifo_base_inst .\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_0/inst/tx_fifo_intf/u_tx_fifo/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1404  Scope: top_tb.top_sim.u_nf_attachment_0.inst.tx_fifo_intf.u_tx_fifo.\gnuram_async_fifo.xpm_fifo_base_inst .\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_1.inst.rx_fifo_intf.u_rxqueue.\gnuram_async_fifo.xpm_fifo_base_inst .\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_1/inst/rx_fifo_intf/u_rxqueue/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1015  Scope: top_tb.top_sim.u_nf_attachment_1.inst.rx_fifo_intf.u_rxqueue.\gnuram_async_fifo.xpm_fifo_base_inst .\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_1.inst.converter_rx.nf_converter.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_1/inst/converter_rx/nf_converter/input_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1123  Scope: top_tb.top_sim.u_nf_attachment_1.inst.converter_rx.nf_converter.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_1.inst.converter_rx.nf_converter.\DEFAULT_VALUE_ENABLE.info_fifo .xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_1/inst/converter_rx/nf_converter/DEFAULT_VALUE_ENABLE.info_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1785  Scope: top_tb.top_sim.u_nf_attachment_1.inst.converter_rx.nf_converter.\DEFAULT_VALUE_ENABLE.info_fifo .xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_1.inst.converter_tx.nf_converter.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_1/inst/converter_tx/nf_converter/input_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1256  Scope: top_tb.top_sim.u_nf_attachment_1.inst.converter_tx.nf_converter.input_fifo.xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_1.inst.converter_tx.nf_converter.\DEFAULT_VALUE_DISABLE.info_fifo .xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_1/inst/converter_tx/nf_converter/DEFAULT_VALUE_DISABLE.info_fifo/xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1184  Scope: top_tb.top_sim.u_nf_attachment_1.inst.converter_tx.nf_converter.\DEFAULT_VALUE_DISABLE.info_fifo .xpm_fifo_base_inst.\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. top_tb.top_sim.u_nf_attachment_1.inst.tx_fifo_intf.u_tx_fifo.\gnuram_async_fifo.xpm_fifo_base_inst .\gen_sdpram.xpm_memory_base_inst .config_drc
+Time: 1 ps  Iteration: 0  Process: /top_tb/top_sim/u_nf_attachment_1/inst/tx_fifo_intf/u_tx_fifo/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst/Initial294_1404  Scope: top_tb.top_sim.u_nf_attachment_1.inst.tx_fifo_intf.u_tx_fifo.\gnuram_async_fifo.xpm_fifo_base_inst .\gen_sdpram.xpm_memory_base_inst .config_drc  File: /wrk/ci/prod/2020.2/sw/continuous/733/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv Line: 488
+Reset Deasserted
+ERROR: File /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../hw/projects/reference_router/test/nf_interface_0_stim.axi is not open. Cannot call endfile on it
+Time: 591 ns  Iteration: 2  Process: /top_tb/top_sim/axis_sim_stim_0/U0/line__88
+  File: /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip2/hdl/axis_sim_stim.vhd
+
+HDL Line: /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw/project/reference_router.gen/sources_1/ip/axis_sim_stim_ip2/hdl/axis_sim_stim.vhd:139
+INFO: [Common 17-206] Exiting Vivado at Tue Mar 15 17:47:13 2022...
+/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../tools/scripts/nf_sim_reconcile_axi_logs.py
+loading libsume..
+/ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/tools/../tools/scripts/nf_sim_registers_axi_logs.py
+Check registers
+Hey,  /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/projects/reference_router/hw

@@ -1,0 +1,162 @@
+2020.2:
+ * Version 4.0 (Rev. 2)
+ * Bug Fix: Updated pin constraints for ZCU117 and VCU117
+ * Bug Fix: Fixed the xsim simulation issue
+ * Bug Fix: Fixed AXI-MM performance issue
+ * Bug Fix: Fixed PCIE2AXI BAR address translation issue
+ * Other: Added XCK26 device support
+ * Revision change in one or more subcores
+
+2020.1.1:
+ * Version 4.0 (Rev. 1)
+ * Feature Enhancement: Added CIV devices
+ * Revision change in one or more subcores
+
+2020.1:
+ * Version 4.0
+ * Feature Enhancement: Major update of the IP, please refer to PG302 version 4.0
+ * Feature Enhancement: Change include regisers, Context table and ports
+ * Feature Enhancement: Upgrade from previous versions of IP are not supported
+ * Other: Remove Slave AXI Narrow Burst support
+ * Revision change in one or more subcores
+
+2019.2.2:
+ * Version 3.0 (Rev. 4)
+ * Revision change in one or more subcores
+
+2019.2.1:
+ * Version 3.0 (Rev. 3)
+ * No changes
+
+2019.2:
+ * Version 3.0 (Rev. 3)
+ * Bug Fix: Fixed the connection of signal cfg_flr_in_process from PCIE4 to qdma
+ * Feature Enhancement: Added CONFIG.no_uram {true} TCL option to not use URAM
+ * Feature Enhancement: Added Resizable BAR support with TCL option CONFIG.rbar_enable {true}
+ * Feature Enhancement: Resource reduction changes in RTL for some configurations
+ * Revision change in one or more subcores
+
+2019.1.3:
+ * Version 3.0 (Rev. 2)
+ * No changes
+
+2019.1.2:
+ * Version 3.0 (Rev. 2)
+ * Bug Fix: XSIM AXI-ST simulation Fix for WRB_COAL_MAX_BUF value 8,16
+
+2019.1.1:
+ * Version 3.0 (Rev. 1)
+ * No changes
+
+2019.1:
+ * Version 3.0 (Rev. 1)
+ * Bug Fix: Removed unused output port axis_c2h_status_imm_or_marker
+ * Bug Fix: usr_irq_in_vec input port width changed to 5 bits
+ * Bug Fix: Mailbox interrupts were generated only from PF vectors and not able to generate from other vectors
+ * Bug Fix: Interrupts not received properly when there is mix of direct interrupts and indirect interrupts
+ * Bug Fix: AXI-MM only with completion option not working
+ * Bug Fix: Write back coalesce buffer depth of 32 and 64 not working; issue with depth of 32 is fixed, depth of 64 is not allowed
+ * Bug Fix: Prefetch cache depth GUI parameter propagation issue
+ * Bug Fix: C2H write back timer deletion issue: Injection of a timer immediately after deletion causes deletion to stall resulting in multiple timers
+ * Bug Fix: Marker response not working when queue is disabled
+ * Bug Fix: Issue with more than 8 interrupt vectors per function using TCL option CONFIG.adv_int_usr
+ * Bug Fix: Expansion ROM space(EPROM option selected in last BAR) read/write access issue
+ * Bug Fix: Example design issue: Completions are not received for ST C2H transfers which follows mix payload transfers(immediate data and payload data)
+ * Bug Fix: Removed empty cycle after SOP in C2H DMA write engine to improve performance
+ * Bug Fix: fix for 'tm_dsc_sts_rdy' back pressure issues
+ * Feature Enhancement: Enabled slot clock configuration option in the GUI
+ * Feature Enhancement: Enabled support for JTAG debugger and IBERT debug options
+ * Feature Enhancement: Enabled Shared logic GUI page
+ * Feature Enhancement: User configurable number of queues 1 to 2048
+ * Feature Enhancement: Added user parameters for CQ outstanding transactions
+ * Revision change in one or more subcores
+
+2018.3.1:
+ * Version 3.0
+ * No changes
+
+2018.3:
+ * Version 3.0
+ * Bug Fix: Descriptor engine and prefetch engine deadlock:QDMA may get into a deadlock situation where the descriptor engine stops fetching the descriptors due to the back pressure on tm_sts
+ * Bug Fix: Completion timer issue:When multiple queues are running with a timer based trigger mode, it may lead to some of the timers never expiring
+ * Bug Fix: Eviction of prefetch descriptors issue:With prefetch enabled, eviction of prefetched descriptors happens improperly and leads to data corruption
+ * Bug Fix: Credit Coalescing Issue:The credits to the Descriptor Engine need to be coalesced to keep the fetch rate high to support more than 15 simultaneous queues
+ * Bug Fix: C2H QID0 Issue:When a queue invalidation or certain descriptor error events are reported from Descriptor Engine to Prefetch Engine, it may result in it getting recorded against QID0 instead of the actual QID resulting in packet drop on QID0
+ * Bug Fix: Fixed tm_dsc_sts_avl bus width
+ * Feature Enhancement: Outstanding data based request throttling in Streaming H2C Engine:This option can enhance C2H stream performance, using user configurable register at 0xE24
+ * Feature Enhancement: Added User+Timer+Count trigger mode in C2H Completion Engine
+ * Feature Enhancement: Added an option in the GUI to enable optional debug ports cfg_current_speed and cfg_negotiated_width
+ * Feature Enhancement: Added 64 bytes descriptors
+ * Feature Enhancement: Added 64 bytes C2H Stream completion data width
+ * Feature Enhancement: Decoupled C2H Completion Qid from C2H Data path
+ * Feature Enhancement: Modified C2H completion entry format(Added programmable color bit,Added programmable error bit,There is no transfer length information)
+ * Feature Enhancement: Modified C2H Completion interface
+ * Feature Enhancement: All Contexts are modified
+ * Feature Enhancement: Configurable DMA BAR location
+ * Feature Enhancement: Added ATC support for Address translation
+ * Feature Enhancement: Flexible MSI-X vector allocation upto 32 per each function with SRIOV disabled and upto 8 when enabled
+ * Feature Enhancement: MSI-X implementation is made external to Base PCIe IP
+ * Feature Enhancement: Added legacy interrupt
+ * Feature Enhancement: Removed QID2VEC and move interrupt info to Queue Context
+ * Feature Enhancement: Added TCL option CONFIG.adv_int_usr to enable ports for MSIX interrupt vectors to allow more interrupt vectors than GUI allowed values
+ * Feature Enhancement: Added TCL option CONFIG.pfch_cache_depth to modify the prefetch cache depth
+ * Feature Enhancement: Added GUI option to bring ID ports to IP top-level
+ * Feature Enhancement: Resource reduction and timing improvement updates
+ * Revision change in one or more subcores
+
+2018.2:
+ * Version 2.0
+ * Feature Enhancement: Major updates and functional fixes.
+ * Feature Enhancement: Added awuser, aruser signals on m_axil and m_axib interfaces.
+ * Feature Enhancement: Added soft_reset_n input port.
+ * Revision change in one or more subcores
+
+2018.1:
+ * Version 1.0
+ * General: Initial release
+
+(c) Copyright 2018 - 2020 Xilinx, Inc. All rights reserved.
+
+This file contains confidential and proprietary information
+of Xilinx, Inc. and is protected under U.S. and
+international copyright and other intellectual property
+laws.
+
+DISCLAIMER
+This disclaimer is not a license and does not grant any
+rights to the materials distributed herewith. Except as
+otherwise provided in a valid license issued to you by
+Xilinx, and to the maximum extent permitted by applicable
+law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
+WITH ALL FAULTS, AND XILINX HEREBY DISCLAIMS ALL WARRANTIES
+AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
+BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
+INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
+(2) Xilinx shall not be liable (whether in contract or tort,
+including negligence, or under any other theory of
+liability) for any loss or damage of any kind or nature
+related to, arising under or in connection with these
+materials, including for any direct, or any indirect,
+special, incidental, or consequential loss or damage
+(including loss of data, profits, goodwill, or any type of
+loss or damage suffered as a result of any action brought
+by a third party) even if such damage or loss was
+reasonably foreseeable or Xilinx had been advised of the
+possibility of the same.
+
+CRITICAL APPLICATIONS
+Xilinx products are not designed or intended to be fail-
+safe, or for use in any application requiring fail-safe
+performance, such as life-support or safety devices or
+systems, Class III medical devices, nuclear facilities,
+applications related to the deployment of airbags, or any
+other applications that could lead to death, personal
+injury, or severe property or environmental damage
+(individually and collectively, "Critical
+Applications"). Customer assumes the sole risk and
+liability of any use of Xilinx products in Critical
+Applications, subject only to applicable laws and
+regulations governing limitations on product liability.
+
+THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
+PART OF THIS FILE AT ALL TIMES.

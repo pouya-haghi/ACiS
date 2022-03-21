@@ -1,0 +1,42 @@
+#
+# Copyright (c) 2021 University of Cambridge
+# All rights reserved.
+#
+# This software was developed by the University of Cambridge Computer
+# Laboratory under EPSRC EARL Project EP/P025374/1 alongside support
+# from Xilinx Inc.
+#
+# @NETFPGA_LICENSE_HEADER_START@
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# @NETFPGA_LICENSE_HEADER_END@
+#
+
+Reference Switch Lite bitfile is available for a direct download from the University of Cambridge servers:
+
+1. Reference Switch Lite (VCU1525)
+url:  http://www.cl.cam.ac.uk/research/srg/netos/projects/netfpga/bitfiles/NetFPGA-PLUS/1.0.0/reference_switch_lite/reference_switch_lite_vcu1525.bit
+md5 checksum: aa9ad2347dceca220511410f47cbb6bf
+
+2. Reference Switch Lite (U200)
+url:  http://www.cl.cam.ac.uk/research/srg/netos/projects/netfpga/bitfiles/NetFPGA-PLUS/1.0.0/reference_switch_lite/reference_switch_lite_au200.bit
+md5 checksum: 8f033f217695995d0c552608992de4da
+
+3. Reference Switch Lite (U250)
+url:  http://www.cl.cam.ac.uk/research/srg/netos/projects/netfpga/bitfiles/NetFPGA-PLUS/1.0.0/reference_switch_lite/reference_switch_lite_au250.bit
+md5 checksum: 12c75a1931ace075598f0f70a22658ae
+
+4. Reference Switch Lite (U280)
+url:  http://www.cl.cam.ac.uk/research/srg/netos/projects/netfpga/bitfiles/NetFPGA-PLUS/1.0.0/reference_switch_lite/reference_switch_lite_au280.bit
+md5 checksum: a907a5cb3ca006754b1f24e4fc04e7aa

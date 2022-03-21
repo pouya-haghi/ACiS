@@ -1,0 +1,77 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:47 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Sun Mar 13 20:31:22 2022
+# Process ID: 51410
+# Current directory: /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/tcam_v1_1_0
+# Command line: vivado -mode tcl -source tcam.tcl
+# Log file: /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/tcam_v1_1_0/vivado.log
+# Journal file: /ad/eng/research/eng_research_caad/haghi/NetFPGA-PLUS/hw/lib/xilinx/tcam_v1_1_0/vivado.jou
+#-----------------------------------------------------------
+source tcam.tcl
+# set   lib_name       xilinx
+# set   ip_version     1.1
+# set   design         tcam
+# set   device         $::env(DEVICE)
+# set   proj_dir       ip_proj
+# create_project -name ${design} -force -dir "./${proj_dir}" -part ${device} -ip
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:48 . Memory (MB): peak = 2397.043 ; gain = 2.023 ; free physical = 51173 ; free virtual = 163757
+# set_property source_mgmt_mode All [current_project]  
+# set_property top ${design} [current_fileset]
+# read_verilog "./hdl/verilog/tcam.v"
+# read_verilog "./hdl/verilog/tcam_wrapper.v"
+# read_vhdl "./hdl/vhdl/tcam/cam_init_file_pack_xst.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_pkg.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_input_ternary_ternenc.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_input_ternary.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_input.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_control.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_decoder.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_match_enc.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_regouts.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_mem_srl16_ternwrcomp.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_mem_srl16_wrcomp.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_mem_srl16_block_word.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_mem_srl16_block.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_mem_srl16.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_mem_blk_extdepth_prim.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_mem_blk_extdepth.vhd"
+# read_vhdl "./hdl/vhdl/tcam/dmem.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_mem_blk.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_mem.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_rtl.vhd"
+# read_vhdl "./hdl/vhdl/tcam/cam_top.vhd"
+# update_compile_order -fileset sources_1
+update_compile_order: Time (s): cpu = 00:00:01 ; elapsed = 00:00:06 . Memory (MB): peak = 2397.066 ; gain = 0.023 ; free physical = 51173 ; free virtual = 163758
+# ipx::package_project
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/ad/eng/opt/Xilinx/Vivado/2020.2/data/ip'.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'CLK' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+WARNING: [IP_Flow 19-5661] Bus Interface 'CLK' does not have any bus interfaces associated with it.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+ipx::package_project: Time (s): cpu = 00:00:02 ; elapsed = 00:00:40 . Memory (MB): peak = 2431.027 ; gain = 0.004 ; free physical = 51155 ; free virtual = 163740
+# set_property name ${design} [ipx::current_core]
+# set_property library ${lib_name} [ipx::current_core]
+# set_property vendor_display_name {xilinx} [ipx::current_core]
+# set_property company_url {http://www.xilinx.com} [ipx::current_core]
+# set_property vendor {xilinx} [ipx::current_core]
+# set_property supported_families {{virtexuplus} {Production} {virtexuplushbm} {Production}} [ipx::current_core]
+# set_property taxonomy {{/NetFPGA/Generic}} [ipx::current_core]
+# set_property version ${ip_version} [ipx::current_core]
+# set_property display_name ${design} [ipx::current_core]
+# set_property description ${design} [ipx::current_core]
+# ipx::infer_user_parameters [ipx::current_core]
+# ipx::check_integrity [ipx::current_core]
+INFO: [IP_Flow 19-861] XGUI layout file basename "xgui/tcam_v1_0.tcl" does not have the current IP <name>_v<version> format. If the IP name or version was changed recently, recreate this file to update the file format.
+WARNING: [IP_Flow 19-5661] Bus Interface 'CLK' does not have any bus interfaces associated with it.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+INFO: [Ipptcl 7-1486] check_integrity: Integrity check passed.
+# ipx::save_core [ipx::current_core]
+# close_project
+# exit
+INFO: [Common 17-206] Exiting Vivado at Sun Mar 13 20:35:18 2022...
