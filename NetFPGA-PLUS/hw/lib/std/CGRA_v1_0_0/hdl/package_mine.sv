@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 11/11/2021 08:31:15 PM
+// Create Date: 11/10/2021 05:59:24 PM
 // Design Name: 
-// Module Name: reg_r
+// Module Name: package_mine
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -18,17 +18,13 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
+package package_mine;
+//    interface data_channel;
+//    logic [63:0] inp1, inp2, out1;
+//    endinterface
 
-module reg_r #(parameter width=64)
-	(
-    input logic [width-1:0] d,
-    input logic clk,
-    input logic rst,
-    output  logic [width-1:0] q
-    );
-
-always_ff @(posedge clk) begin
-    if(rst)		q<='0;
-    else		q<=d;
-end
-endmodule
+//    interface control_channel;
+//    logic [1:0] op;
+//    endinterface
+    typedef enum {ADD, SUB} op_list;
+endpackage

@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 11/11/2021 08:31:15 PM
+// Create Date: 11/10/2021 05:55:54 PM
 // Design Name: 
-// Module Name: reg_r
+// Module Name: my_package
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -19,16 +19,10 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module reg_r #(parameter width=64)
-	(
-    input logic [width-1:0] d,
-    input logic clk,
-    input logic rst,
-    output  logic [width-1:0] q
-    );
+interface data_channel;
+logic [63:0] inp1, inp2, out1;
+endinterface
 
-always_ff @(posedge clk) begin
-    if(rst)		q<='0;
-    else		q<=d;
-end
-endmodule
+interface control_channel;
+logic [1:0] op;
+endinterface

@@ -1,0 +1,154 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:47 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Sun Mar 27 13:18:53 2022
+# Process ID: 141995
+# Current directory: /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0
+# Command line: vivado -mode batch -source tcl/synth.tcl
+# Log file: /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/vivado.log
+# Journal file: /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/vivado.jou
+#-----------------------------------------------------------
+source tcl/synth.tcl
+# set design CGRA
+# set top top
+# set device $::env(DEVICE)
+# set proj_dir ../synth
+# set ip_version 1.00
+# set lib_name NetFPGA
+# create_project -name ${design} -force -dir "./${proj_dir}" -part ${device} -ip
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:01:35 . Memory (MB): peak = 2364.324 ; gain = 2.023 ; free physical = 35350 ; free virtual = 160080
+# set_property source_mgmt_mode All [current_project]  
+# set_property top ${top} [current_fileset]
+# set_property ip_repo_paths $::env(NFPLUS_FOLDER)/hw/lib/  [current_fileset]
+# puts "Creating CGRA"
+Creating CGRA
+# read_verilog -sv "hdl/adder_int.sv"
+# read_verilog -sv "hdl/config_table.sv"
+# read_verilog -sv "hdl/control_plane.sv"
+# read_verilog -sv "hdl/counter.sv"
+# read_verilog -sv "hdl/counter_trigger.sv"
+# read_verilog -sv "hdl/data_path.sv"
+# read_verilog -sv "hdl/floating_accumulator.sv"
+# read_verilog -sv "hdl/FSM.sv"
+# read_verilog -sv "hdl/inbound_buffer.sv"
+# read_verilog -sv "hdl/mux4.sv"
+# read_verilog -sv "hdl/PE_typeA.sv"
+# read_verilog -sv "hdl/PE_typeB.sv"
+# read_verilog -sv "hdl/PE_typeC.sv"
+# read_verilog -sv "hdl/PE_typeD.sv"
+# read_verilog -sv "hdl/Reduction_unit_float.sv"
+# read_verilog -sv "hdl/Reduction_unit_int.sv"
+# read_verilog -sv "hdl/regFile.sv"
+# read_verilog -sv "hdl/register_pipe.sv"
+# read_verilog -sv "hdl/reg_r.sv"
+# read_verilog -sv "hdl/runtimeLoadtable.sv"
+# read_verilog -sv "hdl/state_table.sv"
+# read_verilog -sv "hdl/top.sv"
+# read_verilog  "hdl/my_interface.vh"
+# update_compile_order -fileset sources_1
+update_compile_order: Time (s): cpu = 00:00:01 ; elapsed = 00:00:14 . Memory (MB): peak = 2364.340 ; gain = 0.016 ; free physical = 35359 ; free virtual = 160089
+# update_compile_order -fileset sim_1
+update_compile_order: Time (s): cpu = 00:00:01 ; elapsed = 00:00:07 . Memory (MB): peak = 2364.340 ; gain = 0.000 ; free physical = 35360 ; free virtual = 160090
+# ipx::package_project
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/hdl/adder_int.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/hdl/counter.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/hdl/counter_trigger.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/hdl/floating_accumulator.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/hdl/inbound_buffer.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/hdl/Reduction_unit_float.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/hdl/Reduction_unit_int.sv'.
+WARNING: [IP_Flow 19-3833] Unreferenced file from the top module is not packaged: '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/hdl/reg_r.sv'.
+WARNING: [IP_Flow 19-5101] Packaging a component with a SystemVerilog top file is not fully supported. Please refer to UG1118 'Creating and Packaging Custom IP'.
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'dwidth_double' by 64 for port or parameter 'inp1'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'depth_RF' by 4096 for port or parameter 'dwidth_RFadd'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'max_depth_config_table' by 256 for port or parameter 'dwidth_counter_config'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'SIMD_degree' by 8 for port or parameter 't_stream_in_valid'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'SIMD_degree' by 8 for port or parameter 't_stream_in_valid'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_in'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_in'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'wr_data_ctrl_plane'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'wr_data_ctrl_plane'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_out'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_out'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'SIMD_degree' by 8 for port or parameter 't_stream_out_valid'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'SIMD_degree' by 8 for port or parameter 't_stream_out_valid'
+WARNING: [IP_Flow 19-587] [HDL Parser] HDL port or parameter 'num_entry_config_table' has a dependency on the module local parameter or undefined parameter 'dwidth_RFadd'.
+WARNING: [IP_Flow 19-587] [HDL Parser] HDL port or parameter 'num_entry_config_table' has a dependency on the module local parameter or undefined parameter 'dwidth_RFadd'.
+WARNING: [IP_Flow 19-587] [HDL Parser] HDL port or parameter 'num_entry_inbound' has a dependency on the module local parameter or undefined parameter 'dwidth_RFadd'.
+WARNING: [IP_Flow 19-587] [HDL Parser] HDL port or parameter 'num_entry_inbound' has a dependency on the module local parameter or undefined parameter 'dwidth_RFadd'.
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_out_PEa0'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_out_PEa0'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_out_PEa1'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_out_PEa1'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_out_PEb'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_out_PEb'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_out_PEc0'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_out_PEc0'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_out_PEc1'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'phit_size' by 512 for port or parameter 'stream_out_PEc1'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'num_col' by 6 for port or parameter 'rd_data_ctrl'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'sz_config' by 36 for port or parameter 'rd_data_ctrl'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'dwidth_double' by 64 for port or parameter 'imm'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'num_col' by 6 for port or parameter 'imm'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'num_col' by 6 for port or parameter 'valid_config_table'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'num_col' by 6 for port or parameter 'op'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'num_col' by 6 for port or parameter 'sel_mux4'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'num_col' by 6 for port or parameter 'wr_en_RF_config_table'
+WARNING: [IP_Flow 19-587] [HDL Parser] HDL port or parameter 'wr_addr_RF_config_table' has a dependency on the module local parameter or undefined parameter 'dwidth_RFadd'.
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'num_col' by 6 for port or parameter 'wr_addr_RF_config_table'
+WARNING: [IP_Flow 19-587] [HDL Parser] HDL port or parameter 'rd_addr_RF_config_table' has a dependency on the module local parameter or undefined parameter 'dwidth_RFadd'.
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'num_col' by 6 for port or parameter 'isItr'
+WARNING: [IP_Flow 19-587] [HDL Parser] HDL port or parameter 'wr_addr_RF' has a dependency on the module local parameter or undefined parameter 'dwidth_RFadd'.
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'num_col' by 6 for port or parameter 'wr_addr_RF'
+WARNING: [IP_Flow 19-587] [HDL Parser] HDL port or parameter 'wr_add_RF_runtimeLoadTable' has a dependency on the module local parameter or undefined parameter 'dwidth_RFadd'.
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'dwidth_double' by 64 for port or parameter 'itr'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'num_col' by 6 for port or parameter 'itr'
+INFO: [IP_Flow 19-1976] HDL Parser: Replacing 'num_col' by 6 for port or parameter 'wen_RF'
+INFO: [IP_Flow 19-1842] HDL Parser: Found include file "CGRA_v1_0_0/hdl/my_interface.vh" from the top-level HDL file.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib'.
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/synth'.)
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/ad/eng/opt/Xilinx/Vivado/2020.2/data/ip'.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'rst' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'clk' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'clk': Added interface parameter 'ASSOCIATED_RESET' with value 'rst'.
+ERROR: [IP_Flow 19-627] Port 'num_entry_config_table': XPath expression failed: Undefined parameter "dwidth_RFadd" used in expression "(dwidth_RFadd - 1)".
+ERROR: [IP_Flow 19-627] Port 'num_entry_inbound': XPath expression failed: Undefined parameter "dwidth_RFadd" used in expression "(dwidth_RFadd - 1)".
+WARNING: [IP_Flow 19-5661] Bus Interface 'clk' does not have any bus interfaces associated with it.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+ipx::package_project: Time (s): cpu = 00:00:03 ; elapsed = 00:02:04 . Memory (MB): peak = 2398.324 ; gain = 0.020 ; free physical = 35350 ; free virtual = 160081
+ERROR: [Common 17-39] 'ipx::package_project' failed due to earlier errors.
+
+    while executing
+"ipx::package_project"
+    (file "tcl/synth.tcl" line 53)
+INFO: [Common 17-206] Exiting Vivado at Sun Mar 27 13:27:14 2022...

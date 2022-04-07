@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 11/11/2021 08:31:15 PM
+// Create Date: 03/04/2022 11:25:27 AM
 // Design Name: 
-// Module Name: reg_r
+// Module Name: input_arbiter
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -19,16 +19,8 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module reg_r #(parameter width=64)
-	(
-    input logic [width-1:0] d,
-    input logic clk,
-    input logic rst,
-    output  logic [width-1:0] q
-    );
 
-always_ff @(posedge clk) begin
-    if(rst)		q<='0;
-    else		q<=d;
-end
+module input_arbiter(
+
+    );
 endmodule

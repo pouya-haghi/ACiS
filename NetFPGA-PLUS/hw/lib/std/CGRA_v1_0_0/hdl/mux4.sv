@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 11/11/2021 08:31:15 PM
+// Create Date: 11/18/2021 11:57:32 AM
 // Design Name: 
-// Module Name: reg_r
+// Module Name: mux4
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -19,16 +19,17 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module reg_r #(parameter width=64)
-	(
-    input logic [width-1:0] d,
-    input logic clk,
-    input logic rst,
-    output  logic [width-1:0] q
-    );
 
-always_ff @(posedge clk) begin
-    if(rst)		q<='0;
-    else		q<=d;
-end
+module mux4 #(parameter width=64)(
+    input [width-1:0] a,
+    input [width-1:0] b,
+    input [width-1:0] c,
+    input [width-1:0] d,
+    input [1:0] sel,
+    output [width-1:0] y
+
+    );
+    
+    assign y = (sel[1])?((sel[0])? d: c):((sel[0])? b: a);
+    
 endmodule
