@@ -1,0 +1,24 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:47 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Mon Apr 11 14:28:42 2022
+# Process ID: 219481
+# Current directory: /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/input_arbiter_v1_0_0
+# Command line: vivado
+# Log file: /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/input_arbiter_v1_0_0/vivado.log
+# Journal file: /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/input_arbiter_v1_0_0/vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/input_arbiter_v1_0_0/ip_proj/input_arbiter.xpr
+WARNING: [filemgmt 56-3] Default IP Output Path : Could not find the directory '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/input_arbiter_v1_0_0/ip_proj/input_arbiter.gen/sources_1'.
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib'.
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/input_arbiter_v1_0_0/ip_proj'.)
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/ad/eng/opt/Xilinx/Vivado/2020.2/data/ip'.
+INFO: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
+open_project: Time (s): cpu = 00:00:25 ; elapsed = 00:00:34 . Memory (MB): peak = 7529.613 ; gain = 83.254 ; free physical = 23599 ; free virtual = 156345
+exit
+INFO: [Common 17-206] Exiting Vivado at Mon Apr 11 14:35:58 2022...

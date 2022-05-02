@@ -1,5 +1,5 @@
 all: clean
-	vivado -mode batch -source tcl/synth.tcl
+	vivado -mode batch -source script/synth.tcl
 
 clean:
 	rm -rf ip_*  vivado*.* *.xml xgui/ .Xil* *.*~ *.zip
