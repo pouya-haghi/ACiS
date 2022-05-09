@@ -1,0 +1,13 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../test_PE.gen/sources_1/ip/floating_point_acc/sim/floating_point_acc.v" \
+
+sv xil_defaultlib  \
+"../../../../../PE_typeC.sv" \
+"../../../../../test_PE_typeC.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

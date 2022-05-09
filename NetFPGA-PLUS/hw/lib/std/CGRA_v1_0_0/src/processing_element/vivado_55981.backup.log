@@ -1,0 +1,37 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:47 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Tue May  3 11:55:05 2022
+# Process ID: 55981
+# Current directory: /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element
+# Command line: vivado -mode batch -source sim.tcl
+# Log file: /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/vivado.log
+# Journal file: /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/vivado.jou
+#-----------------------------------------------------------
+source sim.tcl
+# set design test_PE
+# set top test_PE_typeC
+# set device xcu280-fsvh2892-2L-e
+# set proj_dir ./ip_proj
+# create_project -name ${design} -force -dir "./${proj_dir}" -part ${device} 
+create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:18 . Memory (MB): peak = 2400.008 ; gain = 2.023 ; free physical = 19678 ; free virtual = 139680
+# source tcl/PE.tcl
+## create_ip -name floating_point -vendor xilinx.com -library ip -version 7.1 -module_name floating_point_acc
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/ad/eng/opt/Xilinx/Vivado/2020.2/data/ip'.
+create_ip: Time (s): cpu = 00:00:02 ; elapsed = 00:00:18 . Memory (MB): peak = 2443.020 ; gain = 43.012 ; free physical = 19634 ; free virtual = 139652
+## set_property -dict [list CONFIG.Component_Name {floating_point_acc} CONFIG.Operation_Type {Accumulator} CONFIG.Add_Sub_Value {Add} CONFIG.Flow_Control {NonBlocking} CONFIG.Maximum_Latency {false} CONFIG.C_Latency {12} CONFIG.Has_ARESETn {true} CONFIG.A_Precision_Type {Single} CONFIG.C_A_Exponent_Width {8} CONFIG.C_A_Fraction_Width {24} CONFIG.Result_Precision_Type {Single} CONFIG.C_Result_Exponent_Width {8} CONFIG.C_Result_Fraction_Width {24} CONFIG.C_Mult_Usage {Medium_Usage} CONFIG.Has_RESULT_TREADY {false} CONFIG.C_Rate {1} CONFIG.Has_A_TLAST {true} CONFIG.RESULT_TLAST_Behv {Pass_A_TLAST}] [get_ips floating_point_acc]
+WARNING: [Vivado 12-3523] Attempt to change 'Component_Name' from 'floating_point_acc' to 'floating_point_acc' is not allowed and is ignored.
+# add_files -fileset sources_1 {  \
+#         PE_typeC.sv          \
+#         test_PE_typeC.sv     \
+# }
+# set_property file_type {SystemVerilog} [get_files *.sv]
+# update_compile_order -fileset sources_1
+# set_property top ${top} [get_fileset sim_1]
+# xsim PE_typeC -gui
+WARNING: [Common 17-259] Unknown Tcl command 'xsim PE_typeC -gui' sending command to the OS shell for execution. It is recommended to use 'exec' to send the command to the OS shell.
+ERROR: [Simtcl 6-30] Unable to locate simulation image at 'xsim.dir/PE_typeC/xsimk'
+INFO: [Common 17-206] Exiting Vivado at Tue May  3 11:56:33 2022...

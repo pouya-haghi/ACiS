@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Webtalk v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:47 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Wed May  4 19:41:44 2022
+# Process ID: 22666
+# Current directory: /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/ip_proj/test_PE.sim/sim_1/behav/xsim
+# Command line: wbtcv -mode batch -source /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/ip_proj/test_PE.sim/sim_1/behav/xsim/xsim.dir/test_PE_typeC_behav/webtalk/xsim_webtalk.tcl -notrace
+# Log file: /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/ip_proj/test_PE.sim/sim_1/behav/xsim/webtalk.log
+# Journal file: /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/ip_proj/test_PE.sim/sim_1/behav/xsim/webtalk.jou
+#-----------------------------------------------------------
+source /ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/ip_proj/test_PE.sim/sim_1/behav/xsim/xsim.dir/test_PE_typeC_behav/webtalk/xsim_webtalk.tcl -notrace
+INFO: [Common 17-186] '/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/ip_proj/test_PE.sim/sim_1/behav/xsim/xsim.dir/test_PE_typeC_behav/webtalk/usage_statistics_ext_xsim.xml' has been successfully sent to Xilinx on Wed May  4 19:41:47 2022. For additional details about this file, please refer to the WebTalk help file at /ad/eng/opt/Xilinx/Vivado/2020.2/doc/webtalk_introduction.html.
+INFO: [Common 17-206] Exiting Webtalk at Wed May  4 19:41:47 2022...
