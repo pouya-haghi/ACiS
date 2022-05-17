@@ -12,15 +12,10 @@ module data_path(
     input logic [SIMD_degree-1:0] tvalid_stream_in,
     input logic [(dwidth_inst*num_col)-1:0] instr, // vector instruction
 //    input logic [((num_col)*dwidth_float)-1:0] imm,
-    input logic [((num_col)*4)-1:0] sel_mux4,
-    input logic [((num_col)*3)-1:0] op,
-    input logic [num_col-1:0] wen_RF,
-    input logic [(dwidth_RFadd*(num_col))-1:0] rd_addr_RF,
-    input logic [(dwidth_RFadd*(num_col))-1:0] wr_addr_RF,
+//    input logic [(phit_size*num_col)-1:0] rdata_config_table,
+//    input logic [num_col-1:0] tvalid_config_table, // in future release it should be [(SIMD_degree*num_col)-1:0] (for now, I only support vector not scalar)
     input logic clk,
     input logic rst,
-    input logic [(phit_size*num_col)-1:0] rdata_config_table,
-    input logic [num_col-1:0] tvalid_config_table, // in future release it should be [(SIMD_degree*num_col)-1:0] (for now, I only support vector not scalar)
     input logic [(phit_size*num_col)-1:0] rdata_HBM,
     input logic [num_col-1:0] tvalid_rdata_HBM,
     output logic [phit_size-1:0] stream_out,
@@ -32,6 +27,7 @@ module data_path(
     localparam phitplus = phit_size + SIMD_degree; // bundle {tvalid, tdata}
 
     logic [(2*num_col)-1:0] sel_mux2;
+    logic [((num_col)*3)-1:0] op;
     logic [(phit_size*num_col)-1:0] o_RF;
     logic [(phit_size*num_col)-1:0] i1_PE_typeC, i2_PE_typeC, o1_PE_typeC, o2_PE_typeC; // the last bundle of SIMD_degree signals is for tvalid
     logic [(SIMD_degree*num_col)-1:0] i_tvalid1_PE_typeC, i_tvalid2_PE_typeC, o1_tvalid1_PE_typeC, o2_tvalid1_PE_typeC;
@@ -48,6 +44,8 @@ module data_path(
     logic [(dwidth_RFadd*num_col)-1:0] vr_addr_auto_incr;
     logic [(dwidth_RFadd*num_col)-1:0] vw_addr_auto_incr;
     logic [num_col-1:0] done_auto_incr;
+    logic [phit_size-1:0] FIFO_out_tdata;
+    logic [SIMD_degree-1:0] FIFO_out_tvalid;
     
     
     // This part is ISA-specific:
@@ -77,7 +75,8 @@ module data_path(
              .vw_addr(vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .is_vect(is_vect[j]),
              .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
-             .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int])
+             .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]),
+             .op(op[((j+1)*3)-1:j*3])
              );
              
              auto_incr_vect auto_incr_vect_inst(
@@ -97,11 +96,11 @@ module data_path(
              );
              
              // vectorized regFile
-             regFile regFile_inst0(.d_in(ctrl_din_RF[(j*3)+0]?rdata_config_table[(phit_size*(j+1))-1:phit_size*j]:(ctrl_din_RF[(j*3)+1]?o1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]:rdata_HBM[(phit_size*(j+1))-1:phit_size*j])), // based on op: wr_data??o1_PE_typeC[(phitplus*0)+phit_size-1:(phitplus*0)]??HBM_rdata
+             regFile regFile_inst0(.d_in(ctrl_din_RF[(j*3)+0]?{(phit_size){1'b0}}:(ctrl_din_RF[(j*3)+1]?o1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]:rdata_HBM[(phit_size*(j+1))-1:phit_size*j])), // based on op I would choose wdata, o_RF or HBM. vmv.v.i is not supported: ctrl_din_RF[(j*3)+0]==1 :rdata_config_table[(phit_size*(j+1))-1:phit_size*j]
              .clk(clk),
-             .rd_addr(rd_addr_RF[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_RF is one of the fields in tables (auto-increment address generator)
-             .wr_addr(wr_addr_RF[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]),
-             .wen(ctrl_wen_RF[(j*3)+0]?tvalid_config_table[j]:(ctrl_wen_RF[(j*3)+1]?(&o1_tvalid1_PE_typeC):ctrl_wen_RF[(j*3)+2]?tvalid_rdata_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read 
+             .rd_addr(vr_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_RF is one of the fields in tables (auto-increment address generator)
+             .wr_addr(vw_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]),
+             .wen(ctrl_wen_RF[(j*3)+0]?1'b0:(ctrl_wen_RF[(j*3)+1]?(&o1_tvalid1_PE_typeC):ctrl_wen_RF[(j*3)+2]?tvalid_rdata_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
              .d_out(o_RF[(phit_size*(j+1))-1:phit_size*j]));
              
              // scalar regFile   
