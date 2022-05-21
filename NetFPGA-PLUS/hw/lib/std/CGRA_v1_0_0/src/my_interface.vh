@@ -16,6 +16,7 @@ parameter latencyPEA = 6;
 parameter latencyPEB = 4;
 parameter latencyPEC = 8;
 parameter latencyPED = 57;
+parameter dwidth_aximm = 64;
 
 //interface data_channel;
 //logic [dwidth_double-1:0] inp1, inp2, out1;

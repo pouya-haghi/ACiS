@@ -13,10 +13,15 @@ module auto_incr_vect(
     input logic [dwidth_RFadd-1:0] vr_addr,
     input logic [dwidth_RFadd-1:0] vw_addr,
     input logic [dwidth_int-1:0] rddata1_RF_scalar, // x register in vle32 and vse32 instructions, used for addressing memory
+    input logic is_vle32_vv,
+    input logic is_vse32_vv,
+    input logic is_vmacc_vv,
     output logic [dwidth_RFadd-1:0] vr_addr_auto_incr,
     output logic [dwidth_RFadd-1:0] vw_addr_auto_incr,
     output logic [dwidth_HBMadd-1:0] araddr_HBM,
     output logic [dwidth_HBMadd-1:0] awaddr_HBM,
+//    output logic arvalid_HBM,
+//    output logic awvalid_HBM,
     output logic done // one clock pulse
     );
     
@@ -56,14 +61,30 @@ module auto_incr_vect(
     assign done =  (curr_state == count_started && ctr_ITR==ITR_q)? 1'b1: 1'b0;
     
     always_ff@(posedge clk) begin
-        if (rst) 
+        if (rst) begin
             ctr_ITR <= 'b0;
-        else if (wen_ITR)
+//            awvalid_HBM <= 1'b0;
+//            arvalid_HBM <= 1'b0;
+            end
+        else if (wen_ITR) begin
+            ctr_ITR <= 'b0; 
+//            if (is_vle32_vv)
+//                arvalid_HBM <= 1'b1;
+//            else if (is_vse32_vv)
+//                awvalid_HBM <= 1'b1;
+        end
+        else if (count && ctr_ITR!=ITR_q && !stall) begin
+                ctr_ITR <= ctr_ITR + 1;
+//                if (is_vle32_vv)
+//                    arvalid_HBM <= 1'b1;
+//                else if (is_vse32_vv)
+//                    awvalid_HBM <= 1'b1;
+            end
+        else if (count && ctr_ITR==ITR_q) begin
             ctr_ITR <= 'b0;
-        else if (count && ctr_ITR!=ITR_q && !stall)
-            ctr_ITR <= ctr_ITR + 1;
-        else if (count && ctr_ITR==ITR_q)
-            ctr_ITR <= 'b0;
+//            awvalid_HBM <= 1'b0;
+//            arvalid_HBM <= 1'b0;
+        end
     end
     
     assign araddr_HBM = {{(dwidth_int-dwidth_RFadd){1'b0}}, ctr_ITR} + rddata1_RF_scalar;

@@ -9,16 +9,20 @@ module ISA_decoder(
     input logic [dwidth_inst-1:0] instr, // vector instruction
 //    input logic [dwidth_inst-1:0] instr_cfg,// config instruction
     output logic ctrl_i_mux2_tvalid,
-    output logic [2:0] ctrl_din_RF,
-    output logic [2:0] ctrl_wen_RF,
+//    output logic [2:0] ctrl_din_RF,
+//    output logic [2:0] ctrl_wen_RF,
     output logic [4:0] rs1, // source register 1
     output logic [4:0] rs2, // source register 2
     output logic [4:0] rd, // dest register
     output logic [dwidth_RFadd-1:0] ITR,
     output logic wen_ITR,
+    output logic is_vle32_vv,
+    output logic is_vse32_vv,
+    output logic is_vmacc_vv,
+    output logic is_vmv_vi,
     output logic [dwidth_RFadd-1:0] vr_addr, // vector register file
     output logic [dwidth_RFadd-1:0] vw_addr, // vector register file
-    output logic is_vect, // used to inform us about stall (if it is zero we should stall)
+    output logic is_not_vect, // used to inform us about stall (if it is zero we should stall)
     output logic [11:0] branch_immediate,
     output logic [dwidth_int-1:0] R_immediate,
     output logic [2:0] op,
@@ -29,10 +33,10 @@ module ISA_decoder(
     );
     
     logic [4:0] vs2, vd;
-    logic is_vmacc_vv, is_vle32_vv, is_vse32_vv, is_vmv_vi; // floating-point vectorized
     logic is_vsetivli; // configuration
     logic is_beq, is_addi, is_lui; // integer scalar
     logic [dwidth_int-1:0] lui_immediate, addi_immediate;
+    logic is_vect;
 
     // ***********************  decode ***************************
     assign is_vmacc_vv = (instr[6:0]==7'h57 && instr[14:12]==3'h0)?1'b1:1'b0;
@@ -64,6 +68,7 @@ module ISA_decoder(
     // ************************  vectorized instructions *************************
     assign op = (is_vmacc_vv)? 3'b011: 3'b100; //else: NoP 
     assign is_vect = |{is_vmacc_vv, is_vle32_vv, is_vse32_vv, is_vmv_vi};
+    assign is_not_vect = !is_vect;
     // vs1 is hardwire to SIN
     assign vs2 = instr[24:20]; // vs2
     assign vd = instr[11:7]; // vd
@@ -124,8 +129,8 @@ module ISA_decoder(
     end
     
     
-    assign ctrl_din_RF = (is_vmv_vi)? 3'b001:((is_vmacc_vv)? 3'b010: ((is_vle32_vv)? 3'b100: 3'b100)); // default: 3'b100
-    assign ctrl_wen_RF = (is_vmv_vi)? 3'b001:((is_vmacc_vv)? 3'b010: ((is_vle32_vv)? 3'b100: 3'b000)); // default: 3'b000
+//    assign ctrl_din_RF = (is_vmv_vi)? 3'b001:((is_vmacc_vv)? 3'b010: ((is_vle32_vv)? 3'b100: 3'b100)); // default: 3'b100
+//    assign ctrl_wen_RF = (is_vmv_vi)? 3'b001:((is_vmacc_vv)? 3'b010: ((is_vle32_vv)? 3'b100: 3'b000)); // default: 3'b000
     assign ctrl_i_mux2_tvalid = (is_vmacc_vv)? 1'b1: 1'b0;
     assign op_scalar = (is_lui)? 3'b000: ((is_addi)?3'b001:(is_beq)?3'b010:3'b011);
    
