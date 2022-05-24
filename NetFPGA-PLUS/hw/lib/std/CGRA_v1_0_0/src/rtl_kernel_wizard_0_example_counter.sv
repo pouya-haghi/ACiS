@@ -20,9 +20,6 @@ module rtl_kernel_wizard_0_example_counter #(
   output wire               is_zero
 );
 
-timeunit 1ps;
-timeprecision 1ps;
-
 /////////////////////////////////////////////////////////////////////////////
 // Local Parameters
 /////////////////////////////////////////////////////////////////////////////
@@ -82,4 +79,3 @@ end
 
 endmodule : rtl_kernel_wizard_0_example_counter
 `default_nettype wire
-

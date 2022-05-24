@@ -110,31 +110,14 @@ module rtl_kernel_wizard_0_runtimeLoadTable #(
   // input  wire                          m_axis_tready,
   // output wire [C_M_AXI_DATA_WIDTH-1:0] m_axis_tdata,
   // output wire                          m_axis_tlast
-  input wire                           start_stream_in,
-  output wire                          ready_stream_in,
-  output wire [(sz_config*(num_col))-1:0] rd_data_ctrl,
-  output wire [(dwidth_double*(num_col))-1:0] rd_data_imm,
-  output wire [(dwidth_double*num_col)-1:0] itr
+  input wire [num_col-1:0] clken_PC,
+  input wire [num_col-1:0] load_PC,
+  input wire [num_col-1:0] incr_PC,
+  input wire [(num_col*12)-1:0] load_value_PC,
+  output wire [(num_col*12)-1:0] PC,
+  output wire [dwidth_int-1:0] cycle_register,
+  output wire [(num_col*dwidth_int)-1:0] instr
 );
-
-timeunit 1ps;
-timeprecision 1ps;
-///////////////////////////////////////////////////////////////////////////////
-// functions
-///////////////////////////////////////////////////////////////////////////////
-function integer f_max (
-  input integer a,
-  input integer b
-);
-  f_max = (a > b) ? a : b;
-endfunction
-
-function integer f_min (
-  input integer a,
-  input integer b
-);
-  f_min = (a < b) ? a : b;
-endfunction
 
 ///////////////////////////////////////////////////////////////////////////////
 // Local Parameters
@@ -184,6 +167,7 @@ logic [LP_TRANSACTION_CNTR_WIDTH-1:0]     r_transactions_to_go;
 logic                                     r_final_transaction;
 logic [LP_OUTSTANDING_CNTR_WIDTH-1:0]     outstanding_vacancy_count;
 
+logic t_is_zero;
 ///////////////////////////////////////////////////////////////////////////////
 // Control Logic
 ///////////////////////////////////////////////////////////////////////////////
@@ -302,6 +286,8 @@ inst_ar_to_r_transaction_cntr (
 
 ///////////////////////////////////////////////////////////////////////////////
 // AXI Read Channel
+// start
+// PH
 ///////////////////////////////////////////////////////////////////////////////
 
 // We dont need AXI stream anymore
@@ -310,45 +296,53 @@ inst_ar_to_r_transaction_cntr (
 // assign m_axi_rready  = m_axis_tready;
 // assign m_axis_tlast  = m_axi_rlast;
 
-  localparam [dwidth_RFadd-1:0] num_entry_config_table = 32;
-  logic [dwidth_RFadd-1:0] wr_add; // for state_table and config table
-  logic [num_col:0] wr_en; // for state_table and config tables
-  logic [(dwidth_RFadd*num_col)-1:0] smart_ptr; // ptr to state_table and config_table
-  logic [dwidth_int-1:0] itr_i; // outer-most loop
-  logic [dwidth_int-1:0] itr_j;
-  logic [dwidth_int-1:0] itr_k; // inner-most loop
-  logic [entry_sz_state-1:0] rd_data_state;
-  logic done_loader;
+  localparam [dwidth_configadd-1:0] num_entry_config_table = depth_config;
+  logic [dwidth_configadd-1:0] wr_add; // for state_table and config table
+  logic [num_col-1:0] wr_en; // for state_table and config tables
 
-  // This is the order of loading:
-  // state_table: add =0 then add= 1 then add =...
-  // configuration table: First table: (first control [add=0] then [add=1] ...) then (immediate [add=0] then [add=1] ...)   Second table:
-  // inbound data: first add=0, then add=1
-  // logic [dwidth_RFadd-1:0] t_wr_add;
-
-    //state_table
-    state_table state_table_inst0 (.clk(aclk),
-       .rd_add(smart_ptr[dwidth_RFadd-1:0]),
-       .wr_add(wr_add),
-       .wr_en(wr_en[0] & m_axi_rvalid),
-       .wr_data(m_axi_rdata),
-       .rd_data(rd_data_state)
-    );
-    // wr_en[0] is with state_table
-    
     // config_table
     genvar i;
     generate 
-        for(i=0; i<num_col; i++)
-            config_table config_table_inst(.clk(aclk), 
-            .rd_add(smart_ptr[(dwidth_RFadd*(i+1))-1:dwidth_RFadd*i]), 
+        for(i=0; i<num_col; i++) begin
+            config_table config_table_inst(
+            .clk(aclk), 
+            .rd_add(PC[(dwidth_configadd*(i+1))-1:dwidth_configadd*i]), 
             .wr_add(wr_add), 
-            .wr_en(wr_en[i+1] & m_axi_rvalid),
-            .wr_data(m_axi_rdata),
-            .rd_data_ctrl(rd_data_ctrl[(sz_config*(i+1))-1:sz_config*i]),
-            .rd_data_imm(rd_data_imm[(dwidth_double*(i+1))-1:dwidth_double*i]));
+            .wr_en(wr_en[i] & rxfer), // wr_en[i] & m_axi_rvalid
+            .wr_data(m_axi_rdata[((i+1)*dwidth_int)-1:i*dwidth_int]),
+            .rd_data(instr[((i+1)*dwidth_int)-1:i*dwidth_int])
+            );
          // same rd_add, wr_add, wr_data but different wr_en
+            
+            PC #(dwidth_configadd) PC_inst( // 12 because we have 12 bits immediate in beq
+            .clk(aclk),
+            .clken(clken_PC[i]), // stall when vle32.vv or vse32.vv is seen but load_done or store_done signal is not.
+            //  if it is macc wait for done signal from auto_incr
+            .rst(areset),
+            .load(load_PC[i]),
+            .incr(incr_PC[i]),
+            .load_value(load_value_PC[((i+1)*dwidth_configadd)-1:i*dwidth_configadd]), // 12 because we have 12 bits immediate in beq
+            .count(PC[((i+1)*dwidth_configadd)-1:i*dwidth_configadd])
+            );
+         end
     endgenerate
+
+    // CSR counter (cycle)
+    rtl_kernel_wizard_0_example_counter #(
+      .C_WIDTH ( dwidth_int         ) ,
+      .C_INIT  ( {dwidth_int{1'b0}} )
+      )
+      inst_r_transaction_cntr (
+        .clk        ( aclk                          ) ,
+        .clken      ( 1'b1                          ) ,
+        .rst        ( areset                        ) ,
+        .load       ( ctrl_start                    ) ,
+        .incr       ( 1'b1                          ) ,
+        .decr       ( 1'b0                          ) ,
+        .load_value ( {dwidth_int{1'b0}}            ) ,
+        .count      ( cycle_register                ) ,
+        .is_zero    ( t_is_zero                     )
+      );
 
     logic [dwidth_RFadd-1:0] t_num_entry_config_table;
     assign t_num_entry_config_table = num_entry_config_table - 1;
@@ -362,11 +356,10 @@ inst_ar_to_r_transaction_cntr (
                 wr_add <= 0;
             else if (wr_add != t_num_entry_config_table && rxfer)
                 wr_add <= wr_add + 1;
-            else if (m_axi_rlast)
+            else if (done) // m_axi_rlast
                 wr_add <= 0;
         end
     end
-    
     
     // generating wr_en for selecting the correct configuration/state tables
     always_ff @(posedge aclk) begin
@@ -374,53 +367,17 @@ inst_ar_to_r_transaction_cntr (
             wr_en <= 0;
         else begin
             if (wr_en == 0 && rxfer)
-                wr_en <= 1;
+                wr_en <= {{(num_col-(phit_size/dwidth_int)){1'b0}}, {(phit_size/dwidth_int){1'b1}}}; // 16 '0's and 16 '1's. enable 16 config tables at the same time
+                // This is b/c axi is wide (512 bits) and it can support multiple parallel tables
             else if (wr_en != 0 && wr_add == t_num_entry_config_table && rxfer) //num_entry_config_table - 1
-                wr_en <= wr_en << 1;
-            else if (m_axi_rlast)// done state
+                wr_en <= wr_en << 16;
+            else if (done)// done state, m_axi_rlast
                 wr_en <= 0; //avoid keeping wr_en high
         end
     end
 
-    // prioritize completion of loading tables over stream_in and asserts smart_ptr
-    FSM  FSM_inst0(.entry_table(rd_data_state),
-                   .clk(aclk),
-                   .rst(areset),
-                   .itr_i(itr_i), // outer-most loop
-                   .itr_j(itr_j),
-                   .itr_k(itr_k), // inner-most loop
-                   .smart_ptr(smart_ptr[dwidth_RFadd-1:0]), // ptr to state_table and config_table
-//                   .done(done),
-                   .done_loader(ctrl_done),
-                   .start_stream_in(start_stream_in),
-                   .ready_stream_in(ready_stream_in)
-//                   .keep_start_stream_in(keep_start_stream_in)
-                   );
-                   
-    // For now, we discard the other two itr (itr_j, itr_k) and only use itr_k
-    // TODO: use a mux and have all three itr forwarded
-    assign itr[dwidth_double-1:0] = {32'b0, itr_k};     
-    
-    // register_pipe for itr
-    // For now, lets only pipe itr_k, 
-    // in the next version, I will pipe itr_i, itr_j, itr_k and I need a mux at each stage to select which itr I need, also I need a field in the config table to tell me which itr do I need to select
-    // TODO: you can have a for loop here
-    generate
-      for (i = 0; i<num_col-1; i++)
-        register_pipe #(.width(dwidth_double), .numPipeStage(latencyPEA)) 
-          register_pipe_inst0(itr[((i+1)*dwidth_double)-1:i*dwidth_double], aclk, areset, itr[((i+2)*dwidth_double)-1:(i+1)*dwidth_double]);
-    endgenerate
-        
-    //register_pipe for smart_ptr
-    generate
-      for(i = 0; i<num_col-1; i++)
-        register_pipe #(.width(dwidth_RFadd), .numPipeStage(latencyPEA)) 
-          register_pipe_inst1(smart_ptr[((i+1)*dwidth_RFadd)-1:i*dwidth_RFadd], 
-          aclk, 
-          areset, 
-          smart_ptr[((i+2)*dwidth_RFadd)-1:(i+1)*dwidth_RFadd]);
-    endgenerate
-
+// end
+// PH
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 
@@ -451,31 +408,3 @@ inst_r_transaction_cntr (
 endmodule
 
 `default_nettype wire
-
-
-    // logic [1:0] curr_state, next_state;
-    // localparam [1:0] init = 2'b00, execution_hold = 2'b01, 
-    // execution = 2'b10, finished = 2'b11;
-
-    
-    // state machine
-    // always_ff @(posedge clk) begin
-    //     if (rst) 
-    //         curr_state <= init;
-    //     else 
-    //         curr_state <= next_state;
-    // end
-    
-    // always_comb begin
-    //    case(curr_state)
-    //    init: next_state = (start)? execution_hold: init;
-    //    execution_hold: next_state = (!start)? execution: execution_hold;
-    //    execution: next_state = (wr_add == t_num_entry_config_table && wr_en[num_col] == 1'b1)? finished: execution;
-    // //    finished_config_table: next_state = (wr_add_inbound == num_entry_inbound - 1)? finished_inbound: finished_config_table;
-    //    finished: next_state = init;
-    //    default: next_state = init;
-    //    endcase
-    // end
-    
-    // assign done = (curr_state == finished)? 1'b1: 1'b0; // we assert done for one clock cycle
-    

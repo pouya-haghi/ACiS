@@ -3,7 +3,7 @@
 // default_nettype of none prevents implicit wire declaration.
 `default_nettype none
 
-module rtl_kernel_wizard_0_example_axi_read_master #(
+module HBM_read_master #(
   // Set to the address width of the interface
   parameter integer C_M_AXI_ADDR_WIDTH  = 64,
 
@@ -238,6 +238,6 @@ inst_r_transaction_cntr (
   .is_zero    ( r_final_transaction           )
 );
 
-endmodule : rtl_kernel_wizard_0_example_axi_read_master
+endmodule : HBM_read_master
 
 `default_nettype wire

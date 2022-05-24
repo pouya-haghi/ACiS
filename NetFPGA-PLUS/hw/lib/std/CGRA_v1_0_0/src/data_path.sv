@@ -7,31 +7,45 @@
 
 module data_path(
     input logic done_loader,
-    input logic [phit_size-1:0] tdata_stream_in,
-    input logic [SIMD_degree-1:0] tvalid_stream_in,
-    output logic [SIMD_degree-1:0] tready_stream_in,
     input logic [(dwidth_inst*num_col)-1:0] instr, // vector instruction
 //    input logic [((num_col)*dwidth_float)-1:0] imm,
 //    input logic [(phit_size*num_col)-1:0] rdata_config_table,
 //    input logic [num_col-1:0] tvalid_config_table, // in future release it should be [(SIMD_degree*num_col)-1:0] (for now, I only support vector not scalar)
     input logic clk,
     input logic rst,
-    input logic [(phit_size*num_col)-1:0] rdata_HBM,
+    // stream
+    input logic [phit_size-1:0] tdata_stream_in,
+    input logic [SIMD_degree-1:0] tvalid_stream_in,
+    output logic [SIMD_degree-1:0] tready_stream_in,
     output logic [phit_size-1:0] stream_out,
     output logic [SIMD_degree-1:0] tvalid_stream_out,
     input logic [SIMD_degree-1:0] tready_stream_out,
+    // AXI read
     output logic [(dwidth_aximm*num_col)-1:0] araddr_HBM,
     input logic [num_col-1:0] arready_HBM,
-    output logic [(dwidth_aximm*num_col)-1:0] awaddr_HBM,
-    input logic [num_col-1:0] awready_HBM,
     input logic [num_col-1:0] rvalid_HBM,
-    output logic [num_col-1:0] wvalid_HBM,
-    input logic [num_col-1:0] wready_HBM,
+    input logic [(phit_size*num_col)-1:0] rdata_HBM,
     output logic [num_col-1:0] rready_HBM,
     output logic [num_col-1:0] arvalid_HBM,
     output logic [7:0] arlen_HBM,
     input logic [num_col-1:0] rlast_HBM,
-    input logic t_stall
+    // AXI write
+    output logic [num_col-1:0] wvalid_HBM,
+    input logic [num_col-1:0] wready_HBM,
+    output logic [num_col-1:0] awvalid_HBM,
+    output logic [(num_col*8)-1:0] awlen_HBM,
+    output logic [(num_col*phit_size)-1:0] wdata_HBM,
+    output logic [(num_col*(phit_size/8))-1:0] wstrb_HBM,
+    output logic [num_col-1:0] wlast_HBM,
+    input logic [num_col-1:0] bvalid_HBM,
+    output logic [num_col-1:0] bready_HBM,
+    output logic [(dwidth_aximm*num_col)-1:0] awaddr_HBM,
+    input logic [num_col-1:0] awready_HBM,
+    output logic [num_col-1:0] clken_PC,
+    output logic [num_col-1:0] load_PC,
+    output logic [num_col-1:0] incr_PC,
+    output logic [(num_col*12)-1:0] load_value_PC,
+    input logic [dwidth_int-1:0] cycle_register
     );
     
     localparam phitplus = phit_size + SIMD_degree; // bundle {tvalid, tdata}
@@ -60,13 +74,11 @@ module data_path(
     logic [SIMD_degree-1:0] FIFO_out_tvalid_t;
     logic [num_col-1:0] wen_RF_scalar;
 //    logic [num_col-1:0] flag_eq;
-    logic [num_col-1:0] is_vle32_vv;
-    logic [num_col-1:0] is_vse32_vv;
-    logic [num_col-1:0] is_vmacc_vv;
-    logic [num_col-1:0] is_vmv_vi;
+    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_beq;
     logic [num_col-1:0] stall_HBM;
     logic [num_col-1:0] stall_auto_vect;
     logic [num_col-1:0] valid_RF_en;
+    logic t_stall;
     
     // This part is ISA-specific:
     logic [num_col-1:0] ctrl_i_mux2_tvalid; //generated internally based on op
@@ -82,7 +94,7 @@ module data_path(
             .clk(clk),
             .rst(rst),
             .push(tvalid_stream_in[i] && !full[i]),
-            .pop(!t_stall && !empty[i]), // correct me (t_stall)
+            .pop(!t_stall && !empty[i]), 
             .din({tvalid_stream_in[i], tdata_stream_in[((i+1)*dwidth_float)-1:i*dwidth_float]}),
             .dout({FIFO_out_tvalid[i], FIFO_out_tdata[((i+1)*dwidth_float)-1:i*dwidth_float]}),
             .empty(empty[i]),
@@ -121,6 +133,8 @@ module data_path(
              .is_vse32_vv(is_vse32_vv[j]),
              .is_vmacc_vv(is_vmacc_vv[j]),
              .is_vmv_vi(is_vmv_vi[j]),
+             .is_beq(is_beq[j]),
+             .is_csr(is_csr[j]),
              .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
              .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]),
              .op(op[((j+1)*3)-1:j*3]),
@@ -159,7 +173,7 @@ module data_path(
              .rr1(rs1[((j+1)*5)-1:j*5]),
              .rr2(rs2[((j+1)*5)-1:j*5]),
              .wr(rd[((j+1)*5)-1:j*5]),
-             .wd(wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
+             .wd((is_csr)? cycle_register: wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
              .dr1(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
              .dr2(rddata2_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int])
              );
@@ -171,8 +185,8 @@ module data_path(
              .ctrl_start(wen_ITR[j]),
              .ctrl_done(read_done_HBM[j]),    
              .ctrl_addr_offset(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
-             .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd1), // 6'b0 because each VRF entry is 64 Bytes
-             // -1'b0 because AXI is like this
+             .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // 6'b0 because each VRF entry is 64 Bytes
+             // -64 because AXI needs ITR-1 (length-1)
              .m_axi_arvalid(arvalid_HBM[j]),
              .m_axi_arready(arready_HBM[j]),
              .m_axi_araddr(araddr_HBM[((j+1)*dwidth_aximm)-1:j*dwidth_aximm]),
@@ -182,6 +196,29 @@ module data_path(
              .m_axi_rdata(rdata_HBM[j]),
              .m_axi_rlast(rlast_HBM[j]),
              .is_vle32_vv(is_vle32_vv[j])
+             );
+             
+             // HBM write master
+             HBM_write_master HBM_write_master_inst0
+             (
+             .aclk(clk),
+             .areset(rst),
+             .ctrl_start(wen_ITR[j]),              // Pulse high for one cycle to begin reading
+             .ctrl_done(write_done_HBM[j]),               // Pulses high for one cycle when transfer request is complete
+             .ctrl_addr_offset(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),        // Starting Address offset
+             .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // Length in number of bytes, limited by the address width.
+             .m_axi_awvalid(awvalid_HBM[j]),
+             .m_axi_awready(awready_HBM[j]),
+             .m_axi_awaddr(awaddr_HBM[((j+1)*dwidth_aximm)-1:j*dwidth_aximm]),
+             .m_axi_awlen(awlen_HBM[((j+1)*8)-1:j*8]),
+             .m_axi_wvalid(wvalid_HBM[j]),
+             .m_axi_wready(wready_HBM[j]),
+             .m_axi_wdata(wdata_HBM[((j+1)*phit_size)-1:j*phit_size]),
+             .m_axi_wstrb(wstrb_HBM[((j+1)*phit_size/8)-1:j*phit_size/8]),
+             .m_axi_wlast(wlast_HBM[j]),
+             .m_axi_bvalid(bvalid_HBM[j]),
+             .m_axi_bready(bready_HBM[j]),
+             .is_vse32_vv(is_vse32_vv[j]) 
              );
              
              // vectorized PE
@@ -207,6 +244,19 @@ module data_path(
               .op_scalar(op_scalar[((j+1)*3)-1:j*3]),
               .out1(wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
               .flag_eq(flag_eq[j]) // correct me
+             );
+
+             // PC logic
+             PC_logic PC_logic_inst0
+             (
+              .is_not_vect(is_not_vect[j]),
+              .done_auto_incr(done_auto_incr[j]),
+              .is_beq(is_beq[j]),
+              .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
+              .clken_PC(clk_en_PC[j][j]),
+              .load_PC(load_PC[j]),
+              .incr_PC(incr_PC[j]),
+              .load_value_PC(load_value_PC[((j+1)*12)-1:j*12])
              );
              
              if (j == 0) begin
