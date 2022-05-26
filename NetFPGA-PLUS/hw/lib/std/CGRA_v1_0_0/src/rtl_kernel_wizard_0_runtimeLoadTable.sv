@@ -332,7 +332,7 @@ inst_ar_to_r_transaction_cntr (
       .C_WIDTH ( dwidth_int         ) ,
       .C_INIT  ( {dwidth_int{1'b0}} )
       )
-      inst_r_transaction_cntr (
+      inst_r_transaction_cntr2 (
         .clk        ( aclk                          ) ,
         .clken      ( 1'b1                          ) ,
         .rst        ( areset                        ) ,
@@ -370,7 +370,7 @@ inst_ar_to_r_transaction_cntr (
                 wr_en <= {{(num_col-(phit_size/dwidth_int)){1'b0}}, {(phit_size/dwidth_int){1'b1}}}; // 16 '0's and 16 '1's. enable 16 config tables at the same time
                 // This is b/c axi is wide (512 bits) and it can support multiple parallel tables
             else if (wr_en != 0 && wr_add == t_num_entry_config_table && rxfer) //num_entry_config_table - 1
-                wr_en <= wr_en << 16;
+                wr_en <= wr_en << (phit_size/dwidth_int);
             else if (done)// done state, m_axi_rlast
                 wr_en <= 0; //avoid keeping wr_en high
         end
@@ -383,7 +383,7 @@ inst_ar_to_r_transaction_cntr (
 
 assign rxfer = m_axi_rready & m_axi_rvalid;
 
-assign r_completed = m_axis_tvalid & m_axis_tready & m_axis_tlast;
+assign r_completed = m_axi_rvalid & m_axi_rready & m_axi_rlast;
 
 always_comb begin
   decr_r_transaction_cntr = rxfer & m_axi_rlast;

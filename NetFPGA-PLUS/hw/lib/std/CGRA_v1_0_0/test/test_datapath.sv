@@ -8,83 +8,89 @@
 module test_datapath;
     
 // reg [phit_size-1:0] inbound;                     
- reg [phit_size-1:0] stream_in;                   
- reg [((num_col)*dwidth_double)-1:0] itr;                     
- reg [((num_col)*dwidth_double)-1:0] imm;           
- reg [((num_col)*4)-1:0] sel_mux4;              
- reg [((num_col)*2)-1:0] op;                    
- reg [num_col-1:0] wen_RF;                        
- reg [(dwidth_RFadd*(num_col))-1:0] rd_addr_RF; 
- reg [(dwidth_RFadd*(num_col))-1:0] wr_addr_RF; 
- reg clk;    
- reg rst;
- reg [num_col-1:0] isItr;                                     
- wire [phit_size-1:0] stream_out;     
- wire [phit_size-1:0] stream_out_PEa0;   
- wire [phit_size-1:0] stream_out_PEa1;
- wire [phit_size-1:0] stream_out_PEb;
- wire [phit_size-1:0] stream_out_PEc0;
- wire [phit_size-1:0] stream_out_PEc1;
- 
+    reg clk;
+    reg rst;
+    reg done_loader;
+    reg [(dwidth_inst*num_col)-1:0] instr;
+    wire [num_col-1:0] clken_PC;
+    wire [num_col-1:0] load_PC;
+    wire [num_col-1:0] incr_PC;
+    wire [(num_col*12)-1:0] load_value_PC;
+    reg [dwidth_int-1:0] cycle_register;
+    // stream
+    reg [phit_size-1:0] tdata_stream_in;
+    reg [SIMD_degree-1:0] tvalid_stream_in;
+    wire [SIMD_degree-1:0] tready_stream_in;
+    wire [phit_size-1:0] tdata_stream_out;
+    wire [SIMD_degree-1:0] tvalid_stream_out;
+    reg [SIMD_degree-1:0] tready_stream_out;
+    // AXI read
+    wire [(dwidth_aximm*num_col)-1:0] araddr_HBM;
+    reg [num_col-1:0] arready_HBM;
+    reg [num_col-1:0] rvalid_HBM;
+    reg [(phit_size*num_col)-1:0] rdata_HBM;
+    wire [num_col-1:0] rready_HBM;
+    wire [num_col-1:0] arvalid_HBM;
+    wire [(8*num_col)-1:0] arlen_HBM;
+    reg [num_col-1:0] rlast_HBM;
+    // AXI write
+    wire [num_col-1:0] wvalid_HBM;
+    reg [num_col-1:0] wready_HBM;
+    wire [num_col-1:0] awvalid_HBM;
+    wire [(num_col*8)-1:0] awlen_HBM;
+    wire [(num_col*phit_size)-1:0] wdata_HBM;
+    wire [(num_col*(phit_size/8))-1:0] wstrb_HBM;
+    wire [num_col-1:0] wlast_HBM;
+    reg [num_col-1:0] bvalid_HBM;
+    wire [num_col-1:0] bready_HBM;
+    wire [(dwidth_aximm*num_col)-1:0] awaddr_HBM;
+    reg [num_col-1:0] awready_HBM;
+
            
- 
  data_path data_path_inst1 (.*);
  
  always begin
-        clk <= 1;
+        clk = 1;
         #5;
-        clk <= 0;
+        clk = 0;
         #5;
     end
     
  initial begin
 //    inbound = 0; //dont care
-    stream_in <= 0;
-    imm <= 0; //dont care
-    itr <= 0; //dont care
-    wen_RF <= 0; //dont care
-    rd_addr_RF <= 0; // dont care
-    wr_addr_RF <= 0; //dont care 
-    sel_mux4 <= 0;
-    op <= 0;
-    rst <= 0;
-    isItr <= 0;
+    done_loader = 1;
+    cycle_register <= 32'b0;
+    instr <= 0;
+    rst = 0;
     
-    #40; 
-    stream_in <= 512'd3;
+    tdata_stream_in = 512'd3;
+    tvalid_stream_in <= {(SIMD_degree){1'b0}};
+    tready_stream_out <= {(SIMD_degree){1'b1}};
+    //
+    arready_HBM <= {(num_col){1'b1}};
+    rvalid_HBM <= {(num_col){1'b0}};
+    rdata_HBM <= 512'd4;
+    rlast_HBM <= {(num_col){1'b0}};  
+    //
+    wready_HBM <= {(num_col){1'b1}};
+    bvalid_HBM <= {(num_col){1'b0}};
+    awready_HBM <= {(num_col){1'b1}}; 
     
-    sel_mux4 <= {2'b00, 2'b00, // typeD //mux0, mux1
-    2'b10, 2'b00, //typeC1 //mux0, mux1
-    2'b10, 2'b00, //typeC0 //mux0, mux1
-    2'b00, 2'b00, //typeB //mux0, mux1
-    2'b10, 2'b00, //typeA1 //mux0, mux1
-    2'b10, 2'b00}; //typeA0 //mux0, mux1
-   
-    op <= {2'b00, //typeD //div
-    2'b00, // typeC1 //add 
-    2'b00, // typeC0 //add
-    2'b01, // typeB //add
-    2'b00, // typeA1 //add 
-    2'b00}; // typeA0, add
+    #40;
+    rst = 1;
+    #80;
+    rst = 0;
+    #20;
+    instr[dwidth_inst-1:0] = {14'b0, 3'b000, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+    instr[(2*dwidth_inst)-1:dwidth_inst] = {14'b0, 3'b000, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
     
-    imm <= {64'd2, //PE_typeD
-    64'h4008000000000000, //PE_typeC1 //= 3 in decimal
-    64'd0, // PE_typeC0
-    64'd0, // PE_typeB
-    64'd0, //PE_typeA1
-    64'd1}; // PE_typeA0
-    
+    #10;
+    instr[dwidth_inst-1:0] = {12'b0, 5'b00010 , 3'b0, 5'b0, 7'h07}; // vle32.vv v0, (x2)
+    instr[(2*dwidth_inst)-1:dwidth_inst] = {12'b0, 5'b00010 , 3'b0, 5'b0, 7'h07}; // vle32.vv v0, (x2)
+    // instr[6:0]==7'h07
     #2000;
     $finish;
     
  end
-    wire [dwidth_double-1:0] stream_out_PEa0_word, stream_out_PEa1_word, stream_out_PEb_word;
-    wire [dwidth_double-1:0] stream_out_PEc0_word, stream_out_PEc1_word, stream_out_word;
-    assign stream_out_PEa0_word = stream_out_PEa0[dwidth_double-1:0];
-    assign stream_out_PEa1_word = stream_out_PEa1[dwidth_double-1:0];
-    assign stream_out_PEb_word = stream_out_PEb[dwidth_double-1:0];
-    assign stream_out_PEc0_word = stream_out_PEc0[dwidth_double-1:0];
-    assign stream_out_PEc1_word = stream_out_PEc1[dwidth_double-1:0];
-    assign stream_out_word = stream_out[dwidth_double-1:0];
-    
+
 endmodule

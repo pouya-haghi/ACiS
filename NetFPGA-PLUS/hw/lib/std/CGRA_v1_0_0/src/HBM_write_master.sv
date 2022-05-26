@@ -2,14 +2,19 @@
 // default_nettype of none prevents implicit wire declaration.
 `default_nettype none
 
+`ifndef MY_INTERFACE
+  `define MY_INTERFACE
+  `include "my_interface.vh"
+`endif
+
 module HBM_write_master #(
   // Set to the address width of the interface
-  parameter integer C_M_AXI_ADDR_WIDTH  = 512,
+  parameter integer C_M_AXI_ADDR_WIDTH  = 64,
   // Set the data width of the interface
   // Range: 32, 64, 128, 256, 512, 1024
-  parameter integer C_M_AXI_DATA_WIDTH  = 32,
+  parameter integer C_M_AXI_DATA_WIDTH  = 512,
   // Specifies the maximum number of AXI4 transactions that may be outstanding.
-  parameter integer C_MAX_OUTSTANDING   = 32
+  parameter integer C_MAX_OUTSTANDING   = 16
 )
 (
   // AXI Interface
@@ -38,10 +43,10 @@ module HBM_write_master #(
   input  wire                            m_axi_bvalid,
   output wire                            m_axi_bready,
   // AXI4-Stream interface
-//  input  wire                            s_axis_tvalid,
-  input  wire                            is_vse32_vv 
-//  output wire                            s_axis_tready
-//  input  wire  [C_M_AXI_DATA_WIDTH-1:0]  s_axis_tdata
+  input  wire                            s_axis_tvalid,
+//  input  wire                            is_vse32_vv 
+  output wire                            s_axis_tready,
+  input  wire  [C_M_AXI_DATA_WIDTH-1:0]  s_axis_tdata
 
 );
 /////////////////////////////////////////////////////////////////////////////
@@ -163,9 +168,9 @@ end
 
   // Gate valid/ready signals with running so transfers don't occur before the
   // xfer size is known.
-assign m_axi_wvalid  = is_vse32_vv & w_running;
-//assign m_axi_wdata   = s_axis_tdata;
-//assign s_axis_tready = m_axi_wready & w_running;
+assign m_axi_wvalid  = s_axis_tvalid & w_running;
+assign m_axi_wdata   = s_axis_tdata;
+assign s_axis_tready = m_axi_wready & w_running;
 
 assign wxfer = m_axi_wvalid & m_axi_wready;
 

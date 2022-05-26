@@ -12,6 +12,6 @@ module PE_scalar(
     localparam [2:0] is_lui = 3'b000, is_addi = 3'b001, is_beq = 3'b010; 
     
     assign out1 = (op_scalar == is_addi)? inp1+R_immediate: {(dwidth_int){1'b0}};
-    assign flag_eq = (inp1 == inp2) & (op_scalar == is_beq);
+    assign flag_eq = ((inp1 == inp2) & (op_scalar == is_beq))? 1'b1: 1'b0;
     
 endmodule

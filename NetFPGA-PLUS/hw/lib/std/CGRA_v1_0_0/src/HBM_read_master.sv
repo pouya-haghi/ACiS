@@ -3,6 +3,11 @@
 // default_nettype of none prevents implicit wire declaration.
 `default_nettype none
 
+`ifndef MY_INTERFACE
+  `define MY_INTERFACE
+  `include "my_interface.vh"
+`endif
+
 module HBM_read_master #(
   // Set to the address width of the interface
   parameter integer C_M_AXI_ADDR_WIDTH  = 64,
@@ -37,10 +42,11 @@ module HBM_read_master #(
   input  wire [C_M_AXI_DATA_WIDTH-1:0] m_axi_rdata,
   input  wire                          m_axi_rlast,
   // AXI4-Stream master interface
-//  output wire                          m_axis_tvalid,
-//  output wire [C_M_AXI_DATA_WIDTH-1:0] m_axis_tdata,
+  output wire                          m_axis_tvalid,
+  input wire                           m_axis_tready,
+  output wire [C_M_AXI_DATA_WIDTH-1:0] m_axis_tdata
 //  output wire                          m_axis_tlast,
-  input wire                           is_vle32_vv
+//  input wire                           is_vle32_vv
 );
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -209,9 +215,9 @@ inst_ar_to_r_transaction_cntr (
 // AXI Read Channel
 ///////////////////////////////////////////////////////////////////////////////
   // All signals pass through.
-//  assign m_axis_tvalid = m_axi_rvalid;
-//  assign m_axis_tdata  = m_axi_rdata;
-  assign m_axi_rready  = is_vle32_vv;
+  assign m_axis_tvalid = m_axi_rvalid;
+  assign m_axis_tdata  = m_axi_rdata;
+  assign m_axi_rready  = m_axis_tready;
 //  assign m_axis_tlast  = m_axi_rlast;
 
 assign rxfer = m_axi_rready & m_axi_rvalid;

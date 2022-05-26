@@ -12,14 +12,11 @@ module auto_incr_vect(
     input logic stall, // clk_en
     input logic [dwidth_RFadd-1:0] vr_addr,
     input logic [dwidth_RFadd-1:0] vw_addr,
-    input logic [dwidth_int-1:0] rddata1_RF_scalar, // x register in vle32 and vse32 instructions, used for addressing memory
-    input logic is_vle32_vv,
-    input logic is_vse32_vv,
-    input logic is_vmacc_vv,
+//    input logic [dwidth_int-1:0] rddata1_RF_scalar, // x register in vle32 and vse32 instructions, used for addressing memory
     output logic [dwidth_RFadd-1:0] vr_addr_auto_incr,
     output logic [dwidth_RFadd-1:0] vw_addr_auto_incr,
-    output logic [dwidth_HBMadd-1:0] araddr_HBM,
-    output logic [dwidth_HBMadd-1:0] awaddr_HBM,
+//    output logic [dwidth_HBMadd-1:0] araddr_HBM,
+//    output logic [dwidth_HBMadd-1:0] awaddr_HBM,
 //    output logic arvalid_HBM,
 //    output logic awvalid_HBM,
     output logic done // one clock pulse
@@ -33,7 +30,7 @@ module auto_incr_vect(
     
     assign ITR_minusOne = ITR - 1;
     
-    reg_enr reg_enr_inst(
+    reg_enr #(dwidth_RFadd) reg_enr_inst(
         .d(ITR_minusOne),
         .clk(clk),
         .rst(rst),
@@ -87,8 +84,8 @@ module auto_incr_vect(
         end
     end
     
-    assign araddr_HBM = {{(dwidth_int-dwidth_RFadd){1'b0}}, ctr_ITR} + rddata1_RF_scalar;
-    assign awaddr_HBM = {{(dwidth_int-dwidth_RFadd){1'b0}}, ctr_ITR} + rddata1_RF_scalar;
+//    assign araddr_HBM = {{(dwidth_int-dwidth_RFadd){1'b0}}, ctr_ITR} + rddata1_RF_scalar;
+//    assign awaddr_HBM = {{(dwidth_int-dwidth_RFadd){1'b0}}, ctr_ITR} + rddata1_RF_scalar;
     assign vr_addr_auto_incr = vr_addr + ctr_ITR;
     assign vw_addr_auto_incr = vw_addr + ctr_ITR;
 endmodule

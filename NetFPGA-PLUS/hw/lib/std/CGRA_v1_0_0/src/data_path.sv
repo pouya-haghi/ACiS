@@ -17,7 +17,7 @@ module data_path(
     input logic [phit_size-1:0] tdata_stream_in,
     input logic [SIMD_degree-1:0] tvalid_stream_in,
     output logic [SIMD_degree-1:0] tready_stream_in,
-    output logic [phit_size-1:0] stream_out,
+    output logic [phit_size-1:0] tdata_stream_out,
     output logic [SIMD_degree-1:0] tvalid_stream_out,
     input logic [SIMD_degree-1:0] tready_stream_out,
     // AXI read
@@ -27,7 +27,7 @@ module data_path(
     input logic [(phit_size*num_col)-1:0] rdata_HBM,
     output logic [num_col-1:0] rready_HBM,
     output logic [num_col-1:0] arvalid_HBM,
-    output logic [7:0] arlen_HBM,
+    output logic [(8*num_col)-1:0] arlen_HBM,
     input logic [num_col-1:0] rlast_HBM,
     // AXI write
     output logic [num_col-1:0] wvalid_HBM,
@@ -73,12 +73,15 @@ module data_path(
     logic [SIMD_degree-1:0] FIFO_out_tvalid;
     logic [SIMD_degree-1:0] FIFO_out_tvalid_t;
     logic [num_col-1:0] wen_RF_scalar;
-//    logic [num_col-1:0] flag_eq;
-    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_beq;
+    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_beq, is_csr;
     logic [num_col-1:0] stall_HBM;
     logic [num_col-1:0] stall_auto_vect;
     logic [num_col-1:0] valid_RF_en;
+    logic [num_col-1:0] read_done_HBM, write_done_HBM; // I dont need them for now as done signal from auto_incr_vect module gives me the right answer
+    logic [num_col-1:0] flag_eq;
     logic t_stall;
+    logic [(num_col*phit_size)-1:0] user_rdata_HBM;
+    logic [num_col-1:0] user_rvalid_HBM, user_wready_HBM;
     
     // This part is ISA-specific:
     logic [num_col-1:0] ctrl_i_mux2_tvalid; //generated internally based on op
@@ -90,7 +93,7 @@ module data_path(
     genvar i;
     generate 
         for (i=0; i<SIMD_degree; i++) begin
-            sync_FIFO sync_FIFO_inst0(
+            sync_FIFO #(dwidth_float+1, 16) sync_FIFO_inst0(
             .clk(clk),
             .rst(rst),
             .push(tvalid_stream_in[i] && !full[i]),
@@ -112,7 +115,7 @@ module data_path(
     genvar j;
     generate 
         for (j=0; j<num_col; j++) begin
-            assign stall_HBM[j] = (is_vle32_vv[j] & (!(rvalid_HBM[j]&rready_HBM[j]))) || (is_vse32_vv[j] & (!(wready_HBM[j]&wvalid_HBM[j])));
+            assign stall_HBM[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j])));
             assign stall_auto_vect[j] = stall_HBM[j] || (is_vmacc_vv[j] & valid_RF_en[j]);
             // if it is vmacc and tvalids are zero then you should stall auto_vect but not input FIFO 
             assign valid_RF_en[j] = (&i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & (&i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & (&o1_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]);
@@ -120,6 +123,8 @@ module data_path(
             
             ISA_decoder ISA_decoder_inst
             (.instr(instr[((j+1)*dwidth_inst)-1:j*dwidth_inst]),
+             .clk(clk),
+             .rst(rst),
              .ctrl_i_mux2_tvalid(ctrl_i_mux2_tvalid[j]),
              .rs1(rs1[((j+1)*5)-1:j*5]),
              .rs2(rs2[((j+1)*5)-1:j*5]),
@@ -150,20 +155,20 @@ module data_path(
              .stall(stall_auto_vect[j]), // clk_en
              .vr_addr(vr_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vw_addr(vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
-             .rddata1_RF_scalar(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
+//             .rddata1_RF_scalar(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
              .vr_addr_auto_incr(vr_addr_auto_incr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vw_addr_auto_incr(vw_addr_auto_incr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
-             .araddr_HBM(araddr_HBM[((j+1)*dwidth_HBMadd)-1:j*dwidth_HBMadd]), //
-             .awaddr_HBM(awaddr_HBM[((j+1)*dwidth_HBMadd)-1:j*dwidth_HBMadd]),
+//             .araddr_HBM(araddr_HBM[((j+1)*dwidth_HBMadd)-1:j*dwidth_HBMadd]), //
+//             .awaddr_HBM(awaddr_HBM[((j+1)*dwidth_HBMadd)-1:j*dwidth_HBMadd]),
              .done(done_auto_incr[j]) // one clock pulse
              );
              
              // vectorized regFile
-             regFile regFile_inst0(.d_in(is_vmv_vi[j]?{(phit_size){1'b0}}:(is_vmacc_vv[j]?o1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]:rdata_HBM[(phit_size*(j+1))-1:phit_size*j])), // based on op I would choose wdata, o_RF or HBM. vmv.v.i is not supported: ctrl_din_RF[(j*3)+0]==1 :rdata_config_table[(phit_size*(j+1))-1:phit_size*j]
+             regFile regFile_inst0(.d_in(is_vmv_vi[j]?{(phit_size){1'b0}}:(is_vmacc_vv[j]?o1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]:user_rdata_HBM[(phit_size*(j+1))-1:phit_size*j])), // based on op I would choose wdata, o_RF or HBM. vmv.v.i is not supported: ctrl_din_RF[(j*3)+0]==1 :rdata_config_table[(phit_size*(j+1))-1:phit_size*j]
              .clk(clk),
              .rd_addr(vr_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_RF is one of the fields in tables (auto-increment address generator)
              .wr_addr(vw_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]),
-             .wen(is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_RF_en[j]:is_vle32_vv[j]?rvalid_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
+             .wen(is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_RF_en[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
              .d_out(o_RF[(phit_size*(j+1))-1:phit_size*j]));
              
              // scalar regFile   
@@ -173,7 +178,7 @@ module data_path(
              .rr1(rs1[((j+1)*5)-1:j*5]),
              .rr2(rs2[((j+1)*5)-1:j*5]),
              .wr(rd[((j+1)*5)-1:j*5]),
-             .wd((is_csr)? cycle_register: wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
+             .wd((is_csr[j])? cycle_register: wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
              .dr1(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
              .dr2(rddata2_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int])
              );
@@ -184,7 +189,7 @@ module data_path(
              .areset(rst),
              .ctrl_start(wen_ITR[j]),
              .ctrl_done(read_done_HBM[j]),    
-             .ctrl_addr_offset(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
+             .ctrl_addr_offset({32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}),
              .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // 6'b0 because each VRF entry is 64 Bytes
              // -64 because AXI needs ITR-1 (length-1)
              .m_axi_arvalid(arvalid_HBM[j]),
@@ -193,9 +198,11 @@ module data_path(
              .m_axi_arlen(arlen_HBM[((j+1)*8)-1:j*8]),
              .m_axi_rvalid(rvalid_HBM[j]),
              .m_axi_rready(rready_HBM[j]),
-             .m_axi_rdata(rdata_HBM[j]),
+             .m_axi_rdata(rdata_HBM[((j+1)*phit_size)-1:j*phit_size]),
              .m_axi_rlast(rlast_HBM[j]),
-             .is_vle32_vv(is_vle32_vv[j])
+             .m_axis_tvalid(user_rvalid_HBM[j]),
+             .m_axis_tdata(user_rdata_HBM[((j+1)*phit_size)-1:j*phit_size]),
+             .m_axis_tready(is_vle32_vv[j])
              );
              
              // HBM write master
@@ -205,8 +212,8 @@ module data_path(
              .areset(rst),
              .ctrl_start(wen_ITR[j]),              // Pulse high for one cycle to begin reading
              .ctrl_done(write_done_HBM[j]),               // Pulses high for one cycle when transfer request is complete
-             .ctrl_addr_offset(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),        // Starting Address offset
-             .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // Length in number of bytes, limited by the address width.
+             .ctrl_addr_offset({32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}),        // Starting Address offset
+             .ctrl_xfer_size_in_bytes({{(dwidth_aximm-dwidth_RFadd-6){1'b0}}, ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // Length in number of bytes, limited by the address width.
              .m_axi_awvalid(awvalid_HBM[j]),
              .m_axi_awready(awready_HBM[j]),
              .m_axi_awaddr(awaddr_HBM[((j+1)*dwidth_aximm)-1:j*dwidth_aximm]),
@@ -218,11 +225,14 @@ module data_path(
              .m_axi_wlast(wlast_HBM[j]),
              .m_axi_bvalid(bvalid_HBM[j]),
              .m_axi_bready(bready_HBM[j]),
-             .is_vse32_vv(is_vse32_vv[j]) 
+             .s_axis_tvalid(is_vse32_vv[j]),
+             .s_axis_tready(user_wready_HBM[j]),
+             .s_axis_tdata(o_RF[(phit_size*(j+1))-1:phit_size*j]) 
              );
              
              // vectorized PE
-             vectorized_PE vectorized_PE_inst0(
+             vectorized_PE vectorized_PE_inst0
+             (
              .i1_PE_typeC(i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
              .i2_PE_typeC(i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
              .i_tvalid1_PE_typeC(i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
@@ -252,20 +262,25 @@ module data_path(
               .is_not_vect(is_not_vect[j]),
               .done_auto_incr(done_auto_incr[j]),
               .is_beq(is_beq[j]),
+              .flag_eq(flag_eq[j]),
               .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
-              .clken_PC(clk_en_PC[j][j]),
+              .clken_PC(clken_PC[j]),
               .load_PC(load_PC[j]),
               .incr_PC(incr_PC[j]),
               .load_value_PC(load_value_PC[((j+1)*12)-1:j*12])
              );
              
              if (j == 0) begin
-                 mux2 #(phitplus) mux2_inst0_if ({FIFO_out_tvalid, FIFO_out_tdata}, {(phitplus){1'b0}}, sel_mux2[(j*2)+0], {i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
-                 mux2 #(phitplus) mux2_inst1_if ({{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, {(phitplus){1'b0}}, sel_mux2[(j*2)+1], {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});  // second input was considered for imm (but not yet supported b/c it is not in riscv): {{(SIMD_degree){tvalid_config_table[0]}}, {SIMD_degree{imm[(dwidth_float*1)-1:dwidth_float*0]}}}  
+                 mux2 #(phitplus) mux2_inst0_if ({FIFO_out_tvalid, FIFO_out_tdata}, {(phitplus){1'b0}}, sel_mux2[0], {i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
+                 mux2 #(phitplus) mux2_inst1_if ({{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, {(phitplus){1'b0}}, sel_mux2[1], {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});  // second input was considered for imm (but not yet supported b/c it is not in riscv): {{(SIMD_degree){tvalid_config_table[0]}}, {SIMD_degree{imm[(dwidth_float*1)-1:dwidth_float*0]}}}  
+                assign sel_mux2[0] = 1'b0;
+                assign sel_mux2[1] = 1'b0;
              end
              else begin
                  mux2 #(phitplus) mux2_inst0_else ({o1_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], o1_PE_typeC[(phit_size*(j+1))-1:(phit_size*j)]}, {o2_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], o2_PE_typeC[(phit_size*(j+1))-1:(phit_size*j)]}, sel_mux2[(j*2)+0], {i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
                  mux2 #(phitplus) mux2_inst1_else ({{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, {(phitplus){1'b0}}, sel_mux2[(j*2)+1], {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});  // second input was considered for imm (but not yet supported): {{(SIMD_degree){tvalid_config_table[0]}}, {SIMD_degree{imm[(dwidth_float*1)-1:dwidth_float*0]}}}
+                 assign sel_mux2[(j*2)+0] = 1'b1;
+                 assign sel_mux2[(j*2)+1] = 1'b0;
              end
              
         end

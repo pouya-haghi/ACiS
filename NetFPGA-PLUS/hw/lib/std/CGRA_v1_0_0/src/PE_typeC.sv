@@ -32,8 +32,8 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
     logic is_add, is_mul, is_acc, is_macc;
     logic tvalid_fp_acc;
     logic tvalid_o_macc;
-    logic t_valid_out1_t;
-    logic [dwidth_float-1:0] out1_t;
+    logic t_valid_out1_t, t_valid_out1_tt;
+    logic [dwidth_float-1:0] out1_t, out1_tt;
     
     
     floating_point_add fp_add_inst0 (
@@ -145,7 +145,7 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
     register_pipe #(dwidth_float+1, latency) rp_inst0(clk, rst, {t_valid_inp1, inp1}, {t_valid_out2, out2});
 //    register_pipe #(1, latency) rp_inst1(clk, rst, t_valid_inp1, t_valid_out2);
     register_pipe #(dwidth_float+1, latency/2) rp_inst1(clk, rst, {t_valid_out1_t, out1_t}, {t_valid_out1_tt, out1_tt});
-    
+    //
     assign out1 = (is_macc)? out1_t: out1_tt;
     assign t_valid_out1 = (is_macc)? t_valid_out1_t: t_valid_out1_tt;
 

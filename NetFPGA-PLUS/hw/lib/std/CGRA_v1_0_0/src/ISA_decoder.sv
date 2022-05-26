@@ -7,6 +7,8 @@
 
 module ISA_decoder(
     input logic [dwidth_inst-1:0] instr, // vector instruction
+    input logic clk,
+    input logic rst,
 //    input logic [dwidth_inst-1:0] instr_cfg,// config instruction
     output logic ctrl_i_mux2_tvalid,
 //    output logic [2:0] ctrl_din_RF,
@@ -39,6 +41,7 @@ module ISA_decoder(
     logic is_addi, is_lui; // integer scalar
     logic [dwidth_int-1:0] lui_immediate, addi_immediate;
     logic is_vect;
+    logic [2:0] VLEN;
 
     // ***********************  decode ***************************
     assign is_vmacc_vv = (instr[6:0]==7'h57 && instr[14:12]==3'h0)?1'b1:1'b0;
@@ -49,11 +52,21 @@ module ISA_decoder(
     assign is_beq = (instr[6:0]==7'b1100011 && instr[14:12]==3'b000)?1'b1:1'b0;
     assign is_addi = (instr[6:0]==7'b0010011 && instr[14:12]==3'b000)?1'b1:1'b0; 
     assign is_lui = (instr[6:0]==7'b0110111)?1'b1:1'b0;
-    assign is_csr = (instr[6:0]==7'b0000011 && instr[31:20]==C00)? 1'b1: 1'b0;
+    assign is_csr = (instr[6:0]==7'b0000011 && instr[31:20]==12'hC00)? 1'b1: 1'b0;
     
     // ******************   configuration instructions *********************
     assign ITR = instr[29:18];
     assign wen_ITR = is_vsetivli;
+    
+    // for vsetivli
+    reg_enr #(3) reg_enr_inst0 
+    (
+    .d(instr[17:15]),
+    .clk(clk),
+    .rst(rst),
+    .en(is_vsetivli),
+    .q(VLEN)
+    );
     
     // ****************** scalar instructions ****************************
     // beq instruction
@@ -72,12 +85,13 @@ module ISA_decoder(
     assign op = (is_vmacc_vv)? 3'b011: 3'b100; //else: NoP 
     assign is_vect = |{is_vmacc_vv, is_vle32_vv, is_vse32_vv, is_vmv_vi};
     assign is_not_vect = !is_vect;
-    // vs1 is hardwire to SIN
+    // vs1 is hardwire to O1 or O2 (no matter what you put in)
     assign vs2 = instr[24:20]; // vs2
     assign vd = instr[11:7]; // vd
     // again rs1 is the base address
-//    always_comb begin
-//        case(instr_cfg[17:15])
+    
+        //    always_comb begin
+//        case(VLEN)
 //            3'b000: VLEN_phy = (depth_RF/2);
 //            3'b001: VLEN_phy = (depth_RF/4);
 //            3'b010: VLEN_phy = (depth_RF/8);
@@ -89,9 +103,8 @@ module ISA_decoder(
 //            default: VLEN_phy = (depth_RF/2);
 //        endcase
 //    end
-    
     always_comb begin
-        case(instr[17:15])
+        case(VLEN)
             3'b000: begin 
                         vr_addr = {vs2[0], {(dwidth_RFadd-1){1'b0}}}; 
                         vw_addr = {vd[0], {(dwidth_RFadd-1){1'b0}}};
@@ -131,11 +144,10 @@ module ISA_decoder(
         endcase
     end
     
-    
 //    assign ctrl_din_RF = (is_vmv_vi)? 3'b001:((is_vmacc_vv)? 3'b010: ((is_vle32_vv)? 3'b100: 3'b100)); // default: 3'b100
 //    assign ctrl_wen_RF = (is_vmv_vi)? 3'b001:((is_vmacc_vv)? 3'b010: ((is_vle32_vv)? 3'b100: 3'b000)); // default: 3'b000
-    assign ctrl_i_mux2_tvalid = (is_vmacc_vv)? 1'b1: 1'b0;
     assign op_scalar = (is_lui)? 3'b000: ((is_addi)?3'b001:(is_beq)?3'b010:3'b011);
+    assign ctrl_i_mux2_tvalid = (is_vmacc_vv)? 1'b1: 1'b0;
+//    assign sel_mux2 = 
    
-
 endmodule
