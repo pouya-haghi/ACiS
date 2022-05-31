@@ -73,21 +73,22 @@ module data_path(
     logic [SIMD_degree-1:0] FIFO_out_tvalid;
     logic [SIMD_degree-1:0] FIFO_out_tvalid_t;
     logic [num_col-1:0] wen_RF_scalar;
-    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_beq, is_csr;
+    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_beq, is_csr;
     logic [num_col-1:0] stall_HBM;
-    logic [num_col-1:0] stall_auto_vect;
-    logic [num_col-1:0] valid_RF_en;
+    logic [num_col-1:0] stall_rd_autovect, stall_wr_autovect;
+//    logic [num_col-1:0] valid_RF_en;
     logic [num_col-1:0] read_done_HBM, write_done_HBM; // I dont need them for now as done signal from auto_incr_vect module gives me the right answer
     logic [num_col-1:0] flag_eq;
     logic t_stall;
     logic [(num_col*phit_size)-1:0] user_rdata_HBM;
     logic [num_col-1:0] user_rvalid_HBM, user_wready_HBM;
+    logic [num_col-1:0] valid_PE_i, valid_PE_o;
     
     // This part is ISA-specific:
     logic [num_col-1:0] ctrl_i_mux2_tvalid; //generated internally based on op
     logic [(dwidth_RFadd*num_col)-1:0] ITR;
     logic [num_col-1:0] wen_ITR;
-    logic [SIMD_degree-1:0] full, empty;
+    logic [SIMD_degree-1:0] full_FIFO_in, empty_FIFO_in, full_FIFO_out, empty_FIFO_out;
     
     
     genvar i;
@@ -96,15 +97,15 @@ module data_path(
             sync_FIFO #(dwidth_float+1, 16) sync_FIFO_inst0(
             .clk(clk),
             .rst(rst),
-            .push(tvalid_stream_in[i] && !full[i]),
-            .pop(!t_stall && !empty[i]), 
+            .push(tvalid_stream_in[i] && !full_FIFO_in[i]),
+            .pop(!t_stall && !empty_FIFO_in[i]), 
             .din({tvalid_stream_in[i], tdata_stream_in[((i+1)*dwidth_float)-1:i*dwidth_float]}),
             .dout({FIFO_out_tvalid[i], FIFO_out_tdata[((i+1)*dwidth_float)-1:i*dwidth_float]}),
-            .empty(empty[i]),
-            .full(full[i])
+            .empty(empty_FIFO_in[i]),
+            .full(full_FIFO_in[i])
             );
             
-            assign tready_stream_in[i] = !full[i] & done_loader & !t_stall;
+            assign tready_stream_in[i] = !full_FIFO_in[i] & done_loader & !t_stall;
         end
     endgenerate
     
@@ -115,10 +116,11 @@ module data_path(
     genvar j;
     generate 
         for (j=0; j<num_col; j++) begin
-            assign stall_HBM[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j])));
-            assign stall_auto_vect[j] = stall_HBM[j] || (is_vmacc_vv[j] & valid_RF_en[j]);
+            assign stall_rd_autovect[j] = (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j]))) || (is_vmacc_vv[j] & valid_PE_i[j]);
+            assign stall_wr_autovect[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vmacc_vv[j] & valid_PE_o[j]);
             // if it is vmacc and tvalids are zero then you should stall auto_vect but not input FIFO 
-            assign valid_RF_en[j] = (&i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & (&i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & (&o1_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]);
+            assign valid_PE_i[j] = (&i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & (&i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]);
+            assign valid_PE_o[j] = (&o1_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]);
 //            assign rready_HBM[j] = 1'b1;
             
             ISA_decoder ISA_decoder_inst
@@ -152,14 +154,17 @@ module data_path(
              .rst(rst),
              .ITR(ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .wen_ITR(wen_ITR[j]),
-             .stall(stall_auto_vect[j]), // clk_en
+             .stall_rd(stall_rd_autovect[j]), // clk_en
+             .stall_wr(stall_wr_autovect[j]),
+             .is_vmacc_vv(is_vmacc_vv[j]),
+             .is_vle32_v(is_vle32_vv[j]),
+             .is_vse32_v(is_vse32_vv[j]),
+             .is_streamout(is_vstreamout[j]),
              .vr_addr(vr_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vw_addr(vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
 //             .rddata1_RF_scalar(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
              .vr_addr_auto_incr(vr_addr_auto_incr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vw_addr_auto_incr(vw_addr_auto_incr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
-//             .araddr_HBM(araddr_HBM[((j+1)*dwidth_HBMadd)-1:j*dwidth_HBMadd]), //
-//             .awaddr_HBM(awaddr_HBM[((j+1)*dwidth_HBMadd)-1:j*dwidth_HBMadd]),
              .done(done_auto_incr[j]) // one clock pulse
              );
              
@@ -168,7 +173,7 @@ module data_path(
              .clk(clk),
              .rd_addr(vr_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_RF is one of the fields in tables (auto-increment address generator)
              .wr_addr(vw_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]),
-             .wen(is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_RF_en[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
+             .wen(is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_PE_o[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
              .d_out(o_RF[(phit_size*(j+1))-1:phit_size*j]));
              
              // scalar regFile   
@@ -283,6 +288,22 @@ module data_path(
                  assign sel_mux2[(j*2)+1] = 1'b0;
              end
              
+        end
+    endgenerate
+
+ generate
+        for (i=0; i<SIMD_degree; i++) begin
+            sync_FIFO #(dwidth_float+1, 16) sync_FIFO_inst1(
+            .clk(clk),
+            .rst(rst),
+            .push(tvalid_stream_in[i] && is_vstreamout[num_col-1] && !full_FIFO_out[i]),
+            .pop(tready_stream_out[i] && !empty_FIFO_out[i]),
+            .din({o2_tvalid1_PE_typeC[(SIMD_degree*(num_col-1))+i], o2_PE_typeC[(phit_size*(num_col-1))+(dwidth_float*(i+1))-1:dwidth_float*i]}),
+            .dout({tvalid_stream_out[i], tdata_stream_out[((i+1)*dwidth_float)-1:i*dwidth_float]}),
+            .empty(empty_FIFO_out[i]),
+            .full(full_FIFO_out[i])
+            );
+
         end
     endgenerate
 
