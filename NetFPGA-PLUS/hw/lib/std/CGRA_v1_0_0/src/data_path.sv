@@ -116,6 +116,7 @@ module data_path(
     genvar j;
     generate 
         for (j=0; j<num_col; j++) begin
+            assign stall_HBM[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j])));
             assign stall_rd_autovect[j] = (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j]))) || (is_vmacc_vv[j] & valid_PE_i[j]);
             assign stall_wr_autovect[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vmacc_vv[j] & valid_PE_o[j]);
             // if it is vmacc and tvalids are zero then you should stall auto_vect but not input FIFO 
