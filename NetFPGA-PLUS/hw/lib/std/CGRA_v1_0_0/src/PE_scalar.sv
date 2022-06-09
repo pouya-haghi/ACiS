@@ -1,5 +1,10 @@
 `timescale 1ns / 1ps
 
+`ifndef MY_INTERFACE
+  `define MY_INTERFACE
+  `include "my_interface.vh"
+`endif
+
 module PE_scalar(
     input logic [dwidth_int-1:0] inp1,
     input logic [dwidth_int-1:0] inp2,
