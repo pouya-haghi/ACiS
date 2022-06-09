@@ -3,16 +3,32 @@
   `define MY_INTERFACE
   `include "my_interface.vh"
 `endif
+// documentation: this unit provides an auto-increment facility to auto-increment the read and write
+// addresses of vector register files based on control signals (is_* signals), stall_* signals, and
+// base addresses (vr_addr, vw_addr) and ITR (which is vector length). Note that wen_ITR is the start signal
 
+// instructions for writing the testbench: 1. read 2. write
+
+// 1. read: assert wen_ITR to 1 for one cycle (one high pulse) then the instruction should be a read from 
+// register file (one of these signals should be high: is_vmacc_vv, is_streamout, is_vse32_v), set ITR as 8, 
+// make stall_rd as zero. A couple of cycles later (less tahn ITR), make a high pulse for stall_rd. What we should expect?
+//vr_addr_auto_incr should be auto incremented if stall_rd is zero and should keep its value when stall_wr is high
+// 8 valid increment should be done and at the end, done signal should give a high pulse
+
+// 2. write: assert wen_ITR to 1 for one cycle (one high pulse) then the instruction should be a write to 
+// register file (one of these signals should be high: is_vmacc_vv || is_vle32_v), set ITR as 8, 
+// make stall_wr as zero. A couple of cycles later (less than ITR), make a high pulse for stall_wr. What we should expect?
+//vw_addr_auto_incr should be auto incremented if stall_wr is zero and should keep its value when stall_wr is high
+// 8 valid increment should be done and at the end, done signal should give a high pulse
 module auto_incr_vect(
     input logic clk, 
     input logic rst,
-    input logic [dwidth_RFadd-1:0] ITR,
+    input logic [dwidth_RFadd-1:0] ITR, // iteration
     input logic wen_ITR, // act as both wen and start signal
     input logic stall_rd, // clk_en
     input logic stall_wr,
-    input logic [dwidth_RFadd-1:0] vr_addr,
-    input logic [dwidth_RFadd-1:0] vw_addr,
+    input logic [dwidth_RFadd-1:0] vr_addr, // base address
+    input logic [dwidth_RFadd-1:0] vw_addr, //base address
     input logic is_vmacc_vv,
     input logic is_streamout,
     input logic is_vle32_v,
