@@ -24,3 +24,4 @@ module regFile_scalar #(parameter width=32)
     assign	dr1 = rr1?(mem[rr1]):32'b0;
     assign	dr2 = rr2?(mem[rr2]):32'b0;
 endmodule
+

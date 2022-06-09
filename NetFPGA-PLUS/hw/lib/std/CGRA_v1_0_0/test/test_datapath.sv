@@ -45,7 +45,6 @@ module test_datapath;
     wire [num_col-1:0] bready_HBM;
     wire [(dwidth_aximm*num_col)-1:0] awaddr_HBM;
     reg [num_col-1:0] awready_HBM;
-
            
  data_path data_path_inst1 (.*);
  
