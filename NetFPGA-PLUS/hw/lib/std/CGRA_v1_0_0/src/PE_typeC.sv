@@ -51,10 +51,10 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
         
      floating_point_multiplier fp_mul_inst0 (
       .aclk(clk),                                        // input wire aclk
-      .s_axis_a_tvalid(t_valid_inp1 && is_mul),                  // input wire s_axis_a_tvalid
+      .s_axis_a_tvalid(t_valid_inp1 && (is_mul || is_macc)),                  // input wire s_axis_a_tvalid
       // only if it is a multiplier
       .s_axis_a_tdata(inp1),                    // input wire [31 : 0] s_axis_a_tdata
-      .s_axis_b_tvalid(t_valid_inp2 && is_mul),                  // input wire s_axis_b_tvalid
+      .s_axis_b_tvalid(t_valid_inp2 && (is_mul || is_macc)),                  // input wire s_axis_b_tvalid
       .s_axis_b_tdata(inp2),                    // input wire [31 : 0] s_axis_b_tdata
       .m_axis_result_tvalid(t_valid_mul),        // output wire m_axis_result_tvalid
       .m_axis_result_tdata(o_fp_mul),          // output wire [31 : 0] m_axis_result_tdata
@@ -142,7 +142,13 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
         endcase
     end
     
-    register_pipe #(dwidth_float+1, latency) rp_inst0(clk, rst, {t_valid_inp1, inp1}, {t_valid_out2, out2});
+    logic [dwidth_float-1:0] temp_out2;
+    logic temp_valid_out2;
+    
+    assign out2 = temp_out2;
+    assign t_valid_out2 = temp_valid_out2;
+    
+    register_pipe #(dwidth_float+1, latency) rp_inst0(clk, rst, {t_valid_inp1, inp1}, {temp_valid_out2, temp_out2});
 //    register_pipe #(1, latency) rp_inst1(clk, rst, t_valid_inp1, t_valid_out2);
     register_pipe #(dwidth_float+1, latency/2) rp_inst1(clk, rst, {t_valid_out1_t, out1_t}, {t_valid_out1_tt, out1_tt});
     //

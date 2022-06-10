@@ -4,9 +4,9 @@
     `define MY_INTERFACE
     `include "my_interface.vh"
 `endif
-
+// documentation:
 module data_path(
-    input logic done_loader,
+    input logic done_loader, // if I have finished loading data from off-chip memory to config tables (which store in structions) then this signal goes to high 
     input logic [(dwidth_inst*num_col)-1:0] instr, // vector instruction
 //    input logic [((num_col)*dwidth_float)-1:0] imm,
 //    input logic [(phit_size*num_col)-1:0] rdata_config_table,

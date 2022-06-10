@@ -23,18 +23,18 @@ module vectorized_PE(
     generate
     for (i=0; i<SIMD_degree; i++) begin
         PE_typeC #(latencyPEC) PE_typeC_inst0(
-                    .inp1(i1_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]), 
-                    .inp2(i2_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]), 
-                    .t_valid_inp1(i_tvalid1_PE_typeC[i]),
-                    .t_valid_inp2(i_tvalid2_PE_typeC[i]),
-                    .clk(clk),
-                    .rst(rst),
-                    .op(op[2:0]),
-                    .out1(o1_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]), 
-                    .out2(o2_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]),
-                    .t_valid_out1(o1_tvalid1_PE_typeC[i]),
-                    .t_valid_out2(o2_tvalid1_PE_typeC[i])
-                    );
+            .inp1(i1_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]), 
+            .inp2(i2_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]), 
+            .t_valid_inp1(i_tvalid1_PE_typeC[i]),
+            .t_valid_inp2(i_tvalid2_PE_typeC[i]),
+            .clk(clk),
+            .rst(rst),
+            .op(op[2:0]),
+            .out1(o1_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]), 
+            .out2(o2_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]),
+            .t_valid_out1(o1_tvalid1_PE_typeC[i]),
+            .t_valid_out2(o2_tvalid1_PE_typeC[i])
+            );
     end
     endgenerate
 endmodule
