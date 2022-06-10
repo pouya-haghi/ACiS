@@ -102,7 +102,7 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
         3'b011: begin 
                is_add = 1'b0;
                is_mul = 1'b0;
-               is_acc = 1'b1;
+               is_acc = 1'b0;
                is_macc = 1'b1;
                end
         3'b100: begin // NoP
