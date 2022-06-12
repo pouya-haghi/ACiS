@@ -14,9 +14,9 @@ module PE_scalar(
     output logic flag_neq
     );
     
-    localparam [2:0] is_lui = 3'b000, is_addi = 3'b001, is_bne = 3'b010; 
+    localparam [2:0] is_lui = 3'b000, is_addi = 3'b001, is_bne = 3'b010, is_add = 3'b011; 
     
-    assign out1 = (op_scalar == is_addi)? inp1+R_immediate: {(dwidth_int){1'b0}};
+    assign out1 = (op_scalar == is_addi)? inp1+R_immediate: ((is_add)? inp1+inp2 : {(dwidth_int){1'b0}});
     assign flag_neq = ((inp1 != inp2) & (op_scalar == is_bne))? 1'b1: 1'b0;
     
 endmodule
