@@ -4,9 +4,9 @@
     `define MY_INTERFACE
     `include "my_interface.vh"
 `endif
-// documentation:
+
 module data_path(
-    input logic done_loader, // if I have finished loading data from off-chip memory to config tables (which store in structions) then this signal goes to high 
+    input logic done_loader,
     input logic [(dwidth_inst*num_col)-1:0] instr, // vector instruction
 //    input logic [((num_col)*dwidth_float)-1:0] imm,
 //    input logic [(phit_size*num_col)-1:0] rdata_config_table,
@@ -73,12 +73,12 @@ module data_path(
     logic [SIMD_degree-1:0] FIFO_out_tvalid;
     logic [SIMD_degree-1:0] FIFO_out_tvalid_t;
     logic [num_col-1:0] wen_RF_scalar;
-    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_beq, is_csr;
+    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_bne, is_csr;
     logic [num_col-1:0] stall_HBM;
     logic [num_col-1:0] stall_rd_autovect, stall_wr_autovect;
 //    logic [num_col-1:0] valid_RF_en;
     logic [num_col-1:0] read_done_HBM, write_done_HBM; // I dont need them for now as done signal from auto_incr_vect module gives me the right answer
-    logic [num_col-1:0] flag_eq;
+    logic [num_col-1:0] flag_neq;
     logic t_stall;
     logic [(num_col*phit_size)-1:0] user_rdata_HBM;
     logic [num_col-1:0] user_rvalid_HBM, user_wready_HBM;
@@ -141,7 +141,7 @@ module data_path(
              .is_vse32_vv(is_vse32_vv[j]),
              .is_vmacc_vv(is_vmacc_vv[j]),
              .is_vmv_vi(is_vmv_vi[j]),
-             .is_beq(is_beq[j]),
+             .is_bne(is_bne[j]),
              .is_csr(is_csr[j]),
              .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
              .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]),
@@ -259,7 +259,7 @@ module data_path(
               .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]),
               .op_scalar(op_scalar[((j+1)*3)-1:j*3]),
               .out1(wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
-              .flag_eq(flag_eq[j]) // correct me
+              .flag_neq(flag_neq[j]) // correct me
              );
 
              // PC logic
@@ -267,8 +267,8 @@ module data_path(
              (
               .is_not_vect(is_not_vect[j]),
               .done_auto_incr(done_auto_incr[j]),
-              .is_beq(is_beq[j]),
-              .flag_eq(flag_eq[j]),
+              .is_bne(is_bne[j]),
+              .flag_neq(flag_neq[j]),
               .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
               .clken_PC(clken_PC[j]),
               .load_PC(load_PC[j]),

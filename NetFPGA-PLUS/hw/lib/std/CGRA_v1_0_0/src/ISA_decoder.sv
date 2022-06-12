@@ -23,7 +23,7 @@ module ISA_decoder(
     output logic is_vmacc_vv,
     output logic is_vmv_vi,
     output logic is_vstreamout,
-    output logic is_beq,
+    output logic is_bne,
     output logic is_csr,
     output logic [dwidth_RFadd-1:0] vr_addr, // vector register file
     output logic [dwidth_RFadd-1:0] vw_addr, // vector register file
@@ -43,6 +43,8 @@ module ISA_decoder(
     logic [dwidth_int-1:0] lui_immediate, addi_immediate;
     logic is_vect;
     logic [2:0] VLEN;
+    logic t_is_vstreamout;
+//    assign is_vstreamout = t_is_vstreamout;
 
     // ***********************  decode ***************************
     assign is_vmacc_vv = (instr[6:0]==7'h57 && instr[14:12]==3'h0)?1'b1:1'b0;
@@ -51,7 +53,7 @@ module ISA_decoder(
     assign is_vmv_vi = (instr[6:0]==7'h57 && instr[14:12]==3'h5)?1'b1:1'b0;
     assign is_vsetivli = (instr[6:0]==7'h57 && instr[14:12]==3'h7)?1'b1:1'b0;
     assign is_vstreamout = (instr[6:0]==7'b1111111)?1'b1:1'b0; // based on ISA extension
-    assign is_beq = (instr[6:0]==7'b1100011 && instr[14:12]==3'b000)?1'b1:1'b0;
+    assign is_bne = (instr[6:0]==7'b1100011 && instr[14:12]==3'b001)?1'b1:1'b0;
     assign is_addi = (instr[6:0]==7'b0010011 && instr[14:12]==3'b000)?1'b1:1'b0; 
     assign is_lui = (instr[6:0]==7'b0110111)?1'b1:1'b0;
     assign is_csr = (instr[6:0]==7'b0000011 && instr[31:20]==12'hC00)? 1'b1: 1'b0;
@@ -83,7 +85,7 @@ module ISA_decoder(
     
     assign R_immediate = (is_addi)? addi_immediate: lui_immediate;
     assign wen_RF_scalar = (is_addi || is_lui || is_csr)? 1'b1: 1'b0;
-    assign op_scalar = (is_lui)? 3'b000: ((is_addi)?3'b001:(is_beq)?3'b010:3'b011);
+    assign op_scalar = (is_lui)? 3'b000: ((is_addi)?3'b001:(is_bne)?3'b010:3'b011);
     // ************************  vectorized instructions *************************
     assign op = (is_vmacc_vv)? 3'b011: 3'b100; //else: NoP 
     assign is_vect = |{is_vmacc_vv, is_vle32_vv, is_vse32_vv, is_vmv_vi, is_vstreamout};
