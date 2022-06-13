@@ -21,7 +21,7 @@ module test_ISA_decoder;
     wire is_vmacc_vv;
     wire is_vmv_vi;
     wire is_vstreamout;
-    wire is_beq;
+    wire is_bne;
     wire is_csr;
     wire [dwidth_RFadd-1:0] vr_addr; // vector register file
     wire [dwidth_RFadd-1:0] vw_addr; // vector register file
@@ -48,8 +48,9 @@ module test_ISA_decoder;
         .is_vle32_vv(is_vle32_vv),
         .is_vse32_vv(is_vse32_vv),
         .is_vmacc_vv(is_vmacc_vv),
+        .is_vstreamout(is_vstreamout),
         .is_vmv_vi(is_vmv_vi),
-        .is_beq(is_beq),
+        .is_bne(is_bne),
         .is_csr(is_csr),
         .branch_immediate(branch_immediate),
         .R_immediate(R_immediate),
@@ -74,25 +75,29 @@ module test_ISA_decoder;
         // Scalar LW, LUI, ADDI, BEQ --> https://github.com/riscv/riscv-isa-manual/releases/download/Ratified-IMAFDQC/riscv-spec-20191213.pdf   page 130
         
         rst = 0;
-        // VSETAVLI              rd        uimm  zimm
-        #5  instr <= 32'b1010111_11110_111_00001_0011001100_1_1;
-        // VALU                  vd        vs1   vs2
-        #10 instr <= 32'b1010111_11101_000_00010_00011_0_101100;
+        // VSETAVLI
+//        #5  instr <= 32'b1_1_0011001100_10000_111_01111_1110101;
+        #5  instr <= 32'b1_1_0011001100_10000_111_01111_1010111;
+        // VALU
+//        #10 instr <= 32'b001101_0_11000_01000_000_10111_1110101;
+        #10 instr <= 32'b001101_0_11000_01000_000_10111_1010111;        
         // Vector Load           vd        rs1   
-        #10 instr <= 32'b0000111_11011_000_00100_00000_0_00_0_000;
+//        #10 instr <= 32'b000_0_00_0_00000_00100_000_11011_1110000;
+        #10 instr <= 32'b000_0_00_0_00000_00100_000_11011_0000111;
         // Vector Store          vd        rs1
-        #10 instr <= 32'b0100111_10111_000_01000_00000_0_00_0_000;
-        // Stream Out            ???
-        #10 instr <= 32'b1111111_01111_000_10000_00000_0000000;
+//        #10 instr <= 32'b000_0_00_0_00000_00010_000_11101_1110010;
+        #10 instr <= 32'b000_0_00_0_00000_00010_000_11101_0100111;        
+        // Stream Out
+        #10 instr <= 32'b0000000_00000_00001_000_11110_1111111;
         
-        // LW                    rd        rs1
-        #10 instr <= 32'b1100000_00001_010_11110_001100110011;
-        // LUI                   rd
-        #10 instr <= 32'b1110110_00010_00110011001100110011;
-        // ADDI                  rd        rs1
-        #10 instr <= 32'b1100100_00100_000_11011_110011001100;
-        // BEQ                   imm?      rd1   rs2   imm again
-        #10 instr <= 32'b1100011_11001_000_10111_01000_0011001;
+        // LW
+        #10 instr <= 32'b110011001100_01111_010_10000_0000011;
+        // LUI
+        #10 instr <= 32'b11001100110011001100_01000_0110111;
+        // ADDI
+        #10 instr <= 32'b001100110011_11011_000_00100_0010011;
+        // BEQ
+        #10 instr <= 32'b1001100_01000_11101_000_10011_1100011;
         #20
         
         
