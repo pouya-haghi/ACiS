@@ -48,11 +48,14 @@ module test_datapath;
            
  data_path data_path_inst1 (.*);
  
+// localparam period = 5; 
+// localparam delay_HBM = 6;
+ 
  always begin
         clk = 1;
-        #5;
+        #(clk_period/2);
         clk = 0;
-        #5;
+        #(clk_period/2);
     end
     
  initial begin
@@ -90,7 +93,7 @@ module test_datapath;
     instr[dwidth_inst-1:0] =               {12'b0, 5'b00010 , 3'b0, 5'h4, 7'h07}; // vle32.vv v0, (x2)
     instr[(2*dwidth_inst)-1:dwidth_inst] = {12'b0, 5'b00010 , 3'b0, 5'h4, 7'h07}; // vle32.vv v0, (x2)
     arready_HBM <= {(num_col){1'b1}};
-    #80; // 8 cycles delay
+    #(clk_period*delay_HBM); // 8 cycles delay
     rvalid_HBM <= {(num_col){1'b1}};
     // stream in data
     rdata_HBM <= 512'h1; #10;
@@ -103,10 +106,15 @@ module test_datapath;
     rdata_HBM <= 512'h8; #10;
     rvalid_HBM <= {(num_col){1'b0}};
 
+    // vsetilvi
+    // vlen = 8 = 12'b1000                    1,1         8       0     7     0     inst
+    instr[dwidth_inst-1:0] =               {2'b11, 12'b1000, 3'b000, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+    instr[(2*dwidth_inst)-1:dwidth_inst] = {2'b11, 12'b1000, 3'b000, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
     
-    // vwe32
-    instr[dwidth_inst-1:0] =               {12'b0, 5'b00010 , 3'b0, 5'h4, 7'h27}; // vle32.vv v0, (x2)
-    instr[(2*dwidth_inst)-1:dwidth_inst] = {12'b0, 5'b00010 , 3'b0, 5'h4, 7'h27}; // vle32.vv v0, (x2)
+    #10;
+    // vse32
+    instr[dwidth_inst-1:0] =               {12'b0, 5'b00010 , 3'b0, 5'h4, 7'h27}; // vse32.vv v0, (x2)
+    instr[(2*dwidth_inst)-1:dwidth_inst] = {12'b0, 5'b00010 , 3'b0, 5'h4, 7'h27}; // vse32.vv v0, (x2)
     awready_HBM <= {(num_col){1'b1}};
     #80; // 8 cycles delay
     wready_HBM <= {(num_col){1'b1}};
