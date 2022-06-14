@@ -15,6 +15,13 @@ module regFile_scalar #(parameter width=32)
     
     reg	 [width-1:0] mem [width-1:0];
     
+    // This is for simulation
+    integer i;
+    initial begin
+        for (i=0;i<width;i=i+1)
+            mem[i] <= i*10;
+    end
+    
     always @(posedge clk) begin
         if(we)	mem[wr] <= wd;
         else	mem[wr] <= mem[wr];

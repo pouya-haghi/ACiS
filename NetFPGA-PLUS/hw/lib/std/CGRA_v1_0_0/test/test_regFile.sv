@@ -30,25 +30,37 @@ module test_regFile;
         wr_addr <= 0;
         wen = 0;
         
-        #10
-        wen = 1;
+//        #10
+//        wen = 1;
+        
+//        #10
+//        rd_addr <= 12'd8;
+//        d_in <= 512'd123;
+        
+//        #20
+//        wr_addr <= 12'd12;
+//        d_in <= 512'd321;
+        
+//        #100
+//        wen = 0;
         
         #10
-        wr_addr <= 12'd8;
-        d_in <= 512'd123;
-        
-        #20
-        wr_addr <= 12'd12;
-        d_in <= 512'd321;
-        
-        #100
-        wen = 0;
-        
-        #100
-        rd_addr <= 12'd8;
-        
-        #40
-        rd_addr <= 12'd12;
+        rd_addr <= 12'd0;
+        #10
+        rd_addr <= 12'd1;
+        #10
+        rd_addr <= 12'd2;
+        #10
+        rd_addr <= 12'd3;
+        #10
+        rd_addr <= 12'd4;
+        #10
+        rd_addr <= 12'd5;
+        #10
+        rd_addr <= 12'd6;
+        #10
+        rd_addr <= 12'd7;
+        #10
         
         
         

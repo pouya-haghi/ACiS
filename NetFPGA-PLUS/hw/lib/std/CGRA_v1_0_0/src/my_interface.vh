@@ -17,7 +17,7 @@ parameter latencyPEB = 4;
 parameter latencyPEC = 8;
 parameter latencyPED = 57;
 parameter dwidth_aximm = 64;
-parameter clk_period = 10;
+parameter clk_pd = 4;
 parameter delay_HBM = 6;
 
 function integer f_max (
