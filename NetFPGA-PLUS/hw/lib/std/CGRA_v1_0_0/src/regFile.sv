@@ -38,7 +38,7 @@ module regFile(
     // This is for simulation
     initial begin
         for (i=0;i<depth_RF;i=i+1)
-            mem[i] <= i*10;
+            mem[i] <= 0;//i*10;
     end
     // End of simulation
     

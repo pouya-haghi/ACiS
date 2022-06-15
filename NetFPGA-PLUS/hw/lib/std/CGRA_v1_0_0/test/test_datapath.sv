@@ -26,42 +26,41 @@ module test_datapath;
     reg [SIMD_degree-1:0] tready_stream_out;
     // AXI read
     wire [(dwidth_aximm*num_col)-1:0] araddr_HBM;
-    wire [num_col-1:0] arready_HBM;
-    wire [num_col-1:0] rvalid_HBM;
-    wire [(phit_size*num_col)-1:0] rdata_HBM;
+    reg [num_col-1:0] arready_HBM;
+    reg [num_col-1:0] rvalid_HBM;
+    reg [(phit_size*num_col)-1:0] rdata_HBM;
     wire [num_col-1:0] rready_HBM;
     wire [num_col-1:0] arvalid_HBM;
     wire [(8*num_col)-1:0] arlen_HBM;
-    wire [num_col-1:0] rlast_HBM;
-    wire [(num_col*2)-1:0] rresp_HBM;
-    wire [(num_col*6)-1:0] bid_HBM;
-    wire [(num_col*2)-1:0] bresp_HBM;
+    reg [num_col-1:0] rlast_HBM;
+//    wire [(num_col*2)-1:0] rresp_HBM;
+//    wire [(num_col*6)-1:0] bid_HBM;
+//    wire [(num_col*2)-1:0] bresp_HBM;
     // AXI write
     wire [num_col-1:0] wvalid_HBM;
-    wire [num_col-1:0] wready_HBM;
+    reg [num_col-1:0] wready_HBM;
     wire [num_col-1:0] awvalid_HBM;
     wire [(num_col*8)-1:0] awlen_HBM;
     wire [(num_col*phit_size)-1:0] wdata_HBM;
     wire [(num_col*(phit_size/8))-1:0] wstrb_HBM;
     wire [num_col-1:0] wlast_HBM;
-    wire [num_col-1:0] bvalid_HBM;
+    reg [num_col-1:0] bvalid_HBM;
     wire [num_col-1:0] bready_HBM;
     wire [(dwidth_aximm*num_col)-1:0] awaddr_HBM;
-    wire [num_col-1:0] awready_HBM;
-    reg [31 : 0] AXI_00_WDATA_PARITY = 32'b0;
-    reg [31 : 0] AXI_01_WDATA_PARITY = 32'b0;
-    wire [31 : 0] AXI_00_RDATA_PARITY;
-    wire [31 : 0] AXI_01_RDATA_PARITY;
+    reg [num_col-1:0] awready_HBM;
+//    reg [31 : 0] AXI_00_WDATA_PARITY = 32'b0;
+//    reg [31 : 0] AXI_01_WDATA_PARITY = 32'b0;
+//    wire [31 : 0] AXI_00_RDATA_PARITY;
+//    wire [31 : 0] AXI_01_RDATA_PARITY;
     
     data_path data_path_inst1 (.*);
     
     //////// HBM ////////
-    reg apb_clk;
-    wire apb_complete_0;
-    wire DRAM_0_STAT_CATTRIP;
-    wire [6 : 0] DRAM_0_STAT_TEMP;
-    
-    localparam apb_clk_period = 10;
+//    reg apb_clk;
+//    wire apb_complete_0;
+//    wire DRAM_0_STAT_CATTRIP;
+//    wire [6 : 0] DRAM_0_STAT_TEMP;
+//    localparam apb_clk_period = 10;
     
 //    hbm_0 hbm_0_inst_0 (
 //        .HBM_REF_CLK_0(clk),                        // input wire HBM_REF_CLK_0
@@ -138,12 +137,12 @@ module test_datapath;
 //        .DRAM_0_STAT_TEMP(DRAM_0_STAT_TEMP)         // output wire [6 : 0] DRAM_0_STAT_TEMP
 //        );
     
-    always begin
-        apb_clk = 1;
-        #(apb_clk_period/2);
-        apb_clk = 0;
-        #(apb_clk_period/2);
-    end
+//    always begin
+//        apb_clk = 1;
+//        #(apb_clk_period/2);
+//        apb_clk = 0;
+//        #(apb_clk_period/2);
+//    end
     
     always begin
         clk = 1;
@@ -162,15 +161,15 @@ module test_datapath;
     tdata_stream_in <= 512'd3;
     tvalid_stream_in <= {(SIMD_degree){1'b0}};
     tready_stream_out <= {(SIMD_degree){1'b0}};
-    //
-//    arready_HBM <= {(num_col){1'b0}};
-//    rvalid_HBM <= {(num_col){1'b0}};
-//    rdata_HBM <= 512'd0;
-//    rlast_HBM <= {(num_col){1'b0}};  
-//    //
-//    wready_HBM <= {(num_col){1'b0}};
-//    bvalid_HBM <= {(num_col){1'b0}};
-//    awready_HBM <= {(num_col){1'b0}}; 
+    
+    arready_HBM <= {(num_col){1'b0}};
+    rvalid_HBM <= {(num_col){1'b0}};
+    rdata_HBM <= 512'd0;
+    rlast_HBM <= {(num_col){1'b0}};  
+    
+    wready_HBM <= {(num_col){1'b0}};
+    bvalid_HBM <= {(num_col){1'b0}};
+    awready_HBM <= {(num_col){1'b0}}; 
     
     // Reset
     #(4*clk_pd);
@@ -180,28 +179,101 @@ module test_datapath;
     #(clk_pd*2);
     
     // vsetilvi
-    // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
-    instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b000, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {2'b11, 12'b1000, 3'b000, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+    // vlen = 8 = 12'b1000                    1,1         8       0     7     0     inst
+    instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048
     #clk_pd;
-    
-    // vse32                                     0       rs1      0    rd   inst
-    instr[dwidth_inst-1:0] <=               {12'b0, 5'b00010 , 3'b0, 5'h4, 7'h27}; // vse32.vv v0, (x2)
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'b0, 5'b00010 , 3'b0, 5'h4, 7'h27}; // vse32.vv v0, (x2)
-    #clk_pd;
-    
-//    // vsetilvi
-//    // vlen = 8 = 12'b1000                    1,1         8       0     7     0     inst
-//    instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b000, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
-//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {2'b11, 12'b1000, 3'b000, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048
-//    #clk_pd;
-    
     // vle32                                     0       rs1      0    rd   inst
-    instr[dwidth_inst-1:0] <=               {12'b0, 5'b00010 , 3'b0, 5'h4, 7'h07}; // vle32.vv v0, (x2)
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'b0, 5'b00010 , 3'b0, 5'h4, 7'h07}; // vle32.vv v0, (x2)
+    instr[dwidth_inst-1:0] <=               {12'b0, 5'b00010 , 3'b0, 5'h1, 7'h07}; // vle32.vv v0, (x2)
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'b0, 5'b00010 , 3'b0, 5'h1, 7'h07}; // vle32.vv v0, (x2)
+    #(clk_pd*delay_HBM); // 8 cycles delay
+    rvalid_HBM <= {(num_col){1'b1}};
+    // stream in data
+    rdata_HBM <= 512'h1; #clk_pd;
+    rdata_HBM <= 512'h2; #clk_pd;
+    rdata_HBM <= 512'h3; #clk_pd;
+    rdata_HBM <= 512'h4; #clk_pd;
+    rdata_HBM <= 512'h5; #clk_pd;
+    rdata_HBM <= 512'h6; #clk_pd;
+    rdata_HBM <= 512'h7; #clk_pd;
+    rdata_HBM <= 512'h8; #clk_pd;
+    rvalid_HBM <= {(num_col){1'b0}};
+    
+    // vsetilvi
+    // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
+    instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+    #clk_pd;
+    // vle32                                     0       rs1      0    rd   inst
+    instr[dwidth_inst-1:0] <=               {12'b0, 5'b00010 , 3'b0, 5'h2, 7'h07}; // vle32.vv v0, (x2)
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'b0, 5'b00010 , 3'b0, 5'h2, 7'h07}; // vle32.vv v0, (x2)
+    #(clk_pd*delay_HBM); // 8 cycles delay
+    rvalid_HBM <= {(num_col){1'b1}};
+    // stream in data
+    rdata_HBM <= 512'h1; #clk_pd;
+    rdata_HBM <= 512'h2; #clk_pd;
+    rdata_HBM <= 512'h3; #clk_pd;
+    rdata_HBM <= 512'h4; #clk_pd;
+    rdata_HBM <= 512'h5; #clk_pd;
+    rdata_HBM <= 512'h6; #clk_pd;
+    rdata_HBM <= 512'h7; #clk_pd;
+    rdata_HBM <= 512'h8; #clk_pd;
+    rvalid_HBM <= {(num_col){1'b0}};
+    
+    // vsetilvi
+    // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
+    instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+    #clk_pd;
+    // vle32                                     0       rs1      0    rd   inst
+    instr[dwidth_inst-1:0] <=               {12'b0, 5'b00010 , 3'b0, 5'h3, 7'h07}; // vle32.vv v0, (x2)
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'b0, 5'b00010 , 3'b0, 5'h3, 7'h07}; // vle32.vv v0, (x2)
+    #(clk_pd*delay_HBM); // 8 cycles delay
+    rvalid_HBM <= {(num_col){1'b1}};
+    // stream in data
+    rdata_HBM <= 512'h2; #clk_pd;
+    rdata_HBM <= 512'h2; #clk_pd;
+    rdata_HBM <= 512'h2; #clk_pd;
+    rdata_HBM <= 512'h2; #clk_pd;
+    rdata_HBM <= 512'h2; #clk_pd;
+    rdata_HBM <= 512'h2; #clk_pd;
+    rdata_HBM <= 512'h2; #clk_pd;
+    rdata_HBM <= 512'h2; #clk_pd;
+    rvalid_HBM <= {(num_col){1'b0}};
+    
+    // vsetilvi
+    // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
+    instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+    #clk_pd;
+    // vse32                                     0       rs1      0    rd   inst
+    instr[dwidth_inst-1:0] <=               {12'b0, 5'b00010 , 3'b0, 5'h1, 7'h27}; // vse32.vv v0, (x2)
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'b0, 5'b00010 , 3'b0, 5'h1, 7'h27}; // vse32.vv v0, (x2)
+    awready_HBM <= {(num_col){1'b1}};
+    #(clk_pd*delay_HBM); // 8 cycles delay
+    wready_HBM <= {(num_col){1'b1}};
+    #(clk_pd*8); // read data for 8 cycles
+    wready_HBM <= {(num_col){1'b0}};
+    
+    //vmacc
+    instr[dwidth_inst-1:0] <=               {6'b101100, 1'b0, 5'd2, 5'h1 , 3'b0, 5'd3, 7'h57}; // vse32.vv v0, (x2)
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {6'b101100, 1'b0, 5'd2, 5'h1 , 3'b0, 5'd3, 7'h57}; // vse32.vv v0, (x2)
     #clk_pd;
     
-    #200;
+    // vsetilvi
+    // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
+    instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+    #clk_pd;
+    // vse32                                     0       rs1      0    rd   inst
+    instr[dwidth_inst-1:0] <=               {12'b0, 5'b00010 , 3'b0, 5'd3, 7'h27}; // vse32.vv v0, (x2)
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'b0, 5'b00010 , 3'b0, 5'd3, 7'h27}; // vse32.vv v0, (x2)
+    awready_HBM <= {(num_col){1'b1}};
+    #(clk_pd*delay_HBM); // 8 cycles delay
+    wready_HBM <= {(num_col){1'b1}};
+    #(clk_pd*8); // read data for 8 cycles
+    wready_HBM <= {(num_col){1'b0}};
+    
     $finish;
     
  end
