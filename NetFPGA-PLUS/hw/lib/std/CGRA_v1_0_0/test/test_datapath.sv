@@ -292,19 +292,31 @@ module test_datapath;
     
     //////////////////////// Scalar Instructions ////////////////////////
     // LUI                                         imm    rd   inst
-    instr[dwidth_inst-1:0] <=               {20'hABCDE, 5'h1, 7'h37};
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {20'hABCDE, 5'h1, 7'h37};
+    instr[dwidth_inst-1:0] <=               {20'h12345, 5'h1, 7'h37};
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {20'h12345, 5'h1, 7'h37};
+    #clk_pd;                                     
+    
+    // ADDI                                      imm   rs1     000    rd   inst
+    instr[dwidth_inst-1:0] <=               {12'h567, 5'h1, 3'b000, 5'h1, 7'h13};
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'h567, 5'h1, 3'b000, 5'h1, 7'h13};
+    #clk_pd;
+
+    // ADDI                                      imm   rs1     000    rd   inst
+    instr[dwidth_inst-1:0] <=               {12'h111, 5'h1, 3'b000, 5'h2, 7'h13};
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'h111, 5'h1, 3'b000, 5'h2, 7'h13};
     #clk_pd;
     
-//    // ADDI                                      imm   rs1     000    rd   inst
-//    instr[dwidth_inst-1:0] <=               {12'h111, 5'h1, 3'b000, 5'h1, 7'h13};
-//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'h111, 5'h1, 3'b000, 5'h1, 7'h13};
-//    #clk_pd;
-    
     // ADD
-    
-    // BEQ
-    
+    instr[dwidth_inst-1:0] <=               {7'h0, 5'h1, 5'h2, 3'b000, 5'h3, 7'h33};
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {7'h0, 5'h1, 5'h2, 3'b000, 5'h3, 7'h33};
+    #clk_pd;
+    // BNE
+    instr[dwidth_inst-1:0] <=               {7'h0, 5'h1, 5'h2, 3'b001, 5'h0, 7'h63};
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {7'h0, 5'h1, 5'h2, 3'b001, 5'h0, 7'h63};
+    #clk_pd;
+    // BNE
+    instr[dwidth_inst-1:0] <=               {7'h0, 5'h1, 5'h1, 3'b001, 5'h0, 7'h63};
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {7'h0, 5'h1, 5'h1, 3'b001, 5'h0, 7'h63};    
     #(clk_pd*10);
     
     $finish;
