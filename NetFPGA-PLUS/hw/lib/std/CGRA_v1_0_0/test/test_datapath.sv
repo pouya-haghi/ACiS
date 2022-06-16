@@ -305,10 +305,6 @@ module test_datapath;
     
     // BEQ
     
-    // LW
-    instr[dwidth_inst-1:0] <=               {12'h0, 5'h1, 3'b010, 5'h2, 7'h3};
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'h0, 5'h1, 3'b010, 5'h2, 7'h3};
-    
     #(clk_pd*10);
     
     $finish;
