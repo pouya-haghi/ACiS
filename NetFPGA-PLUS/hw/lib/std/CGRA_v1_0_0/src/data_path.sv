@@ -52,7 +52,7 @@ module data_path(
 
     logic [(2*num_col)-1:0] sel_mux2;
     logic [((num_col)*3)-1:0] op;
-    logic [((num_col)*3)-1:0] op_scalar;
+//    logic [((num_col)*3)-1:0] op_scalar;
     logic [(phit_size*num_col)-1:0] o_RF;
     logic [(phit_size*num_col)-1:0] i1_PE_typeC, i2_PE_typeC, o1_PE_typeC, o2_PE_typeC; // the last bundle of SIMD_degree signals is for tvalid
     logic [(SIMD_degree*num_col)-1:0] i_tvalid1_PE_typeC, i_tvalid2_PE_typeC, o1_tvalid1_PE_typeC, o2_tvalid1_PE_typeC;
@@ -83,6 +83,9 @@ module data_path(
     logic [(num_col*phit_size)-1:0] user_rdata_HBM;
     logic [num_col-1:0] user_rvalid_HBM, user_wready_HBM;
     logic [num_col-1:0] valid_PE_i, valid_PE_o;
+    logic [(num_col*dwidth_inst)-1:0] instr_q;
+    logic [(num_col*2)-1:0] is_forward_PE;
+    
     
     // This part is ISA-specific:
     logic [num_col-1:0] ctrl_i_mux2_tvalid; //generated internally based on op
@@ -147,7 +150,7 @@ module data_path(
              .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
              .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]),
              .op(op[((j+1)*3)-1:j*3]),
-             .op_scalar(op_scalar[((j+1)*3)-1:j*3]),
+//             .op_scalar(op_scalar[((j+1)*3)-1:j*3]),
              .wen_RF_scalar(wen_RF_scalar[j])
              );
              
@@ -258,9 +261,22 @@ module data_path(
              (.inp1(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
               .inp2(rddata2_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
               .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]),
-              .op_scalar(op_scalar[((j+1)*3)-1:j*3]),
+//              .op_scalar(op_scalar[((j+1)*3)-1:j*3]),
+              .instr_q(instr_q[((j+1)*dwidth_inst)-1:j*dwidth_inst]),
+              .is_forward_PE(is_forward_PE[((j+1)*2)-1:j*2]),
+              .clk(clk),
+              .rst(rst),
               .out1(wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
               .flag_neq(flag_neq[j]) // correct me
+             );
+             
+             // forwarding logic scalar
+             forwarding_logic_scalar forwarding_logic_scalar_inst0
+             (.instr(instr[((j+1)*dwidth_inst)-1:j*dwidth_inst]),
+             .clk(clk),
+             .rst(rst),
+             .is_forward_PE(is_forward_PE[((j+1)*2)-1:j*2]),
+             .o_instr_q(instr_q[((j+1)*dwidth_inst)-1:j*dwidth_inst])
              );
 
              // PC logic
