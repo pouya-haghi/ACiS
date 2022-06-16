@@ -29,7 +29,7 @@ module ISA_decoder(
     output logic [11:0] branch_immediate,
     output logic [dwidth_int-1:0] R_immediate,
     output logic [2:0] op,
-//    output logic [2:0] op_scalar,
+    output logic [2:0] op_scalar,
     output logic wen_RF_scalar
 //    output logic [dwidth_RFadd-1:0] VLEN_phy // to get the chunk size 
     // if it is v2 and VLEN_phy=32 then the correct base address is: 2*VLEN_phy
@@ -84,7 +84,7 @@ module ISA_decoder(
     
     assign R_immediate = (is_addi)? addi_immediate: lui_immediate;
     assign wen_RF_scalar = (is_addi || is_lui || is_csr || is_add)? 1'b1: 1'b0;
-//    assign op_scalar = (is_lui)? 3'b000: ((is_addi)?3'b001:(is_bne)?3'b010:(is_add)?3'b011:3'b100);
+    assign op_scalar = (is_lui)? 3'b000: ((is_addi)?3'b001:(is_bne)?3'b010:(is_add)?3'b011:3'b100);
     // ************************  vectorized instructions *************************
     assign op = (is_vmacc_vv)? 3'b011: 3'b100; //else: NoP 
     assign is_vect = |{is_vmacc_vv, is_vle32_vv, is_vse32_vv, is_vmv_vi, is_vstreamout};
