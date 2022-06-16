@@ -73,7 +73,7 @@ module data_path(
     logic [SIMD_degree-1:0] FIFO_out_tvalid;
     logic [SIMD_degree-1:0] FIFO_out_tvalid_t;
     logic [num_col-1:0] wen_RF_scalar;
-    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_bne, is_csr;
+    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_bne, is_csr, is_lui;
     logic [num_col-1:0] stall_HBM;
     logic [num_col-1:0] stall_rd_autovect, stall_wr_autovect;
 //    logic [num_col-1:0] valid_RF_en;
@@ -143,6 +143,7 @@ module data_path(
              .is_vmv_vi(is_vmv_vi[j]),
              .is_bne(is_bne[j]),
              .is_csr(is_csr[j]),
+             .is_lui(is_lui[j]),
              .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
              .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]),
              .op(op[((j+1)*3)-1:j*3]),
@@ -184,7 +185,7 @@ module data_path(
              .rr1(rs1[((j+1)*5)-1:j*5]),
              .rr2(rs2[((j+1)*5)-1:j*5]),
              .wr(rd[((j+1)*5)-1:j*5]),
-             .wd((is_csr[j])? cycle_register: wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
+             .wd((is_csr[j])? cycle_register: ((is_lui[j])? R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]: wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int])),
              .dr1(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
              .dr2(rddata2_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int])
              );

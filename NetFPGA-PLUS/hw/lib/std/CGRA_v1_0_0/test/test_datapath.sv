@@ -158,7 +158,7 @@ module test_datapath;
     instr <= 0;
     rst = 0;
     
-    tdata_stream_in <= 512'd3;
+    tdata_stream_in <= 512'h0;
     tvalid_stream_in <= {(SIMD_degree){1'b0}};
     tready_stream_out <= {(SIMD_degree){1'b0}};
     
@@ -177,6 +177,8 @@ module test_datapath;
     #(8*clk_pd);
     rst = 0;
     #(clk_pd*2);
+    
+    //////////////////////// Vector Instructions ////////////////////////
     
     // vsetilvi
     // vlen = 8 = 12'b1000                    1,1         8       0     7     0     inst
@@ -199,6 +201,7 @@ module test_datapath;
     rdata_HBM <= 512'h8; #clk_pd;
     rvalid_HBM <= {(num_col){1'b0}};
     
+    
     // vsetilvi
     // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
     instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
@@ -210,15 +213,16 @@ module test_datapath;
     #(clk_pd*delay_HBM); // 8 cycles delay
     rvalid_HBM <= {(num_col){1'b1}};
     // stream in data
-    rdata_HBM <= 512'h1; #clk_pd;
-    rdata_HBM <= 512'h2; #clk_pd;
-    rdata_HBM <= 512'h3; #clk_pd;
-    rdata_HBM <= 512'h4; #clk_pd;
-    rdata_HBM <= 512'h5; #clk_pd;
-    rdata_HBM <= 512'h6; #clk_pd;
-    rdata_HBM <= 512'h7; #clk_pd;
     rdata_HBM <= 512'h8; #clk_pd;
+    rdata_HBM <= 512'h7; #clk_pd;
+    rdata_HBM <= 512'h6; #clk_pd;
+    rdata_HBM <= 512'h5; #clk_pd;
+    rdata_HBM <= 512'h4; #clk_pd;
+    rdata_HBM <= 512'h3; #clk_pd;
+    rdata_HBM <= 512'h2; #clk_pd;
+    rdata_HBM <= 512'h1; #clk_pd;
     rvalid_HBM <= {(num_col){1'b0}};
+    
     
     // vsetilvi
     // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
@@ -241,6 +245,7 @@ module test_datapath;
     rdata_HBM <= 512'h2; #clk_pd;
     rvalid_HBM <= {(num_col){1'b0}};
     
+    
     // vsetilvi
     // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
     instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
@@ -255,11 +260,22 @@ module test_datapath;
     #(clk_pd*8); // read data for 8 cycles
     wready_HBM <= {(num_col){1'b0}};
     
+    
     //vmacc
     instr[dwidth_inst-1:0] <=               {6'b101100, 1'b0, 5'd2, 5'h1 , 3'b0, 5'd3, 7'h57}; // vse32.vv v0, (x2)
     instr[(2*dwidth_inst)-1:dwidth_inst] <= {6'b101100, 1'b0, 5'd2, 5'h1 , 3'b0, 5'd3, 7'h57}; // vse32.vv v0, (x2)
-    #clk_pd;
-    
+    //Stream in
+    tvalid_stream_in <= 16'hffff;
+    tdata_stream_in <= 512'h3; #clk_pd;
+    tdata_stream_in <= 512'h3; #clk_pd;
+    tdata_stream_in <= 512'h3; #clk_pd;
+    tdata_stream_in <= 512'h3; #clk_pd;
+    tdata_stream_in <= 512'h3; #clk_pd;
+    tdata_stream_in <= 512'h3; #clk_pd;
+    tdata_stream_in <= 512'h3; #clk_pd;
+    tdata_stream_in <= 512'h3; #clk_pd;
+    tvalid_stream_in <= 16'h0;
+        
     // vsetilvi
     // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
     instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
@@ -273,6 +289,27 @@ module test_datapath;
     wready_HBM <= {(num_col){1'b1}};
     #(clk_pd*8); // read data for 8 cycles
     wready_HBM <= {(num_col){1'b0}};
+    
+    //////////////////////// Scalar Instructions ////////////////////////
+    // LUI                                         imm    rd   inst
+    instr[dwidth_inst-1:0] <=               {20'hABCDE, 5'h1, 7'h37};
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {20'hABCDE, 5'h1, 7'h37};
+    #clk_pd;
+    
+//    // ADDI                                      imm   rs1     000    rd   inst
+//    instr[dwidth_inst-1:0] <=               {12'h111, 5'h1, 3'b000, 5'h1, 7'h13};
+//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'h111, 5'h1, 3'b000, 5'h1, 7'h13};
+//    #clk_pd;
+    
+    // ADD
+    
+    // BEQ
+    
+    // LW
+    instr[dwidth_inst-1:0] <=               {12'h0, 5'h1, 3'b010, 5'h2, 7'h3};
+    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'h0, 5'h1, 3'b010, 5'h2, 7'h3};
+    
+    #(clk_pd*10);
     
     $finish;
     

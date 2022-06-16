@@ -16,9 +16,11 @@ module PC_logic(
     output logic incr_PC,
     output logic [11:0] load_value_PC
 );
+logic is_vect;
 
+assign is_vect = !is_not_vect;
 
-assign clken_PC = (!is_not_vect & !done_auto_incr)? 1'b0: 1'b1; 
+assign clken_PC = !(is_vect & !done_auto_incr); // stall
 assign load_PC = (is_bne & flag_neq)? 1'b1: 1'b0;
 assign incr_PC = (is_bne & flag_neq)? 1'b0: 1'b1;
 assign load_value_PC = branch_immediate;

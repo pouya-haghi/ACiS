@@ -25,6 +25,7 @@ module ISA_decoder(
     output logic is_vstreamout,
     output logic is_bne,
     output logic is_csr,
+    output logic is_lui,
     output logic [dwidth_RFadd-1:0] vr_addr, // vector register file
     output logic [dwidth_RFadd-1:0] vw_addr, // vector register file
     output logic is_not_vect, // used to inform us about stall (if it is zero we should stall)
@@ -39,7 +40,7 @@ module ISA_decoder(
     
     logic [4:0] vs2, vd;
     logic is_vsetivli; // configuration
-    logic is_addi, is_lui, is_add; // integer scalar
+    logic is_addi, is_add; // integer scalar
     logic [dwidth_int-1:0] lui_immediate, addi_immediate;
     logic is_vect;
     logic [2:0] VLEN;
@@ -92,7 +93,7 @@ module ISA_decoder(
     assign is_vect = |{is_vmacc_vv, is_vle32_vv, is_vse32_vv, is_vmv_vi, is_vstreamout};
     assign is_not_vect = !is_vect;
     // vs1 is hardwire to O1 or O2 (no matter what you put in)
-    assign vs2 = instr[24:20]; // vs2
+    assign vs2 = (is_vse32_vv)? instr[11:7]: instr[24:20]; // vs2
     assign vd = instr[11:7]; // vd
     // again rs1 is the base address
     

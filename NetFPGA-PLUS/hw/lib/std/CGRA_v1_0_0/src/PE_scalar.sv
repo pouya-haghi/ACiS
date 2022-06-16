@@ -15,8 +15,11 @@ module PE_scalar(
     );
     
     localparam [2:0] is_lui = 3'b000, is_addi = 3'b001, is_bne = 3'b010, is_add = 3'b011; 
+    logic [dwidth_int-1:0] R_immediate_q;
     
-    assign out1 = (op_scalar == is_addi)? inp1+R_immediate: ((is_add)? inp1+inp2 : {(dwidth_int){1'b0}});
+    reg_r #(dwidth_int) reg_r_inst0 (R_immediate, clk, rst, R_immediate_q);// delay R_immediate for 1 cycle b/c addi is not a single-cycle instr (we should first read RF)
+    
+    assign out1 = (op_scalar == is_addi)? inp1+R_immediate_q: ((op_scalar == is_add)? inp1+inp2 : {(dwidth_int){1'b0}});
     assign flag_neq = ((inp1 != inp2) & (op_scalar == is_bne))? 1'b1: 1'b0;
     
 endmodule
