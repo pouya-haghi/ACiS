@@ -83,9 +83,6 @@ module data_path(
     logic [(num_col*phit_size)-1:0] user_rdata_HBM;
     logic [num_col-1:0] user_rvalid_HBM, user_wready_HBM;
     logic [num_col-1:0] valid_PE_i, valid_PE_o;
-//    logic [(num_col*dwidth_inst)-1:0] instr_q;
-//    logic [(num_col*2)-1:0] is_forward_PE;
-    
     
     // This part is ISA-specific:
     logic [num_col-1:0] ctrl_i_mux2_tvalid; //generated internally based on op
@@ -120,8 +117,8 @@ module data_path(
     generate 
         for (j=0; j<num_col; j++) begin
             assign stall_HBM[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j])));
-            assign stall_rd_autovect[j] = (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j]))) || (is_vmacc_vv[j] & valid_PE_i[j]);
-            assign stall_wr_autovect[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vmacc_vv[j] & valid_PE_o[j]);
+            assign stall_rd_autovect[j] = (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_i[j]);
+            assign stall_wr_autovect[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_o[j]);
             // if it is vmacc and tvalids are zero then you should stall auto_vect but not input FIFO 
             assign valid_PE_i[j] = (&i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & (&i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]);
             assign valid_PE_o[j] = (&o1_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]);
@@ -144,6 +141,7 @@ module data_path(
              .is_vse32_vv(is_vse32_vv[j]),
              .is_vmacc_vv(is_vmacc_vv[j]),
              .is_vmv_vi(is_vmv_vi[j]),
+             .is_vstreamout(is_vstreamout[j]),
              .is_bne(is_bne[j]),
              .is_csr(is_csr[j]),
              .is_lui(is_lui[j]),
@@ -180,6 +178,8 @@ module data_path(
              .wr_addr(vw_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]),
              .wen(is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_PE_o[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
              .d_out(o_RF[(phit_size*(j+1))-1:phit_size*j]));
+             
+             wire temp_wen = is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_PE_o[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0);
              
              // scalar regFile   
              regFile_scalar regFile_scalar_inst0(
@@ -262,22 +262,9 @@ module data_path(
               .inp2(rddata2_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
               .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]),
               .op_scalar(op_scalar[((j+1)*3)-1:j*3]),
-//              .instr_q(instr_q[((j+1)*dwidth_inst)-1:j*dwidth_inst]),
-//              .is_forward_PE(is_forward_PE[((j+1)*2)-1:j*2]),
-//              .clk(clk),
-//              .rst(rst),
               .out1(wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
               .flag_neq(flag_neq[j]) // correct me
              );
-             
-             // forwarding logic scalar
-//             forwarding_logic_scalar forwarding_logic_scalar_inst0
-//             (.instr(instr[((j+1)*dwidth_inst)-1:j*dwidth_inst]),
-//             .clk(clk),
-//             .rst(rst),
-//             .is_forward_PE(is_forward_PE[((j+1)*2)-1:j*2]),
-//             .o_instr_q(instr_q[((j+1)*dwidth_inst)-1:j*dwidth_inst])
-//             );
 
              // PC logic
              PC_logic PC_logic_inst0

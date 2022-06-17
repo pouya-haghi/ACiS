@@ -42,7 +42,7 @@ module ISA_decoder(
     logic is_vect;
     logic [2:0] VLEN;
     logic t_is_vstreamout;
-//    assign is_vstreamout = t_is_vstreamout;
+    assign is_vstreamout = t_is_vstreamout;
 
     // ***********************  decode ***************************
     assign is_vmacc_vv = (instr[6:0]==7'h57 && instr[14:12]==3'h0)?1'b1:1'b0;
@@ -50,7 +50,7 @@ module ISA_decoder(
     assign is_vse32_vv = (instr[6:0]==7'h27)?1'b1:1'b0;
     assign is_vmv_vi = (instr[6:0]==7'h57 && instr[14:12]==3'h5)?1'b1:1'b0;
     assign is_vsetivli = (instr[6:0]==7'h57 && instr[14:12]==3'h7)?1'b1:1'b0;
-    assign is_vstreamout = (instr[6:0]==7'b1111111)?1'b1:1'b0; // based on ISA extension
+    assign t_is_vstreamout = (instr[6:0]==7'b1111111)?1'b1:1'b0; // based on ISA extension
     assign is_bne = (instr[6:0]==7'b1100011 && instr[14:12]==3'b001)?1'b1:1'b0;
     assign is_addi = (instr[6:0]==7'b0010011 && instr[14:12]==3'b000)?1'b1:1'b0; 
     assign is_lui = (instr[6:0]==7'b0110111)?1'b1:1'b0;
@@ -150,7 +150,7 @@ module ISA_decoder(
     
 //    assign ctrl_din_RF = (is_vmv_vi)? 3'b001:((is_vmacc_vv)? 3'b010: ((is_vle32_vv)? 3'b100: 3'b100)); // default: 3'b100
 //    assign ctrl_wen_RF = (is_vmv_vi)? 3'b001:((is_vmacc_vv)? 3'b010: ((is_vle32_vv)? 3'b100: 3'b000)); // default: 3'b000
-    assign ctrl_i_mux2_tvalid = (is_vmacc_vv | is_vstreamout)? 1'b1: 1'b0;
+    assign ctrl_i_mux2_tvalid = (is_vmacc_vv | t_is_vstreamout)? 1'b1: 1'b0;
 //    assign sel_mux2 = 
    
 endmodule
