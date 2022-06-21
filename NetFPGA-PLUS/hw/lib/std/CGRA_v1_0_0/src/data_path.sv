@@ -55,6 +55,7 @@ module data_path(
     logic [((num_col)*3)-1:0] op_scalar;
     logic [(phit_size*num_col)-1:0] o_RF;
     logic [(phit_size*num_col)-1:0] i1_PE_typeC, i2_PE_typeC, o1_PE_typeC, o2_PE_typeC; // the last bundle of SIMD_degree signals is for tvalid
+    logic [(phit_size*num_col)-1:0] i3_PE_typeC; // this directly connects the RD output of the RF to the PE input 
     logic [(SIMD_degree*num_col)-1:0] i_tvalid1_PE_typeC, i_tvalid2_PE_typeC, o1_tvalid1_PE_typeC, o2_tvalid1_PE_typeC;
     logic [(5*num_col)-1:0] rs1, rs2, rd;
     logic [(dwidth_RFadd*num_col)-1:0] vr_addr;
@@ -174,10 +175,12 @@ module data_path(
              // vectorized regFile
              regFile regFile_inst0(.d_in(is_vmv_vi[j]?{(phit_size){1'b0}}:(is_vmacc_vv[j]?o1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]:user_rdata_HBM[(phit_size*(j+1))-1:phit_size*j])), // based on op I would choose wdata, o_RF or HBM. vmv.v.i is not supported: ctrl_din_RF[(j*3)+0]==1 :rdata_config_table[(phit_size*(j+1))-1:phit_size*j]
              .clk(clk),
-             .rd_addr(vr_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_RF is one of the fields in tables (auto-increment address generator)
+             .rd_addr1(vr_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_RF is one of the fields in tables (auto-increment address generator)
+             .rd_addr1( ),
              .wr_addr(vw_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]),
              .wen(is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_PE_o[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
-             .d_out(o_RF[(phit_size*(j+1))-1:phit_size*j]));
+             .d_out1(o_RF[(phit_size*(j+1))-1:phit_size*j]),
+             .d_out2(i3_PE_typeC[(phit_size*(j+1))-1:phit_size*j]));
              
              wire temp_wen = is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_PE_o[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0);
              
@@ -245,8 +248,10 @@ module data_path(
              (
              .i1_PE_typeC(i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
              .i2_PE_typeC(i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
+             .i2_PE_typeC(i3_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
              .i_tvalid1_PE_typeC(i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
              .i_tvalid2_PE_typeC(i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
+//             .i_tvalid3_PE_typeC(i_tvalid3_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
              .clk(clk),
              .rst(rst),
              .op(op[((j+1)*3)-1:j*3]),

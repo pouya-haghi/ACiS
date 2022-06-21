@@ -26,10 +26,12 @@
 module regFile(
     input logic [phit_size-1:0] d_in,
     input logic clk,
-    input logic [dwidth_RFadd-1:0] rd_addr,
+    input logic [dwidth_RFadd-1:0] rd_addr1,
+    input logic [dwidth_RFadd-1:0] rd_addr2,
     input logic [dwidth_RFadd-1:0] wr_addr,
     input logic wen,
-    output logic [phit_size-1:0] d_out
+    output logic [phit_size-1:0] d_out1,
+    output logic [phit_size-1:0] d_out2
     );
     
     logic [phit_size-1:0] mem [depth_RF-1:0];
@@ -47,6 +49,7 @@ module regFile(
             mem[wr_addr] <= d_in;
     end
     
-    assign d_out = mem[rd_addr];
+    assign d_out1 = mem[rd_addr1];
+    assign d_out2 = mem[rd_addr2];
     
 endmodule

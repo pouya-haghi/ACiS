@@ -8,6 +8,7 @@
 module test_vectorized_PE;
     reg [phit_size-1:0] i1_PE_typeC;            // input 1
     reg [phit_size-1:0] i2_PE_typeC;            // input 2
+    reg [phit_size-1:0] i3_PE_typeC;            // input 3
     reg [SIMD_degree-1:0] i_tvalid1_PE_typeC;   // valid 1
     reg [SIMD_degree-1:0] i_tvalid2_PE_typeC;   // valid 2
     reg clk;
@@ -42,6 +43,7 @@ module test_vectorized_PE;
     initial begin
         i1_PE_typeC <= {512{1'b0}};
         i2_PE_typeC <= {512{1'b0}};
+        i3_PE_typeC <= {512{1'b0}};
         i_tvalid1_PE_typeC <= {16{1'b0}};
         i_tvalid2_PE_typeC <= {16{1'b0}};
         op = 0;
@@ -49,7 +51,7 @@ module test_vectorized_PE;
         #20;
         rst = 0;
         #15;
-        i1_PE_typeC <= 512'h4000000040000000; i2_PE_typeC <= 512'h4080000040800000;
+        i1_PE_typeC <= 512'h4000000040000000; i2_PE_typeC <= 512'h4080000040800000;     // Add 2 and 4
         i_tvalid1_PE_typeC <= 16'hFFFF; i_tvalid2_PE_typeC <= 16'hFFFF; op = 3'b000;
 //        #10;
 //        i1_PE_typeC <= 512'd54321; i2_PE_typeC <= 512'd09876;
@@ -61,7 +63,7 @@ module test_vectorized_PE;
 //        i1_PE_typeC <= 512'd34343; i2_PE_typeC <= 512'd65656;
 //        i_tvalid1_PE_typeC <= 0; i_tvalid2_PE_typeC <= 0; op = 3'b000;
         
-//        #10 op = 3'b100;
+        #10 op = 3'b100;
         
 //        #10
 //        i1_PE_typeC <= 512'd00001; i2_PE_typeC <= 512'd00004;
@@ -73,11 +75,11 @@ module test_vectorized_PE;
 //        i1_PE_typeC <= 512'd00100; i2_PE_typeC <= 512'd00400;
 //        i_tvalid1_PE_typeC <= 16'hFFFF; i_tvalid2_PE_typeC <= 16'hFFFF; op = 3'b001;
         
-//        #10 op = 3'b100;
+        #10 op = 3'b100;
         
-//        #10
-//        i1_PE_typeC <= 512'd44444; i2_PE_typeC <= 512'd00002;
-//        i_tvalid1_PE_typeC <= 16'hFFFF; i_tvalid2_PE_typeC <= 16'hFFFF; op = 3'b010;
+        #10
+        i1_PE_typeC <= 512'h4000000040000000; i2_PE_typeC <= 512'h4080000040800000; //2x4
+        i_tvalid1_PE_typeC <= 16'hFFFF; i_tvalid2_PE_typeC <= 16'hFFFF; op = 3'b010;
 //        #10
 //        i1_PE_typeC <= 512'd33333; i2_PE_typeC <= 512'd00003;
 //        i_tvalid1_PE_typeC <= 0; i_tvalid2_PE_typeC <= 16'hFFFF; op = 3'b010;
@@ -85,16 +87,16 @@ module test_vectorized_PE;
 //        i1_PE_typeC <= 512'd22222; i2_PE_typeC <= 512'd00004;
 //        i_tvalid1_PE_typeC <= 16'hFFFF; i_tvalid2_PE_typeC <= 0; op = 3'b010;
         
-//        #10 op = 3'b100;
+        #10 op = 3'b100;
         
         #160;
-        i1_PE_typeC <= 512'h4000000040000000; i2_PE_typeC <= 512'h4080000040800000;
+        i1_PE_typeC <= 512'h4000000040000000; i2_PE_typeC <= 512'h4080000040800000; i3_PE_typeC <= 512'h4040000040400000;//2x4+3
         i_tvalid1_PE_typeC <= 16'hFFFF; i_tvalid2_PE_typeC <= 16'hFFFF; op = 3'b011;
         #10;
-        i1_PE_typeC <= 512'h4040000040400000; i2_PE_typeC <= 512'h40a0000040a00000;
+        i1_PE_typeC <= 512'h4040000040400000; i2_PE_typeC <= 512'h40a0000040a00000; i3_PE_typeC <= 512'h4040000040400000; //3x5+3
         i_tvalid1_PE_typeC <= 16'hFFFF; i_tvalid2_PE_typeC <= 16'hFFFF; op = 3'b011;
         #10;
-        i1_PE_typeC <= 512'h40c0000040c00000; i2_PE_typeC <= 512'h4120000041200000;
+        i1_PE_typeC <= 512'h40c0000040c00000; i2_PE_typeC <= 512'h4120000041200000; i3_PE_typeC <= 512'h4040000040400000; //6x10+3
         i_tvalid1_PE_typeC <= 16'hFFFF; i_tvalid2_PE_typeC <= 16'hFFFF; op = 3'b011;
         
         #10; i_tvalid1_PE_typeC <= 16'h0; i_tvalid2_PE_typeC <= 16'h0;
