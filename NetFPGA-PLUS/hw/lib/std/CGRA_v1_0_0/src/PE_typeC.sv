@@ -161,7 +161,7 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
     register_pipe #(3             , latency/2) rp_inst6(clk, rst, op_d, op_dd); // (latency) delayed op
     
     assign out1 = (op_dd == 3'b010) ? o_fp_mul_d : o_fp_add;
-    assign t_valid_out1 = (op_dd == 3'b010) ? t_valid_mul_d : ((op_d == 3'b011 || op_d == 3'b000) ? t_valid_add : 1'b0);
+    assign t_valid_out1 = (op_dd == 3'b010) ? t_valid_mul_d : ((op_dd == 3'b011 || op_dd == 3'b000) ? t_valid_add : 1'b0);
 
 //    register_pipe #(dwidth_float+1, latency/2) rp_inst1(clk, rst, {t_valid_out1_t, out1_t}, {t_valid_out1_tt, out1_tt});
 //    assign out1 = (is_macc)? out1_t: out1_tt;
