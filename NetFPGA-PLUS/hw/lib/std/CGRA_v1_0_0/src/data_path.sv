@@ -62,7 +62,7 @@ module data_path(
     logic [num_col-1:0] is_not_vect;
     logic [(12*num_col)-1:0] branch_immediate; 
     logic [(dwidth_int*num_col)-1:0] R_immediate;
-    logic [num_col-1:0] stall;
+//    logic [num_col-1:0] stall;
     logic [(dwidth_int*num_col)-1:0] rddata1_RF_scalar;
     logic [(dwidth_int*num_col)-1:0] rddata2_RF_scalar;
     logic [(dwidth_int*num_col)-1:0] wdata_RF_scalar;
@@ -71,7 +71,7 @@ module data_path(
     logic [num_col-1:0] done_auto_incr;
     logic [phit_size-1:0] FIFO_out_tdata;
     logic [SIMD_degree-1:0] FIFO_out_tvalid;
-    logic [SIMD_degree-1:0] FIFO_out_tvalid_t;
+//    logic [SIMD_degree-1:0] FIFO_out_tvalid_t;
     logic [num_col-1:0] wen_RF_scalar;
     logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_bne, is_csr, is_lui;
     logic [num_col-1:0] stall_HBM;
