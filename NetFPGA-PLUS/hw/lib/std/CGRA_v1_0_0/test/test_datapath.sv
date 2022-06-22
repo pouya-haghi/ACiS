@@ -191,14 +191,14 @@ module test_datapath;
     #(clk_pd*delay_HBM); // 8 cycles delay
     rvalid_HBM <= {(num_col){1'b1}};
     // stream in data
-    rdata_HBM <= 512'h1; #clk_pd;
-    rdata_HBM <= 512'h2; #clk_pd;
-    rdata_HBM <= 512'h3; #clk_pd;
-    rdata_HBM <= 512'h4; #clk_pd;
-    rdata_HBM <= 512'h5; #clk_pd;
-    rdata_HBM <= 512'h6; #clk_pd;
-    rdata_HBM <= 512'h7; #clk_pd;
-    rdata_HBM <= 512'h8; #clk_pd;
+    rdata_HBM <= 512'h40000000; #clk_pd;//2
+    rdata_HBM <= 512'h40400000; #clk_pd;//3
+    rdata_HBM <= 512'h40800000; #clk_pd;//4
+    rdata_HBM <= 512'h40a00000; #clk_pd;//5
+    rdata_HBM <= 512'h40c00000; #clk_pd;//6
+    rdata_HBM <= 512'h40e00000; #clk_pd;//7
+    rdata_HBM <= 512'h41000000; #clk_pd;//8
+    rdata_HBM <= 512'h41100000; #clk_pd;//9
     rvalid_HBM <= {(num_col){1'b0}};
     
     
@@ -235,14 +235,14 @@ module test_datapath;
     #(clk_pd*delay_HBM); // 8 cycles delay
     rvalid_HBM <= {(num_col){1'b1}};
     // stream in data
-    rdata_HBM <= 512'h2; #clk_pd;
-    rdata_HBM <= 512'h2; #clk_pd;
-    rdata_HBM <= 512'h2; #clk_pd;
-    rdata_HBM <= 512'h2; #clk_pd;
-    rdata_HBM <= 512'h2; #clk_pd;
-    rdata_HBM <= 512'h2; #clk_pd;
-    rdata_HBM <= 512'h2; #clk_pd;
-    rdata_HBM <= 512'h2; #clk_pd;
+    rdata_HBM <= 512'h40000000; #clk_pd;
+    rdata_HBM <= 512'h40000000; #clk_pd;
+    rdata_HBM <= 512'h40000000; #clk_pd;
+    rdata_HBM <= 512'h40000000; #clk_pd;
+    rdata_HBM <= 512'h40000000; #clk_pd;
+    rdata_HBM <= 512'h40000000; #clk_pd;
+    rdata_HBM <= 512'h40000000; #clk_pd;
+    rdata_HBM <= 512'h40000000; #clk_pd;
     rvalid_HBM <= {(num_col){1'b0}};
     
     
@@ -270,14 +270,14 @@ module test_datapath;
     instr[(2*dwidth_inst)-1:dwidth_inst] <= {6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd3, 7'h57}; // vse32.vv v0, (x2)
     //Stream in
     tvalid_stream_in <= 16'hffff;
-    tdata_stream_in <= 512'h8; #clk_pd;
-    tdata_stream_in <= 512'h7; #clk_pd;
-    tdata_stream_in <= 512'h6; #clk_pd;
-    tdata_stream_in <= 512'h5; #clk_pd;
-    tdata_stream_in <= 512'h4; #clk_pd;
-    tdata_stream_in <= 512'h3; #clk_pd;
-    tdata_stream_in <= 512'h2; #clk_pd;
-    tdata_stream_in <= 512'h1; #clk_pd;
+    tdata_stream_in <= 512'h40000000; #clk_pd;//2 
+    tdata_stream_in <= 512'h40400000; #clk_pd;//3 
+    tdata_stream_in <= 512'h40800000; #clk_pd;//4 
+    tdata_stream_in <= 512'h40a00000; #clk_pd;//5 
+    tdata_stream_in <= 512'h40c00000; #clk_pd;//6 
+    tdata_stream_in <= 512'h40e00000; #clk_pd;//7 
+    tdata_stream_in <= 512'h41000000; #clk_pd;//8 
+    tdata_stream_in <= 512'h41100000; #clk_pd;//9 
     tvalid_stream_in <= 16'h0;
     #(clk_pd*24);
     // vsetilvi

@@ -184,7 +184,7 @@ module data_path(
              
              // Register pipeline - delay VD
              register_pipe #(dwidth_RFadd*num_col, latencyPEC) rp_inst0(clk,rsk, vw_addr_auto_incr,vw_addr_auto_incr_d);
-             // TODO set params and add mux thing to VRF and yuh
+             // NOTES forgot to consider stalls, therefor cannot delay OUTPUT of incr. May need to delay the INPUT of auto_incr for it to be right. Check for internal registers
              
              // scalar regFile   
              regFile_scalar regFile_scalar_inst0(
@@ -287,18 +287,30 @@ module data_path(
               .load_value_PC(load_value_PC[((j+1)*12)-1:j*12])
              );
              
-             if (j == 0) begin
-                 mux2 #(phitplus) mux2_inst0_if ({FIFO_out_tvalid, FIFO_out_tdata}, {(phitplus){1'b0}}, sel_mux2[0], {i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
-                 mux2 #(phitplus) mux2_inst1_if ({{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, {(phitplus){1'b0}}, sel_mux2[1], {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});  // second input was considered for imm (but not yet supported b/c it is not in riscv): {{(SIMD_degree){tvalid_config_table[0]}}, {SIMD_degree{imm[(dwidth_float*1)-1:dwidth_float*0]}}}  
-                assign sel_mux2[0] = 1'b0;
-                assign sel_mux2[1] = 1'b0;
-             end
-             else begin
-                 mux2 #(phitplus) mux2_inst0_else ({o1_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], o1_PE_typeC[(phit_size*(j+1))-1:(phit_size*j)]}, {o2_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], o2_PE_typeC[(phit_size*(j+1))-1:(phit_size*j)]}, sel_mux2[(j*2)+0], {i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
-                 mux2 #(phitplus) mux2_inst1_else ({{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, {(phitplus){1'b0}}, sel_mux2[(j*2)+1], {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});  // second input was considered for imm (but not yet supported): {{(SIMD_degree){tvalid_config_table[0]}}, {SIMD_degree{imm[(dwidth_float*1)-1:dwidth_float*0]}}}
-                 assign sel_mux2[(j*2)+0] = 1'b1;
-                 assign sel_mux2[(j*2)+1] = 1'b0;
-             end
+         if (j == 0) begin
+             mux2 #(phitplus) mux2_inst0_if ({FIFO_out_tvalid, FIFO_out_tdata}, 
+                                             {(phitplus){1'b0}}, 
+                                             sel_mux2[0], 
+                                             {i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
+             mux2 #(phitplus) mux2_inst1_if ({{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, 
+                                             {(phitplus){1'b0}}, 
+                                             sel_mux2[1], 
+                                             {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});  // second input was considered for imm (but not yet supported b/c it is not in riscv): {{(SIMD_degree){tvalid_config_table[0]}}, {SIMD_degree{imm[(dwidth_float*1)-1:dwidth_float*0]}}}  
+            assign sel_mux2[0] = 1'b0;
+            assign sel_mux2[1] = 1'b0;
+         end
+         else begin
+             mux2 #(phitplus) mux2_inst0_else ({o1_tvalid1_PE_typeC[(SIMD_degree*j)-1:SIMD_degree*(j-1)], o1_PE_typeC[(phit_size*j)-1:(phit_size*(j-1))]}, 
+                                               {o2_tvalid1_PE_typeC[(SIMD_degree*j)-1:SIMD_degree*(j-1)], o2_PE_typeC[(phit_size*j)-1:(phit_size*(j-1))]}, 
+                                               sel_mux2[(j*2)+0], 
+                                               {i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
+             mux2 #(phitplus) mux2_inst1_else ({{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, 
+                                               {(phitplus){1'b0}}, 
+                                               sel_mux2[(j*2)+1], 
+                                               {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});  // second input was considered for imm (but not yet supported): {{(SIMD_degree){tvalid_config_table[0]}}, {SIMD_degree{imm[(dwidth_float*1)-1:dwidth_float*0]}}}
+             assign sel_mux2[(j*2)+0] = 1'b1;
+             assign sel_mux2[(j*2)+1] = 1'b0;
+         end
              
         end
     endgenerate
