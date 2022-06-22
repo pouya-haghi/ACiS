@@ -30,11 +30,11 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
     logic t_valid_add; //discard output valid signal
     logic t_valid_mul; //discard output valid signal
     logic o_fp_acc_tlast, o_fp_acc_tvalid;
-    logic [dwidth_float-1:0] i_fp_acc, o_fp_acc;
+//    logic [dwidth_float-1:0] i_fp_acc, o_fp_acc;
     logic is_add, is_mul, is_acc, is_macc;
-    logic tvalid_fp_acc;
-    logic tvalid_o_macc;
-    logic t_valid_in1_d, t_valid_in2_d, t_valid_in3_d, t_valid_mul_d;
+//    logic tvalid_fp_acc;
+//    logic tvalid_o_macc;
+    logic t_valid_inp1_d, t_valid_inp2_d, t_valid_inp3_d, t_valid_mul_d;
     logic [dwidth_float-1:0] inp1_d, inp2_d, inp3_d, o_fp_mul_d;
     logic [2:0] op_d, op_dd;
 //    logic t_valid_out1_t, t_valid_out1_tt;
@@ -46,7 +46,7 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
       .aresetn(!rst),                                  // input wire aresetn
       .s_axis_a_tvalid((op_d == 3'b000) ? t_valid_inp1_d : ((op_d == 3'b011) ? t_valid_mul : 1'b0)),                  // input wire s_axis_a_tvalid
       .s_axis_a_tdata((op_d == 3'b000) ? inp1_d : o_fp_mul),                    // input wire [31 : 0] s_axis_a_tdata
-      .s_axis_b_tvalid((op_d == 3'b000) ? t_valid_in2_d : ((op_d == 3'b011) ? t_valid_in3_d : 1'b0)),                  // input wire s_axis_b_tvalid
+      .s_axis_b_tvalid((op_d == 3'b000) ? t_valid_inp2_d : ((op_d == 3'b011) ? t_valid_inp3_d : 1'b0)),                  // input wire s_axis_b_tvalid
       .s_axis_b_tdata((op_d == 3'b000) ? inp2_d : inp3_d),                    // input wire [31 : 0] s_axis_b_tdata
       .s_axis_operation_tvalid(t_valid_inp1 & t_valid_inp2 & is_add),  // input wire s_axis_operation_tvalid
       .s_axis_operation_tdata({7'b0, op_d[0]}),    // input wire [7 : 0] s_axis_operation_tdata

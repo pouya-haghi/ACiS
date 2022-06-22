@@ -22,6 +22,7 @@ module test_vectorized_PE;
     vectorized_PE vectorized_PE_inst0 (
         .i1_PE_typeC(i1_PE_typeC),
         .i2_PE_typeC(i2_PE_typeC),
+        .i3_PE_typeC(i2_PE_typeC),
         .i_tvalid1_PE_typeC(i_tvalid1_PE_typeC),
         .i_tvalid2_PE_typeC(i_tvalid2_PE_typeC),
         .clk(clk),
