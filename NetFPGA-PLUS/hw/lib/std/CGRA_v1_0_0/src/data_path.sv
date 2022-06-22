@@ -68,7 +68,7 @@ module data_path(
     logic [(dwidth_int*num_col)-1:0] rddata2_RF_scalar;
     logic [(dwidth_int*num_col)-1:0] wdata_RF_scalar;
     logic [(dwidth_RFadd*num_col)-1:0] vr_addr_auto_incr;
-    logic [(dwidth_RFadd*num_col)-1:0] vw_addr_auto_incr;
+    logic [(dwidth_RFadd*num_col)-1:0] vw_addr_auto_incr, vw_addr_auto_incr_d;
     logic [num_col-1:0] done_auto_incr;
     logic [phit_size-1:0] FIFO_out_tdata;
     logic [SIMD_degree-1:0] FIFO_out_tvalid;
@@ -176,13 +176,15 @@ module data_path(
              regFile regFile_inst0(.d_in(is_vmv_vi[j]?{(phit_size){1'b0}}:(is_vmacc_vv[j]?o1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]:user_rdata_HBM[(phit_size*(j+1))-1:phit_size*j])), // based on op I would choose wdata, o_RF or HBM. vmv.v.i is not supported: ctrl_din_RF[(j*3)+0]==1 :rdata_config_table[(phit_size*(j+1))-1:phit_size*j]
              .clk(clk),
              .rd_addr1(vr_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_RF is one of the fields in tables (auto-increment address generator)
-             .rd_addr1( ),
-             .wr_addr(vw_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]),
+             .rd_addr2(vw_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_2 is ONLY for vmacc, is VD iterated (same as write)
+             .wr_addr((is_vse32_vv) ? vw_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j] : vw_addr_auto_incr_d[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // write addr, delayed only if not vse
              .wen(is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_PE_o[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
              .d_out1(o_RF[(phit_size*(j+1))-1:phit_size*j]),
              .d_out2(i3_PE_typeC[(phit_size*(j+1))-1:phit_size*j]));
              
-             wire temp_wen = is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_PE_o[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0);
+             // Register pipeline - delay VD
+             register_pipe #(dwidth_RFadd*num_col, latencyPEC) rp_inst0(clk,rsk, vw_addr_auto_incr,vw_addr_auto_incr_d);
+             // TODO set params and add mux thing to VRF and yuh
              
              // scalar regFile   
              regFile_scalar regFile_scalar_inst0(
@@ -248,7 +250,7 @@ module data_path(
              (
              .i1_PE_typeC(i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
              .i2_PE_typeC(i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
-             .i2_PE_typeC(i3_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
+             .i3_PE_typeC(i3_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
              .i_tvalid1_PE_typeC(i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
              .i_tvalid2_PE_typeC(i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
 //             .i_tvalid3_PE_typeC(i_tvalid3_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]),

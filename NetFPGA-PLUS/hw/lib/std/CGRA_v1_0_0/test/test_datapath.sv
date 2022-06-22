@@ -279,7 +279,7 @@ module test_datapath;
     tdata_stream_in <= 512'h2; #clk_pd;
     tdata_stream_in <= 512'h1; #clk_pd;
     tvalid_stream_in <= 16'h0;
-    #(clk_pd*16);
+    #(clk_pd*24);
     // vsetilvi
     // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
     instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
@@ -294,34 +294,34 @@ module test_datapath;
     #(clk_pd*8); // read data for 8 cycles
     wready_HBM <= {(num_col){1'b0}};
     
-//    //////////////////////// Scalar Instructions ////////////////////////
-    // LUI                                         imm    rd   inst
-    instr[dwidth_inst-1:0] <=               {20'h12345, 5'h1, 7'h37};
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {20'h12345, 5'h1, 7'h37};
-    #clk_pd;                                     
+////    //////////////////////// Scalar Instructions ////////////////////////
+//    // LUI                                         imm    rd   inst
+//    instr[dwidth_inst-1:0] <=               {20'h12345, 5'h1, 7'h37};
+//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {20'h12345, 5'h1, 7'h37};
+//    #clk_pd;                                     
     
-    // ADDI                                      imm   rs1     000    rd   inst
-    instr[dwidth_inst-1:0] <=               {12'h567, 5'h1, 3'b000, 5'h1, 7'h13};
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'h567, 5'h1, 3'b000, 5'h1, 7'h13};
-    #clk_pd;
+//    // ADDI                                      imm   rs1     000    rd   inst
+//    instr[dwidth_inst-1:0] <=               {12'h567, 5'h1, 3'b000, 5'h1, 7'h13};
+//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'h567, 5'h1, 3'b000, 5'h1, 7'h13};
+//    #clk_pd;
 
-    // ADDI                                      imm   rs1     000    rd   inst
-    instr[dwidth_inst-1:0] <=               {12'h111, 5'h1, 3'b000, 5'h2, 7'h13};
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'h111, 5'h1, 3'b000, 5'h2, 7'h13};
-    #clk_pd;
+//    // ADDI                                      imm   rs1     000    rd   inst
+//    instr[dwidth_inst-1:0] <=               {12'h111, 5'h1, 3'b000, 5'h2, 7'h13};
+//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'h111, 5'h1, 3'b000, 5'h2, 7'h13};
+//    #clk_pd;
     
-    // ADD
-    instr[dwidth_inst-1:0] <=               {7'h0, 5'h1, 5'h2, 3'b000, 5'h3, 7'h33};
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {7'h0, 5'h1, 5'h2, 3'b000, 5'h3, 7'h33};
-    #clk_pd;
-    // BNE
-    instr[dwidth_inst-1:0] <=               {7'h0, 5'h1, 5'h2, 3'b001, 5'h0, 7'h63};
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {7'h0, 5'h1, 5'h2, 3'b001, 5'h0, 7'h63};
-    #clk_pd;
-    // BNE
-    instr[dwidth_inst-1:0] <=               {7'h0, 5'h1, 5'h1, 3'b001, 5'h0, 7'h63};
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {7'h0, 5'h1, 5'h1, 3'b001, 5'h0, 7'h63};    
-    #(clk_pd*10);
+//    // ADD
+//    instr[dwidth_inst-1:0] <=               {7'h0, 5'h1, 5'h2, 3'b000, 5'h3, 7'h33};
+//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {7'h0, 5'h1, 5'h2, 3'b000, 5'h3, 7'h33};
+//    #clk_pd;
+//    // BNE
+//    instr[dwidth_inst-1:0] <=               {7'h0, 5'h1, 5'h2, 3'b001, 5'h0, 7'h63};
+//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {7'h0, 5'h1, 5'h2, 3'b001, 5'h0, 7'h63};
+//    #clk_pd;
+//    // BNE
+//    instr[dwidth_inst-1:0] <=               {7'h0, 5'h1, 5'h1, 3'b001, 5'h0, 7'h63};
+//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {7'h0, 5'h1, 5'h1, 3'b001, 5'h0, 7'h63};    
+//    #(clk_pd*10);
     
     $finish;
     

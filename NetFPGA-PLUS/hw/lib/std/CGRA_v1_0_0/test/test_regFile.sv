@@ -9,13 +9,13 @@ module test_regFile;
     reg clk;
     
     reg [phit_size-1:0] d_in;
-    reg [dwidth_RFadd-1:0] rd_addr;
+    reg [dwidth_RFadd-1:0] rd_addr1, rd_addr2;
     reg [dwidth_RFadd-1:0] wr_addr;
     reg wen;
     
-    wire [phit_size-1:0] d_out;
+    wire [phit_size-1:0] d_out1, d_out2;
     
-    regFile regFileInst1 (.d_in(d_in),.clk(clk),.rd_addr(rd_addr),.wr_addr(wr_addr),.wen(wen),.d_out(d_out));
+    regFile regFileInst0 (.d_in(d_in),.clk(clk),.rd_addr1(rd_addr1),.rd_addr2(rd_addr2),.wr_addr(wr_addr),.wen(wen),.d_out1(d_out1),.d_out2(d_out2));
     
     always begin
         clk = 1;
@@ -24,43 +24,32 @@ module test_regFile;
         #5;
     end
     
+    integer i;
     initial begin
         d_in <= 0;
-        rd_addr <= 0;
+        rd_addr1 <= 0;
+        rd_addr2 <= 0;
         wr_addr <= 0;
         wen = 0;
         
-//        #10
-//        wen = 1;
+        #5
+        wen = 1;
         
-//        #10
-//        rd_addr <= 12'd8;
-//        d_in <= 512'd123;
+        for (i=0;i<8;i=i+1) begin
+            wr_addr <= i;
+            d_in <= i*10;
+            #10;
+        end
         
-//        #20
-//        wr_addr <= 12'd12;
-//        d_in <= 512'd321;
-        
-//        #100
-//        wen = 0;
+        wen = 0;
         
         #10
-        rd_addr <= 12'd0;
-        #10
-        rd_addr <= 12'd1;
-        #10
-        rd_addr <= 12'd2;
-        #10
-        rd_addr <= 12'd3;
-        #10
-        rd_addr <= 12'd4;
-        #10
-        rd_addr <= 12'd5;
-        #10
-        rd_addr <= 12'd6;
-        #10
-        rd_addr <= 12'd7;
-        #10
+        
+        for (i=0;i<8;i=i+1) begin
+            rd_addr1 <= i;
+            rd_addr2 <= 7-i;
+            #10;
+        end
         
         
         

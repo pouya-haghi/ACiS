@@ -48,13 +48,13 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
       .s_axis_a_tdata((op_d == 3'b000) ? inp1_d : o_fp_mul),                    // input wire [31 : 0] s_axis_a_tdata
       .s_axis_b_tvalid((op_d == 3'b000) ? t_valid_inp2_d : ((op_d == 3'b011) ? t_valid_inp3_d : 1'b0)),                  // input wire s_axis_b_tvalid
       .s_axis_b_tdata((op_d == 3'b000) ? inp2_d : inp3_d),                    // input wire [31 : 0] s_axis_b_tdata
-      .s_axis_operation_tvalid(t_valid_inp1 & t_valid_inp2 & is_add),  // input wire s_axis_operation_tvalid
-      .s_axis_operation_tdata({7'b0, op_d[0]}),    // input wire [7 : 0] s_axis_operation_tdata
+      .s_axis_operation_tvalid(t_valid_inp1_d & t_valid_inp2_d & (op_d == 3'b000 || op_d == 3'b011)),  // input wire s_axis_operation_tvalid
+      .s_axis_operation_tdata(8'b0),    // input wire [7 : 0] s_axis_operation_tdata
       .m_axis_result_tvalid(t_valid_add),        // output wire m_axis_result_tvalid
       .m_axis_result_tdata(o_fp_add)          // output wire [31 : 0] m_axis_result_tdata
     );
-        
-     floating_point_multiplier fp_mul_inst0 (
+     
+    floating_point_multiplier fp_mul_inst0 (
       .aclk(clk),                                        // input wire aclk
       .s_axis_a_tvalid(t_valid_inp1 && (is_mul || is_macc)),                  // input wire s_axis_a_tvalid
       // only if it is a multiplier
@@ -152,13 +152,13 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
     assign out2 = temp_out2;
     assign t_valid_out2 = temp_valid_out2;
     
-    register_pipe #(dwidth_float+1, latency) rp_inst0(clk, rst, {t_valid_inp1, inp1}, {temp_valid_out2, temp_out2}); // out 2
-    register_pipe #(dwidth_float+1, latency/2) rp_inst1(clk, rst, {t_valid_inp1, inp1}, {t_valid_inp1_d, inp1_d}); // inp1
-    register_pipe #(dwidth_float+1, latency/2) rp_inst2(clk, rst, {t_valid_inp2, inp2}, {t_valid_inp2_d, inp2_d}); // inp2
-    register_pipe #(dwidth_float+1, latency/2) rp_inst3(clk, rst, {1           , inp2}, {t_valid_inp3_d, inp3_d}); // inp3
-    register_pipe #(dwidth_float+1, latency/2) rp_inst4(clk, rst, {t_valid_mul, o_fp_mul}, {t_valid_mul_d, o_fp_mul_d}); // mul IP
-    register_pipe #(3             , latency/2) rp_inst5(clk, rst, op, op_d); // (latency/2) delayed op
-    register_pipe #(3             , latency/2) rp_inst6(clk, rst, op_d, op_dd); // (latency) delayed op
+    register_pipe #(dwidth_float+1, latency*2) rp_inst0(clk, rst, {t_valid_inp1, inp1}, {temp_valid_out2, temp_out2}); // out 2
+    register_pipe #(dwidth_float+1, latency) rp_inst1(clk, rst, {t_valid_inp1, inp1}, {t_valid_inp1_d, inp1_d}); // inp1
+    register_pipe #(dwidth_float+1, latency) rp_inst2(clk, rst, {t_valid_inp2, inp2}, {t_valid_inp2_d, inp2_d}); // inp2
+    register_pipe #(dwidth_float+1, latency) rp_inst3(clk, rst, {1'b1        , inp3}, {t_valid_inp3_d, inp3_d}); // inp3
+    register_pipe #(dwidth_float+1, latency) rp_inst4(clk, rst, {t_valid_mul, o_fp_mul}, {t_valid_mul_d, o_fp_mul_d}); // mul IP
+    register_pipe #(3             , latency) rp_inst5(clk, rst, op, op_d); // (latency/2) delayed op
+    register_pipe #(3             , latency) rp_inst6(clk, rst, op_d, op_dd); // (latency) delayed op
     
     assign out1 = (op_dd == 3'b010) ? o_fp_mul_d : o_fp_add;
     assign t_valid_out1 = (op_dd == 3'b010) ? t_valid_mul_d : ((op_dd == 3'b011 || op_dd == 3'b000) ? t_valid_add : 1'b0);

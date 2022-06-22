@@ -51,7 +51,7 @@ module test_auto_incr_vec;
     
     initial begin
         rst = 1; 
-        ITR <= 0;
+        ITR <= 8;
         wen_ITR = 0;
         stall_rd = 0;
         stall_wr = 0;
@@ -63,36 +63,42 @@ module test_auto_incr_vec;
         is_vstreamout = 0;
         
         
-        #20 rst = 0;
+        #20; rst = 0;
         
-        // read
-        #5 wen_ITR = 1; #10 wen_ITR = 0;
+        
+        // vmacc
+        #5;
+        wen_ITR = 1; #10;
+        wen_ITR = 0;
+        
         vr_addr = 12'd8;
-        ITR = 8;
+        vw_addr = 12'd16;
+          
+        #10; is_vmacc_vv = 1;
+        #80; is_vmacc_vv = 0;
         
-        #10 is_vmacc_vv = 1;
-        #20 is_vstreamout = 1;
-        #10 is_vmacc_vv = 0;
+        // vse
+        wen_ITR = 1; #10;
+        wen_ITR = 0;
         
-        #10 stall_rd = 1;
-        #40 stall_rd = 0;
-        #10 is_vse32_vv = 1;
-        #10 is_vstreamout = 0;
+        vr_addr = 12'd8;
+        vw_addr = 12'd16;
+          
+        #10; is_vse32_vv = 1;
+        #80; is_vse32_vv = 0;
         
-        //write
-        #60 wen_ITR = 1; #10 wen_ITR = 0;
-        vw_addr = 12'd32;
-        ITR = 8;
+        // vle
+        wen_ITR = 1; #10;
+        wen_ITR = 0;
         
-        #10 is_vmacc_vv = 1;
-        
-        #40 stall_wr = 1;
-        #10 is_vle32_vv = 1;
-        #20 is_vmacc_vv = 0;
-        #10 stall_wr = 0;
+        vr_addr = 12'd8;
+        vw_addr = 12'd16;
+          
+        #10; is_vle32_vv = 1;
+        #80; is_vle32_vv = 0;
         
         
-        #100
+        #40
     $finish;
     
  end

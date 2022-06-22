@@ -22,7 +22,7 @@ module test_vectorized_PE;
     vectorized_PE vectorized_PE_inst0 (
         .i1_PE_typeC(i1_PE_typeC),
         .i2_PE_typeC(i2_PE_typeC),
-        .i3_PE_typeC(i2_PE_typeC),
+        .i3_PE_typeC(i3_PE_typeC),
         .i_tvalid1_PE_typeC(i_tvalid1_PE_typeC),
         .i_tvalid2_PE_typeC(i_tvalid2_PE_typeC),
         .clk(clk),
@@ -90,7 +90,7 @@ module test_vectorized_PE;
         
         #10 op = 3'b100;
         
-        #160;
+//        #160;
         i1_PE_typeC <= 512'h4000000040000000; i2_PE_typeC <= 512'h4080000040800000; i3_PE_typeC <= 512'h4040000040400000;//2x4+3
         i_tvalid1_PE_typeC <= 16'hFFFF; i_tvalid2_PE_typeC <= 16'hFFFF; op = 3'b011;
         #10;

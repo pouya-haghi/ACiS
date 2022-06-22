@@ -84,7 +84,7 @@ module auto_incr_vect(
         else if (wen_ITR) begin
             ctr_ITR_rd <= 'b0; 
         end
-        else if (count && ctr_ITR_rd!=ITR_q && !stall_rd && (is_vmacc_vv || is_streamout || is_vse32_v)) begin
+        else if (count && ctr_ITR_rd!=ITR_q && !stall_rd && (is_streamout || is_vse32_v)) begin
                 ctr_ITR_rd <= ctr_ITR_rd + 1;
             end
         else if (count && ctr_ITR_rd==ITR_q) begin
@@ -108,6 +108,6 @@ module auto_incr_vect(
         end
     end
     
-    assign vr_addr_auto_incr = vr_addr + ctr_ITR_rd;
-    assign vw_addr_auto_incr = vw_addr + ctr_ITR_wr;
+    assign vr_addr_auto_incr = vr_addr + ctr_ITR_rd; // iterate if vstreamout, vse32 (serves as vr/vr1 for all/vmacc)
+    assign vw_addr_auto_incr = vw_addr + ctr_ITR_wr; // iterate if vmacc, vle32 (serves as vw and vr2 for vmacc)
 endmodule
