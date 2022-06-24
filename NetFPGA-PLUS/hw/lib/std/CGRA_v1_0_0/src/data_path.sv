@@ -74,7 +74,7 @@ module data_path(
     logic [SIMD_degree-1:0] FIFO_out_tvalid;
 //    logic [SIMD_degree-1:0] FIFO_out_tvalid_t;
     logic [num_col-1:0] wen_RF_scalar;
-    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_bne, is_csr, is_lui;
+    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_vsetivli, is_bne, is_csr, is_lui;
     logic [num_col-1:0] stall_HBM;
     logic [num_col-1:0] stall_rd_autovect, stall_wr_autovect;
 //    logic [num_col-1:0] valid_RF_en;
@@ -134,7 +134,8 @@ module data_path(
              .rs2(rs2[((j+1)*5)-1:j*5]),
              .rd(rd[((j+1)*5)-1:j*5]),
              .ITR(ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
-             .wen_ITR(wen_ITR[j]),
+//             .wen_ITR(wen_ITR[j]),
+             .is_vsetivli(is_vsetivli[j]),
              .vr_addr(vr_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vw_addr(vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .is_not_vect(is_not_vect[j]),
@@ -160,19 +161,22 @@ module data_path(
              .clk(clk), 
              .rst(rst),
              .ITR(ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
-             .wen_ITR(wen_ITR[j]),
              .stall_rd(stall_rd_autovect[j]), // clk_en
              .stall_wr(stall_wr_autovect[j]),
              .is_vmacc_vv(is_vmacc_vv[j]),
              .is_vle32_v(is_vle32_vv[j]),
              .is_vse32_v(is_vse32_vv[j]),
              .is_streamout(is_vstreamout[j]),
+             .is_vsetivli(is_vsetivli[j]),
              .vr_addr1(vr_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vr_addr2(vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vw_addr((is_vse32_vv || is_vle32_vv) ? vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd] : vw_addr_d[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),  // if VSE or VLE, choose non-delayed VD. Else, use delayed VD
              .vr_addr1_auto_incr(vr_addr1_auto_incr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vr_addr2_auto_incr(vr_addr2_auto_incr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vw_addr_auto_incr(vw_addr_auto_incr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
+             .load_PC(load_PC[j]),
+             .incr_PC(incr_PC[j]),
+             .wen_ITR(wen_ITR[j]),
              .done(done_auto_incr[j]) // one clock pulse
              );
              

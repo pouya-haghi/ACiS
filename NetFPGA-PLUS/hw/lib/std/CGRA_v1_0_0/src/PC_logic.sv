@@ -20,9 +20,9 @@ logic is_vect;
 
 assign is_vect = !is_not_vect;
 
-assign clken_PC = !(is_vect & !done_auto_incr); // stall
-assign load_PC = (is_bne & flag_neq)? 1'b1: 1'b0;
-assign incr_PC = (is_bne & flag_neq)? 1'b0: 1'b1;
+assign clken_PC = !(is_vect & !done_auto_incr); 
+assign load_PC = (is_not_vect & is_bne & flag_neq)? 1'b1: 1'b0;
+assign incr_PC = ((is_vect & done_auto_incr) || (is_not_vect & !(is_bne & flag_neq)))? 1'b1: 1'b0;
 assign load_value_PC = branch_immediate;
 
 

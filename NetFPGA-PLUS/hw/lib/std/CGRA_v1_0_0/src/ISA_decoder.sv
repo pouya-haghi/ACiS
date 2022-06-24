@@ -14,12 +14,13 @@ module ISA_decoder(
     output logic [4:0] rs2, // source register 2
     output logic [4:0] rd, // dest register
     output logic [dwidth_RFadd-1:0] ITR,
-    output logic wen_ITR,
+//    output logic wen_ITR,
     output logic is_vle32_vv,
     output logic is_vse32_vv,
     output logic is_vmacc_vv,
     output logic is_vmv_vi,
     output logic is_vstreamout,
+    output logic is_vsetivli,
     output logic is_bne,
     output logic is_csr,
     output logic is_lui,
@@ -36,12 +37,12 @@ module ISA_decoder(
     );
     
     logic [4:0] vs2, vd;
-    logic is_vsetivli; // configuration
+//    logic is_vsetivli; // configuration
     logic is_addi, is_add; // integer scalar
     logic [dwidth_int-1:0] lui_immediate, addi_immediate;
     logic is_vect;
     logic [2:0] VLEN;
-    logic t_is_vstreamout;
+    logic t_is_vstreamout, t_is_vsetivli;
     assign is_vstreamout = t_is_vstreamout;
 
     // ***********************  decode ***************************
@@ -49,7 +50,7 @@ module ISA_decoder(
     assign is_vle32_vv = (instr[6:0]==7'h07)?1'b1:1'b0;
     assign is_vse32_vv = (instr[6:0]==7'h27)?1'b1:1'b0;
     assign is_vmv_vi = (instr[6:0]==7'h57 && instr[14:12]==3'h5)?1'b1:1'b0;
-    assign is_vsetivli = (instr[6:0]==7'h57 && instr[14:12]==3'h7)?1'b1:1'b0;
+    assign t_is_vsetivli = (instr[6:0]==7'h57 && instr[14:12]==3'h7)?1'b1:1'b0;
     assign t_is_vstreamout = (instr[6:0]==7'b1111111)?1'b1:1'b0; // based on ISA extension
     assign is_bne = (instr[6:0]==7'b1100011 && instr[14:12]==3'b001)?1'b1:1'b0;
     assign is_addi = (instr[6:0]==7'b0010011 && instr[14:12]==3'b000)?1'b1:1'b0; 
@@ -59,7 +60,7 @@ module ISA_decoder(
     
     // ******************   configuration instructions *********************
     assign ITR = instr[29:18];
-    assign wen_ITR = is_vsetivli;
+//    assign wen_ITR = is_vsetivli;
     
     // for vsetivli
     reg_enr #(3) reg_enr_inst0 
@@ -67,9 +68,10 @@ module ISA_decoder(
     .d(instr[17:15]),
     .clk(clk),
     .rst(rst),
-    .en(is_vsetivli),
+    .en(t_is_vsetivli),
     .q(VLEN)
     );
+    assign is_vsetivli = t_is_vsetivli;
     
     // ****************** scalar instructions ****************************
     // beq instruction

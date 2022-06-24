@@ -176,7 +176,7 @@ module test_datapath;
     rst = 1;
     #(8*clk_pd);
     rst = 0;
-    #(clk_pd*2);
+//    #(clk_pd*2);
     
     //////////////////////// Vector Instructions ////////////////////////
     
@@ -224,11 +224,11 @@ module test_datapath;
 //    rvalid_HBM <= {(num_col){1'b0}};
     
     
-    // vsetilvi
-    // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
-    instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
-    #clk_pd;
+//    // vsetilvi
+//    // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
+//    instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+//    #clk_pd;
     // vle32                                     0       rs1      0    rd   inst
     instr[dwidth_inst-1:0] <=               {12'b0, 5'b00010 , 3'b0, 5'h3, 7'h07}; // vle32.vv v0, (x2)
     instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'b0, 5'b00010 , 3'b0, 5'h3, 7'h07}; // vle32.vv v0, (x2)
@@ -260,11 +260,11 @@ module test_datapath;
 //    #(clk_pd*8); // read data for 8 cycles
 //    wready_HBM <= {(num_col){1'b0}};
     
-    // vsetilvi
-    // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
-    instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
-    #clk_pd;
+//    // vsetilvi
+//    // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
+//    instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+//    #clk_pd;
     //vmacc                                       func     0   vs2   vs1    000    vd   inst
     instr[dwidth_inst-1:0] <=               {6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd3, 7'h57}; // vse32.vv v0, (x2)
     instr[(2*dwidth_inst)-1:dwidth_inst] <= {6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd3, 7'h57}; // vse32.vv v0, (x2)
@@ -280,11 +280,11 @@ module test_datapath;
     tdata_stream_in <= 512'h41100000; #clk_pd;//9 
     tvalid_stream_in <= 16'h0;
     #(clk_pd*18);
-    // vsetilvi
-    // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
-    instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
-    instr[(2*dwidth_inst)-1:dwidth_inst] <= {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
-    #clk_pd;
+//    // vsetilvi
+//    // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
+//    instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
+//    #clk_pd;
     // vse32                                     0       rs1      0    rd   inst
     instr[dwidth_inst-1:0] <=               {12'b0, 5'b00010 , 3'b0, 5'd3, 7'h27}; // vse32.vv v0, (x2)
     instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'b0, 5'b00010 , 3'b0, 5'd3, 7'h27}; // vse32.vv v0, (x2)
