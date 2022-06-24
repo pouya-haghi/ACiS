@@ -235,14 +235,14 @@ module test_datapath;
     #(clk_pd*delay_HBM); // 8 cycles delay
     rvalid_HBM <= {(num_col){1'b1}};
     // stream in data
-    rdata_HBM <= 512'h40000000; #clk_pd;
-    rdata_HBM <= 512'h40000000; #clk_pd;
-    rdata_HBM <= 512'h40000000; #clk_pd;
-    rdata_HBM <= 512'h40000000; #clk_pd;
-    rdata_HBM <= 512'h40000000; #clk_pd;
-    rdata_HBM <= 512'h40000000; #clk_pd;
-    rdata_HBM <= 512'h40000000; #clk_pd;
-    rdata_HBM <= 512'h40000000; #clk_pd;
+    rdata_HBM <= 512'h40000000; #clk_pd;//2
+    rdata_HBM <= 512'h40400000; #clk_pd;//3
+    rdata_HBM <= 512'h40800000; #clk_pd;//4
+    rdata_HBM <= 512'h40a00000; #clk_pd;//5
+    rdata_HBM <= 512'h40c00000; #clk_pd;//6
+    rdata_HBM <= 512'h40e00000; #clk_pd;//7
+    rdata_HBM <= 512'h41000000; #clk_pd;//8
+    rdata_HBM <= 512'h41100000; #clk_pd;//9
     rvalid_HBM <= {(num_col){1'b0}};
     
     
@@ -279,7 +279,7 @@ module test_datapath;
     tdata_stream_in <= 512'h41000000; #clk_pd;//8 
     tdata_stream_in <= 512'h41100000; #clk_pd;//9 
     tvalid_stream_in <= 16'h0;
-    #(clk_pd*24);
+    #(clk_pd*18);
     // vsetilvi
     // vlen = 8 = 12'b1000                     1,1    length     VRF     7    rd   inst
     instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 

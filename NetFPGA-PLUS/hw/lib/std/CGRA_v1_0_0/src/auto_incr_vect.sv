@@ -27,14 +27,16 @@ module auto_incr_vect(
     input logic wen_ITR, // act as both wen and start signal
     input logic stall_rd, // clk_en
     input logic stall_wr,
-    input logic [dwidth_RFadd-1:0] vr_addr, // base address
+    input logic [dwidth_RFadd-1:0] vr_addr1, // base address
+    input logic [dwidth_RFadd-1:0] vr_addr2, // base address
     input logic [dwidth_RFadd-1:0] vw_addr, //base address
     input logic is_vmacc_vv,
     input logic is_streamout,
     input logic is_vle32_v,
     input logic is_vse32_v,
 //    input logic [dwidth_int-1:0] rddata1_RF_scalar, // x register in vle32 and vse32 instructions, used for addressing memory
-    output logic [dwidth_RFadd-1:0] vr_addr_auto_incr,
+    output logic [dwidth_RFadd-1:0] vr_addr1_auto_incr,
+    output logic [dwidth_RFadd-1:0] vr_addr2_auto_incr,
     output logic [dwidth_RFadd-1:0] vw_addr_auto_incr,
     output logic done // one clock pulse
     );
@@ -68,13 +70,13 @@ module auto_incr_vect(
     always_comb begin
         case(curr_state)
             waiting: next_state = (wen_ITR) ? count_started: waiting;
-            count_started: next_state = ((is_vmacc_vv||is_vle32_v)&&ctr_ITR_wr==ITR_q) || ((is_streamout||is_vse32_v)&&ctr_ITR_rd==ITR_q)? waiting: count_started;
+            count_started: next_state = ((is_vmacc_vv||is_vle32_v)&&ctr_ITR_wr==ITR_q) || ((is_vmacc_vv || is_streamout||is_vse32_v)&&ctr_ITR_rd==ITR_q)? waiting: count_started;
             default: next_state = waiting;
         endcase
     end
     
     assign count = (curr_state == count_started)? 1'b1: 1'b0;
-    assign done =  (curr_state == count_started && ((is_vmacc_vv||is_vle32_v)&&ctr_ITR_wr==ITR_q) || ((is_streamout||is_vse32_v)&&ctr_ITR_rd==ITR_q))? 1'b1: 1'b0;
+    assign done =  (curr_state == count_started && ((is_vmacc_vv||is_vle32_v)&&ctr_ITR_wr==ITR_q) || ((is_vmacc_vv || is_streamout||is_vse32_v)&&ctr_ITR_rd==ITR_q))? 1'b1: 1'b0;
     
     // for read
     always_ff@(posedge clk) begin
@@ -84,7 +86,7 @@ module auto_incr_vect(
         else if (wen_ITR) begin
             ctr_ITR_rd <= 'b0; 
         end
-        else if (count && ctr_ITR_rd!=ITR_q && !stall_rd && (is_streamout || is_vse32_v)) begin
+        else if (count && ctr_ITR_rd!=ITR_q && !stall_rd && (is_vmacc_vv || is_streamout || is_vse32_v)) begin
                 ctr_ITR_rd <= ctr_ITR_rd + 1;
             end
         else if (count && ctr_ITR_rd==ITR_q) begin
@@ -108,6 +110,7 @@ module auto_incr_vect(
         end
     end
     
-    assign vr_addr_auto_incr = vr_addr + ctr_ITR_rd; // iterate if vstreamout, vse32 (serves as vr/vr1 for all/vmacc)
-    assign vw_addr_auto_incr = vw_addr + ctr_ITR_wr; // iterate if vmacc, vle32 (serves as vw and vr2 for vmacc)
+    assign vr_addr1_auto_incr = (is_vmacc_vv) ? vr_addr1 : vr_addr1 + ctr_ITR_rd; // iterate if vstreamout, vse32 (serves as vr/vr1 for all/vmacc)
+    assign vr_addr2_auto_incr = vr_addr2 + ctr_ITR_rd; // iterate if vstreamout, vse32, vmacc (serves as vr2 for vmacc)
+    assign vw_addr_auto_incr = vw_addr + ctr_ITR_wr; // iterate if vmacc, vle32
 endmodule
