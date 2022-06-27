@@ -71,7 +71,7 @@ localparam integer LP_FIFO_COUNT_WIDTH           = $clog2(LP_FIFO_DEPTH)+1;
 // Variables
 ///////////////////////////////////////////////////////////////////////////////
 // Control logic
-logic                                     done = '0;
+logic                                     done;
 logic                                     has_partial_bursts;
 logic                                     start_d1 = 1'b0;
 logic [C_M_AXI_ADDR_WIDTH-1:0]            addr_offset_r;
@@ -102,7 +102,12 @@ logic [LP_OUTSTANDING_CNTR_WIDTH-1:0]     outstanding_vacancy_count;
 ///////////////////////////////////////////////////////////////////////////////
 
 always @(posedge aclk) begin
-  done <= rxfer & m_axi_rlast & r_final_transaction ? 1'b1 : ctrl_done ? 1'b0 : done;
+  if (areset) begin
+    done <= 1'b0;
+  end
+  else begin
+    done <= (rxfer & m_axi_rlast & r_final_transaction) ? 1'b1 : (ctrl_done ? 1'b0 : done);
+  end
 end
 
 assign ctrl_done = done;
