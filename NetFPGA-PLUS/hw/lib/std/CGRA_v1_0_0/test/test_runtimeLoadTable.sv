@@ -121,12 +121,12 @@ module test_runtimeLoadTable(
         
         
         // read
+        clken_PC = 2'b11;
         
         load_PC = 2'b11; #10;
         load_PC = 2'b0; #10;
         
-        incr_PC = 2'b11; #10;
-        incr_PC = 2'b00; #10;
+        #20;
         
         incr_PC = 2'b11; #10;
         incr_PC = 2'b00; #10;
@@ -142,5 +142,6 @@ module test_runtimeLoadTable(
         //        data into m_axi_rdata
         //        readind done when hbm done, ctrl done assert
         //        this becomes read only afterwards with a PC
+        $finish;
     end
 endmodule

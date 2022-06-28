@@ -19,6 +19,7 @@ parameter latencyPEA = 6;
 parameter latencyPEB = 4;
 parameter latencyPEC = 8;
 parameter latencyPED = 57;
+parameter total_instr = 1024;
 
 function integer f_max (
   input integer a,
