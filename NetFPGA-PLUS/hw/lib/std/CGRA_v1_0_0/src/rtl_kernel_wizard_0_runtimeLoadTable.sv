@@ -172,6 +172,8 @@ logic t_is_zero;
 // Control Logic
 ///////////////////////////////////////////////////////////////////////////////
 
+assign m_axi_rready = 1'b1;
+
 always @(posedge aclk) begin
   done <= rxfer & m_axi_rlast & r_final_transaction ? 1'b1 : ctrl_done ? 1'b0 : done;
 end

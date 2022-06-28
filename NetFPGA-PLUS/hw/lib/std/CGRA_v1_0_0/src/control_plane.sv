@@ -5,13 +5,36 @@
     `include "my_interface.vh"
 `endif
 
+//module control_plane(
+//    input logic clk, 
+//    input logic rst,
+//    input logic [phit_size-1:0] wr_data,
+//    output logic [(sz_config*(num_col))-1:0] rd_data_ctrl,
+//    output logic [(dwidth_float*(num_col))-1:0] rd_data_imm,
+//    output logic [(dwidth_float*num_col)-1:0] itr,
+//    // start_loader and done_loader (which is done internally by runtimeLoadTable) are single cycle pulse but start_stream_in and ready_stream_in are handshaking signals
+//    input logic start_loader, // start signal to write to state/config tables and inbound
+//    input logic start_stream_in,
+//    input logic [dwidth_RFadd-1:0] num_entry_config_table, //comes from a header specialized for packet processing 
+//    input logic [dwidth_RFadd-1:0] num_entry_inbound,
+//    output logic ready_stream_in, // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
+//    // 4-phase handshaking for ready_stream_in and start_stream_in. when ready becomes high start should be low and the next cycle after deasserting start, stream-in should send valid data.
+////    output logic done,
+//    output logic wr_en_RF_runtimeLoadTable, //it is drived by runtimeLoadTable
+//    output logic [dwidth_RFadd-1:0] wr_add_RF_runtimeLoadTable // it is drived by runtimeLoadTable
+//    );
+
+
+//endmodule
+// ---------------------------- Old Code ---------------------------- //
+
 module control_plane(
     input logic clk, 
     input logic rst,
     input logic [phit_size-1:0] wr_data,
     output logic [(sz_config*(num_col))-1:0] rd_data_ctrl,
-    output logic [(dwidth_double*(num_col))-1:0] rd_data_imm,
-    output logic [(dwidth_double*num_col)-1:0] itr,
+    output logic [(dwidth_float*(num_col))-1:0] rd_data_imm,
+    output logic [(dwidth_float*num_col)-1:0] itr,
     // start_loader and done_loader (which is done internally by runtimeLoadTable) are single cycle pulse but start_stream_in and ready_stream_in are handshaking signals
     input logic start_loader, // start signal to write to state/config tables and inbound
     input logic start_stream_in,
@@ -53,9 +76,10 @@ module control_plane(
             .rd_add(smart_ptr[(dwidth_RFadd*(i+1))-1:dwidth_RFadd*i]), 
             .wr_add(wr_add), 
             .wr_en(wr_en[i+1]),
-            .wr_data(wr_data),
-            .rd_data_ctrl(rd_data_ctrl[(sz_config*(i+1))-1:sz_config*i]),
-            .rd_data_imm(rd_data_imm[(dwidth_double*(i+1))-1:dwidth_double*i]));
+            .wr_data(wr_data)
+//            .rd_data_ctrl(rd_data_ctrl[(sz_config*(i+1))-1:sz_config*i]),
+//            .rd_data_imm(rd_data_imm[(dwidth_float*(i+1))-1:dwidth_float*i])
+            );
          // same rd_add, wr_add, wr_data but different wr_en
     endgenerate
     
@@ -77,7 +101,7 @@ module control_plane(
                    
     // For now, we discard the other two itr (itr_j, itr_k) and only use itr_k
     // TODO: use a mux and have all three itr forwarded
-    assign itr[dwidth_double-1:0] = {32'b0, itr_k};     
+    assign itr[dwidth_float-1:0] = {32'b0, itr_k};     
     
     
     // Load state table, configuration_tables, and inbound
@@ -100,20 +124,20 @@ module control_plane(
     // For now, lets only pipe itr_k, 
     // in the next version, I will pipe itr_i, itr_j, itr_k and I need a mux at each stage to select which itr I need, also I need a field in the config table to tell me which itr do I need to select
     // TODO: you can have a for loop here
-    register_pipe #(.width(dwidth_double), .numPipeStage(latencyPEA)) 
-        register_pipe_inst0(itr[dwidth_double-1:0], clk, rst, itr[(2*dwidth_double)-1:dwidth_double]);
+    register_pipe #(.width(dwidth_float), .numPipeStage(latencyPEA)) 
+        register_pipe_inst0(itr[dwidth_float-1:0], clk, rst, itr[(2*dwidth_float)-1:dwidth_float]);
         
-    register_pipe #(.width(dwidth_double), .numPipeStage(latencyPEA)) 
-        register_pipe_inst1(itr[(2*dwidth_double)-1:dwidth_double], clk, rst, itr[(3*dwidth_double)-1:2*dwidth_double]);
+    register_pipe #(.width(dwidth_float), .numPipeStage(latencyPEA)) 
+        register_pipe_inst1(itr[(2*dwidth_float)-1:dwidth_float], clk, rst, itr[(3*dwidth_float)-1:2*dwidth_float]);
  
-    register_pipe #(.width(dwidth_double), .numPipeStage(latencyPEB)) 
-        register_pipe_inst2(itr[(3*dwidth_double)-1:2*dwidth_double], clk, rst, itr[(4*dwidth_double)-1:3*dwidth_double]);       
+    register_pipe #(.width(dwidth_float), .numPipeStage(latencyPEB)) 
+        register_pipe_inst2(itr[(3*dwidth_float)-1:2*dwidth_float], clk, rst, itr[(4*dwidth_float)-1:3*dwidth_float]);       
         
-    register_pipe #(.width(dwidth_double), .numPipeStage(latencyPEC)) 
-        register_pipe_inst3(itr[(4*dwidth_double)-1:3*dwidth_double], clk, rst, itr[(5*dwidth_double)-1:4*dwidth_double]);     
+    register_pipe #(.width(dwidth_float), .numPipeStage(latencyPEC)) 
+        register_pipe_inst3(itr[(4*dwidth_float)-1:3*dwidth_float], clk, rst, itr[(5*dwidth_float)-1:4*dwidth_float]);     
      
-    register_pipe #(.width(dwidth_double), .numPipeStage(latencyPEC)) 
-        register_pipe_inst4(itr[(5*dwidth_double)-1:4*dwidth_double], clk, rst, itr[(6*dwidth_double)-1:5*dwidth_double]);  
+    register_pipe #(.width(dwidth_float), .numPipeStage(latencyPEC)) 
+        register_pipe_inst4(itr[(5*dwidth_float)-1:4*dwidth_float], clk, rst, itr[(6*dwidth_float)-1:5*dwidth_float]);  
         
     //register_pipe for smart_ptr
     register_pipe #(.width(dwidth_RFadd), .numPipeStage(latencyPEA)) 
