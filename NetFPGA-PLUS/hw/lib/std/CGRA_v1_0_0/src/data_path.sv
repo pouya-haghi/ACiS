@@ -6,46 +6,44 @@
 `endif
 
 module data_path(
-    input logic done_loader,
-    input logic [(dwidth_inst*num_col)-1:0] instr, // vector instruction
-//    input logic [((num_col)*dwidth_float)-1:0] imm,
-//    input logic [(phit_size*num_col)-1:0] rdata_config_table,
-//    input logic [num_col-1:0] tvalid_config_table, // in future release it should be [(SIMD_degree*num_col)-1:0] (for now, I only support vector not scalar)
-    input logic clk,
-    input logic rst,
+    input  logic                                done_loader,
+    input  logic [(dwidth_inst*num_col)-1:0]    instr, // vector instruction
+    input  logic                                clk,
+    input  logic                                rst,
     // stream
-    input logic [phit_size-1:0] tdata_stream_in,
-    input logic [SIMD_degree-1:0] tvalid_stream_in,
-    output logic [SIMD_degree-1:0] tready_stream_in,
-    output logic [phit_size-1:0] tdata_stream_out,
-    output logic [SIMD_degree-1:0] tvalid_stream_out,
-    input logic [SIMD_degree-1:0] tready_stream_out,
+    input  logic [phit_size-1:0]                tdata_stream_in,
+    input  logic [SIMD_degree-1:0]              tvalid_stream_in,
+    output logic [SIMD_degree-1:0]              tready_stream_in,
+    output logic [phit_size-1:0]                tdata_stream_out,
+    output logic [SIMD_degree-1:0]              tvalid_stream_out,
+    input  logic [SIMD_degree-1:0]              tready_stream_out,
     // AXI read
-    output logic [(dwidth_aximm*num_col)-1:0] araddr_HBM,
-    input logic [num_col-1:0] arready_HBM,
-    input logic [num_col-1:0] rvalid_HBM,
-    input logic [(phit_size*num_col)-1:0] rdata_HBM,
-    output logic [num_col-1:0] rready_HBM,
-    output logic [num_col-1:0] arvalid_HBM,
-    output logic [(8*num_col)-1:0] arlen_HBM,
-    input logic [num_col-1:0] rlast_HBM,
+    output logic [(dwidth_aximm*num_col)-1:0]   araddr_HBM,
+    input  logic [num_col-1:0]                  arready_HBM,
+    input  logic [num_col-1:0]                  rvalid_HBM,
+    input  logic [(phit_size*num_col)-1:0]      rdata_HBM,
+    output logic [num_col-1:0]                  rready_HBM,
+    output logic [num_col-1:0]                  arvalid_HBM,
+    output logic [(8*num_col)-1:0]              arlen_HBM,
+    input  logic [num_col-1:0]                  rlast_HBM,
     // AXI write
-    output logic [num_col-1:0] wvalid_HBM,
-    input logic [num_col-1:0] wready_HBM,
-    output logic [num_col-1:0] awvalid_HBM,
-    output logic [(num_col*8)-1:0] awlen_HBM,
-    output logic [(num_col*phit_size)-1:0] wdata_HBM,
-    output logic [(num_col*(phit_size/8))-1:0] wstrb_HBM,
-    output logic [num_col-1:0] wlast_HBM,
-    input logic [num_col-1:0] bvalid_HBM,
-    output logic [num_col-1:0] bready_HBM,
-    output logic [(dwidth_aximm*num_col)-1:0] awaddr_HBM,
-    input logic [num_col-1:0] awready_HBM,
-    output logic [num_col-1:0] clken_PC,
-    output logic [num_col-1:0] load_PC,
-    output logic [num_col-1:0] incr_PC,
-    output logic [(num_col*12)-1:0] load_value_PC,
-    input logic [dwidth_int-1:0] cycle_register
+    output logic [num_col-1:0]                  wvalid_HBM,
+    input  logic [num_col-1:0]                  wready_HBM,
+    output logic [num_col-1:0]                  awvalid_HBM,
+    output logic [(num_col*8)-1:0]              awlen_HBM,
+    output logic [(num_col*phit_size)-1:0]      wdata_HBM,
+    output logic [(num_col*(phit_size/8))-1:0]  wstrb_HBM,
+    output logic [num_col-1:0]                  wlast_HBM,
+    input  logic [num_col-1:0]                  bvalid_HBM,
+    output logic [num_col-1:0]                  bready_HBM,
+    output logic [(dwidth_aximm*num_col)-1:0]   awaddr_HBM,
+    input  logic [num_col-1:0]                  awready_HBM,
+    //PC
+    output logic [num_col-1:0]                  clken_PC,
+    output logic [num_col-1:0]                  load_PC,
+    output logic [num_col-1:0]                  incr_PC,
+    output logic [(num_col*12)-1:0]             load_value_PC,
+    input  logic [dwidth_int-1:0]               cycle_register
     );
     
     localparam phitplus = phit_size + SIMD_degree; // bundle {tvalid, tdata}

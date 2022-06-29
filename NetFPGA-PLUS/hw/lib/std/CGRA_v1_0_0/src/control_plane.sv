@@ -10,7 +10,7 @@ module control_plane(
     input logic ap_clk,
     input logic ap_rst_n,
     
-    // Control
+    // Control (AXILite)
     input  logic [dwidth_HBMadd-1:0]        AWADDR    ,
     input  logic                            AWVALID   ,
     input  logic [phit_size-1:0]            WDATA     ,
@@ -45,9 +45,9 @@ module control_plane(
     output logic [dwidth_HBMadd-1:0]        m_axi_araddr             ,
     output logic [8-1:0]                    m_axi_arlen              ,
     output logic                            m_axi_rready             ,
-    output logic [num_col*12-1:0]           PC                       ,
     output logic [dwidth_int-1:0]           cycle_register           ,
-    output logic [(num_col*dwidth_int)-1:0] instr                    
+    output logic [(num_col*dwidth_int)-1:0] instr                    ,
+    output logic                            done_loader
 
     );
 
@@ -108,7 +108,7 @@ rtl_kernel_wizard_0_runtimeLoadTable runtimeLoadTable_inst0(
     .load_PC                (load_PC), //input
     .incr_PC                (incr_PC), //input
     .load_value_PC          (load_value_PC), //input*
-    .ctrl_done              (done_loader), //output
+    .ctrl_done              (ap_done), //output
     .m_axi_arvalid          (m_axi_arvalid), //output
     .m_axi_araddr           (m_axi_araddr), //output*
     .m_axi_arlen            (m_axi_arlen), //output*
@@ -154,7 +154,7 @@ assign ap_done = &ap_done_r;
 // Ready Logic (non-pipelined case)
 assign ap_ready = ap_done;
   
-  
+assign done_loader = ap_done;
   
   
   

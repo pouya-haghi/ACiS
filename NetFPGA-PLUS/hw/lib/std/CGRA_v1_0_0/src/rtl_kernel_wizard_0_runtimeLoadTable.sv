@@ -114,7 +114,6 @@ module rtl_kernel_wizard_0_runtimeLoadTable #(
   input wire [num_col-1:0] load_PC,
   input wire [num_col-1:0] incr_PC,
   input wire [(num_col*12)-1:0] load_value_PC,
-  output wire [(num_col*12)-1:0] PC,
   output wire [dwidth_int-1:0] cycle_register,
   output wire [(num_col*dwidth_int)-1:0] instr
 );
@@ -152,6 +151,7 @@ logic [LP_LOG_BURST_LEN-1:0]              final_burst_len;
 logic                                     single_transaction;
 logic                                     ar_idle = 1'b1;
 logic                                     ar_done;
+logic [(num_col*12)-1:0]                  PC_ptr;
 // AXI Read Address Channel
 logic                                     arxfer;
 logic                                     arvalid_r = 1'b0;
@@ -308,7 +308,7 @@ inst_ar_to_r_transaction_cntr (
         for(i=0; i<num_col; i++) begin
             config_table config_table_inst(
             .clk(aclk), 
-            .rd_add(PC[(dwidth_configadd*(i+1))-1:dwidth_configadd*i]), 
+            .rd_add(PC_ptr[(dwidth_configadd*(i+1))-1:dwidth_configadd*i]), 
             .wr_add(wr_add), 
             .wr_en(wr_en[i] & rxfer), // wr_en[i] & m_axi_rvalid
             .wr_data(m_axi_rdata[((i+1)*dwidth_int)-1:i*dwidth_int]),
@@ -324,7 +324,7 @@ inst_ar_to_r_transaction_cntr (
             .load(load_PC[i]),
             .incr(incr_PC[i]),
             .load_value(load_value_PC[((i+1)*dwidth_configadd)-1:i*dwidth_configadd]), // 12 because we have 12 bits immediate in beq
-            .count(PC[((i+1)*dwidth_configadd)-1:i*dwidth_configadd])
+            .count(PC_ptr[((i+1)*dwidth_configadd)-1:i*dwidth_configadd])
             );
          end
     endgenerate
