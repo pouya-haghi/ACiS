@@ -7,33 +7,31 @@
 module test_top;
     // General I/O                                                           
     reg                      clk                    ;
-    wire                     rst                    ;
+    reg                      rst                    ;
     // --------- Control Plane --------- //
     // Other                          
-    reg  [dwidth_HBMadd-1:0] ctrl_addr_offset       ;               
-    reg  [phit_size-1:0]     ctrl_xfer_size_in_bytes;               
     wire                     interrupt              ;               
                                                     ;                         
     // AXI Lite                                         
     //inputs                                                            
-    reg  [dwidth_HBMadd-1:0] s_axi_control_araddr   ;           
-    reg  [dwidth_HBMadd-1:0] s_axi_control_arvalid  ;           
-    reg                      s_axi_control_awaddr   ;           
-    reg                      s_axi_control_awvalid  ;           
-    reg                      s_axi_control_bready   ;           
-    reg                      s_axi_control_rready   ;           
-    reg  [phit_size-1:0]     s_axi_control_wdata    ;           
-    reg  [phit_size/8-1:0]   s_axi_control_wstrb    ;           
-    reg                      s_axi_control_wvalid   ;           
+    reg  [C_S_AXI_ADDR_WIDTH-1:0]   s_axi_control_araddr   ;           
+    reg                             s_axi_control_arvalid  ;           
+    reg  [C_S_AXI_ADDR_WIDTH-1:0]   s_axi_control_awaddr   ;           
+    reg                             s_axi_control_awvalid  ;           
+    reg                             s_axi_control_bready   ;           
+    reg                             s_axi_control_rready   ;           
+    reg  [C_S_AXI_DATA_WIDTH-1:0]   s_axi_control_wdata    ;           
+    reg  [C_S_AXI_DATA_WIDTH/8-1:0] s_axi_control_wstrb    ;           
+    reg                             s_axi_control_wvalid   ;           
     //output                                                  
-    wire                     s_axi_control_arready  ;           
-    wire                     s_axi_control_awready  ;           
-    wire [1:0]               s_axi_control_bresp    ;           
-    wire                     s_axi_control_bvalid   ;           
-    wire [phit_size-1:0]     s_axi_control_rdata    ;           
-    wire                     s_axi_control_rvalid   ;           
-    wire [1:0]               s_axi_control_rresp    ;           
-    wire                     s_axi_control_wready   ;           
+    wire                          s_axi_control_arready  ;           
+    wire                          s_axi_control_awready  ;           
+    wire [1:0]                    s_axi_control_bresp    ;           
+    wire                          s_axi_control_bvalid   ;           
+    wire [C_S_AXI_DATA_WIDTH-1:0] s_axi_control_rdata    ;           
+    wire                          s_axi_control_rvalid   ;           
+    wire [1:0]                    s_axi_control_rresp    ;           
+    wire                          s_axi_control_wready   ;           
                                                                      
     // AXI MM                                         
     //input                                                          
@@ -104,15 +102,67 @@ module test_top;
     wire                     m02_axi_wlast          ;
     wire [(phit_size/8)-1:0] m02_axi_wstrb          ;
     
+    top top_inst0(.*);    
+    
     always begin
-        
-        
+        clk = 1'b1;
+        #(clk_pd/2);
+        clk = 1'b0;
+        #(clk_pd/2);        
     end
     
     
     initial begin
-    
-    
+        // Reset
+        rst                     = 1'b1;
+        
+        s_axi_control_araddr    <= 5'b0;
+        s_axi_control_arvalid   <= 1'b0;
+        s_axi_control_awaddr    <= 5'b0;
+        s_axi_control_awvalid   <= 1'b0;
+        s_axi_control_bready    <= 1'b0;
+        s_axi_control_rready    <= 1'b0;
+        s_axi_control_wdata     <= 32'b0;
+        s_axi_control_wstrb     <= 4'b0;
+        s_axi_control_wvalid    <= 1'b0;
+        m00_axi_arready         <= 1'b0;
+        m00_axi_rdata           <= 512'b0;
+        m00_axi_rlast           <= 1'b0;
+        m00_axi_rvalid          <= 32'b0;
+        axis00_tdata            <= 512'b0;
+        axis00_tvalid           <= 32'b0;
+        axis01_tready           <= 1'b0;
+        m01_axi_arready         <= 1'b0;
+        m01_axi_awready         <= 1'b0;
+        m01_axi_bvalid          <= 32'b0;
+        m01_axi_rdata           <= 512'b0;
+        m01_axi_rlast           <= 1'b0;
+        m01_axi_rvalid          <= 32'b0;
+        m01_axi_wready          <= 1'b0;
+        m02_axi_arready         <= 1'b0;
+        m02_axi_awready         <= 1'b0;
+        m02_axi_bvalid          <= 32'b0;
+        m02_axi_rdata           <= 512'b0;
+        m02_axi_rlast           <= 1'b0;
+        m02_axi_rvalid          <= 32'b0;
+        m02_axi_wready          <= 1'b0;
+        
+        #40; rst = 1'b0;
+        // trigger ap_start
+        s_axi_control_awaddr <= 5'b0;
+        s_axi_control_awvalid <= 1'b1;
+//        s_axi_control_wvalid <= 1'b0;
+        #80;
+        s_axi_control_awvalid <= 1'b0;
+        s_axi_control_wstrb[0] <= 1'b1;
+        s_axi_control_wdata[0] <= 1'b1;
+        s_axi_control_wvalid <= 1'b1;
+        #40;
+        // de-assert signals to release ctrl_start
+        s_axi_control_wstrb[0] <= 1'b0;
+        s_axi_control_wdata[0] <= 1'b0;
+        s_axi_control_wvalid <= 1'b0;
+        #100;
     $finish;
     end
 

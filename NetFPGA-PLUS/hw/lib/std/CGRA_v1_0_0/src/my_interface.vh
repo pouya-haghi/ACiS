@@ -20,6 +20,8 @@ parameter latencyPEB = 4;
 parameter latencyPEC = 8;
 parameter latencyPED = 57;
 parameter total_instr = 1024;
+parameter C_S_AXI_ADDR_WIDTH = 5;
+parameter C_S_AXI_DATA_WIDTH = 32;
 
 function integer f_max (
   input integer a,

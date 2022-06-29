@@ -13,9 +13,9 @@ module test_control_plane;
     reg [dwidth_RFadd-1:0] num_entry_config_table; //comes from a header specialized for packet processing 
     reg [dwidth_RFadd-1:0] num_entry_inbound;
     wire [(sz_config*(num_col))-1:0] rd_data_ctrl;
-    wire [(dwidth_double*(num_col))-1:0] rd_data_imm;
+    wire [(dwidth_float*(num_col))-1:0] rd_data_imm;
 //    wire [entry_sz_state-1:0] rd_data_state;
-    wire [(dwidth_double*num_col)-1:0] itr;
+    wire [(dwidth_float*num_col)-1:0] itr;
     wire ready_stream_in; // I have to wait (backpressure to stream_in) if start_inbound has not been asserted yet
 //    wire done;
     wire wr_en_RF_runtimeLoadTable;

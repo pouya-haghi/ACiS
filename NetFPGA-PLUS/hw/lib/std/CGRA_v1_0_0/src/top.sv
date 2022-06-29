@@ -13,32 +13,30 @@
 module top(
     // General I/O
     input  logic                     clk,
-    output logic                     rst,
+    input  logic                     rst,
     // Control Plane other 
-    input  logic [dwidth_HBMadd-1:0] ctrl_addr_offset       ,
-    input  logic [phit_size-1:0]     ctrl_xfer_size_in_bytes,
     output logic                     interrupt              ,
     
     // AXI Lite Control Plane                               
     //inputs                                                
-    input  logic [dwidth_HBMadd-1:0] s_axi_control_araddr  ,
-    input  logic [dwidth_HBMadd-1:0] s_axi_control_arvalid ,
-    input  logic                     s_axi_control_awaddr  ,
-    input  logic                     s_axi_control_awvalid ,
-    input  logic                     s_axi_control_bready  ,
-    input  logic                     s_axi_control_rready  ,
-    input  logic [phit_size-1:0]     s_axi_control_wdata   ,
-    input  logic [phit_size/8-1:0]   s_axi_control_wstrb   ,
-    input  logic                     s_axi_control_wvalid  ,
+    input  logic [C_S_AXI_ADDR_WIDTH-1:0]   s_axi_control_araddr  ,
+    input  logic                            s_axi_control_arvalid ,
+    input  logic [C_S_AXI_ADDR_WIDTH-1:0]   s_axi_control_awaddr  ,
+    input  logic                            s_axi_control_awvalid ,
+    input  logic                            s_axi_control_bready  ,
+    input  logic                            s_axi_control_rready  ,
+    input  logic [C_S_AXI_DATA_WIDTH-1:0]   s_axi_control_wdata   ,
+    input  logic [C_S_AXI_DATA_WIDTH/8-1:0] s_axi_control_wstrb   ,
+    input  logic                            s_axi_control_wvalid  ,
     //output                                               ,
-    output logic                     s_axi_control_arready ,
-    output logic                     s_axi_control_awready ,
-    output logic [1:0]               s_axi_control_bresp   ,
-    output logic                     s_axi_control_bvalid  ,
-    output logic [phit_size-1:0]     s_axi_control_rdata   ,
-    output logic                     s_axi_control_rvalid  ,
-    output logic [1:0]               s_axi_control_rresp   ,
-    output logic                     s_axi_control_wready  ,
+    output logic                            s_axi_control_arready ,
+    output logic                            s_axi_control_awready ,
+    output logic [1:0]                      s_axi_control_bresp   ,
+    output logic                            s_axi_control_bvalid  ,
+    output logic [C_S_AXI_DATA_WIDTH-1:0]   s_axi_control_rdata   ,
+    output logic                            s_axi_control_rvalid  ,
+    output logic [1:0]                      s_axi_control_rresp   ,
+    output logic                            s_axi_control_wready  ,
     
     // AXI MM Control Plane                         
     //input                                         
@@ -135,15 +133,37 @@ module top(
 //    ...
     
     );
-    
+    // Internal Signals
     logic [(num_col*dwidth_int)-1:0] instr;
     logic done_loader;
-    logic clken_PC;
-    logic load_PC;
+    logic [num_col-1:0] clken_PC;
+    logic [num_col-1:0] load_PC;
+    logic [num_col-1:0] incr_PC;
     logic [num_col*12-1:0] load_value_PC;
-    logic cycle_register;
+    logic [dwidth_int-1:0] cycle_register;
 
-
+    // Data Path concatinated signals       
+    //input
+    logic [num_col-1:0]                 data_arready  = {m02_axi_arready , m01_axi_arready};
+    logic [num_col-1:0]                 data_awready  = {m02_axi_awready , m01_axi_awready};
+    logic [num_col-1:0]                 data_bvalid   = {m02_axi_bvalid  , m01_axi_bvalid };
+    logic [(phit_size*num_col)-1:0]     data_rdata    = {m02_axi_rdata   , m01_axi_rdata  };
+    logic [num_col-1:0]                 data_rlast    = {m02_axi_rlast   , m01_axi_rlast  };
+    logic [num_col-1:0]                 data_rvalid   = {m02_axi_rvalid  , m01_axi_rvalid };
+    logic [num_col-1:0]                 data_wready   = {m02_axi_wready  , m01_axi_wready };
+    //outputs
+    logic [(dwidth_aximm*num_col)-1:0]  data_araddr  ; 
+    logic [(num_col*8)-1:0]             data_arlen   ; 
+    logic [num_col-1:0]                 data_arvalid ; 
+    logic [(dwidth_aximm*num_col)-1:0]  data_awaddr  ; 
+    logic [(num_col*8)-1:0]             data_awlen   ; 
+    logic [num_col-1:0]                 data_awvalid ; 
+    logic [num_col-1:0]                 data_bready  ; 
+    logic [num_col-1:0]                 data_rready  ; 
+    logic [num_col-1:0]                 data_wvalid  ; 
+    logic [(num_col*phit_size)-1:0]     data_wdata   ; 
+    logic [num_col-1:0]                 data_wlast   ; 
+    logic [(num_col*(phit_size/8))-1:0] data_wstrb   ; 
 
 
 
@@ -160,9 +180,7 @@ module top(
         .BREADY                     (s_axi_control_bready),               
         .ARADDR                     (s_axi_control_araddr),               
         .ARVALID                    (s_axi_control_arvalid),               
-        .RREADY                     (s_axi_control_rready),                
-        .ctrl_addr_offset           (ctrl_addr_offset),
-        .ctrl_xfer_size_in_bytes    (ctrl_xfer_size_in_bytes),
+        .RREADY                     (s_axi_control_rready),    
         .m_axi_arready              (m00_axi_arready),
         .m_axi_rvalid               (m00_axi_rvalid),
         .m_axi_rdata                (m00_axi_rdata),
@@ -207,9 +225,9 @@ module top(
         .awready_HBM                (data_awready),
         .cycle_register             (cycle_register),
         //outputs
-        .tready_stream_in           (axis01_tdata),
-        .tdata_stream_out           (axis01_tvalid),
-        .tvalid_stream_out          (axis00_tready),
+        .tready_stream_in           (axis00_tready),
+        .tdata_stream_out           (axis01_tdata),
+        .tvalid_stream_out          (axis01_tvalid),
         .araddr_HBM                 (data_araddr),
         .rready_HBM                 (data_rready),
         .arvalid_HBM                (data_arvalid),
@@ -226,30 +244,44 @@ module top(
         .load_PC                    (load_PC),
         .incr_PC                    (incr_PC),
         .load_value_PC              (load_value_PC));
+    
+    
+    assign m02_axi_araddr  = data_araddr [dwidth_aximm*2-1 : dwidth_aximm]; 
+    assign m02_axi_arlen   = data_arlen  [15               : 8           ]; 
+    assign m02_axi_arvalid = data_arvalid[1                              ]; 
+    assign m02_axi_awaddr  = data_awaddr [dwidth_aximm*2-1 : dwidth_aximm]; 
+    assign m02_axi_awlen   = data_awlen  [15               : 8           ]; 
+    assign m02_axi_awvalid = data_awvalid[1                              ]; 
+    assign m02_axi_bready  = data_bready [1                              ]; 
+    assign m02_axi_rready  = data_rready [1                              ]; 
+    assign m02_axi_wvalid  = data_wvalid [1                              ]; 
+    assign m02_axi_wdata   = data_wdata  [2*phit_size-1    : phit_size   ]; 
+    assign m02_axi_wlast   = data_wlast  [1                              ]; 
+    assign m02_axi_wstrb   = data_wstrb  [phit_size/4-1    : phit_size/8 ]; 
+    
+    
+    assign m01_axi_araddr  = data_araddr [dwidth_aximm-1   : 0           ]; 
+    assign m01_axi_arlen   = data_arlen  [7                : 0           ]; 
+    assign m01_axi_arvalid = data_arvalid[0                              ]; 
+    assign m01_axi_awaddr  = data_awaddr [dwidth_aximm-1   : 0           ]; 
+    assign m01_axi_awlen   = data_awlen  [7                : 0           ]; 
+    assign m01_axi_awvalid = data_awvalid[0                              ]; 
+    assign m01_axi_bready  = data_bready [0                              ]; 
+    assign m01_axi_rready  = data_rready [0                              ]; 
+    assign m01_axi_wvalid  = data_wvalid [0                              ]; 
+    assign m01_axi_wdata   = data_wdata  [phit_size-1      : 0           ]; 
+    assign m01_axi_wlast   = data_wlast  [0                              ]; 
+    assign m01_axi_wstrb   = data_wstrb  [phit_size/8 -1   : 0           ]; 
         
-   
-    // Data Path concatinated signals       
-    //input
-    logic [num_col-1:0]                 data_arready  = {m02_axi_arready , m01_axi_arready};
-    logic [num_col-1:0]                 data_awready  = {m02_axi_awready , m01_axi_awready};
-    logic [num_col-1:0]                 data_bvalid   = {m02_axi_bvalid  , m01_axi_bvalid };
-    logic [(phit_size*num_col)-1:0]     data_rdata    = {m02_axi_rdata   , m01_axi_rdata  };
-    logic [num_col-1:0]                 data_rlast    = {m02_axi_rlast   , m01_axi_rlast  };
-    logic [num_col-1:0]                 data_rvalid   = {m02_axi_rvalid  , m01_axi_rvalid };
-    logic [num_col-1:0]                 data_wready   = {m02_axi_wready  , m01_axi_wready };
-    //output
-    logic [(dwidth_aximm*num_col)-1:0]  data_araddr   = {m02_axi_araddr  , m01_axi_araddr };
-    logic [(num_col*8)-1:0]             data_arlen    = {m02_axi_arlen   , m01_axi_arlen  };
-    logic [num_col-1:0]                 data_arvalid  = {m02_axi_arvalid , m01_axi_arvalid};
-    logic [(dwidth_aximm*num_col)-1:0]  data_awaddr   = {m02_axi_awaddr  , m01_axi_awaddr };
-    logic [(num_col*8)-1:0]             data_awlen    = {m02_axi_awlen   , m01_axi_awlen  };
-    logic [num_col-1:0]                 data_awvalid  = {m02_axi_awvalid , m01_axi_awvalid};
-    logic [num_col-1:0]                 data_bready   = {m02_axi_bready  , m01_axi_bready };
-    logic [num_col-1:0]                 data_rready   = {m02_axi_rready  , m01_axi_rready };
-    logic [num_col-1:0]                 data_wvalid   = {m02_axi_wvalid  , m01_axi_wvalid };
-    logic [(num_col*phit_size)-1:0]     data_wdata    = {m02_axi_wdata   , m01_axi_wdata  };
-    logic [num_col-1:0]                 data_wlast    = {m02_axi_wlast   , m01_axi_wlast  };
-    logic [(num_col*(phit_size/8))-1:0] data_wstrb    = {m02_axi_wstrb   , m01_axi_wstrb  };
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 
 endmodule

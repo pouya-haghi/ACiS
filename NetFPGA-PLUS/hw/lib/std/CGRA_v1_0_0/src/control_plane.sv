@@ -11,13 +11,13 @@ module control_plane(
     input logic ap_rst_n,
     
     // Control (AXILite)
-    input  logic [dwidth_HBMadd-1:0]        AWADDR    ,
+    input  logic [C_S_AXI_ADDR_WIDTH-1:0]   AWADDR    ,
     input  logic                            AWVALID   ,
-    input  logic [phit_size-1:0]            WDATA     ,
-    input  logic [phit_size/8-1:0]          WSTRB     ,
+    input  logic [C_S_AXI_DATA_WIDTH-1:0]   WDATA     ,
+    input  logic [C_S_AXI_DATA_WIDTH/8-1:0] WSTRB     ,
     input  logic                            WVALID    ,
     input  logic                            BREADY    ,
-    input  logic [dwidth_HBMadd-1:0]        ARADDR    ,
+    input  logic [C_S_AXI_ADDR_WIDTH -1:0]  ARADDR    ,
     input  logic                            ARVALID   ,
     input  logic                            RREADY    ,
     output logic                            AWREADY   ,
@@ -25,14 +25,14 @@ module control_plane(
     output logic [1:0]                      BRESP     ,
     output logic                            BVALID    ,
     output logic                            ARREADY   ,
-    output logic [phit_size-1:0]            RDATA     ,
+    output logic [C_S_AXI_DATA_WIDTH-1:0]   RDATA     ,
     output logic [1:0]                      RRESP     ,
     output logic                            RVALID    ,
     output logic                            interrupt ,
     
     // runtimeLoadTable
-    input  logic [dwidth_HBMadd-1:0]        ctrl_addr_offset         ,
-    input  logic [phit_size-1:0]            ctrl_xfer_size_in_bytes  ,
+//    input  logic [dwidth_HBMadd-1:0]        ctrl_addr_offset         ,
+//    input  logic [63:0]                     ctrl_xfer_size_in_bytes  ,
     input  logic                            m_axi_arready            ,
     input  logic                            m_axi_rvalid             ,
     input  logic [phit_size-1:0]            m_axi_rdata              ,
@@ -69,7 +69,7 @@ logic [63:0] xfer_size_bytes = total_instr;
 rtl_kernel_wizard_0_control_s_axi control_s_axi_inst0 (
     .ACLK      (ap_clk), //input
     .ARESET    (areset), //input
-    .ACLK_EN   (clken_PC), //input
+    .ACLK_EN   (1'b1  ), //input
     .AWADDR    (AWADDR  ), //input*
     .AWVALID   (AWVALID ), //input
     .WDATA     (WDATA   ), //input*
@@ -113,7 +113,6 @@ rtl_kernel_wizard_0_runtimeLoadTable runtimeLoadTable_inst0(
     .m_axi_araddr           (m_axi_araddr), //output*
     .m_axi_arlen            (m_axi_arlen), //output*
     .m_axi_rready           (m_axi_rready), //output
-    .PC                     (PC), //output
     .cycle_register         (cycle_register), //output
     .instr                  (instr));//output
   
