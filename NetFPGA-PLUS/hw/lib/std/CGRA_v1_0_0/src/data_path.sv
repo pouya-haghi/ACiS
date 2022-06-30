@@ -12,11 +12,16 @@ module data_path(
     input  logic                                rst,
     // stream
     input  logic [phit_size-1:0]                tdata_stream_in,
-    input  logic [SIMD_degree-1:0]              tvalid_stream_in,
-    output logic [SIMD_degree-1:0]              tready_stream_in,
+    input  logic                                tvalid_stream_in,
+    output logic                                tready_stream_in,
+    input  logic                                tlast_stream_in,
+    input  logic [phit_size/8-1:0]              tkeep_stream_in,
+    
     output logic [phit_size-1:0]                tdata_stream_out,
-    output logic [SIMD_degree-1:0]              tvalid_stream_out,
-    input  logic [SIMD_degree-1:0]              tready_stream_out,
+    output logic                                tvalid_stream_out,
+    input  logic                                tready_stream_out,
+    output logic                                tlast_stream_out,
+    output logic [phit_size/8-1:0]              tkeep_stream_out,
     // AXI read
     output logic [(dwidth_aximm*num_col)-1:0]   araddr_HBM,
     input  logic [num_col-1:0]                  arready_HBM,
@@ -61,7 +66,6 @@ module data_path(
     logic [num_col-1:0] is_not_vect;
     logic [(12*num_col)-1:0] branch_immediate; 
     logic [(dwidth_int*num_col)-1:0] R_immediate;
-//    logic [num_col-1:0] stall;
     logic [(dwidth_int*num_col)-1:0] rddata1_RF_scalar;
     logic [(dwidth_int*num_col)-1:0] rddata2_RF_scalar;
     logic [(dwidth_int*num_col)-1:0] wdata_RF_scalar;
@@ -70,12 +74,10 @@ module data_path(
     logic [num_col-1:0] done_auto_incr;
     logic [phit_size-1:0] FIFO_out_tdata;
     logic [SIMD_degree-1:0] FIFO_out_tvalid;
-//    logic [SIMD_degree-1:0] FIFO_out_tvalid_t;
     logic [num_col-1:0] wen_RF_scalar;
     logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_vsetivli, is_bne, is_csr, is_lui;
     logic [num_col-1:0] stall_HBM;
     logic [num_col-1:0] stall_rd_autovect, stall_wr_autovect;
-//    logic [num_col-1:0] valid_RF_en;
     logic [num_col-1:0] read_done_HBM, write_done_HBM; // I dont need them for now as done signal from auto_incr_vect module gives me the right answer
     logic [num_col-1:0] flag_neq;
     logic t_stall;
@@ -83,28 +85,64 @@ module data_path(
     logic [num_col-1:0] user_rvalid_HBM, user_wready_HBM;
     logic [num_col-1:0] valid_PE_i, valid_PE_o;
     
+    // Internal Stream in/out
+    logic [SIMD_degree-1:0] tvalid_stream_in_lane  ;
+    logic [SIMD_degree-1:0] tready_stream_in_lane  ; 
+    logic [SIMD_degree-1:0] tvalid_stream_out_lane ; 
+    
+    assign tready_stream_in = &tready_stream_in_lane;
+    assign tvalid_stream_in = &tvalid_stream_in_lane;
+    
+    
+    
     // This part is ISA-specific:
     logic [num_col-1:0] ctrl_i_mux2_tvalid; //generated internally based on op
     logic [(dwidth_RFadd*num_col)-1:0] ITR;
     logic [num_col-1:0] wen_ITR;
     logic [SIMD_degree-1:0] full_FIFO_in, empty_FIFO_in, full_FIFO_out, empty_FIFO_out;
     
+    // FSM for done_loader
+    logic done_steady;
+    logic curr_state_done_loader, next_state_done_loader;
+    localparam steady_off = 1'b0;
+    localparam steady_on  = 1'b1;
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            curr_state_done_loader <= steady_off;
+        end
+        else begin
+            curr_state_done_loader <= next_state_done_loader;
+        end
+    end
+
+    always_comb begin
+        case(curr_state_done_loader)
+            steady_off: next_state_done_loader = (done_loader) ? steady_on : steady_off;
+            steady_on: next_state_done_loader = steady_on; //TODO
+            default: next_state_done_loader = steady_off;
+        endcase
+    end
+    assign done_steady = curr_state_done_loader;
+    
     
     genvar i;
     generate 
         for (i=0; i<SIMD_degree; i++) begin
+            // Stream in/out signals expansion and condensation
+            assign tvalid_stream_in_lane[i] = &tkeep_stream_in[(i*4)+3:i*4]; 
+             
             sync_FIFO #(dwidth_float+1, 16) sync_FIFO_inst0(
             .clk(clk),
             .rst(rst),
-            .push(tvalid_stream_in[i] && !full_FIFO_in[i]),
+            .push(tvalid_stream_in_lane[i] && !full_FIFO_in[i]),
             .pop(!t_stall && !empty_FIFO_in[i]), 
-            .din({tvalid_stream_in[i], tdata_stream_in[((i+1)*dwidth_float)-1:i*dwidth_float]}),
+            .din({tvalid_stream_in_lane[i], tdata_stream_in[((i+1)*dwidth_float)-1:i*dwidth_float]}),
             .dout({FIFO_out_tvalid[i], FIFO_out_tdata[((i+1)*dwidth_float)-1:i*dwidth_float]}),
             .empty(empty_FIFO_in[i]),
             .full(full_FIFO_in[i])
             );
             
-            assign tready_stream_in[i] = !full_FIFO_in[i] & done_loader & !t_stall;
+            assign tready_stream_in_lane[i] = !full_FIFO_in[i] & done_steady & !t_stall;
         end
     endgenerate
     
@@ -153,7 +191,7 @@ module data_path(
              );
              
              // Register pipeline - delay VD into auto_incr_vect vw
-             register_pipe #(dwidth_RFadd*num_col, latencyPEC*2) rp_inst0(clk,rst, vw_addr,vw_addr_d);
+             register_pipe #(dwidth_RFadd*num_col, latencyPEC) rp_inst0(clk,rst, vw_addr,vw_addr_d);
              
              auto_incr_vect auto_incr_vect_inst(
              .clk(clk), 
@@ -283,6 +321,7 @@ module data_path(
               .is_bne(is_bne[j]),
               .flag_neq(flag_neq[j]),
               .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
+              .done_steady(done_steady),
               .clken_PC(clken_PC[j]),
               .load_PC(load_PC[j]),
               .incr_PC(incr_PC[j]),
@@ -317,20 +356,25 @@ module data_path(
         end
     endgenerate
 
- generate
+    generate
         for (i=0; i<SIMD_degree; i++) begin
+            assign tkeep_stream_out[i*4  ] = tvalid_stream_out_lane[i];
+            assign tkeep_stream_out[i*4+1] = tvalid_stream_out_lane[i];
+            assign tkeep_stream_out[i*4+2] = tvalid_stream_out_lane[i];
+            assign tkeep_stream_out[i*4+3] = tvalid_stream_out_lane[i];
+            
             sync_FIFO #(dwidth_float+1, 16) sync_FIFO_inst1(
             .clk(clk),
             .rst(rst),
-            .push(tvalid_stream_in[i] && is_vstreamout[num_col-1] && !full_FIFO_out[i]),
-            .pop(tready_stream_out[i] && !empty_FIFO_out[i]),
+            .push(o2_tvalid1_PE_typeC[(SIMD_degree*(num_col-1))+i] && is_vstreamout[num_col-1] && !full_FIFO_out[i]), // fixing a bug: instead of tvalid_stream_in[i], we use last_PE valid signal
+            .pop(tready_stream_out && !empty_FIFO_out[i]),
             .din({o2_tvalid1_PE_typeC[(SIMD_degree*(num_col-1))+i], o2_PE_typeC[(phit_size*(num_col-1))+(dwidth_float*(i+1))-1:dwidth_float*i]}),
-            .dout({tvalid_stream_out[i], tdata_stream_out[((i+1)*dwidth_float)-1:i*dwidth_float]}),
+            .dout({tvalid_stream_out_lane[i], tdata_stream_out[((i+1)*dwidth_float)-1:i*dwidth_float]}),
             .empty(empty_FIFO_out[i]),
             .full(full_FIFO_out[i])
             );
 
         end
     endgenerate
-
+    
 endmodule

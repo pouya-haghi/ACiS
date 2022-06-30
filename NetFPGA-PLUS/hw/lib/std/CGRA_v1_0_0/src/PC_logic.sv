@@ -11,6 +11,7 @@ module PC_logic(
     input logic is_bne,
     input logic flag_neq,
     input logic [11:0] branch_immediate,
+    input logic done_steady,
     output logic clken_PC,
     output logic load_PC,
     output logic incr_PC,
@@ -20,7 +21,7 @@ logic is_vect;
 
 assign is_vect = !is_not_vect;
 
-assign clken_PC = !(is_vect & !done_auto_incr); 
+assign clken_PC = !(is_vect & !done_auto_incr)&done_steady; 
 assign load_PC = (is_not_vect & is_bne & flag_neq)? 1'b1: 1'b0;
 assign incr_PC = ((is_vect & done_auto_incr) || (is_not_vect & !(is_bne & flag_neq)))? 1'b1: 1'b0;
 assign load_value_PC = branch_immediate;

@@ -12,10 +12,10 @@
 
 module top(
     // General I/O
-    input  logic                     clk,
-    input  logic                     rst,
+    input  logic                     ap_clk,
+    input  logic                     ap_rst_n,
     // Control Plane other 
-    output logic                     interrupt              ,
+    output logic                     interrupt,
     
     // AXI Lite Control Plane                               
     //inputs                                                
@@ -52,14 +52,18 @@ module top(
     
     // Data Path
     // Stream
-    // input
+    // Stream in
     input  logic [phit_size-1:0]     axis00_tdata      ,
-    input  logic [SIMD_degree-1:0]   axis00_tvalid     ,
-    input  logic [SIMD_degree-1:0]   axis01_tready     ,
-    // output
+    input  logic                     axis00_tvalid     ,
+    input  logic                     axis00_tlast     ,
+    output logic                     axis00_tready     ,
+    input  logic [phit_size/8-1:0]   axis00_tkeep     ,
+    // Stream out
     output logic [phit_size-1:0]     axis01_tdata      ,
-    output logic [SIMD_degree-1:0]   axis01_tvalid     ,
-    output logic [SIMD_degree-1:0]   axis00_tready     ,
+    output logic                     axis01_tvalid     ,
+    output logic                     axis01_tlast     ,
+    input  logic                     axis01_tready     ,
+    output logic [phit_size/8-1:0]   axis01_tkeep     ,
     
     // Col 1
     //input
@@ -141,16 +145,26 @@ module top(
     logic [num_col-1:0] incr_PC;
     logic [num_col*12-1:0] load_value_PC;
     logic [dwidth_int-1:0] cycle_register;
+    logic areset;
 
     // Data Path concatinated signals       
     //input
-    logic [num_col-1:0]                 data_arready  = {m02_axi_arready , m01_axi_arready};
-    logic [num_col-1:0]                 data_awready  = {m02_axi_awready , m01_axi_awready};
-    logic [num_col-1:0]                 data_bvalid   = {m02_axi_bvalid  , m01_axi_bvalid };
-    logic [(phit_size*num_col)-1:0]     data_rdata    = {m02_axi_rdata   , m01_axi_rdata  };
-    logic [num_col-1:0]                 data_rlast    = {m02_axi_rlast   , m01_axi_rlast  };
-    logic [num_col-1:0]                 data_rvalid   = {m02_axi_rvalid  , m01_axi_rvalid };
-    logic [num_col-1:0]                 data_wready   = {m02_axi_wready  , m01_axi_wready };
+    logic [num_col-1:0]                 data_arready;
+    logic [num_col-1:0]                 data_awready;
+    logic [num_col-1:0]                 data_bvalid ;
+    logic [(phit_size*num_col)-1:0]     data_rdata  ;
+    logic [num_col-1:0]                 data_rlast  ;
+    logic [num_col-1:0]                 data_rvalid ;
+    logic [num_col-1:0]                 data_wready ;
+    
+    assign data_arready = {m02_axi_arready , m01_axi_arready};
+    assign data_awready = {m02_axi_awready , m01_axi_awready};
+    assign data_bvalid  = {m02_axi_bvalid  , m01_axi_bvalid };
+    assign data_rdata   = {m02_axi_rdata   , m01_axi_rdata  };
+    assign data_rlast   = {m02_axi_rlast   , m01_axi_rlast  };
+    assign data_rvalid  = {m02_axi_rvalid  , m01_axi_rvalid };
+    assign data_wready  = {m02_axi_wready  , m01_axi_wready };
+    
     //outputs
     logic [(dwidth_aximm*num_col)-1:0]  data_araddr  ; 
     logic [(num_col*8)-1:0]             data_arlen   ; 
@@ -166,12 +180,14 @@ module top(
     logic [(num_col*(phit_size/8))-1:0] data_wstrb   ; 
 
 
-
+    always @(posedge ap_clk) begin
+      areset <= ~ap_rst_n;
+    end
     
     control_plane control_plane_inst0(
         //inputs
-        .ap_clk                     (clk),  
-        .ap_rst_n                   (!rst),
+        .ap_clk                     (ap_clk),  
+        .ap_rst_n                   (ap_rst_n),
         .AWADDR                     (s_axi_control_awaddr),               
         .AWVALID                    (s_axi_control_awvalid),               
         .WDATA                      (s_axi_control_wdata),               
@@ -211,11 +227,13 @@ module top(
         //inputs
         .done_loader                (done_loader),
         .instr                      (instr),
-        .clk                        (clk),
-        .rst                        (rst),
+        .clk                        (ap_clk),
+        .rst                        (areset),
         .tdata_stream_in            (axis00_tdata),
         .tvalid_stream_in           (axis00_tvalid),
         .tready_stream_out          (axis01_tready),
+        .tlast_stream_in            (axis00_tlast),
+        .tkeep_stream_in            (axis00_tkeep),
         .arready_HBM                (data_arready),
         .rvalid_HBM                 (data_rvalid),
         .rdata_HBM                  (data_rdata),
@@ -228,6 +246,8 @@ module top(
         .tready_stream_in           (axis00_tready),
         .tdata_stream_out           (axis01_tdata),
         .tvalid_stream_out          (axis01_tvalid),
+        .tlast_stream_out           (axis01_tlast),
+        .tkeep_stream_out           (axis01_tkeep),
         .araddr_HBM                 (data_araddr),
         .rready_HBM                 (data_rready),
         .arvalid_HBM                (data_arvalid),
@@ -273,16 +293,6 @@ module top(
     assign m01_axi_wlast   = data_wlast  [0                              ]; 
     assign m01_axi_wstrb   = data_wstrb  [phit_size/8 -1   : 0           ]; 
         
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
 endmodule
 

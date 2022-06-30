@@ -6,8 +6,8 @@
 
 module test_top;
     // General I/O                                                           
-    reg                      clk                    ;
-    reg                      rst                    ;
+    reg                      ap_clk                    ;
+    reg                      ap_rst_n                    ;
     // --------- Control Plane --------- //
     // Other                          
     wire                     interrupt              ;               
@@ -47,14 +47,18 @@ module test_top;
                                                                 
     // --------- Data Path --------- //
     // Stream                                                   
-    // input                                                    
+    // in                                                    
     reg  [phit_size-1:0]     axis00_tdata           ;           
-    reg  [SIMD_degree-1:0]   axis00_tvalid          ;           
-    reg  [SIMD_degree-1:0]   axis01_tready          ;           
-    // output                                       ;                   
+    reg                      axis00_tvalid          ;           
+    wire                     axis00_tready          ;           
+    reg                      axis00_tlast           ;           
+    reg  [phit_size/8-1:0]   axis00_tkeep           ;           
+    // out                                       ;                   
     wire [phit_size-1:0]     axis01_tdata           ;           
-    wire [SIMD_degree-1:0]   axis01_tvalid          ;           
-    wire [SIMD_degree-1:0]   axis00_tready          ;           
+    wire                     axis01_tvalid          ;           
+    reg                      axis01_tready          ;           
+    wire                     axis01_tlast          ;           
+    wire [phit_size/8-1:0]   axis01_tkeep          ;           
                                                                        
     // AXI Col 1                                                           
     //input                                                            
@@ -105,16 +109,17 @@ module test_top;
     top top_inst0(.*);    
     
     always begin
-        clk = 1'b1;
+        ap_clk = 1'b1;
         #(clk_pd/2);
-        clk = 1'b0;
+        ap_clk = 1'b0;
         #(clk_pd/2);        
     end
     
     
     initial begin
         // Reset
-        rst                     = 1'b1;
+        ap_rst_n                     = 1'b1; #20;
+        ap_rst_n                     = 1'b0;
         
         s_axi_control_araddr    <= 5'b0;
         s_axi_control_arvalid   <= 1'b0;
@@ -128,30 +133,31 @@ module test_top;
         m00_axi_arready         <= 1'b0;
         m00_axi_rdata           <= 512'b0;
         m00_axi_rlast           <= 1'b0;
-        m00_axi_rvalid          <= 32'b0;
+        m00_axi_rvalid          <= 1'b0;
         axis00_tdata            <= 512'b0;
-        axis00_tvalid           <= 32'b0;
+        axis00_tvalid           <= 1'b0;
         axis01_tready           <= 1'b0;
+        axis00_tlast            <= 1'b0;
+        axis00_tkeep            <= 64'b0;
         m01_axi_arready         <= 1'b0;
         m01_axi_awready         <= 1'b0;
-        m01_axi_bvalid          <= 32'b0;
+        m01_axi_bvalid          <= 1'b0;
         m01_axi_rdata           <= 512'b0;
         m01_axi_rlast           <= 1'b0;
-        m01_axi_rvalid          <= 32'b0;
+        m01_axi_rvalid          <= 1'b0;
         m01_axi_wready          <= 1'b0;
         m02_axi_arready         <= 1'b0;
         m02_axi_awready         <= 1'b0;
-        m02_axi_bvalid          <= 32'b0;
+        m02_axi_bvalid          <= 1'b0;
         m02_axi_rdata           <= 512'b0;
         m02_axi_rlast           <= 1'b0;
-        m02_axi_rvalid          <= 32'b0;
+        m02_axi_rvalid          <= 1'b0;
         m02_axi_wready          <= 1'b0;
         
-        #40; rst = 1'b0;
+        #40; ap_rst_n = 1'b1;
         // trigger ap_start
         s_axi_control_awaddr <= 5'b0;
         s_axi_control_awvalid <= 1'b1;
-//        s_axi_control_wvalid <= 1'b0;
         #80;
         s_axi_control_awvalid <= 1'b0;
         s_axi_control_wstrb[0] <= 1'b1;
@@ -162,6 +168,39 @@ module test_top;
         s_axi_control_wstrb[0] <= 1'b0;
         s_axi_control_wdata[0] <= 1'b0;
         s_axi_control_wvalid <= 1'b0;
+        
+        #60; //ctrl start goes high and sample offset and size, arready is high, HBM latency
+        
+        // Start instructions write
+        m00_axi_rvalid = 1'b1;
+        //start instructions
+        //  column 1
+        //      Scalar only for now
+        m00_axi_rdata <= {480'b0, 2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; #clk_pd; //vsetivli
+        m00_axi_rdata <= {480'b0, 20'h12345, 5'h1, 7'h37}; #clk_pd; //lui
+        m00_axi_rdata <= {480'b0, 12'h567, 5'h1, 3'b000, 5'h1, 7'h13}; #clk_pd; //addi, out=12345567
+        m00_axi_rdata <= {480'b0, 12'h111, 5'h1, 3'b000, 5'h2, 7'h13}; #clk_pd; //addi, out=12345678
+        m00_axi_rdata <= {480'b0, 7'h0, 5'h1, 5'h2, 3'b000, 5'h3, 7'h33}; #clk_pd; //add, out=2468abdf
+        
+        m00_axi_rdata <= {480'b0, 12'h0, 5'h0, 3'b000, 5'h0, 7'h13}; #clk_pd; //nop
+        m00_axi_rdata <= {480'b0, 12'h0, 5'h0, 3'b000, 5'h0, 7'h13}; #clk_pd; //nop
+        m00_axi_rdata <= {480'b0, 12'h0, 5'h0, 3'b000, 5'h0, 7'h13}; #clk_pd; //nop
+        
+        //  column 2
+        //      Scalar only for now
+        m00_axi_rdata <= {480'b0, 2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; #clk_pd; //vsetivli
+        m00_axi_rdata <= {480'b0, 20'h12345, 5'h1, 7'h37}; #clk_pd; //lui
+        m00_axi_rdata <= {480'b0, 12'h567, 5'h1, 3'b000, 5'h1, 7'h13}; #clk_pd; //addi
+        m00_axi_rdata <= {480'b0, 12'h111, 5'h1, 3'b000, 5'h2, 7'h13}; #clk_pd; //addi
+        m00_axi_rdata <= {480'b0, 7'h0, 5'h1, 5'h2, 3'b000, 5'h3, 7'h33}; #clk_pd; //add
+        
+        m00_axi_rdata <= {480'b0, 12'h0, 5'h0, 3'b000, 5'h0, 7'h13}; #clk_pd; //nop
+        m00_axi_rdata <= {480'b0, 12'h0, 5'h0, 3'b000, 5'h0, 7'h13}; #clk_pd; //nop
+        m00_axi_rlast <= 1'b1;
+        m00_axi_rdata <= {480'b0, 12'h0, 5'h0, 3'b000, 5'h0, 7'h13}; #clk_pd; //nop
+        #clk_pd;
+        m00_axi_rlast <= 1'b0;
+        m00_axi_rvalid <= 1'b0;
         #100;
     $finish;
     end

@@ -108,7 +108,7 @@ rtl_kernel_wizard_0_runtimeLoadTable runtimeLoadTable_inst0(
     .load_PC                (load_PC), //input
     .incr_PC                (incr_PC), //input
     .load_value_PC          (load_value_PC), //input*
-    .ctrl_done              (ap_done), //output
+    .ctrl_done              (ap_done_i), //output
     .m_axi_arvalid          (m_axi_arvalid), //output
     .m_axi_araddr           (m_axi_araddr), //output*
     .m_axi_arlen            (m_axi_arlen), //output*
@@ -146,18 +146,14 @@ always @(posedge ap_clk) begin
     ap_done_r <= '0;
   end
   else begin
-    ap_done_r <= (ap_done) ? '0 : ap_done_r | ap_done_i;
+    ap_done_r <= (ap_done) ? 1'b0 : ap_done_r | ap_done_i; //ap_done_i is never driven
   end
 end
-assign ap_done = &ap_done_r;
+assign ap_done = ap_done_r;
 // Ready Logic (non-pipelined case)
 assign ap_ready = ap_done;
   
 assign done_loader = ap_done;
-  
-  
-  
-  
   
 endmodule
 
@@ -187,13 +183,13 @@ endmodule
 //    output logic wr_en_RF_runtimeLoadTable, //it is drived by runtimeLoadTable
 //    output logic [dwidth_RFadd-1:0] wr_add_RF_runtimeLoadTable // it is drived by runtimeLoadTable
 //    );
-    
+//    
 //    logic [(dwidth_RFadd*num_col)-1:0] smart_ptr; // ptr to state_table and config_table
 //    logic [dwidth_int-1:0] itr_i; // outer-most loop
 //    logic [dwidth_int-1:0] itr_j;
 //    logic [dwidth_int-1:0] itr_k; // inner-most loop
 //    logic [entry_sz_state-1:0] rd_data_state;
-    
+//    
 //    logic [num_col:0] wr_en;
 //    logic [dwidth_RFadd-1:0] wr_add;
 //    logic done_loader;
@@ -315,6 +311,3 @@ endmodule
     
     
 //endmodule
-
-
-

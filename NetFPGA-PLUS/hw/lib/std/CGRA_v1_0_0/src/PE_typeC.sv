@@ -152,13 +152,13 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
     assign out2 = temp_out2;
     assign t_valid_out2 = temp_valid_out2;
     
-    register_pipe #(dwidth_float+1, latency*2) rp_inst0(clk, rst, {t_valid_inp1, inp1}, {temp_valid_out2, temp_out2}); // out 2
-    register_pipe #(dwidth_float+1, latency) rp_inst1(clk, rst, {t_valid_inp1, inp1}, {t_valid_inp1_d, inp1_d}); // inp1
-    register_pipe #(dwidth_float+1, latency) rp_inst2(clk, rst, {t_valid_inp2, inp2}, {t_valid_inp2_d, inp2_d}); // inp2
-    register_pipe #(dwidth_float+1, latency) rp_inst3(clk, rst, {1'b1        , inp3}, {t_valid_inp3_d, inp3_d}); // inp3
-    register_pipe #(dwidth_float+1, latency) rp_inst4(clk, rst, {t_valid_mul, o_fp_mul}, {t_valid_mul_d, o_fp_mul_d}); // mul IP
-    register_pipe #(3             , latency) rp_inst5(clk, rst, op, op_d); // (latency/2) delayed op
-    register_pipe #(3             , latency) rp_inst6(clk, rst, op_d, op_dd); // (latency) delayed op
+    register_pipe #(dwidth_float+1, latency) rp_inst0(clk, rst, {t_valid_inp1, inp1}, {temp_valid_out2, temp_out2}); // out 2
+    register_pipe #(dwidth_float+1, latency/2) rp_inst1(clk, rst, {t_valid_inp1, inp1}, {t_valid_inp1_d, inp1_d}); // inp1
+    register_pipe #(dwidth_float+1, latency/2) rp_inst2(clk, rst, {t_valid_inp2, inp2}, {t_valid_inp2_d, inp2_d}); // inp2
+    register_pipe #(dwidth_float+1, latency/2) rp_inst3(clk, rst, {1'b1        , inp3}, {t_valid_inp3_d, inp3_d}); // inp3
+    register_pipe #(dwidth_float+1, latency/2) rp_inst4(clk, rst, {t_valid_mul, o_fp_mul}, {t_valid_mul_d, o_fp_mul_d}); // mul IP
+    register_pipe #(3             , latency/2) rp_inst5(clk, rst, op, op_d); // (latency/2) delayed op
+    register_pipe #(3             , latency/2) rp_inst6(clk, rst, op_d, op_dd); // (latency) delayed op
     
     assign out1 = (op_dd == 3'b010) ? o_fp_mul_d : o_fp_add;
     assign t_valid_out1 = (op_dd == 3'b010) ? t_valid_mul_d : ((op_dd == 3'b011 || op_dd == 3'b000) ? t_valid_add : 1'b0);
