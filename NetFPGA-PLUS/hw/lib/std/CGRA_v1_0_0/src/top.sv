@@ -178,6 +178,8 @@ module top(
     logic [(num_col*phit_size)-1:0]     data_wdata   ; 
     logic [num_col-1:0]                 data_wlast   ; 
     logic [(num_col*(phit_size/8))-1:0] data_wstrb   ; 
+    
+    logic ap_done;
 
 
     always @(posedge ap_clk) begin
@@ -188,6 +190,7 @@ module top(
         //inputs
         .ap_clk                     (ap_clk),  
         .ap_rst_n                   (ap_rst_n),
+        .ap_done_i                  (ap_done),
         .AWADDR                     (s_axi_control_awaddr),               
         .AWVALID                    (s_axi_control_awvalid),               
         .WDATA                      (s_axi_control_wdata),               
@@ -229,6 +232,7 @@ module top(
         .instr                      (instr),
         .clk                        (ap_clk),
         .rst                        (areset),
+        .ap_done                    (ap_done),
         .tdata_stream_in            (axis00_tdata),
         .tvalid_stream_in           (axis00_tvalid),
         .tready_stream_out          (axis01_tready),

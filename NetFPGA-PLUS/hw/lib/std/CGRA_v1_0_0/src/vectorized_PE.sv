@@ -9,6 +9,7 @@ module vectorized_PE(
     input logic [phit_size-1:0] i1_PE_typeC,
     input logic [phit_size-1:0] i2_PE_typeC,    
     input logic [phit_size-1:0] i3_PE_typeC, // Added as 3rd input
+    input logic [SIMD_degree-1:0] i_tlast_PE_typeC,
     input logic [SIMD_degree-1:0] i_tvalid1_PE_typeC,
     input logic [SIMD_degree-1:0] i_tvalid2_PE_typeC,  
 //    input logic [SIMD_degree-1:0] i_tvalid3_PE_typeC,
@@ -17,6 +18,8 @@ module vectorized_PE(
     input logic [2:0] op,
     output logic [phit_size-1:0] o1_PE_typeC,
     output logic [phit_size-1:0] o2_PE_typeC,
+    output logic [SIMD_degree-1:0] o1_tlast_PE_typeC,
+    output logic [SIMD_degree-1:0] o2_tlast_PE_typeC,
     output logic [SIMD_degree-1:0] o1_tvalid1_PE_typeC,
     output logic [SIMD_degree-1:0] o2_tvalid1_PE_typeC
     );
@@ -28,6 +31,7 @@ module vectorized_PE(
             .inp1(i1_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]), 
             .inp2(i2_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]),
             .inp3(i3_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]), 
+            .t_last_in(i_tlast_PE_typeC[i]),
             .t_valid_inp1(i_tvalid1_PE_typeC[i]),
             .t_valid_inp2(i_tvalid2_PE_typeC[i]),
 //            .t_valid_inp3(i_tvalid3_PE_typeC[i]),
@@ -36,6 +40,8 @@ module vectorized_PE(
             .op(op[2:0]),
             .out1(o1_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]), 
             .out2(o2_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]),
+            .t_last_out1(o1_tlast_PE_typeC[i]),
+            .t_last_out2(o2_tlast_PE_typeC[i]),
             .t_valid_out1(o1_tvalid1_PE_typeC[i]),
             .t_valid_out2(o2_tvalid1_PE_typeC[i])
             );

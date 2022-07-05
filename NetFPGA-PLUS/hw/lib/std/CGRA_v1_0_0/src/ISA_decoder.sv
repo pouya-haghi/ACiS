@@ -9,6 +9,7 @@ module ISA_decoder(
     input logic [dwidth_inst-1:0] instr,
     input logic clk,
     input logic rst,
+    input logic done_steady,
     output logic ctrl_i_mux2_tvalid,
     output logic [4:0] rs1, // source register 1
     output logic [4:0] rs2, // source register 2
@@ -24,6 +25,7 @@ module ISA_decoder(
     output logic is_bne,
     output logic is_csr,
     output logic is_lui,
+    output logic is_wfi, is_wfi_r, is_wfi_d,
     output logic [dwidth_RFadd-1:0] vr_addr, // vector register file
     output logic [dwidth_RFadd-1:0] vw_addr, // vector register file
     output logic is_not_vect, // used to inform us about stall (if it is zero we should stall)
@@ -31,7 +33,8 @@ module ISA_decoder(
     output logic [dwidth_int-1:0] R_immediate,
     output logic [2:0] op,
     output logic [2:0] op_scalar,
-    output logic wen_RF_scalar
+    output logic wen_RF_scalar,
+    output logic ap_done
 //    output logic [dwidth_RFadd-1:0] VLEN_phy // to get the chunk size 
     // if it is v2 and VLEN_phy=32 then the correct base address is: 2*VLEN_phy
     );
@@ -57,7 +60,22 @@ module ISA_decoder(
     assign is_lui = (instr[6:0]==7'b0110111)?1'b1:1'b0;
     assign is_csr = (instr[6:0]==7'b0000011 && instr[31:20]==12'hC00)? 1'b1: 1'b0;
     assign is_add = (instr[6:0]==7'b0110011 && instr[14:12]==3'b000 && instr[31:25]==7'b0000000)?1'b1:1'b0;
+    assign is_wfi = (instr == 32'b0001000_00101_00000_000_00000_1110011)?1'b1:1'b0;
     
+    // ******************   AP done *********************
+    always @(posedge clk) begin
+        if (rst) begin
+            is_wfi_r = 1'b0;
+            is_wfi_d = 1'b0;
+        end else begin
+//            is_wfi_d <= is_wfi;
+            is_wfi_r <= is_wfi;
+            is_wfi_d <= is_wfi_r;
+        end
+    end
+
+    assign ap_done = (is_wfi & !is_wfi_d & done_steady) ? 1'b1 : 1'b0;
+        
     // ******************   configuration instructions *********************
     assign ITR = instr[29:18];
 //    assign wen_ITR = is_vsetivli;
@@ -94,21 +112,8 @@ module ISA_decoder(
     // vs1 is hardwire to O1 or O2 (no matter what you put in)
     assign vs2 = (is_vse32_vv)? instr[11:7]: instr[24:20]; // vs2
     assign vd = instr[11:7]; // vd
-    // again rs1 is the base address
-    
-        //    always_comb begin
-//        case(VLEN)
-//            3'b000: VLEN_phy = (depth_RF/2);
-//            3'b001: VLEN_phy = (depth_RF/4);
-//            3'b010: VLEN_phy = (depth_RF/8);
-//            3'b011: VLEN_phy = (depth_RF/16);
-//            3'b100: VLEN_phy = (depth_RF/32);
-//            3'b101: VLEN_phy = (depth_RF/64);
-//            3'b110: VLEN_phy = (depth_RF/128);
-//            3'b111: VLEN_phy = (depth_RF/256);
-//            default: VLEN_phy = (depth_RF/2);
-//        endcase
-//    end
+   
+   
     always_comb begin
         case(VLEN)
             3'b000: begin 
@@ -150,9 +155,6 @@ module ISA_decoder(
         endcase
     end
     
-//    assign ctrl_din_RF = (is_vmv_vi)? 3'b001:((is_vmacc_vv)? 3'b010: ((is_vle32_vv)? 3'b100: 3'b100)); // default: 3'b100
-//    assign ctrl_wen_RF = (is_vmv_vi)? 3'b001:((is_vmacc_vv)? 3'b010: ((is_vle32_vv)? 3'b100: 3'b000)); // default: 3'b000
     assign ctrl_i_mux2_tvalid = (is_vmacc_vv | t_is_vstreamout)? 1'b1: 1'b0;
-//    assign sel_mux2 = 
    
 endmodule

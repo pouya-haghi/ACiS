@@ -184,7 +184,7 @@ module test_top;
         
         m00_axi_rdata <= {480'b0, 12'h0, 5'h0, 3'b000, 5'h0, 7'h13}; #clk_pd; //nop
         m00_axi_rdata <= {480'b0, 12'h0, 5'h0, 3'b000, 5'h0, 7'h13}; #clk_pd; //nop
-        m00_axi_rdata <= {480'b0, 12'h0, 5'h0, 3'b000, 5'h0, 7'h13}; #clk_pd; //nop
+        m00_axi_rdata <= {480'b0, 32'b0001000_00101_00000_000_00000_1110011}; #clk_pd; //wfi
         
         //  column 2
         //      Scalar only for now
@@ -197,7 +197,8 @@ module test_top;
         m00_axi_rdata <= {480'b0, 12'h0, 5'h0, 3'b000, 5'h0, 7'h13}; #clk_pd; //nop
         m00_axi_rdata <= {480'b0, 12'h0, 5'h0, 3'b000, 5'h0, 7'h13}; #clk_pd; //nop
         m00_axi_rlast <= 1'b1;
-        m00_axi_rdata <= {480'b0, 12'h0, 5'h0, 3'b000, 5'h0, 7'h13}; #clk_pd; //nop
+        m00_axi_rdata <= {480'b0, 32'b0001000_00101_00000_000_00000_1110011}; #clk_pd; //wfi
+        
         #clk_pd;
         m00_axi_rlast <= 1'b0;
         m00_axi_rvalid <= 1'b0;
