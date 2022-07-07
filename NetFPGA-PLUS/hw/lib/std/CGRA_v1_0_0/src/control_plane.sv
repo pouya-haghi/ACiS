@@ -31,9 +31,7 @@ module control_plane(
     output logic                            RVALID    ,
     output logic                            interrupt ,
     
-    // runtimeLoadTable
-//    input  logic [dwidth_HBMadd-1:0]        ctrl_addr_offset         ,
-//    input  logic [63:0]                     ctrl_xfer_size_in_bytes  ,
+    
     input  logic                            m_axi_arready            ,
     input  logic                            m_axi_rvalid             ,
     input  logic [phit_size-1:0]            m_axi_rdata              ,
@@ -43,7 +41,7 @@ module control_plane(
     input  logic [num_col-1:0]              incr_PC                  ,
     input  logic [num_col*12-1:0]           load_value_PC            ,
     output logic                            m_axi_arvalid            ,
-    output logic [dwidth_HBMadd-1:0]        m_axi_araddr             ,
+    output logic [C_M_AXI_ADDR_WIDTH-1:0]   m_axi_araddr             ,
     output logic [8-1:0]                    m_axi_arlen              ,
     output logic                            m_axi_rready             ,
     output logic [dwidth_int-1:0]           cycle_register           ,

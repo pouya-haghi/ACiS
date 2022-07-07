@@ -45,7 +45,7 @@ module top(
     input  logic                     m00_axi_rlast    ,
     input  logic                     m00_axi_rvalid   ,
     //output                                          ,
-    output logic [dwidth_HBMadd-1:0] m00_axi_araddr   ,
+    output logic [C_M_AXI_ADDR_WIDTH-1:0] m00_axi_araddr   ,
     output logic [8-1:0]             m00_axi_arlen    ,
     output logic                     m00_axi_arvalid  ,
     output logic                     m00_axi_rready   ,

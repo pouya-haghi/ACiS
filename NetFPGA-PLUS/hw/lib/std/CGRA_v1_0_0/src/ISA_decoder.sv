@@ -25,7 +25,6 @@ module ISA_decoder(
     output logic is_bne,
     output logic is_csr,
     output logic is_lui,
-    output logic is_wfi, is_wfi_r, is_wfi_d,
     output logic [dwidth_RFadd-1:0] vr_addr, // vector register file
     output logic [dwidth_RFadd-1:0] vw_addr, // vector register file
     output logic is_not_vect, // used to inform us about stall (if it is zero we should stall)
@@ -47,6 +46,7 @@ module ISA_decoder(
     logic [2:0] VLEN;
     logic t_is_vstreamout, t_is_vsetivli;
     assign is_vstreamout = t_is_vstreamout;
+    logic is_wfi, is_wfi_d;
 
     // ***********************  decode ***************************
     assign is_vmacc_vv = (instr[6:0]==7'h57 && instr[14:12]==3'h0)?1'b1:1'b0;
@@ -65,12 +65,9 @@ module ISA_decoder(
     // ******************   AP done *********************
     always @(posedge clk) begin
         if (rst) begin
-            is_wfi_r = 1'b0;
-            is_wfi_d = 1'b0;
+            is_wfi_d <= 1'b0;
         end else begin
-//            is_wfi_d <= is_wfi;
-            is_wfi_r <= is_wfi;
-            is_wfi_d <= is_wfi_r;
+            is_wfi_d <= is_wfi;
         end
     end
 

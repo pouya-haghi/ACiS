@@ -100,12 +100,6 @@ module data_path(
     logic [SIMD_degree*num_col-1:0] tlast_stream_out_lane_2 ; 
     logic [SIMD_degree-1:0] tlast_stream_out_lane_o ; 
     
-    assign tready_stream_in = &tready_stream_in_lane;
-    assign tvalid_stream_in = &tvalid_stream_in_lane;
-    assign tlast_stream_out = &tlast_stream_out_lane;
-    
-    
-    
     // This part is ISA-specific:
     logic [num_col-1:0] ctrl_i_mux2_tvalid; //generated internally based on op
     logic [(dwidth_RFadd*num_col)-1:0] ITR;
@@ -135,6 +129,9 @@ module data_path(
     end
     assign done_steady = curr_state_done_loader;
     
+    assign tready_stream_in = &tready_stream_in_lane;
+    assign tvalid_stream_out = &tvalid_stream_out_lane;
+    assign tlast_stream_out = &tlast_stream_out_lane;
     
     genvar i;
     generate 
@@ -409,5 +406,5 @@ module data_path(
 
         end
     endgenerate
-    
+        
 endmodule

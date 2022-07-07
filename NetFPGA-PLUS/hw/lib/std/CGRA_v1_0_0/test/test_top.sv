@@ -40,7 +40,7 @@ module test_top;
     reg                      m00_axi_rlast          ;           
     reg                      m00_axi_rvalid         ;           
     //output                                                      
-    wire [dwidth_HBMadd-1:0] m00_axi_araddr         ;           
+    wire [C_M_AXI_ADDR_WIDTH-1:0] m00_axi_araddr         ;           
     wire [8-1:0]             m00_axi_arlen          ;           
     wire                     m00_axi_arvalid        ;           
     wire                     m00_axi_rready         ;           
@@ -181,9 +181,10 @@ module test_top;
         //      Vector 
         m00_axi_rdata <= {448'b0, 2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57      , 2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57        }; #clk_pd; //vsetivli
         m00_axi_rdata <= {448'b0, 12'b0, 5'b00010 , 3'b0, 5'h1, 7'h07             , 12'b0, 5'b00010 , 3'b0, 5'h1, 7'h07               }; #clk_pd; // vle32.vv
-        m00_axi_rdata <= {448'b0, 6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd3, 7'h57 , 6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd3, 7'h57   }; #clk_pd; // vfmacc.xv
-        m00_axi_rdata <= {448'b0, 12'b0, 5'b00010 , 3'b0, 5'd3, 7'h27             , 12'b0, 5'b00010 , 3'b0, 5'd3, 7'h27               }; #clk_pd; // vse32.vv
+        m00_axi_rdata <= {448'b0, 6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd1, 7'h57 , 6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd1, 7'h57   }; #clk_pd; // vfmacc.xv
+        m00_axi_rdata <= {448'b0, 12'b0, 5'b00010 , 3'b0, 5'd1, 7'h27             , 12'b0, 5'b00010 , 3'b0, 5'd1, 7'h27               }; #clk_pd; // vse32.vv
         
+        m00_axi_rdata <= {448'b0, 32'b0001000_00101_00000_000_00000_1110011       , 32'b0001000_00101_00000_000_00000_1110011         }; #clk_pd; //wfi
         m00_axi_rlast <= 1'b1;
         m00_axi_rdata <= {448'b0, 32'b0001000_00101_00000_000_00000_1110011       , 32'b0001000_00101_00000_000_00000_1110011         }; #clk_pd; //wfi
         
@@ -199,24 +200,24 @@ module test_top;
         #(clk_pd*delay_HBM);        
         
         // HBM read for vle
-        m01_axi_arready <= 1'b1;                           //m02_axi_arready <= 1'b1;           
-        #clk_pd;                                           //
-        m01_axi_arready <= 1'b0;                           //m02_axi_arready <= 1'b0;           
-                                                           //
-        m01_axi_rvalid <= 1'b1;                            //m02_axi_rvalid <= 1'b1;            
-                                                           //
-        m01_axi_rdata <= 512'h40000000;    #clk_pd;//2     //m02_axi_rdata <= 512'h40000000;    
-        m01_axi_rdata <= 512'h40400000;    #clk_pd;//3     //m02_axi_rdata <= 512'h40400000;    
-        m01_axi_rdata <= 512'h40800000;    #clk_pd;//4     //m02_axi_rdata <= 512'h40800000;    
-        m01_axi_rdata <= 512'h40a00000;    #clk_pd;//5     //m02_axi_rdata <= 512'h40a00000;    
-        m01_axi_rdata <= 512'h40c00000;    #clk_pd;//6     //m02_axi_rdata <= 512'h40c00000;    
-        m01_axi_rdata <= 512'h40e00000;    #clk_pd;//7     //m02_axi_rdata <= 512'h40e00000;    
-        m01_axi_rdata <= 512'h41000000;    #clk_pd;//8     //m02_axi_rdata <= 512'h41000000;    
-        m01_axi_rlast <= 1'b1;                             //m02_axi_rlast <= 1'b1;             
-        m01_axi_rdata <= 512'h41100000;    #clk_pd;//9     //m02_axi_rdata <= 512'h41100000;    
-                                                           //
-        m01_axi_rvalid <= 1'b0;                            //m02_axi_rvalid <= 1'b0;            
-        m01_axi_rlast <= 1'b0;                             //m02_axi_rlast <= 1'b0;             
+        m01_axi_arready <= 1'b1;         m02_axi_arready <= 1'b1;                             
+        #clk_pd;                                                                          
+        m01_axi_arready <= 1'b0;         m02_axi_arready <= 1'b0;                             
+                                                                                          
+        m01_axi_rvalid <= 1'b1;          m02_axi_rvalid <= 1'b1;                              
+                                                                                          
+        m01_axi_rdata <= 512'h40000000;  m02_axi_rdata <= 512'h40000000;  #clk_pd;//2         
+        m01_axi_rdata <= 512'h40400000;  m02_axi_rdata <= 512'h40400000;  #clk_pd;//3         
+        m01_axi_rdata <= 512'h40800000;  m02_axi_rdata <= 512'h40800000;  #clk_pd;//4         
+        m01_axi_rdata <= 512'h40a00000;  m02_axi_rdata <= 512'h40a00000;  #clk_pd;//5         
+        m01_axi_rdata <= 512'h40c00000;  m02_axi_rdata <= 512'h40c00000;  #clk_pd;//6         
+        m01_axi_rdata <= 512'h40e00000;  m02_axi_rdata <= 512'h40e00000;  #clk_pd;//7         
+        m01_axi_rdata <= 512'h41000000;  m02_axi_rdata <= 512'h41000000;  #clk_pd;//8         
+        m01_axi_rlast <= 1'b1;           m02_axi_rlast <= 1'b1;                               
+        m01_axi_rdata <= 512'h41100000;  m02_axi_rdata <= 512'h41100000;  #clk_pd;//9         
+                                                                                          
+        m01_axi_rvalid <= 1'b0;          m02_axi_rvalid <= 1'b0;                              
+        m01_axi_rlast <= 1'b0;           m02_axi_rlast <= 1'b0;                               
        
         // Wait a little
         #(clk_pd*2);

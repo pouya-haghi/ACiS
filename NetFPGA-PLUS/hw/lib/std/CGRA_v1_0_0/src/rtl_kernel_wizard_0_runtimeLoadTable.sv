@@ -304,7 +304,7 @@ inst_ar_to_r_transaction_cntr (
 
   localparam [dwidth_configadd-1:0] num_entry_config_table = depth_config;
   localparam [1:0] init = 2'b00, first_sixteen_column = 2'b01, second_sixteen_column =2'b10;
-  logic [1:0] config_state, congig_state_next;
+  logic [1:0] config_state, config_state_next;
   // logic transition_signal;
   logic [dwidth_configadd-1:0] wr_add; // for state_table and config table
   logic [num_col-1:0] wr_en; // for state_table and config tables
@@ -386,7 +386,7 @@ inst_ar_to_r_transaction_cntr (
             first_sixteen_column: config_state_next <= (wr_add == t_num_entry_config_table && rxfer)? second_sixteen_column : first_sixteen_column;
             // second_sixteen_column: // wr_en is  {num_col-16} '1's and 16 '0's. enable 16 config tables at the same time
             second_sixteen_column: config_state_next <= (done)? init: second_sixteen_column;
-            default: config_state_next <= init
+            default: config_state_next <= init;
         endcase
     end
 
