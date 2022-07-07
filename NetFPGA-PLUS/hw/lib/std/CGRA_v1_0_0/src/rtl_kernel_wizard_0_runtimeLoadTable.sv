@@ -303,6 +303,9 @@ inst_ar_to_r_transaction_cntr (
 // assign m_axis_tlast  = m_axi_rlast;
 
   localparam [dwidth_configadd-1:0] num_entry_config_table = depth_config;
+  localparam [1:0] config_state0 = 2'b00, config_state1 = 2'b01, config_state2 =2'b10, config_state3 = 2'b11;
+  logic [1:0] config_state;
+  logic transition_signal;
   logic [dwidth_configadd-1:0] wr_add; // for state_table and config table
   logic [num_col-1:0] wr_en; // for state_table and config tables
 
@@ -368,18 +371,34 @@ inst_ar_to_r_transaction_cntr (
     end
     
     // generating wr_en for selecting the correct configuration/state tables
+    assign transition_signal = (wr_en == '0 && rxfer)? 1'b1: 1'b0;
     always_ff @(posedge aclk) begin
         if (areset)
-            wr_en <= 0;
+//            wr_en <= 0;
+            config_state <= config_state0;
         else begin
-            if (wr_en == 0 && rxfer)
-                wr_en <= {{(num_col-(phit_size/dwidth_int)){1'b0}}, {(phit_size/dwidth_int){1'b1}}}; // 16 '0's and 16 '1's. enable 16 config tables at the same time
+            if (transition_signal)
+//                wr_en <= {{(num_col-(phit_size/dwidth_int)){1'b0}}, {(phit_size/dwidth_int){1'b1}}}; // 16 '0's and 16 '1's. enable 16 config tables at the same time
+                config_state <= config_state1;
                 // This is b/c axi is wide (512 bits) and it can support multiple parallel tables
             else if (wr_en != 0 && wr_add == t_num_entry_config_table && rxfer) //num_entry_config_table - 1
-                wr_en <= wr_en << (phit_size/dwidth_int);
+//                wr_en <= wr_en << (phit_size/dwidth_int);
+                config_state <= config_state2;
             else if (done)// done state, m_axi_rlast
-                wr_en <= 0; //avoid keeping wr_en high
+//                wr_en <= 0; //avoid keeping wr_en high
+                config_state <= config_state3;
         end
+    end
+    
+    always_comb begin
+        if (config_state == config_state0 && !transition_signal)
+            wr_en = '0;
+        else if ((config_state == config_state0 && transition_signal) | config_state == config_state1)
+            wr_en = {{(num_col-(phit_size/dwidth_int)){1'b0}}, {(phit_size/dwidth_int){1'b1}}}; // 16 '0's and 16 '1's. enable 16 config tables at the same time
+        else if (config_state == config_state2)
+            wr_en = wr_en << (phit_size/dwidth_int);
+        else
+            wr_en = '0;
     end
 
 // end

@@ -56,13 +56,14 @@ module data_path(
     localparam phitplus = phit_size + SIMD_degree; // bundle {tvalid, tdata}
     localparam phitplusplus = phit_size + SIMD_degree*2; // bundle {tlast, tvalid, tdata}
 
-    logic [(2*num_col)-1:0] sel_mux2;
+    logic [(3*num_col)-1:0] sel_mux2;
     logic [((num_col)*3)-1:0] op;
     logic [((num_col)*3)-1:0] op_scalar;
     logic [(phit_size*num_col)-1:0] o_RF;
-    logic [(phit_size*num_col)-1:0] i1_PE_typeC, i2_PE_typeC, o1_PE_typeC, o2_PE_typeC; // the last bundle of SIMD_degree signals is for tvalid
-    logic [(phit_size*num_col)-1:0] i3_PE_typeC; // this directly connects the RD output of the RF to the PE input 
+    logic [(phit_size*num_col)-1:0] i1_PE_typeC, i2_PE_typeC, i3_PE_typeC, o1_PE_typeC, o2_PE_typeC; // the last bundle of SIMD_degree signals is for tvalid
+    logic [(phit_size)-1:0] o_PE_typeC; // this directly connects the RD output of the RF to the PE input 
     logic [(SIMD_degree*num_col)-1:0] i_tvalid1_PE_typeC, i_tvalid2_PE_typeC, o1_tvalid1_PE_typeC, o2_tvalid1_PE_typeC;
+    logic [(SIMD_degree)-1:0] o_tvalid_PE_typeC;
     logic [(5*num_col)-1:0] rs1, rs2, rd;
     logic [(dwidth_RFadd*num_col)-1:0] vr_addr;
     logic [(dwidth_RFadd*num_col)-1:0] vw_addr;
@@ -97,6 +98,7 @@ module data_path(
     logic [SIMD_degree-1:0] tlast_stream_out_lane  ; 
     logic [SIMD_degree*num_col-1:0] tlast_stream_out_lane_1 ; 
     logic [SIMD_degree*num_col-1:0] tlast_stream_out_lane_2 ; 
+    logic [SIMD_degree-1:0] tlast_stream_out_lane_o ; 
     
     assign tready_stream_in = &tready_stream_in_lane;
     assign tvalid_stream_in = &tvalid_stream_in_lane;
@@ -342,34 +344,50 @@ module data_path(
               .load_value_PC(load_value_PC[((j+1)*12)-1:j*12])
              );
              
-         if (j == 0) begin
-             mux2 #(phitplusplus) mux2_inst0_if ({FIFO_out_tlast, FIFO_out_tvalid, FIFO_out_tdata}, 
-                                                 {(phitplusplus){1'b0}}, 
-                                                 sel_mux2[0], 
-                                                 {tlast_stream_in_lane[(SIMD_degree*(j+1))-1:SIMD_degree*j], i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
+        if (j == 0) begin
+            mux2 #(phitplusplus) mux2_inst0_if ({FIFO_out_tlast, FIFO_out_tvalid, FIFO_out_tdata}, 
+                                                {(phitplusplus){1'b0}}, 
+                                                sel_mux2[0], 
+                                                {tlast_stream_in_lane[(SIMD_degree*(j+1))-1:SIMD_degree*j], i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
              
-             mux2 #(phitplus) mux2_inst1_if ({{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, 
-                                             {(phitplus){1'b0}}, 
-                                             sel_mux2[1], 
-                                             {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});  // second input was considered for imm (but not yet supported b/c it is not in riscv): {{(SIMD_degree){tvalid_config_table[0]}}, {SIMD_degree{imm[(dwidth_float*1)-1:dwidth_float*0]}}}  
+            mux2 #(phitplus) mux2_inst1_if ({{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, 
+                                            {(phitplus){1'b0}}, 
+                                            sel_mux2[1], 
+                                            {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});  // second input was considered for imm (but not yet supported b/c it is not in riscv): {{(SIMD_degree){tvalid_config_table[0]}}, {SIMD_degree{imm[(dwidth_float*1)-1:dwidth_float*0]}}}  
+            
+            mux2 #(phitplusplus) mux2_inst2_if ({tlast_stream_out_lane_1[(SIMD_degree*(j+1))-1:SIMD_degree*j], o1_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], o1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]},
+                                                {tlast_stream_out_lane_2[(SIMD_degree*(j+1))-1:SIMD_degree*j], o2_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], o2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]},
+                                                sel_mux2[2],
+                                                {tlast_stream_out_lane_2[(SIMD_degree*(j+1))-1:SIMD_degree*j], o2_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], o2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]}); //wrong
+            
             assign sel_mux2[0] = 1'b0;
             assign sel_mux2[1] = 1'b0;
-         end
-         else begin
+            assign sel_mux2[2] = 1'b0;
+        end
+        else begin
              mux2 #(phitplusplus) mux2_inst0_else ({tlast_stream_out_lane_1[(SIMD_degree*j)-1:SIMD_degree*(j-1)], o1_tvalid1_PE_typeC[(SIMD_degree*j)-1:SIMD_degree*(j-1)], o1_PE_typeC[(phit_size*j)-1:(phit_size*(j-1))]}, 
                                                    {tlast_stream_out_lane_2[(SIMD_degree*j)-1:SIMD_degree*(j-1)], o2_tvalid1_PE_typeC[(SIMD_degree*j)-1:SIMD_degree*(j-1)], o2_PE_typeC[(phit_size*j)-1:(phit_size*(j-1))]}, // need to add different last
-                                                   sel_mux2[(j*2)+0], 
+                                                   sel_mux2[(j*3)+0], 
                                                    {tlast_stream_in_lane[(SIMD_degree*(j+1))-1:SIMD_degree*j], i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
+             
              mux2 #(phitplus) mux2_inst1_else ({{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, 
                                                {(phitplus){1'b0}}, 
-                                               sel_mux2[(j*2)+1], 
+                                               sel_mux2[(j*3)+1], 
                                                {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});  // second input was considered for imm (but not yet supported): {{(SIMD_degree){tvalid_config_table[0]}}, {SIMD_degree{imm[(dwidth_float*1)-1:dwidth_float*0]}}}
-             assign sel_mux2[(j*2)+0] = 1'b1;
-             assign sel_mux2[(j*2)+1] = 1'b0;
-         end
+            
+             assign sel_mux2[(j*3)+0] = 1'b1;
+             assign sel_mux2[(j*3)+1] = 1'b0;
+             assign sel_mux2[(j*3)+2] = 1'b0;
+        end
              
         end
     endgenerate
+    
+    mux2 #(phitplusplus) mux2_inst2_if ({tlast_stream_out_lane_1[(SIMD_degree*num_col)-1:SIMD_degree*(num_col-1)], o1_tvalid1_PE_typeC[(SIMD_degree*num_col)-1:SIMD_degree*(num_col-1)], o1_PE_typeC[(phit_size*num_col)-1:phit_size*(num_col-1)]},
+                                        {tlast_stream_out_lane_2[(SIMD_degree*num_col)-1:SIMD_degree*(num_col-1)], o2_tvalid1_PE_typeC[(SIMD_degree*num_col)-1:SIMD_degree*(num_col-1)], o2_PE_typeC[(phit_size*num_col)-1:phit_size*(num_col-1)]},
+                                        sel_mux2[((num_col-1)*3)+2],
+                                        {tlast_stream_out_lane_o                                                 , o_tvalid_PE_typeC                                                   , o_PE_typeC });
+        
 
     generate
         for (i=0; i<SIMD_degree; i++) begin
@@ -383,7 +401,7 @@ module data_path(
             .rst(rst),
             .push(o2_tvalid1_PE_typeC[(SIMD_degree*(num_col-1))+i] && is_vstreamout[num_col-1] && !full_FIFO_out[i]), // fixing a bug: instead of tvalid_stream_in[i], we use last_PE valid signal
             .pop(tready_stream_out && !empty_FIFO_out[i]),
-            .din({tlast_stream_out_lane_2[(SIMD_degree*(num_col-1))+i], o2_tvalid1_PE_typeC[(SIMD_degree*(num_col-1))+i], o2_PE_typeC[(phit_size*(num_col-1))+(dwidth_float*(i+1))-1:dwidth_float*i]}),
+            .din({tlast_stream_out_lane_o[i], o_tvalid_PE_typeC[i],           o_PE_typeC[(dwidth_float*(i+1))-1:dwidth_float*i]}),
             .dout({tlast_stream_out_lane[i], tvalid_stream_out_lane[i], tdata_stream_out[((i+1)*dwidth_float)-1:i*dwidth_float]}),
             .empty(empty_FIFO_out[i]),
             .full(full_FIFO_out[i])

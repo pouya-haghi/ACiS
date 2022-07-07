@@ -218,8 +218,8 @@ module test_datapath;
 //    rvalid_HBM <= {(num_col){1'b0}};
     
 //    //vmacc                                       func     0   vs2   vs1    000    vd   inst
-//    instr[dwidth_inst-1:0] <=               {6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd3, 7'h57}; // vse32.vv v0, (x2)
-//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd3, 7'h57}; // vse32.vv v0, (x2)
+//    instr[dwidth_inst-1:0] <=               {6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd3, 7'h57}; // vfmacc.xv v0, (x2)
+//    instr[(2*dwidth_inst)-1:dwidth_inst] <= {6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd3, 7'h57}; // vfmacc.xv v0, (x2)
 //    //Stream in
 //    tvalid_stream_in <= 16'hffff;
 //    tdata_stream_in <= 512'h40000000; #clk_pd;//2 

@@ -31,7 +31,7 @@ module HBM_read_master #(
   output wire                          ctrl_done,               // Pulses high for one cycle when transfer request is complete
   // The following ctrl signals are sampled when ctrl_start is asserted
   input  wire [C_M_AXI_ADDR_WIDTH-1:0] ctrl_addr_offset,        // Starting Address offset
-  input  wire [C_M_AXI_ADDR_WIDTH-1:0]  ctrl_xfer_size_in_bytes, // Length in number of bytes, limited by the address width.
+  input  wire [C_M_AXI_ADDR_WIDTH-1:0] ctrl_xfer_size_in_bytes, // Length in number of bytes, limited by the address width.
   // AXI4 master interface (read only)
   output wire                          m_axi_arvalid,
   input  wire                          m_axi_arready,
