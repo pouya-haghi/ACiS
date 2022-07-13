@@ -4,7 +4,6 @@ parameter delay_HBM = 6;
 parameter depth_RF = 4096;
 parameter depth_config = 9;//4096;
 parameter dwidth_RFadd = $clog2(depth_RF);
-//parameter dwidth_HBMadd = 32;
 parameter dwidth_aximm = 64;
 parameter dwidth_int = 32;
 parameter dwidth_configadd = $clog2(depth_config);

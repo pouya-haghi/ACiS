@@ -15,7 +15,6 @@ module ISA_decoder(
     output logic [4:0] rs2, // source register 2
     output logic [4:0] rd, // dest register
     output logic [dwidth_RFadd-1:0] ITR,
-//    output logic wen_ITR,
     output logic is_vle32_vv,
     output logic is_vse32_vv,
     output logic is_vmacc_vv,
@@ -75,7 +74,6 @@ module ISA_decoder(
         
     // ******************   configuration instructions *********************
     assign ITR = instr[29:18];
-//    assign wen_ITR = is_vsetivli;
     
     // for vsetivli
     reg_enr #(3) reg_enr_inst0 

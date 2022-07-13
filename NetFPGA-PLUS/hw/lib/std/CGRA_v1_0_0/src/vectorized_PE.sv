@@ -16,12 +16,9 @@ module vectorized_PE(
     input logic clk,
     input logic rst,
     input logic [2:0] op,
-    output logic [phit_size-1:0] o1_PE_typeC,
-    output logic [phit_size-1:0] o2_PE_typeC,
-    output logic [SIMD_degree-1:0] o1_tlast_PE_typeC,
-    output logic [SIMD_degree-1:0] o2_tlast_PE_typeC,
-    output logic [SIMD_degree-1:0] o1_tvalid1_PE_typeC,
-    output logic [SIMD_degree-1:0] o2_tvalid1_PE_typeC
+    output logic [phit_size-1:0] o_PE_typeC,
+    output logic [SIMD_degree-1:0] o_tlast_PE_typeC,
+    output logic [SIMD_degree-1:0] o_tvalid_PE_typeC
     );
     
     genvar i;
@@ -38,12 +35,9 @@ module vectorized_PE(
             .clk(clk),
             .rst(rst),
             .op(op[2:0]),
-            .out1(o1_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]), 
-            .out2(o2_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]),
-            .t_last_out1(o1_tlast_PE_typeC[i]),
-            .t_last_out2(o2_tlast_PE_typeC[i]),
-            .t_valid_out1(o1_tvalid1_PE_typeC[i]),
-            .t_valid_out2(o2_tvalid1_PE_typeC[i])
+            .out(o_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]), 
+            .t_last_out(o_tlast_PE_typeC[i]),
+            .t_valid_out(o_tvalid_PE_typeC[i])
             );
     end
     endgenerate
