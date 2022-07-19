@@ -32,7 +32,7 @@ module auto_incr_vect(
     input logic load_PC,
     input logic incr_PC,
     input logic is_vmacc_vv,
-    input logic is_streamout,
+    input logic is_vstreamout,
     input logic is_vle32_v,
     input logic is_vse32_v,
     input logic is_vsetivli,
@@ -84,7 +84,7 @@ module auto_incr_vect(
     end
     
     assign change_PC = (load_PC || incr_PC);
-    assign is_vect = is_vse32_v || is_vle32_v || is_streamout || is_vmacc_vv;
+    assign is_vect = is_vse32_v || is_vle32_v || is_vstreamout || is_vmacc_vv;
     assign wen_ITR = ((curr_state_wen_ITR == right_active) & is_vect) || ((curr_state_wen_ITR == left_active) & is_vect) ? 1'b1 : 1'b0;
     
     
@@ -105,7 +105,7 @@ module auto_incr_vect(
     always_comb begin
         case(curr_state_rd)
             waiting: next_state_rd = (wen_ITR) ? count_started: waiting;
-            count_started: next_state_rd = ((is_vmacc_vv || is_streamout || is_vse32_v) && ctr_ITR_rd==ITR_q) ? waiting : count_started;
+            count_started: next_state_rd = ((is_vmacc_vv || is_vstreamout || is_vse32_v) && ctr_ITR_rd==ITR_q) ? waiting : count_started;
             default: next_state_rd = waiting;
         endcase
     end
@@ -120,7 +120,7 @@ module auto_incr_vect(
     
     assign count_rd = (curr_state_rd == count_started) || (curr_state_rd == waiting & wen_ITR)? 1'b1: 1'b0;
     assign count_wr = (curr_state_wr == count_started) || (curr_state_wr == waiting & wen_ITR)? 1'b1: 1'b0;
-    assign done =  ((curr_state_rd == count_started || curr_state_wr == count_started) && ((is_vmacc_vv||is_vle32_v)&&ctr_ITR_wr==ITR_q) || ((is_streamout||is_vse32_v)&&ctr_ITR_rd==ITR_q))? 1'b1: 1'b0;
+    assign done =  ((curr_state_rd == count_started || curr_state_wr == count_started) && ((is_vmacc_vv||is_vle32_v)&&ctr_ITR_wr==ITR_q) || ((is_vstreamout||is_vse32_v)&&ctr_ITR_rd==ITR_q))? 1'b1: 1'b0;
     
     // for read
     always_ff@(posedge clk) begin
@@ -130,7 +130,7 @@ module auto_incr_vect(
 //        else if (wen_ITR) begin
 //            ctr_ITR_rd <= 'b0; 
 //        end
-        else if (count_rd && ctr_ITR_rd!=ITR_q && !stall_rd && (is_vmacc_vv || is_streamout || is_vse32_v)) begin
+        else if (count_rd && ctr_ITR_rd!=ITR_q && !stall_rd && (is_vmacc_vv || is_vstreamout || is_vse32_v)) begin
                 ctr_ITR_rd <= ctr_ITR_rd + 1;
             end
         else if (count_rd && ctr_ITR_rd==ITR_q) begin

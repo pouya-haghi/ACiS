@@ -48,13 +48,13 @@ module sync_FIFO #(parameter fifo_width=32,
 
    always_ff@(posedge clk) begin
            if(rst)
-             dout <= 0;
+             dout <= '0;
            else
              begin
                  if(pop && !empty)
                     dout <= buf_mem[rd_ptr];
                  else
-                    dout <= dout;
+                    dout <= '0;
              end 
      end
 

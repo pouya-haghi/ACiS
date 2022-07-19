@@ -10,7 +10,7 @@ module ISA_decoder(
     input logic clk,
     input logic rst,
     input logic done_steady,
-    output logic ctrl_i_mux2_tvalid,
+    output logic tvalid_RF,
     output logic [4:0] rs1, // source register 1
     output logic [4:0] rs2, // source register 2
     output logic [4:0] rd, // dest register
@@ -150,6 +150,6 @@ module ISA_decoder(
         endcase
     end
     
-    assign ctrl_i_mux2_tvalid = (is_vmacc_vv | t_is_vstreamout)? 1'b1: 1'b0;
+    assign tvalid_RF = (t_is_vstreamout | is_addi | is_add | is_bne)? 1'b1: 1'b0;
    
 endmodule

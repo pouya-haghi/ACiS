@@ -13,7 +13,8 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
     input logic [dwidth_float-1:0] inp1, //stream
     input logic [dwidth_float-1:0] inp2,
     input logic [dwidth_float-1:0] inp3,
-    input logic t_last_in,
+    input logic t_last1_in,
+    input logic t_last2_in,
     input logic t_valid_inp1,
     input logic t_valid_inp2,
 //    input logic t_valid_inp3,
@@ -24,6 +25,9 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
     input logic clk,
     input logic rst
     );
+    
+    logic t_last;
+    assign t_last = t_last1_in || t_last2_in; // output t_last is determined by an OR of input t_lasts (from stream or VRF)
     
     logic [dwidth_float-1:0] o_fp_add;
     logic [dwidth_float-1:0] o_fp_mul;

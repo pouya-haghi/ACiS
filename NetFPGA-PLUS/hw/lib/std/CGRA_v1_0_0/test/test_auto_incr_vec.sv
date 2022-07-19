@@ -10,37 +10,26 @@ module test_auto_incr_vec;
     reg clk;
     reg rst;
     reg [dwidth_RFadd-1:0] ITR;
-    reg wen_ITR;
     reg stall_rd;
     reg stall_wr;
-    reg [dwidth_RFadd-1:0] vr_addr;
+    reg [dwidth_RFadd-1:0] vr_addr1;
+    reg [dwidth_RFadd-1:0] vr_addr2;
     reg [dwidth_RFadd-1:0] vw_addr;
+    reg load_PC;
+    reg incr_PC;
     reg is_vmacc_vv;
     reg is_vstreamout;
-    reg is_vle32_vv;
-    reg is_vse32_vv;
+    reg is_vle32_v;
+    reg is_vse32_v;
+    reg is_vsetivli;
     
-    wire [dwidth_RFadd-1:0] vr_addr_auto_incr;
+    wire wen_ITR;
+    wire [dwidth_RFadd-1:0] vr_addr1_auto_incr;
+    wire [dwidth_RFadd-1:0] vr_addr2_auto_incr;
     wire [dwidth_RFadd-1:0] vw_addr_auto_incr;
     wire done;
     
-    auto_incr_vect auto_incr_vect_inst(
-         .clk(clk), 
-         .rst(rst),
-         .ITR(ITR),
-         .wen_ITR(wen_ITR),
-         .stall_rd(stall_rd), // clk_en
-         .stall_wr(stall_wr),
-         .is_vmacc_vv(is_vmacc_vv),
-         .is_vle32_v(is_vle32_vv),
-         .is_vse32_v(is_vse32_vv),
-         .is_streamout(is_vstreamout),
-         .vr_addr(vr_addr),
-         .vw_addr(vw_addr),
-         .vr_addr_auto_incr(vr_addr_auto_incr),
-         .vw_addr_auto_incr(vw_addr_auto_incr),
-         .done(done) // one clock pulse
-         );
+    auto_incr_vect auto_incr_vect_inst(.*);
     
     always begin
         clk = 1;
@@ -51,51 +40,28 @@ module test_auto_incr_vec;
     
     initial begin
         rst = 1; 
-        ITR <= 8;
-        wen_ITR = 0;
+        ITR = 8;
         stall_rd = 0;
         stall_wr = 0;
-        vr_addr <= 0;
+        vr_addr1 <= 0;
+        vr_addr2 <= 0;
         vw_addr <= 0;
+        load_PC = 0;
+        incr_PC = 0;
         is_vmacc_vv = 0;
-        is_vle32_vv = 0;
-        is_vse32_vv = 0;
+        is_vle32_v = 0;
+        is_vse32_v = 0;
+        is_vsetivli = 0;
         is_vstreamout = 0;
         
         
-        #20; rst = 0;
+        #20; rst = 0; incr_PC = 1;
+        #10; incr_PC = 0;
         
+        is_vsetivli <= 1; #10;
+        is_vmacc_vv <= 1; #10;
+        #90;
         
-        // vmacc
-        #5;
-        wen_ITR = 1; #10;
-        wen_ITR = 0;
-        
-        vr_addr = 12'd8;
-        vw_addr = 12'd16;
-          
-        #10; is_vmacc_vv = 1;
-        #80; is_vmacc_vv = 0;
-        
-        // vse
-        wen_ITR = 1; #10;
-        wen_ITR = 0;
-        
-        vr_addr = 12'd8;
-        vw_addr = 12'd16;
-          
-        #10; is_vse32_vv = 1;
-        #80; is_vse32_vv = 0;
-        
-        // vle
-        wen_ITR = 1; #10;
-        wen_ITR = 0;
-        
-        vr_addr = 12'd8;
-        vw_addr = 12'd16;
-          
-        #10; is_vle32_vv = 1;
-        #80; is_vle32_vv = 0;
         
         
         #40

@@ -56,14 +56,12 @@ module data_path(
     localparam phitplus = phit_size + SIMD_degree; // bundle {tvalid, tdata}
     localparam phitplusplus = phit_size + SIMD_degree*2; // bundle {tlast, tvalid, tdata}
 
-    logic [(2*num_col)-1:0] sel_mux2;
     logic [((num_col)*3)-1:0] op;
     logic [((num_col)*3)-1:0] op_scalar;
-    logic [(phit_size*num_col)-1:0] o_RF;
-    logic [(phit_size*num_col)-1:0] i1_PE_typeC, i2_PE_typeC, i3_PE_typeC, o_PE_typeC; // the last bundle of SIMD_degree signals is for tvalid
-    logic [(phit_size)-1:0] o_PE_typeC; // this directly connects the RD output of the RF to the PE input 
-    logic [(SIMD_degree*num_col)-1:0] i_tvalid1_PE_typeC, i_tvalid2_PE_typeC, o_tvalid_PE_typeC;
-    logic [(SIMD_degree)-1:0] o_tvalid_PE_typeC;
+    logic [(phit_size*num_col)-1:0] o1_RF, o2_RF;
+    logic [(phit_size*num_col)-1:0] o_PE_typeC; // the last bundle of SIMD_degree signals is for tvalid
+    logic [(SIMD_degree*num_col)-1:0] o_tvalid_PE_typeC;
+    logic [(SIMD_degree*num_col)-1:0] tlast1_RF, tlast2_RF;
     logic [(5*num_col)-1:0] rs1, rs2, rd;
     logic [(dwidth_RFadd*num_col)-1:0] vr_addr;
     logic [(dwidth_RFadd*num_col)-1:0] vw_addr;
@@ -94,13 +92,14 @@ module data_path(
     logic [SIMD_degree-1:0] tvalid_stream_in_lane  ;
     logic [SIMD_degree-1:0] tready_stream_in_lane  ; 
     logic [SIMD_degree-1:0] tvalid_stream_out_lane ; 
-    logic [SIMD_degree*num_col-1:0] tlast_stream_in_lane   ; 
     logic [SIMD_degree-1:0] tlast_stream_out_lane  ; 
     logic [SIMD_degree*num_col-1:0] o_tlast_PE_typeC ; 
-    logic [SIMD_degree-1:0] tlast_stream_out_lane_o ; 
+    logic [(phit_size*num_col)-1:0] tdata_stream;
+    logic [(SIMD_degree*num_col)-1:0] tvalid_stream;
+    logic [(SIMD_degree*num_col)-1:0] tlast_stream;
     
     // This part is ISA-specific:
-    logic [num_col-1:0] ctrl_i_mux2_tvalid; //generated internally based on op
+    logic [num_col-1:0] tvalid_RF; //generated internally based on op
     logic [(dwidth_RFadd*num_col)-1:0] ITR;
     logic [num_col-1:0] wen_ITR;
     logic [SIMD_degree-1:0] full_FIFO_in, empty_FIFO_in, full_FIFO_out, empty_FIFO_out;
@@ -128,73 +127,22 @@ module data_path(
     end
     assign done_steady = curr_state_done_loader;
 
-//    Three options for control of stalls (of auto incr)    
-//    a) stall all columns, then un-stall them one at a time as it is their turn to stream-out
-//    b) stall all columns, then un-stall them one at a time as it is their turn to stream-out, then RE-stall them after they have finished their streamout
-//    c) not stall any columns, and only take over when it is their turn to pass-through or streamout.
-    
-    // Stream out control FSM
-    logic streamout_active = 1'b1;
-    logic streamout_inactive = 1'b0;
-    logic curr_state_streamout, next_state_streamout;
-    logic [num_col-1:0] curr_supplier, next_supplier;
-    logic [num_col-1:0] curr_stall_rd_streamout, next_stall_rd_streamout;
-    logic [num_col-1:0] o_tlast_PE_typeC_condensed;
-    logic [num_col-1:0] curr_sel_mux2_1, next_sel_mux2_1;
-    logic [num_col-1:0] curr_sel_mux2_2, next_sel_mux2_2;
+    // Stream out control
     logic [dwidth_RFadd-1:0] streamout_addr;
-    
     logic is_vstreamout_global;
-    
-    always_ff @(posedge clk) begin
-        if (rst) begin
-            curr_state_streamout <= streamout_inactive;
-            curr_supplier <= {{(num_col-1){1'b0}},1'b1}; 
-            curr_stall_rd_streamout <= {{(num_col-1){1'b1}},1'b0};
-            curr_sel_mux2_1 <= {(num_col){1'b1}};
-            curr_sel_mux2_2 <= {(num_col){1'b1}};
-            streamout_addr <= '0;
-            is_vstreamout_global <= 1'b0;
-        end else begin
-            curr_state_streamout <= next_state_streamout;
-            curr_supplier <= next_supplier;
-            curr_stall_rd_streamout <= next_stall_rd_streamout;
-            curr_sel_mux2_1 <= next_sel_mux2_1;
-            curr_sel_mux2_2 <= next_sel_mux2_2;
-        end
-    end    
-    
-    always_comb begin
-        case(curr_state_streamout)
-            // If curr col is last and tlast of last col PE is high
-            streamout_active: begin
-                next_state_streamout = (curr_supplier[num_col-1] && (&o_tlast_PE_typeC[SIMD_degree*(num_col)-1:SIMD_degree*(num_col-1)])) ? streamout_inactive : streamout_active;
-                is_vstreamout_global = 1'b1;
-                // if curr_supplier is not stalled and tlast goes high, incr next supplier and who to *not* stall
-                if (|(curr_supplier & !curr_stall_rd_streamout & o_tlast_PE_typeC_condensed)) begin
-                    next_supplier = curr_supplier<<1;
-                    next_sel_mux2_1 = curr_sel_mux2_1<<1; 
-                    next_sel_mux2_2 = {curr_sel_mux2_2[num_col-2:0],1'b1}; 
-                end
-            end
-            streamout_inactive: begin
-                // If any streamout go high, setup control signals
-                if (|is_vstreamout) begin
-                    next_state_streamout = streamout_active;
-                    next_sel_mux2_1 = {{(num_col-1){1'b0}},1'b1};
-                    next_sel_mux2_2 = {{(num_col-1){1'b1}},1'b0};
-                    streamout_addr = vr_addr[dwidth_RFadd-1:0];
-                end else begin
-                    next_state_streamout = streamout_inactive;
-                    next_supplier = {{(num_col-1){1'b0}},1'b1}; 
-                    next_sel_mux2_1 = {(num_col){1'b1}};
-                    next_sel_mux2_2 = {(num_col){1'b1}};
-                    is_vstreamout_global <= 1'b0;
-                end
-            end            
-        endcase
-    end
- 
+    logic [num_col-1:0] supplier;
+    logic [num_col-1:0] sel_mux2;
+    vstreamout_control vstreamout_control_inst0(
+        .clk(clk),
+        .rst(rst),
+        .is_vstreamout(is_vstreamout),
+        .done(done_auto_incr),
+        .rd_addr(vr_addr[dwidth_RFadd-1:0]),
+        .supplier(supplier),
+        .streamout_addr(streamout_addr),
+        .is_vstreamout_global(is_vstreamout_global),
+        .sel_mux2(sel_mux2));
+     
     // Stream in/out concatination
     assign tready_stream_in = &tready_stream_in_lane;
     assign tvalid_stream_out = &tvalid_stream_out_lane;
@@ -213,7 +161,7 @@ module data_path(
             .push(tvalid_stream_in_lane[i] && !full_FIFO_in[i]),
             .pop(!t_stall && !empty_FIFO_in[i]), 
             .din({tlast_stream_in, tvalid_stream_in_lane[i], tdata_stream_in[((i+1)*dwidth_float)-1:i*dwidth_float]}),
-            .dout({FIFO_out_tlast[i], FIFO_out_tvalid[i], FIFO_out_tdata[((i+1)*dwidth_float)-1:i*dwidth_float]}),
+            .dout({tlast_stream[i],tvalid_stream[i], tdata_stream[((i+1)*dwidth_float)-1:i*dwidth_float]}),
             .empty(empty_FIFO_in[i]),
             .full(full_FIFO_in[i])
             );
@@ -228,19 +176,18 @@ module data_path(
     generate 
         for (j=0; j<num_col; j++) begin
             assign stall_HBM[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j])));
-            assign stall_rd_autovect[j] = (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_i[j] || (is_vstreamout_global & !curr_supplier[j])) ;
+            assign stall_rd_autovect[j] = (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_i[j] || (is_vstreamout_global & !supplier[j])) ;
             assign stall_wr_autovect[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_o[j]);
             // if it is vmacc and tvalids are zero then you should stall auto_vect but not input FIFO 
-            assign valid_PE_i[j] = (&i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & (&i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]);
+            assign valid_PE_i[j] = (&tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & tvalid_RF[j];
             assign valid_PE_o[j] = (&o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]);
-            assign o_tlast_PE_typeC_condensed[j] = (&o_tlast_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]);
 //            assign rready_HBM[j] = 1'b1;
             
             ISA_decoder ISA_decoder_inst
             (.instr(instr[((j+1)*dwidth_inst)-1:j*dwidth_inst]),
              .clk(clk),
              .rst(rst),
-             .ctrl_i_mux2_tvalid(ctrl_i_mux2_tvalid[j]),
+             .tvalid_RF(tvalid_RF[j]),
              .rs1(rs1[((j+1)*5)-1:j*5]),
              .rs2(rs2[((j+1)*5)-1:j*5]),
              .rd(rd[((j+1)*5)-1:j*5]),
@@ -279,7 +226,7 @@ module data_path(
              .is_vmacc_vv(is_vmacc_vv[j]),
              .is_vle32_v(is_vle32_vv[j]),
              .is_vse32_v(is_vse32_vv[j]),
-             .is_streamout(is_vstreamout_global),
+             .is_vstreamout(is_vstreamout_global),
              .is_vsetivli(is_vsetivli[j]),
              .vr_addr1((is_vstreamout_global) ? streamout_addr : vr_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vr_addr2(vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
@@ -294,14 +241,17 @@ module data_path(
              );
              
              // vectorized regFile
-             regFile regFile_inst0(.d_in(is_vmv_vi[j]?{(phit_size){1'b0}}:(is_vmacc_vv[j]?o_PE_typeC[(phit_size*(j+1))-1:phit_size*j]:user_rdata_HBM[(phit_size*(j+1))-1:phit_size*j])), // based on op I would choose wdata, o_RF or HBM. vmv.v.i is not supported: ctrl_din_RF[(j*3)+0]==1 :rdata_config_table[(phit_size*(j+1))-1:phit_size*j]
+             regFile regFile_inst0(
+             .d_in(is_vmv_vi[j] ? {(phit_size){1'b0}} : (is_vmacc_vv[j] ? o_PE_typeC[(phit_size*(j+1))-1:phit_size*j] : user_rdata_HBM[(phit_size*(j+1))-1:phit_size*j])), // based on op I would choose wdata, o1_RF or HBM. vmv.v.i is not supported: ctrl_din_RF[(j*3)+0]==1 :rdata_config_table[(phit_size*(j+1))-1:phit_size*j]
              .clk(clk),
              .rd_addr1(vr_addr1_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_RF is one of the fields in tables (auto-increment address generator)
              .rd_addr2(vr_addr2_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_2 is ONLY for vmacc, is VD iterated 
              .wr_addr(vw_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // write addr, delayed only if not vse
+             .tlast_in(is_vmv_vi[j] ? {(SIMD_degree){1'b0}} : (is_vmacc_vv[j] ? o_tlast_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j] : {(SIMD_degree){1'b0}})),
              .wen(is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_PE_o[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
-             .d_out1(o_RF[(phit_size*(j+1))-1:phit_size*j]),
-             .d_out2(i3_PE_typeC[(phit_size*(j+1))-1:phit_size*j]));
+             .d_out1(o1_RF[(phit_size*(j+1))-1:phit_size*j]),
+             .d_out2(o2_RF[(phit_size*(j+1))-1:phit_size*j]),
+             .tlast_out1(tlast1_RF[(SIMD_degree*(j+1))-1:SIMD_degree*j]));
              
              // scalar regFile   
              regFile_scalar regFile_scalar_inst0(
@@ -359,19 +309,19 @@ module data_path(
              .m_axi_bready(bready_HBM[j]),
              .s_axis_tvalid(is_vse32_vv[j]),
              .s_axis_tready(user_wready_HBM[j]),
-             .s_axis_tdata(o_RF[(phit_size*(j+1))-1:phit_size*j]) 
+             .s_axis_tdata(o1_RF[(phit_size*(j+1))-1:phit_size*j]) 
              );
              
              // vectorized PE
              vectorized_PE vectorized_PE_inst0
              (
-             .i1_PE_typeC(i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
-             .i2_PE_typeC(i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
-             .i3_PE_typeC(i3_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
-             .i_tlast_PE_typeC(tlast_stream_in_lane[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
-             .i_tvalid1_PE_typeC(i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
-             .i_tvalid2_PE_typeC(i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
-//             .i_tvalid3_PE_typeC(i_tvalid3_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
+             .i1_PE_typeC(tdata_stream[(phit_size*(j+1))-1:phit_size*j]),
+             .i2_PE_typeC(o1_RF[(phit_size*(j+1))-1:phit_size*j]),
+             .i3_PE_typeC(o2_RF[(phit_size*(j+1))-1:phit_size*j]),
+             .i_tlast1_PE_typeC(tlast_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
+             .i_tlast2_PE_typeC(tlast1_RF[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
+             .i_tvalid1_PE_typeC(tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
+             .i_tvalid2_PE_typeC({(SIMD_degree){tvalid_RF[j]}}),
              .clk(clk),
              .rst(rst),
              .op(op[((j+1)*3)-1:j*3]),
@@ -405,89 +355,38 @@ module data_path(
               .incr_PC(incr_PC[j]),
               .load_value_PC(load_value_PC[((j+1)*12)-1:j*12])
              );
-             
-//        if (j == 0) begin
-//            mux2 #(phitplusplus) mux2_inst0_if ({FIFO_out_tlast, FIFO_out_tvalid, FIFO_out_tdata}, 
-//                                                {(phitplusplus){1'b0}}, 
-//                                                sel_mux2[0], 
-//                                                {tlast_stream_in_lane[(SIMD_degree*(j+1))-1:SIMD_degree*j], i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
-             
-//            mux2 #(phitplus) mux2_inst1_if ({{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, 
-//                                            {(phitplus){1'b0}}, 
-//                                            sel_mux2[1], 
-//                                            {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});  // second input was considered for imm (but not yet supported b/c it is not in riscv): {{(SIMD_degree){tvalid_config_table[0]}}, {SIMD_degree{imm[(dwidth_float*1)-1:dwidth_float*0]}}}  
-            
-//            mux2 #(phitplusplus) mux2_inst2_if ({o_tlast_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], o_PE_typeC[(phit_size*(j+1))-1:phit_size*j]},
-//                                                {tlast_stream_out_lane_2[(SIMD_degree*(j+1))-1:SIMD_degree*j], o2_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], o2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]},
-//                                                sel_mux2[2],
-//                                                {tlast_stream_out_lane_2[(SIMD_degree*(j+1))-1:SIMD_degree*j], o2_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], o2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]}); //wrong
-            
-//            assign sel_mux2[0] = 1'b0;
-//            assign sel_mux2[1] = 1'b0;
-//            assign sel_mux2[2] = 1'b0;
-//        end
-//        else begin
-//             mux2 #(phitplusplus) mux2_inst0_else ({o_tlast_PE_typeC[(SIMD_degree*j)-1:SIMD_degree*(j-1)], o_tvalid_PE_typeC[(SIMD_degree*j)-1:SIMD_degree*(j-1)], o_PE_typeC[(phit_size*j)-1:(phit_size*(j-1))]}, 
-//                                                   {tlast_stream_out_lane_2[(SIMD_degree*j)-1:SIMD_degree*(j-1)], o2_tvalid1_PE_typeC[(SIMD_degree*j)-1:SIMD_degree*(j-1)], o2_PE_typeC[(phit_size*j)-1:(phit_size*(j-1))]}, // need to add different last
-//                                                   sel_mux2[(j*3)+0], 
-//                                                   {tlast_stream_in_lane[(SIMD_degree*(j+1))-1:SIMD_degree*j], i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
-             
-//             mux2 #(phitplus) mux2_inst1_else ({{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, 
-//                                               {(phitplus){1'b0}}, 
-//                                               sel_mux2[(j*3)+1], 
-//                                               {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});  // second input was considered for imm (but not yet supported): {{(SIMD_degree){tvalid_config_table[0]}}, {SIMD_degree{imm[(dwidth_float*1)-1:dwidth_float*0]}}}
-            
-//             assign sel_mux2[(j*3)+0] = 1'b1;
-//             assign sel_mux2[(j*3)+1] = 1'b0;
-//             assign sel_mux2[(j*3)+2] = 1'b0;
-//        end
         
         
-        if (j == 0) begin
-            mux2 #(phitplusplus) mux2_inst0_if ({(phitplusplus){1'b0}}, 
-                                                {FIFO_out_tlast, FIFO_out_tvalid, FIFO_out_tdata}, 
-                                                curr_sel_mux2_1[0], 
-                                                {tlast_stream_in_lane[(SIMD_degree*(j+1))-1:SIMD_degree*j], i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
-             
-            mux2 #(phitplus) mux2_inst1_if ({(phitplus){1'b0}}, 
-                                            {{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, 
-                                            curr_sel_mux2_2[1], 
-                                            {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]}); 
-            
+        if (j == num_col-1) begin
+            mux2 #(phitplusplus) mux2_inst0 ({tlast_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j], (is_vstreamout_global) ? tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j] : {SIMD_degree{1'b0}}, tdata_stream[(phit_size*(j+1))-1:phit_size*j]}, 
+                                             {tlast1_RF[(SIMD_degree*(j+1))-1:SIMD_degree*j], {(SIMD_degree){is_vstreamout_global & supplier[j]}}, o1_RF[(phit_size*(j+1))-1:(phit_size*j)]}, 
+                                             sel_mux2[j], 
+                                             {FIFO_out_tlast, FIFO_out_tvalid, FIFO_out_tdata});
         end
         else begin
-             mux2 #(phitplusplus) mux2_inst0_else ({(phitplusplus){1'b0}},
-                                                   {o_tlast_PE_typeC[(SIMD_degree*j)-1:SIMD_degree*(j-1)], o_tvalid_PE_typeC[(SIMD_degree*j)-1:SIMD_degree*(j-1)], o_PE_typeC[(phit_size*j)-1:(phit_size*(j-1))]}, 
-                                                   curr_sel_mux2_1[j], 
-                                                   {tlast_stream_in_lane[(SIMD_degree*(j+1))-1:SIMD_degree*j], i_tvalid1_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i1_PE_typeC[(phit_size*(j+1))-1:phit_size*j]});
-             
-             mux2 #(phitplus) mux2_inst1_else ({(phitplus){1'b0}}, 
-                                               {{(SIMD_degree){ctrl_i_mux2_tvalid[j]}}, o_RF[(phit_size*(j+1))-1:phit_size*j]}, 
-                                               curr_sel_mux2_1[j], 
-                                               {i_tvalid2_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j], i2_PE_typeC[(phit_size*(j+1))-1:phit_size*j]}); 
+            mux2 #(phitplusplus) mux2_inst1 ({tlast_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j], (is_vstreamout_global) ? tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j] : {SIMD_degree{1'b0}}, tdata_stream[(phit_size*(j+1))-1:phit_size*j]},
+                                             {tlast1_RF[(SIMD_degree*(j+1))-1:SIMD_degree*j], {(SIMD_degree){is_vstreamout_global & supplier[j]}}, o1_RF[(phit_size*(j+1))-1:(phit_size*j)]}, 
+                                             sel_mux2[j], 
+                                             {tlast_stream[(SIMD_degree*(j+2))-1:SIMD_degree*(j+1)], tvalid_stream[(SIMD_degree*(j+2))-1:SIMD_degree*(j+1)], tdata_stream[(phit_size*(j+2))-1:phit_size*(j+1)]});
         end
              
         end
     endgenerate   
 
     generate
-        for (i=0; i<SIMD_degree; i++) begin
-            assign tkeep_stream_out[i*4  ] = tvalid_stream_out_lane[i];
-            assign tkeep_stream_out[i*4+1] = tvalid_stream_out_lane[i];
-            assign tkeep_stream_out[i*4+2] = tvalid_stream_out_lane[i];
-            assign tkeep_stream_out[i*4+3] = tvalid_stream_out_lane[i];
-            
+        for (i=0; i<SIMD_degree; i++) begin            
             sync_FIFO #(dwidth_float+2, 16) sync_FIFO_inst1(
             .clk(clk),
             .rst(rst),
-            .push(o_tvalid_PE_typeC[(SIMD_degree*(num_col-1))+i] && is_vstreamout && !full_FIFO_out[i] && curr_supplier[num_col]), // fixing a bug: instead of tvalid_stream_in[i], we use last_PE valid signal
+            .push(FIFO_out_tvalid[i] && is_vstreamout_global && !full_FIFO_out[i]), // fixing a bug: instead of tvalid_stream_in[i], we use last_PE valid signal
             .pop(tready_stream_out && !empty_FIFO_out[i]),
-            .din({o_tlast_PE_typeC[(SIMD_degree*(num_col-1))+i], o_tvalid_PE_typeC[i],           o_PE_typeC[(dwidth_float*(i+1))-1:dwidth_float*i]}),
+            .din({FIFO_out_tlast[i], FIFO_out_tvalid[i],FIFO_out_tdata[(dwidth_float*(i+1))-1:dwidth_float*i]}),
             .dout({tlast_stream_out_lane[i], tvalid_stream_out_lane[i], tdata_stream_out[((i+1)*dwidth_float)-1:i*dwidth_float]}),
             .empty(empty_FIFO_out[i]),
             .full(full_FIFO_out[i])
             );
-
+            
+            assign tkeep_stream_out[i*4+3:i*4] = {4{tvalid_stream_out_lane[i]}}; 
         end
     endgenerate
         
