@@ -54,7 +54,7 @@ module sync_FIFO #(parameter fifo_width=32,
                  if(pop && !empty)
                     dout <= buf_mem[rd_ptr];
                  else
-                    dout <= '0;
+                    dout <= '0; // we need this because we should make sure to set tvalid to zero when pop==0 (the above condition is not true)
              end 
      end
 
