@@ -60,6 +60,8 @@ module test_datapath;
         clk = !clk;
     end
     
+    integer i;
+    
  initial begin
     done_loader <= 0;
     instr <= 0;
@@ -115,6 +117,7 @@ module test_datapath;
     
     //////////////////////// Vector Instructions ////////////////////////
     
+    // Golden Testbench ***************************************
     // vsetilvi
     // vlen = 8 = 12'b1000                    1,1         8       0     7     0     inst
     instr[dwidth_inst-1:0] <=               {2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57}; // vsetivli x0, 0, e32, m2, 2048 
@@ -123,7 +126,9 @@ module test_datapath;
     // vle32                                     0       rs1      0    rd   inst
     instr[dwidth_inst-1:0] <=               {12'b0, 5'b00010 , 3'b0, 5'h1, 7'h07}; // vle32.vv v0, (x2)
     instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'b0, 5'b00010 , 3'b0, 5'h1, 7'h07}; // vle32.vv v0, (x2)
-    #(clk_pd*delay_HBM); // 8 cycles delay
+    arready_HBM <= {(num_col){1'b1}}; #clk_pd;
+//    #(clk_pd*delay_HBM); // 6 cycles delay
+    arready_HBM <= {(num_col){1'b0}};
     rvalid_HBM <= {(num_col){1'b1}};
     // stream in data
     rdata_HBM <= {512'h40000000, 512'h40000000}; #clk_pd;//2
@@ -133,13 +138,16 @@ module test_datapath;
     rdata_HBM <= {512'h40c00000, 512'h40c00000}; #clk_pd;//6
     rdata_HBM <= {512'h40e00000, 512'h40e00000}; #clk_pd;//7
     rdata_HBM <= {512'h41000000, 512'h41000000}; #clk_pd;//8
+    rlast_HBM <= {(num_col){1'b1}};
     rdata_HBM <= {512'h41100000, 512'h41100000}; #clk_pd;//9
-    rvalid_HBM <= {(num_col){1'b0}};
+    rvalid_HBM <= {(num_col){1'b0}}; rlast_HBM <= {(num_col){1'b0}};
     
     // vle32                                     0       rs1      0    rd   inst
     instr[dwidth_inst-1:0] <=               {12'b0, 5'b00010 , 3'b0, 5'h3, 7'h07}; // vle32.vv v0, (x2)
     instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'b0, 5'b00010 , 3'b0, 5'h3, 7'h07}; // vle32.vv v0, (x2)
-    #(clk_pd*delay_HBM); // 8 cycles delay
+    arready_HBM <= {(num_col){1'b1}}; #clk_pd;
+//    #(clk_pd*delay_HBM); // 8 cycles delay
+    arready_HBM <= {(num_col){1'b0}};
     rvalid_HBM <= {(num_col){1'b1}};
     // stream in data
     rdata_HBM <= {512'h40000000, 512'h40000000}; #clk_pd;//2
@@ -149,14 +157,21 @@ module test_datapath;
     rdata_HBM <= {512'h40c00000, 512'h40c00000}; #clk_pd;//6
     rdata_HBM <= {512'h40e00000, 512'h40e00000}; #clk_pd;//7
     rdata_HBM <= {512'h41000000, 512'h41000000}; #clk_pd;//8
+    rlast_HBM <= {(num_col){1'b1}};
     rdata_HBM <= {512'h41100000, 512'h41100000}; #clk_pd;//9
-    rvalid_HBM <= {(num_col){1'b0}};
+    rvalid_HBM <= {(num_col){1'b0}}; rlast_HBM <= {(num_col){1'b0}};
     
     //vmacc                                       func     0   vs2   vs1    000    vd   inst
     instr[dwidth_inst-1:0] <=               {6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd3, 7'h57}; // vfmacc.xv v0, (x2)
     instr[(2*dwidth_inst)-1:dwidth_inst] <= {6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd3, 7'h57}; // vfmacc.xv v0, (x2)
     //Stream in
-    tvalid_stream_in <= 16'hffff;
+    tvalid_stream_in <= 1'b1;
+    tkeep_stream_in <= {(phit_size/8){1'b1}};
+    // simulated header data
+    for (i = 0; i < 40; i++) begin
+        tdata_stream_in <= i; #clk_pd;//2
+    end
+    // Actual Data stream in (payload)
     tdata_stream_in <= 512'h40000000; #clk_pd;//2 
     tdata_stream_in <= 512'h40400000; #clk_pd;//3 
     tdata_stream_in <= 512'h40800000; #clk_pd;//4 
@@ -164,18 +179,19 @@ module test_datapath;
     tdata_stream_in <= 512'h40c00000; #clk_pd;//6 
     tdata_stream_in <= 512'h40e00000; #clk_pd;//7 
     tdata_stream_in <= 512'h41000000; #clk_pd;//8 
+    tlast_stream_in <= 1'b1;
     tdata_stream_in <= 512'h41100000; #clk_pd;//9 
-    tvalid_stream_in <= 16'h0;
+    tvalid_stream_in <= '0;
+    tkeep_stream_in <= {(phit_size/8){1'b0}};
+    tlast_stream_in <= 1'b0;
     #(clk_pd*18);
     
     // vstreamout                                                
     tready_stream_out <= 1'b1;                                   
-    instr[dwidth_inst-1:0] <=               {20'b0, 5'b0, 7'h7F};
+    instr[dwidth_inst-1:0] <=               {20'b0, 5'h3, 7'h7F};
     instr[(2*dwidth_inst)-1:dwidth_inst] <= 32'b0;
     #(clk_pd*16);                                                                                  
-                                  
-    tready_stream_out <= 1'b0;                                   
-    
+                                      
     // vse32                                     0       rs1      0    rd   inst
     instr[dwidth_inst-1:0] <=               {12'b0, 5'b00010 , 3'b0, 5'd3, 7'h27}; // vse32.vv v0, (x2)
     instr[(2*dwidth_inst)-1:dwidth_inst] <= {12'b0, 5'b00010 , 3'b0, 5'd3, 7'h27}; // vse32.vv v0, (x2)
@@ -187,6 +203,9 @@ module test_datapath;
     
     tready_stream_out <= 1'b0;
     
+    // end golden****************************************
+
+
 //    //////////////////////// Scalar Instructions ////////////////////////
 //    // LUI                                         imm    rd   inst
 //    instr[dwidth_inst-1:0] <=               {20'h12345, 5'h1, 7'h37};

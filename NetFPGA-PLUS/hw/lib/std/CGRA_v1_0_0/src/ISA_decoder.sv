@@ -105,7 +105,7 @@ module ISA_decoder(
     assign is_vect = |{is_vmacc_vv, is_vle32_vv, is_vse32_vv, is_vmv_vi, is_vstreamout};
     assign is_not_vect = !is_vect;
     // vs1 is hardwire to O1 or O2 (no matter what you put in)
-    assign vs2 = (is_vse32_vv)? instr[11:7]: instr[24:20]; // vs2
+    assign vs2 = (is_vse32_vv || is_vstreamout)? instr[11:7]: instr[24:20]; // vs2
     assign vd = instr[11:7]; // vd
    
    
@@ -150,6 +150,6 @@ module ISA_decoder(
         endcase
     end
     
-    assign tvalid_RF = (t_is_vstreamout | is_addi | is_add | is_bne)? 1'b1: 1'b0;
+    assign tvalid_RF = (t_is_vstreamout | is_addi | is_add | is_bne | is_vmacc_vv)? 1'b1: 1'b0;
    
 endmodule
