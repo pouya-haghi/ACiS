@@ -21,7 +21,7 @@ module disassembler(
     
     always @(posedge clk) begin
        if(rst) begin
-          state_prev <= IDLE;
+          state <= IDLE;
        end
        else begin
           state_prev <= state;

@@ -41,9 +41,9 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
     localparam [2:0] MACC= 3'b011;
     localparam [2:0] NOP = 3'b100;
     
-    logic t_valid_inp1_d, t_valid_inp2_d, t_valid_inp3_d, t_valid_mul_d;
-    logic [dwidth_float-1:0] inp1_d, inp2_d, inp3_d, o_fp_mul_d;
-    logic t_last_d, t_last_mul, t_last_mul_d, t_last_add; 
+    logic t_valid_inp1_d, t_valid_inp1_dd, t_valid_inp2_d, t_valid_inp3_d, t_valid_mul_d;
+    logic [dwidth_float-1:0] inp1_d, inp1_dd, inp2_d, inp3_d, o_fp_mul_d;
+    logic t_last_d, t_last_dd, t_last_mul, t_last_mul_d, t_last_add; 
     logic [2:0] op_d, op_dd;
 //    logic t_valid_out_t, t_valid_out_tt;
 //    logic [dwidth_float-1:0] out_t, out_tt;
@@ -111,12 +111,12 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
             end
             ACC: begin // NOP for now
                 out = inp1_dd;
-                t_valid_out = t_valid_add;
+                t_valid_out = t_valid_inp1_dd;
                 t_last_out = t_last_dd;
             end
             MUL: begin
                 out = o_fp_mul_d;
-                t_valid_out = t_valid_inp1_dd;
+                t_valid_out = t_valid_mul_d;
                 t_last_out = t_last_mul_d;
             end
             MACC: begin
@@ -126,7 +126,7 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
             end
             NOP: begin
                 out = inp1_dd;
-                t_valid_out = t_valid_add;
+                t_valid_out = t_valid_inp1_dd;
                 t_last_out = t_last_dd;
             end
         endcase    
