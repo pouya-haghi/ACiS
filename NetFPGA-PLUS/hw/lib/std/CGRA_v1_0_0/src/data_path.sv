@@ -131,7 +131,7 @@ module data_path(
     logic [dwidth_RFadd-1:0] streamout_addr;
     logic is_vstreamout_global;
     logic [num_col-1:0] supplier;
-    logic [num_col-1:0] mux_control;
+    logic [num_col-1:0] sel_mux2;
     vstreamout_control vstreamout_control_inst0(
         .clk(clk),
         .rst(rst),
@@ -141,7 +141,7 @@ module data_path(
         .supplier(supplier),
         .streamout_addr(streamout_addr),
         .is_vstreamout_global(is_vstreamout_global),
-        .mux_control(mux_control));
+        .mux_control(sel_mux2));
      
     // Stream in/out concatination
     assign tready_stream_in = &tready_stream_in_lane;
@@ -181,8 +181,6 @@ module data_path(
         .empty(empty_FIFO_in),
         .state(streamin_state));
         
-    logic [num_col-1:0] sel_mux2;
-    assign sel_mux2 = mux_control & {num_col{!(streamin_state == 2'b01)}};
     
     assign t_stall = (|stall_HBM) || (|is_not_vect);
     
@@ -190,7 +188,7 @@ module data_path(
     generate 
         for (j=0; j<num_col; j++) begin
             assign stall_HBM[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j])));
-            assign stall_rd_autovect[j] = (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_i[j] || (is_vstreamout_global & !supplier[j])) || (streamin_state == 2'b01);
+            assign stall_rd_autovect[j] = (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_i[j] || (is_vstreamout_global & !supplier[j]));
             assign stall_wr_autovect[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_o[j]);
             // if it is vmacc and tvalids are zero then you should stall auto_vect but not input FIFO 
             assign valid_PE_i[j] = (&tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & tvalid_RF[j];
@@ -339,6 +337,7 @@ module data_path(
              .clk(clk),
              .rst(rst),
              .op(op[((j+1)*3)-1:j*3]),
+             .state(streamin_state),
              .o_PE_typeC(o_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
              .o_tlast_PE_typeC(o_tlast_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
              .o_tvalid_PE_typeC(o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j])
@@ -361,7 +360,6 @@ module data_path(
               .done_auto_incr(done_auto_incr[j]),
               .is_bne(is_bne[j]),
               .is_vstreamout(is_vstreamout_global),
-              .streamin_state(streamin_state),
               .flag_neq(flag_neq[j]),
               .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
               .done_steady(done_steady),
@@ -395,7 +393,7 @@ module data_path(
             sync_FIFO #(dwidth_float+2, 16) sync_FIFO_inst1(
             .clk(clk),
             .rst(rst),
-            .push(FIFO_out_tvalid[i] && (is_vstreamout_global || (streamin_state == 2'b01)) && !full_FIFO_out[i]), // fixing a bug: instead of tvalid_stream_in[i], we use last_PE valid signal
+            .push(FIFO_out_tvalid[i] && is_vstreamout_global && !full_FIFO_out[i]), // fixing a bug: instead of tvalid_stream_in[i], we use last_PE valid signal
             .pop(tready_stream_out && !empty_FIFO_out[i]),
             .din({FIFO_out_tlast[i], FIFO_out_tvalid[i],FIFO_out_tdata[(dwidth_float*(i+1))-1:dwidth_float*i]}),
             .dout({tlast_stream_out_lane[i], tvalid_stream_out_lane[i], tdata_stream_out[((i+1)*dwidth_float)-1:i*dwidth_float]}),

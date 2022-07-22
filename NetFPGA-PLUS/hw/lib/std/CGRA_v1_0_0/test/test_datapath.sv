@@ -131,15 +131,15 @@ module test_datapath;
     arready_HBM <= {(num_col){1'b0}};
     rvalid_HBM <= {(num_col){1'b1}};
     // stream in data
-    rdata_HBM <= {512'h40000000, 512'h40000000}; #clk_pd;//2
-    rdata_HBM <= {512'h40400000, 512'h40400000}; #clk_pd;//3
-    rdata_HBM <= {512'h40800000, 512'h40800000}; #clk_pd;//4
-    rdata_HBM <= {512'h40a00000, 512'h40a00000}; #clk_pd;//5
-    rdata_HBM <= {512'h40c00000, 512'h40c00000}; #clk_pd;//6
-    rdata_HBM <= {512'h40e00000, 512'h40e00000}; #clk_pd;//7
-    rdata_HBM <= {512'h41000000, 512'h41000000}; #clk_pd;//8
-    rlast_HBM <= {(num_col){1'b1}};
-    rdata_HBM <= {512'h41100000, 512'h41100000}; #clk_pd;//9
+    rdata_HBM <= {192'b0, 32'h40000000, 288'b0, 192'b0, 32'h40000000, 288'b0}; #clk_pd;//2
+    rdata_HBM <= {192'b0, 32'h40400000, 288'b0, 192'b0, 32'h40400000, 288'b0}; #clk_pd;//3
+    rdata_HBM <= {192'b0, 32'h40800000, 288'b0, 192'b0, 32'h40800000, 288'b0}; #clk_pd;//4
+    rdata_HBM <= {192'b0, 32'h40a00000, 288'b0, 192'b0, 32'h40a00000, 288'b0}; #clk_pd;//5
+    rdata_HBM <= {192'b0, 32'h40c00000, 288'b0, 192'b0, 32'h40c00000, 288'b0}; #clk_pd;//6
+    rdata_HBM <= {192'b0, 32'h40e00000, 288'b0, 192'b0, 32'h40e00000, 288'b0}; #clk_pd;//7
+    rdata_HBM <= {192'b0, 32'h41000000, 288'b0, 192'b0, 32'h41000000, 288'b0}; #clk_pd;//8
+    rlast_HBM <= {(num_col){1'b1}};                                                       
+    rdata_HBM <= {192'b0, 32'h41100000, 288'b0, 192'b0, 32'h41100000, 288'b0}; #clk_pd;//9
     rvalid_HBM <= {(num_col){1'b0}}; rlast_HBM <= {(num_col){1'b0}};
     
     // vle32                                     0       rs1      0    rd   inst
@@ -150,15 +150,15 @@ module test_datapath;
     arready_HBM <= {(num_col){1'b0}};
     rvalid_HBM <= {(num_col){1'b1}};
     // stream in data
-    rdata_HBM <= {512'h40000000, 512'h40000000}; #clk_pd;//2
-    rdata_HBM <= {512'h40400000, 512'h40400000}; #clk_pd;//3
-    rdata_HBM <= {512'h40800000, 512'h40800000}; #clk_pd;//4
-    rdata_HBM <= {512'h40a00000, 512'h40a00000}; #clk_pd;//5
-    rdata_HBM <= {512'h40c00000, 512'h40c00000}; #clk_pd;//6
-    rdata_HBM <= {512'h40e00000, 512'h40e00000}; #clk_pd;//7
-    rdata_HBM <= {512'h41000000, 512'h41000000}; #clk_pd;//8
+    rdata_HBM <= {192'b0, 32'h40000000, 288'b0, 192'b0, 32'h40000000, 288'b0}; #clk_pd;//2
+    rdata_HBM <= {192'b0, 32'h40400000, 288'b0, 192'b0, 32'h40400000, 288'b0}; #clk_pd;//3
+    rdata_HBM <= {192'b0, 32'h40800000, 288'b0, 192'b0, 32'h40800000, 288'b0}; #clk_pd;//4
+    rdata_HBM <= {192'b0, 32'h40a00000, 288'b0, 192'b0, 32'h40a00000, 288'b0}; #clk_pd;//5
+    rdata_HBM <= {192'b0, 32'h40c00000, 288'b0, 192'b0, 32'h40c00000, 288'b0}; #clk_pd;//6
+    rdata_HBM <= {192'b0, 32'h40e00000, 288'b0, 192'b0, 32'h40e00000, 288'b0}; #clk_pd;//7
+    rdata_HBM <= {192'b0, 32'h41000000, 288'b0, 192'b0, 32'h41000000, 288'b0}; #clk_pd;//8
     rlast_HBM <= {(num_col){1'b1}};
-    rdata_HBM <= {512'h41100000, 512'h41100000}; #clk_pd;//9
+    rdata_HBM <= {192'b0, 32'h41100000, 288'b0, 192'b0, 32'h41100000, 288'b0}; #clk_pd;//9
     rvalid_HBM <= {(num_col){1'b0}}; rlast_HBM <= {(num_col){1'b0}};
     
     //vmacc                                       func     0   vs2   vs1    000    vd   inst
@@ -167,20 +167,17 @@ module test_datapath;
     //Stream in
     tvalid_stream_in <= 1'b1;
     tkeep_stream_in <= {(phit_size/8){1'b1}};
-    // simulated header data
-    for (i = 0; i < 40; i++) begin
-        tdata_stream_in <= i; #clk_pd;//2
-    end
+
     // Actual Data stream in (payload)
-    tdata_stream_in <= 512'h40000000; #clk_pd;//2 
-    tdata_stream_in <= 512'h40400000; #clk_pd;//3 
-    tdata_stream_in <= 512'h40800000; #clk_pd;//4 
-    tdata_stream_in <= 512'h40a00000; #clk_pd;//5 
-    tdata_stream_in <= 512'h40c00000; #clk_pd;//6 
-    tdata_stream_in <= 512'h40e00000; #clk_pd;//7 
-    tdata_stream_in <= 512'h41000000; #clk_pd;//8 
+    tdata_stream_in <= {192'b0, 32'h40000000, 288'h123456789}; #clk_pd;//2 
+    tdata_stream_in <= {192'b0, 32'h40400000, 288'b0}; #clk_pd;//3 
+    tdata_stream_in <= {192'b0, 32'h40800000, 288'b0}; #clk_pd;//4 
+    tdata_stream_in <= {192'b0, 32'h40a00000, 288'b0}; #clk_pd;//5 
+    tdata_stream_in <= {192'b0, 32'h40c00000, 288'b0}; #clk_pd;//6 
+    tdata_stream_in <= {192'b0, 32'h40e00000, 288'b0}; #clk_pd;//7 
+    tdata_stream_in <= {192'b0, 32'h41000000, 288'b0}; #clk_pd;//8 
     tlast_stream_in <= 1'b1;
-    tdata_stream_in <= 512'h41100000; #clk_pd;//9 
+    tdata_stream_in <= {192'b0, 32'h41100000, 288'b0}; #clk_pd;//9 
     tvalid_stream_in <= '0;
     tkeep_stream_in <= {(phit_size/8){1'b0}};
     tlast_stream_in <= 1'b0;
