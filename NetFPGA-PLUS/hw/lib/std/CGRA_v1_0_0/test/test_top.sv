@@ -53,7 +53,7 @@ module test_top;
     wire                     axis00_tready          ;           
     reg                      axis00_tlast           ;           
     reg  [phit_size/8-1:0]   axis00_tkeep           ;           
-    // out                                       ;                   
+    // out
     wire [phit_size-1:0]     axis01_tdata           ;           
     wire                     axis01_tvalid          ;           
     reg                      axis01_tready          ;           
@@ -113,6 +113,9 @@ module test_top;
         ap_clk = !ap_clk;      
     end
     
+    int fd[0:(num_col-1)];
+    int i,j,k;
+    string s,line;
     
     initial begin
         // Reset
@@ -153,6 +156,10 @@ module test_top;
         m02_axi_rvalid          <= 1'b0;
         m02_axi_wready          <= 1'b0;
         
+        // Open instruction file for read
+        for (i=0; i<num_col; i++)
+            fd[i] = $fopen({"gcn_",s.inttoa(i),".bin","r"});
+        
         #40; ap_rst_n = 1'b1;
         // trigger ap_start
         s_axi_control_awaddr <= 5'b0;
@@ -173,20 +180,32 @@ module test_top;
         // Start instructions write
         m00_axi_rvalid <= 1'b1; 
         //start instructions
-        //  column 1
-        //      Scalar            // column 2                                       // column 1
-        m00_axi_rdata <= {448'b0, 20'h12345, 5'h1, 7'h37                          , 20'h12345, 5'h1, 7'h37                            }; #clk_pd; //lui
-        m00_axi_rdata <= {448'b0, 12'h678, 5'h1, 3'b000, 5'h1, 7'h13              , 12'h678, 5'h1, 3'b000, 5'h1, 7'h13                }; #clk_pd; //addi, out=12345567
-        m00_axi_rdata <= {448'b0, 7'h0, 5'h1, 5'h1, 3'b000, 5'h2, 7'h33           , 7'h0, 5'h1, 5'h1, 3'b000, 5'h2, 7'h33             }; #clk_pd; //add, out=2468ACF0
-        //      Vector 
-        m00_axi_rdata <= {448'b0, 2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57      , 2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57        }; #clk_pd; //vsetivli
-        m00_axi_rdata <= {448'b0, 12'b0, 5'b00010 , 3'b0, 5'h1, 7'h07             , 12'b0, 5'b00010 , 3'b0, 5'h1, 7'h07               }; #clk_pd; // vle32.vv
-        m00_axi_rdata <= {448'b0, 6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd1, 7'h57 , 6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd1, 7'h57   }; #clk_pd; // vfmacc.xv
-        m00_axi_rdata <= {448'b0, 12'b0, 5'b00010 , 3'b0, 5'd1, 7'h27             , 12'b0, 5'b00010 , 3'b0, 5'd1, 7'h27               }; #clk_pd; // vse32.vv
+        for (j=0; j<depth_config; j++) begin
+            for (k=0; j<num_col; k++) begin
+                m00_axi_rdata <= '0;
+                if (!$feof(fd[k])) begin
+                    $fgets(line,fd[k]);
+                    m00_axi_rdata <= {m00_axi_rdata[phit_size-dwidth_int-1:0],line.atobin()};
+                end
+            end
+            if (i==(total_instr-1))
+                m00_axi_rlast <= 1'b1;
+            #clk_pd;
+            m00_axi_rlast <= 1'b0;
+        end
+//        //      Scalar            // column 2                                       // column 1
+//        m00_axi_rdata <= {448'b0, 20'h12345, 5'h1, 7'h37                          , 20'h12345, 5'h1, 7'h37                            }; #clk_pd; //lui
+//        m00_axi_rdata <= {448'b0, 12'h678, 5'h1, 3'b000, 5'h1, 7'h13              , 12'h678, 5'h1, 3'b000, 5'h1, 7'h13                }; #clk_pd; //addi, out=12345567
+//        m00_axi_rdata <= {448'b0, 7'h0, 5'h1, 5'h1, 3'b000, 5'h2, 7'h33           , 7'h0, 5'h1, 5'h1, 3'b000, 5'h2, 7'h33             }; #clk_pd; //add, out=2468ACF0
+//        //      Vector 
+//        m00_axi_rdata <= {448'b0, 2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57      , 2'b11, 12'b1000, 3'b100, 3'h7, 5'b0, 7'h57        }; #clk_pd; //vsetivli
+//        m00_axi_rdata <= {448'b0, 12'b0, 5'b00010 , 3'b0, 5'h1, 7'h07             , 12'b0, 5'b00010 , 3'b0, 5'h1, 7'h07               }; #clk_pd; // vle32.vv
+//        m00_axi_rdata <= {448'b0, 6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd1, 7'h57 , 6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd1, 7'h57   }; #clk_pd; // vfmacc.xv
+//        m00_axi_rdata <= {448'b0, 12'b0, 5'b00010 , 3'b0, 5'd1, 7'h27             , 12'b0, 5'b00010 , 3'b0, 5'd1, 7'h27               }; #clk_pd; // vse32.vv
         
-        m00_axi_rdata <= {448'b0, 32'b0001000_00101_00000_000_00000_1110011       , 32'b0001000_00101_00000_000_00000_1110011         }; #clk_pd; //wfi
-        m00_axi_rlast <= 1'b1;
-        m00_axi_rdata <= {448'b0, 32'b0001000_00101_00000_000_00000_1110011       , 32'b0001000_00101_00000_000_00000_1110011         }; #clk_pd; //wfi
+//        m00_axi_rdata <= {448'b0, 32'b0001000_00101_00000_000_00000_1110011       , 32'b0001000_00101_00000_000_00000_1110011         }; #clk_pd; //wfi
+//        m00_axi_rlast <= 1'b1;
+//        m00_axi_rdata <= {448'b0, 32'b0001000_00101_00000_000_00000_1110011       , 32'b0001000_00101_00000_000_00000_1110011         }; #clk_pd; //wfi
         
         // stop loading
         m00_axi_rlast <= 1'b0;
