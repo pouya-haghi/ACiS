@@ -10,8 +10,7 @@ module test_top;
     reg                      ap_rst_n                    ;
     // --------- Control Plane --------- //
     // Other                          
-    wire                     interrupt              ;               
-                                                    ;                         
+    wire                     interrupt              ;                                      
     // AXI Lite                                         
     //inputs                                                            
     reg  [C_S_AXI_ADDR_WIDTH-1:0]   s_axi_control_araddr   ;           
@@ -40,7 +39,7 @@ module test_top;
     reg                      m00_axi_rlast          ;           
     reg                      m00_axi_rvalid         ;           
     //output                                                      
-    wire [C_M_AXI_ADDR_WIDTH-1:0] m00_axi_araddr         ;           
+    wire [C_M_AXI_ADDR_WIDTH-1:0] m00_axi_araddr    ;           
     wire [8-1:0]             m00_axi_arlen          ;           
     wire                     m00_axi_arvalid        ;           
     wire                     m00_axi_rready         ;           
@@ -57,8 +56,8 @@ module test_top;
     wire [phit_size-1:0]     axis01_tdata           ;           
     wire                     axis01_tvalid          ;           
     reg                      axis01_tready          ;           
-    wire                     axis01_tlast          ;           
-    wire [phit_size/8-1:0]   axis01_tkeep          ;           
+    wire                     axis01_tlast           ;           
+    wire [phit_size/8-1:0]   axis01_tkeep           ;           
                                                                        
     // AXI Col 1                                                           
     //input                                                            
@@ -113,15 +112,42 @@ module test_top;
         ap_clk = !ap_clk;      
     end
     
-    int fd[0:(num_col-1)];
-    int i,j,k;
-    string s,line;
+    // Load instructions
+    logic [phit_size-1:0] instructions[0:depth_config-1];
+    logic [dwidth_int-1:0] mem[0:num_col-1][0:(depth_config)-1];
+    
+    genvar c;
+    generate
+    for (c=0;c<num_col;c++) begin
+        logic [dwidth_int-1:0] read_inst[0:depth_config-1];
+        string s, path;
+        initial begin
+            s.itoa(c);
+            path = {"./instructions/gcn_",s,".bin"};
+            $readmemb(path,read_inst);
+            #1;
+            mem[c] = read_inst;
+        end
+    end
+    endgenerate
+    
+    genvar i,j;
+    generate
+    for (i=0;i<num_col;i++) begin
+        for (j=0;j<depth_config;j++) begin
+            assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = mem[i][j];
+        end
+    end 
+    endgenerate   
+    
+    int k;
     
     initial begin
+        instructions = '{default:0};
+        
         // Reset
         ap_clk                       = 1'b1;
-        ap_rst_n                     = 1'b1; #20;
-        ap_rst_n                     = 1'b0;
+        ap_rst_n                     = 1'b0; 
         
         s_axi_control_araddr    <= 5'b0;
         s_axi_control_arvalid   <= 1'b0;
@@ -155,12 +181,10 @@ module test_top;
         m02_axi_rlast           <= 1'b0;
         m02_axi_rvalid          <= 1'b0;
         m02_axi_wready          <= 1'b0;
+                
         
-        // Open instruction file for read
-        for (i=0; i<num_col; i++)
-            fd[i] = $fopen({"gcn_",s.inttoa(i),".bin","r"});
+        #(depth_config*clk_pd); ap_rst_n = 1'b1;
         
-        #40; ap_rst_n = 1'b1;
         // trigger ap_start
         s_axi_control_awaddr <= 5'b0;
         s_axi_control_awvalid <= 1'b1;
@@ -179,20 +203,18 @@ module test_top;
         
         // Start instructions write
         m00_axi_rvalid <= 1'b1; 
+        
         //start instructions
-        for (j=0; j<depth_config; j++) begin
-            for (k=0; j<num_col; k++) begin
-                m00_axi_rdata <= '0;
-                if (!$feof(fd[k])) begin
-                    $fgets(line,fd[k]);
-                    m00_axi_rdata <= {m00_axi_rdata[phit_size-dwidth_int-1:0],line.atobin()};
-                end
-            end
-            if (i==(total_instr-1))
+        for (k=0; k<depth_config; k++) begin
+            m00_axi_rdata <= instructions[k];
+            $display("Instruction %d: %b",k,m00_axi_rdata);
+            if (k==(depth_config-1))
                 m00_axi_rlast <= 1'b1;
             #clk_pd;
             m00_axi_rlast <= 1'b0;
         end
+
+//////////////// Start hard coded TB /////////////////////
 //        //      Scalar            // column 2                                       // column 1
 //        m00_axi_rdata <= {448'b0, 20'h12345, 5'h1, 7'h37                          , 20'h12345, 5'h1, 7'h37                            }; #clk_pd; //lui
 //        m00_axi_rdata <= {448'b0, 12'h678, 5'h1, 3'b000, 5'h1, 7'h13              , 12'h678, 5'h1, 3'b000, 5'h1, 7'h13                }; #clk_pd; //addi, out=12345567
@@ -207,73 +229,73 @@ module test_top;
 //        m00_axi_rlast <= 1'b1;
 //        m00_axi_rdata <= {448'b0, 32'b0001000_00101_00000_000_00000_1110011       , 32'b0001000_00101_00000_000_00000_1110011         }; #clk_pd; //wfi
         
-        // stop loading
-        m00_axi_rlast <= 1'b0;
-        m00_axi_rvalid <= 1'b0;
-        #clk_pd;
+//        // stop loading
+//        m00_axi_rlast <= 1'b0;
+//        m00_axi_rvalid <= 1'b0;
+//        #clk_pd;
         
-        // wait for scalar instr
-        #(clk_pd*4); 
+//        // wait for scalar instr
+//        #(clk_pd*4); 
         
-        // HBM response time
-        #(clk_pd*delay_HBM);        
+//        // HBM response time
+//        #(clk_pd*delay_HBM);        
         
-        // HBM read for vle
-        m01_axi_arready <= 1'b1;         m02_axi_arready <= 1'b1;                             
-        #clk_pd;                                                                          
-        m01_axi_arready <= 1'b0;         m02_axi_arready <= 1'b0;                             
+//        // HBM read for vle
+//        m01_axi_arready <= 1'b1;         m02_axi_arready <= 1'b1;                             
+//        #clk_pd;                                                                          
+//        m01_axi_arready <= 1'b0;         m02_axi_arready <= 1'b0;                             
                                                                                           
-        m01_axi_rvalid <= 1'b1;          m02_axi_rvalid <= 1'b1;                              
+//        m01_axi_rvalid <= 1'b1;          m02_axi_rvalid <= 1'b1;                              
                                                                                           
-        m01_axi_rdata <= 512'h40000000;  m02_axi_rdata <= 512'h40000000;  #clk_pd;//2         
-        m01_axi_rdata <= 512'h40400000;  m02_axi_rdata <= 512'h40400000;  #clk_pd;//3         
-        m01_axi_rdata <= 512'h40800000;  m02_axi_rdata <= 512'h40800000;  #clk_pd;//4         
-        m01_axi_rdata <= 512'h40a00000;  m02_axi_rdata <= 512'h40a00000;  #clk_pd;//5         
-        m01_axi_rdata <= 512'h40c00000;  m02_axi_rdata <= 512'h40c00000;  #clk_pd;//6         
-        m01_axi_rdata <= 512'h40e00000;  m02_axi_rdata <= 512'h40e00000;  #clk_pd;//7         
-        m01_axi_rdata <= 512'h41000000;  m02_axi_rdata <= 512'h41000000;  #clk_pd;//8         
-        m01_axi_rlast <= 1'b1;           m02_axi_rlast <= 1'b1;                               
-        m01_axi_rdata <= 512'h41100000;  m02_axi_rdata <= 512'h41100000;  #clk_pd;//9         
+//        m01_axi_rdata <= 512'h40000000;  m02_axi_rdata <= 512'h40000000;  #clk_pd;//2         
+//        m01_axi_rdata <= 512'h40400000;  m02_axi_rdata <= 512'h40400000;  #clk_pd;//3         
+//        m01_axi_rdata <= 512'h40800000;  m02_axi_rdata <= 512'h40800000;  #clk_pd;//4         
+//        m01_axi_rdata <= 512'h40a00000;  m02_axi_rdata <= 512'h40a00000;  #clk_pd;//5         
+//        m01_axi_rdata <= 512'h40c00000;  m02_axi_rdata <= 512'h40c00000;  #clk_pd;//6         
+//        m01_axi_rdata <= 512'h40e00000;  m02_axi_rdata <= 512'h40e00000;  #clk_pd;//7         
+//        m01_axi_rdata <= 512'h41000000;  m02_axi_rdata <= 512'h41000000;  #clk_pd;//8         
+//        m01_axi_rlast <= 1'b1;           m02_axi_rlast <= 1'b1;                               
+//        m01_axi_rdata <= 512'h41100000;  m02_axi_rdata <= 512'h41100000;  #clk_pd;//9         
                                                                                           
-        m01_axi_rvalid <= 1'b0;          m02_axi_rvalid <= 1'b0;                              
-        m01_axi_rlast <= 1'b0;           m02_axi_rlast <= 1'b0;                               
+//        m01_axi_rvalid <= 1'b0;          m02_axi_rvalid <= 1'b0;                              
+//        m01_axi_rlast <= 1'b0;           m02_axi_rlast <= 1'b0;                               
        
-        // Wait a little
-        #(clk_pd*2);
+//        // Wait a little
+//        #(clk_pd*2);
         
-        // Stream in for vmacc
-        axis00_tvalid <= 1'h1;
-        axis00_tkeep <= 64'hFFFFFFFFFFFFFFFF;
+//        // Stream in for vmacc
+//        axis00_tvalid <= 1'h1;
+//        axis00_tkeep <= 64'hFFFFFFFFFFFFFFFF;
         
-        axis00_tdata <= 512'h40000000; #clk_pd;//2 
-        axis00_tdata <= 512'h40400000; #clk_pd;//3 
-        axis00_tdata <= 512'h40800000; #clk_pd;//4 
-        axis00_tdata <= 512'h40a00000; #clk_pd;//5 
-        axis00_tdata <= 512'h40c00000; #clk_pd;//6 
-        axis00_tdata <= 512'h40e00000; #clk_pd;//7 
-        axis00_tdata <= 512'h41000000; #clk_pd;//8 
-        axis00_tlast <= 1'b1;
-        axis00_tdata <= 512'h41100000; #clk_pd;//9 
+//        axis00_tdata <= 512'h40000000; #clk_pd;//2 
+//        axis00_tdata <= 512'h40400000; #clk_pd;//3 
+//        axis00_tdata <= 512'h40800000; #clk_pd;//4 
+//        axis00_tdata <= 512'h40a00000; #clk_pd;//5 
+//        axis00_tdata <= 512'h40c00000; #clk_pd;//6 
+//        axis00_tdata <= 512'h40e00000; #clk_pd;//7 
+//        axis00_tdata <= 512'h41000000; #clk_pd;//8 
+//        axis00_tlast <= 1'b1;
+//        axis00_tdata <= 512'h41100000; #clk_pd;//9 
          
-        axis00_tvalid <= 1'h0;
-        axis00_tlast <= 1'b0;
-        axis00_tkeep <= 64'b0;
+//        axis00_tvalid <= 1'h0;
+//        axis00_tlast <= 1'b0;
+//        axis00_tkeep <= 64'b0;
 
-        // Wait to process
-        #(clk_pd*latencyPEC+2);
+//        // Wait to process
+//        #(clk_pd*latencyPEC+2);
         
-        // HBM response time
-        #(clk_pd*delay_HBM);
+//        // HBM response time
+//        #(clk_pd*delay_HBM);
         
-        // Write out vse
-        m01_axi_awready <= 1'b1;   m02_axi_awready <= 1'b1;
-        m01_axi_wready <= 1'b1;    m02_axi_wready <= 1'b1; 
-        m01_axi_bvalid <= 1'b1;    m02_axi_bvalid <= 1'b1; 
-        #(clk_pd*8);
-        m01_axi_awready <= 1'b0;   m02_axi_awready <= 1'b0;
-        m01_axi_wready <= 1'b0;    m02_axi_wready <= 1'b0; 
-        m01_axi_bvalid <= 1'b0;    m02_axi_bvalid <= 1'b0; 
-        
+//        // Write out vse
+//        m01_axi_awready <= 1'b1;   m02_axi_awready <= 1'b1;
+//        m01_axi_wready <= 1'b1;    m02_axi_wready <= 1'b1; 
+//        m01_axi_bvalid <= 1'b1;    m02_axi_bvalid <= 1'b1; 
+//        #(clk_pd*8);
+//        m01_axi_awready <= 1'b0;   m02_axi_awready <= 1'b0;
+//        m01_axi_wready <= 1'b0;    m02_axi_wready <= 1'b0; 
+//        m01_axi_bvalid <= 1'b0;    m02_axi_bvalid <= 1'b0; 
+//////////////// End hard coded TB /////////////////////
         
         
         
