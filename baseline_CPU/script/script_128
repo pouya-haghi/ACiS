@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#SBATCH -J GCN128           # Job name
+#SBATCH -o GCN.o%j       # Name of stdout output file
+#SBATCH -e GCN.e%j       # Name of stderr error file
+#SBATCH -p skx-normal      # Queue (partition) name
+#SBATCH -N 128               # Total # of nodes 
+#SBATCH --ntasks-per-node=48
+#SBATCH -t 00:02:00        # Run time (hh:mm:ss)
+#SBATCH --mail-user=haghi@bu.edu
+#SBATCH --mail-type=all    # Send email at begin and end of job
+
+# Other commands must follow all #SBATCH directives...
+# module load gcc/7.1.0
+# module load mkl/18.0.2
+
+data="./GCN_results"
+
+# Set thread count (default value is 1)...
+export GOMP_CPU_AFFINITY="0-46:2 1-47:2"
+
+max_iter=10
+
+for ((iter=1; iter<=$max_iter; iter=iter+1))
+do
+	# ------------------------------------------------------------------------------
+
+	ibrun SDMatMul Cora_feat.txt 16 Cora_A.txt 1433  >> $data/GCN_128.txt
+    echo "End of iteration" >> $data/GCN_128.txt
+
+done

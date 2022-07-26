@@ -1,0 +1,41 @@
+#!/bin/bash
+
+#SBATCH -J GCN2           # Job name
+#SBATCH -o GCN.o%j       # Name of stdout output file
+#SBATCH -e GCN.e%j       # Name of stderr error file
+#SBATCH -p skx-normal      # Queue (partition) name
+#SBATCH -N 2               # Total # of nodes 
+#SBATCH --ntasks-per-node=48
+#SBATCH -t 01:00:00        # Run time (hh:mm:ss)
+#SBATCH --mail-user=haghi@bu.edu
+#SBATCH --mail-type=all    # Send email at begin and end of job
+
+# Other commands must follow all #SBATCH directives...
+# module load gcc/7.1.0
+# module load mkl/18.0.2
+
+data="./GCN_results"
+
+# Set thread count (default value is 1)...
+export GOMP_CPU_AFFINITY="0-46:2 1-47:2"
+
+max_iter=6
+
+for ((iter=1; iter<=$max_iter; iter=iter+1))
+do
+	# ------------------------------------------------------------------------------
+
+	ibrun SDMatMul Cora_feat_L1.txt Cora_A.txt 16  > $data/GCN_Cora_L1_"${iter}"_${SLURM_NTASKS}.txt
+	ibrun SDMatMul Cora_feat_L2.txt Cora_A.txt 7  > $data/GCN_Cora_L2_"${iter}"_${SLURM_NTASKS}.txt
+
+	ibrun SDMatMul Citeseer_feat_L1.txt Citeseer_A.txt 16  > $data/GCN_Citeseer_L1_"${iter}"_${SLURM_NTASKS}.txt
+	ibrun SDMatMul Citeseer_feat_L2.txt Citeseer_A.txt 6  > $data/GCN_Citeseer_L2_"${iter}"_${SLURM_NTASKS}.txt
+
+	ibrun SDMatMul Pubmed_feat_L1.txt Pubmed_A.txt 16  > $data/GCN_Pubmed_L1_"${iter}"_${SLURM_NTASKS}.txt
+	ibrun SDMatMul Pubmed_feat_L2.txt Pubmed_A.txt 3  > $data/GCN_Pubmed_L2_"${iter}"_${SLURM_NTASKS}.txt
+
+	ibrun SDMatMul Reddit_feat_L1.txt Reddit_A.txt 16  > $data/GCN_Reddit_L1_"${iter}"_${SLURM_NTASKS}.txt
+	ibrun SDMatMul Reddit_feat_L2.txt Reddit_A.txt 41  > $data/GCN_Reddit_L2_"${iter}"_${SLURM_NTASKS}.txt
+
+
+done
