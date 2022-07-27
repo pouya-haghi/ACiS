@@ -79,7 +79,7 @@ module data_path(
     logic [SIMD_degree-1:0] FIFO_out_tlast;
     logic [num_col-1:0] wen_RF_scalar;
     logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_vsetivli, is_bne, is_csr, is_lui;
-    logic [num_col-1:0] stall_HBM;
+    logic [num_col-1:0] stall_FIFO;
     logic [num_col-1:0] stall_rd_autovect, stall_wr_autovect;
     logic [num_col-1:0] read_done_HBM, write_done_HBM; 
     logic [num_col-1:0] flag_neq;
@@ -182,17 +182,17 @@ module data_path(
         .state(streamin_state));
         
     
-    assign t_stall = (|stall_HBM) || (|is_not_vect);
+    assign t_stall = (|stall_FIFO) || (|is_not_vect);
     
     genvar j;
     generate 
         for (j=0; j<num_col; j++) begin
-            assign stall_HBM[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j])));
+            assign stall_FIFO[j] = (is_vle32_vv[j]) || (is_vse32_vv[j]);
             assign stall_rd_autovect[j] = (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_i[j] || (is_vstreamout_global & !supplier[j]));
             assign stall_wr_autovect[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_o[j]);
             // if it is vmacc and tvalids are zero then you should stall auto_vect but not input FIFO 
-            assign valid_PE_i[j] = (|tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & tvalid_RF[j]; // PH: chaned from & to |
-            assign valid_PE_o[j] = (|o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]); // PH: chaned from & to |
+            assign valid_PE_i[j] = (|tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & tvalid_RF[j]; // PH: changed from & to |
+            assign valid_PE_o[j] = (|o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]); // PH: changed from & to |
 //            assign rready_HBM[j] = 1'b1;
             
             ISA_decoder ISA_decoder_inst
