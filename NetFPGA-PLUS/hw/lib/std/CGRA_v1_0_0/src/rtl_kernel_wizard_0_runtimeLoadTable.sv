@@ -151,7 +151,7 @@ logic [LP_LOG_BURST_LEN-1:0]              final_burst_len;
 logic                                     single_transaction;
 logic                                     ar_idle = 1'b1;
 logic                                     ar_done;
-logic [(num_col*12)-1:0]                  PC_ptr;
+logic [(num_col*dwidth_configadd)-1:0]    PC_ptr;
 // AXI Read Address Channel
 logic                                     arxfer;
 logic                                     arvalid_r = 1'b0;

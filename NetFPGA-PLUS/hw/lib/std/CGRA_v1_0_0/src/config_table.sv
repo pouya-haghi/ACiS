@@ -23,7 +23,7 @@ module config_table(
     // first 512 bits of memory => feed to first entry of 16 parallel config tables (instructions)
     // next 512 bits => feed to the second entry
     
-    logic [dwidth_int-1:0] mem1 [depth_config];
+    logic [dwidth_int-1:0] mem1 [depth_config-1:0];
 //    logic [phit_size-1:0] mem2 [depth_RF];
     
     //for simulation

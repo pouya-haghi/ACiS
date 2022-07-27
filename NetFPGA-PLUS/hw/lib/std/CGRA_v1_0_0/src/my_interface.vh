@@ -2,7 +2,7 @@
 parameter clk_pd = 4;
 parameter delay_HBM = 6;
 parameter depth_RF = 4096;
-parameter depth_config = 50;//4096;
+parameter depth_config = 64;//4096;
 parameter dwidth_RFadd = $clog2(depth_RF);
 parameter dwidth_aximm = 64;
 parameter dwidth_int = 32;
@@ -22,26 +22,19 @@ parameter total_instr = num_col*depth_config;
 parameter C_S_AXI_ADDR_WIDTH = 5;
 parameter C_S_AXI_DATA_WIDTH = 32;
 parameter C_M_AXI_ADDR_WIDTH = 64;
+parameter packet_length = 64;
 parameter header_bytes = 34;
 parameter header_deg = $ceil((header_bytes*SIMD_degree*8)/phit_size);
 function integer f_max (
   input integer a,
   input integer b
 );
-  f_max = (a > b) ? a : b;
+    f_max = (a > b) ? a : b;
 endfunction
 
 function integer f_min (
   input integer a,
   input integer b
 );
-  f_min = (a < b) ? a : b;
+    f_min = (a < b) ? a : b;
 endfunction
-
-//interface data_channel;
-//logic [dwidth_double-1:0] inp1, inp2, out1;
-//endinterface
-
-//interface control_channel;
-//logic [1:0] op;
-//endinterface

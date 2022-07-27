@@ -182,7 +182,7 @@ module data_path(
         .state(streamin_state));
         
     
-    assign t_stall = (|stall_HBM) || (|is_not_vect);
+    assign t_stall = (|is_vle32_vv) || (|is_vse32_vv) || (|is_not_vect); // if any columns are not streaming-instructions, stall stream
     
     genvar j;
     generate 

@@ -47,27 +47,27 @@ module test_top;
     // --------- Data Path --------- //
     // Stream                                                   
     // in                                                    
-    reg  [phit_size-1:0]     axis00_tdata           ;           
-    reg                      axis00_tvalid          ;           
+    wire [phit_size-1:0]     axis00_tdata           ;           
+    wire                     axis00_tvalid          ;           
     wire                     axis00_tready          ;           
-    reg                      axis00_tlast           ;           
-    reg  [phit_size/8-1:0]   axis00_tkeep           ;           
+    wire                     axis00_tlast           ;           
+    wire [phit_size/8-1:0]   axis00_tkeep           ;           
     // out
     wire [phit_size-1:0]     axis01_tdata           ;           
     wire                     axis01_tvalid          ;           
-    reg                      axis01_tready          ;           
+    wire                     axis01_tready          ;           
     wire                     axis01_tlast           ;           
     wire [phit_size/8-1:0]   axis01_tkeep           ;           
                                                                        
     // AXI Col 1                                                           
     //input                                                            
-    reg                      m01_axi_arready        ;
-    reg                      m01_axi_awready        ;
-    reg                      m01_axi_bvalid         ;
-    reg  [phit_size-1:0]     m01_axi_rdata          ;
-    reg                      m01_axi_rlast          ;
-    reg                      m01_axi_rvalid         ;
-    reg                      m01_axi_wready         ;
+    wire                     m01_axi_arready        ;
+    wire                     m01_axi_awready        ;
+    wire                     m01_axi_bvalid         ;
+    wire [phit_size-1:0]     m01_axi_rdata          ;
+    wire                     m01_axi_rlast          ;
+    wire                     m01_axi_rvalid         ;
+    wire                     m01_axi_wready         ;
     //output                               
     wire [dwidth_aximm-1:0]  m01_axi_araddr         ;
     wire [7:0]               m01_axi_arlen          ;
@@ -84,13 +84,13 @@ module test_top;
                                          
     // AXI Col 2                             
     //input                              
-    reg                      m02_axi_arready        ;
-    reg                      m02_axi_awready        ;
-    reg                      m02_axi_bvalid         ;
-    reg  [phit_size-1:0]     m02_axi_rdata          ;
-    reg                      m02_axi_rlast          ;
-    reg                      m02_axi_rvalid         ;
-    reg                      m02_axi_wready         ;
+    wire                     m02_axi_arready        ;
+    wire                     m02_axi_awready        ;
+    wire                     m02_axi_bvalid         ;
+    wire [phit_size-1:0]     m02_axi_rdata          ;
+    wire                     m02_axi_rlast          ;
+    wire                     m02_axi_rvalid         ;
+    wire                     m02_axi_wready         ;
     //output                              
     wire [dwidth_aximm-1:0]  m02_axi_araddr         ;
     wire [7:0]               m02_axi_arlen          ;
@@ -106,6 +106,56 @@ module test_top;
     wire [(phit_size/8)-1:0] m02_axi_wstrb          ;
     
     top top_inst0(.*);    
+    
+    emulate_HBM emulate_HBM_inst0(
+        .ap_clk     (ap_clk         ),
+        .ap_rst_n   (ap_rst_n       ),
+        .axi_arready(m01_axi_arready), 
+        .axi_awready(m01_axi_awready), 
+        .axi_bvalid (m01_axi_bvalid ), 
+        .axi_rdata  (m01_axi_rdata  ), 
+        .axi_rlast  (m01_axi_rlast  ), 
+        .axi_rvalid (m01_axi_rvalid ), 
+        .axi_wready (m01_axi_wready ), 
+        .axi_araddr (m01_axi_araddr ), 
+        .axi_arlen  (m01_axi_arlen  ), 
+        .axi_arvalid(m01_axi_arvalid), 
+        .axi_awaddr (m01_axi_awaddr ), 
+        .axi_awlen  (m01_axi_awlen  ), 
+        .axi_awvalid(m01_axi_awvalid), 
+        .axi_bready (m01_axi_bready ), 
+        .axi_rready (m01_axi_rready ), 
+        .axi_wvalid (m01_axi_wvalid ), 
+        .axi_wdata  (m01_axi_wdata  ), 
+        .axi_wlast  (m01_axi_wlast  ), 
+        .axi_wstrb  (m01_axi_wstrb  ) 
+    );
+    
+    emulate_HBM emulate_HBM_inst1(
+        .ap_clk     (ap_clk         ),
+        .ap_rst_n   (ap_rst_n       ),
+        .axi_arready(m02_axi_arready), 
+        .axi_awready(m02_axi_awready), 
+        .axi_bvalid (m02_axi_bvalid ), 
+        .axi_rdata  (m02_axi_rdata  ), 
+        .axi_rlast  (m02_axi_rlast  ), 
+        .axi_rvalid (m02_axi_rvalid ), 
+        .axi_wready (m02_axi_wready ), 
+        .axi_araddr (m02_axi_araddr ), 
+        .axi_arlen  (m02_axi_arlen  ), 
+        .axi_arvalid(m02_axi_arvalid), 
+        .axi_awaddr (m02_axi_awaddr ), 
+        .axi_awlen  (m02_axi_awlen  ), 
+        .axi_awvalid(m02_axi_awvalid), 
+        .axi_bready (m02_axi_bready ), 
+        .axi_rready (m02_axi_rready ), 
+        .axi_wvalid (m02_axi_wvalid ), 
+        .axi_wdata  (m02_axi_wdata  ), 
+        .axi_wlast  (m02_axi_wlast  ), 
+        .axi_wstrb  (m02_axi_wstrb  ) 
+    );
+    
+    emulate_stream_in emulate_stream_in_inst(.*);
     
     always begin
         #(clk_pd/2);
@@ -162,25 +212,25 @@ module test_top;
         m00_axi_rdata           <= 512'b0;
         m00_axi_rlast           <= 1'b0;
         m00_axi_rvalid          <= 1'b0;
-        axis00_tdata            <= 512'b0;
-        axis00_tvalid           <= 1'b0;
-        axis01_tready           <= 1'b0;
-        axis00_tlast            <= 1'b0;
-        axis00_tkeep            <= 64'b0;
-        m01_axi_arready         <= 1'b0;
-        m01_axi_awready         <= 1'b0;
-        m01_axi_bvalid          <= 1'b0;
-        m01_axi_rdata           <= 512'b0;
-        m01_axi_rlast           <= 1'b0;
-        m01_axi_rvalid          <= 1'b0;
-        m01_axi_wready          <= 1'b0;
-        m02_axi_arready         <= 1'b0;
-        m02_axi_awready         <= 1'b0;
-        m02_axi_bvalid          <= 1'b0;
-        m02_axi_rdata           <= 512'b0;
-        m02_axi_rlast           <= 1'b0;
-        m02_axi_rvalid          <= 1'b0;
-        m02_axi_wready          <= 1'b0;
+//        axis00_tdata            <= 512'b0;
+//        axis00_tvalid           <= 1'b0;
+//        axis01_tready           <= 1'b0;
+//        axis00_tlast            <= 1'b0;
+//        axis00_tkeep            <= 64'b0;
+//        m01_axi_arready         <= 1'b0;
+//        m01_axi_awready         <= 1'b0;
+//        m01_axi_bvalid          <= 1'b0;
+//        m01_axi_rdata           <= 512'b0;
+//        m01_axi_rlast           <= 1'b0;
+//        m01_axi_rvalid          <= 1'b0;
+//        m01_axi_wready          <= 1'b0;
+//        m02_axi_arready         <= 1'b0;
+//        m02_axi_awready         <= 1'b0;
+//        m02_axi_bvalid          <= 1'b0;
+//        m02_axi_rdata           <= 512'b0;
+//        m02_axi_rlast           <= 1'b0;
+//        m02_axi_rvalid          <= 1'b0;
+//        m02_axi_wready          <= 1'b0;
                 
         
         #(depth_config*clk_pd); ap_rst_n = 1'b1;
@@ -213,7 +263,10 @@ module test_top;
             #clk_pd;
             m00_axi_rlast <= 1'b0;
         end
-
+        // stop loading
+        m00_axi_rvalid <= 1'b0;
+        #clk_pd;
+        
 //////////////// Start hard coded TB /////////////////////
 //        //      Scalar            // column 2                                       // column 1
 //        m00_axi_rdata <= {448'b0, 20'h12345, 5'h1, 7'h37                          , 20'h12345, 5'h1, 7'h37                            }; #clk_pd; //lui
@@ -299,7 +352,7 @@ module test_top;
         
         
         
-        #100;
+        #(clk_pd*total_instr*16);
     $finish;
     end
 

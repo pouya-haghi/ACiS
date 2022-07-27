@@ -1,9 +1,9 @@
 `timescale 1ns / 1ps
+
 `ifndef MY_INTERFACE
     `define MY_INTERFACE
     `include "my_interface.vh"
 `endif
-
 
 module emulate_HBM(
     input  logic                     ap_clk     ,
@@ -54,6 +54,9 @@ module emulate_HBM(
         end
     end
     
+    logic [31:0] temp_float;
+    float_generator fg_inst(count[4:0], temp_float);
+    
     always_comb begin
         rst = ~ap_rst_n;
         case(state)
@@ -81,12 +84,12 @@ module emulate_HBM(
             READ: begin
                 axi_arready = 1'b0;
                 if (curr_axi_rready & (count < (read_len-1))) begin // if was ready at clock's edge and not done
-                    axi_rdata = '0; // add something here
+                    axi_rdata = {(phit_size/32){temp_float}};
                     axi_rvalid = 1'b1;
                     axi_rlast = 1'b0;
                     next_count = count+1;
                 end else if (curr_axi_rready & (count == (read_len-1))) begin // is last
-                    axi_rdata = '0; // add something here
+                    axi_rdata = {(phit_size/32){temp_float}};
                     axi_rvalid = 1'b1;
                     axi_rlast = 1'b1;
                     next_state = INACTIVE;

@@ -32,6 +32,19 @@ module test_emulators;
     
     emulate_HBM emulate_HBM_inst(.*);
     
+    wire [phit_size-1:0]    axis00_tdata ;
+    wire                    axis00_tvalid;
+    reg                     axis00_tready;
+    wire                    axis00_tlast ;
+    wire [phit_size/8-1:0]  axis00_tkeep ;
+    reg  [phit_size-1:0]    axis01_tdata ;
+    reg                     axis01_tvalid;
+    wire                    axis01_tready;
+    reg                     axis01_tlast ;
+    reg  [phit_size/8-1:0]  axis01_tkeep ;
+    
+    emulate_stream_in emulate_stream_in_inst(.*);
+    
     always begin
         #5;
         ap_clk = ~ap_clk;
@@ -52,6 +65,13 @@ module test_emulators;
         axi_wdata  ='0;
         axi_wlast  ='0;
         axi_wstrb  ='0;
+        
+        axis00_tready ='0;
+        axis01_tdata  ='0;
+        axis01_tvalid ='0;
+        axis01_tlast  ='0;
+        axis01_tkeep  ='0;
+        
         #20;
         ap_rst_n = 1'b1;
         #40;
@@ -89,6 +109,15 @@ module test_emulators;
         axi_wlast  ='0;
         axi_wstrb  ='0;
         
+        #50
+        
+        // Test stream in
+        axis00_tready = 1'b1;
+        #(10*32);
+        axis00_tready = 1'b0;
+        #(10*5);
+        axis00_tready = 1'b1;
+        #(10*40);
         
         $finish;
         
