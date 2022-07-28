@@ -360,7 +360,7 @@ module data_path(
               .is_not_vect(is_not_vect[j]),
               .done_auto_incr(done_auto_incr[j]),
               .is_bne(is_bne[j]),
-              .is_vstreamout(is_vstreamout[j]),
+              .is_vstreamout(is_vstreamout_global),
               .flag_neq(flag_neq[j]),
               .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
               .done_steady(done_steady),

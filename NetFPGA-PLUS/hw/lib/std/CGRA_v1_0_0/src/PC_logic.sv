@@ -22,7 +22,6 @@ logic is_vect;
 assign is_vect = !is_not_vect;
 
 // FSM for streamout control
-//logic state, state_next;
 
 
 assign clken_PC = !(is_vect & !done_auto_incr) & done_steady & !is_vstreamout; 
