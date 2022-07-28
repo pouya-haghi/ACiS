@@ -57,6 +57,7 @@ module data_path(
     localparam phitplusplus = phit_size + SIMD_degree*2; // bundle {tlast, tvalid, tdata}
 
     logic [((num_col)*3)-1:0] op;
+    logic clken_PC_vstreamout;
     logic [((num_col)*3)-1:0] op_scalar;
     logic [(phit_size*num_col)-1:0] o1_RF, o2_RF;
     logic [(phit_size*num_col)-1:0] o_PE_typeC; // the last bundle of SIMD_degree signals is for tvalid
@@ -128,18 +129,17 @@ module data_path(
     assign done_steady = curr_state_done_loader;
 
     // Stream out control
-    logic [dwidth_RFadd-1:0] streamout_addr;
     logic is_vstreamout_global;
     logic [num_col-1:0] supplier;
     logic [num_col-1:0] sel_mux2;
+
     vstreamout_control vstreamout_control_inst0(
         .clk(clk),
         .rst(rst),
         .is_vstreamout(is_vstreamout),
         .done(done_auto_incr),
-        .rd_addr(vr_addr[dwidth_RFadd-1:0]),
         .supplier(supplier),
-        .streamout_addr(streamout_addr),
+        .clken_PC_vstreamout(clken_PC_vstreamout),
         .is_vstreamout_global(is_vstreamout_global),
         .mux_control(sel_mux2));
      
@@ -240,7 +240,7 @@ module data_path(
              .is_vse32_v(is_vse32_vv[j]),
              .is_vstreamout(is_vstreamout_global),
              .is_vsetivli(is_vsetivli[j]),
-             .vr_addr1((is_vstreamout_global) ? streamout_addr : vr_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
+             .vr_addr1(vr_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vr_addr2(vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vw_addr((is_vse32_vv || is_vle32_vv) ? vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd] : vw_addr_d[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),  // if VSE or VLE, choose non-delayed VD. Else, use delayed VD
              .vr_addr1_auto_incr(vr_addr1_auto_incr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
@@ -364,6 +364,7 @@ module data_path(
               .flag_neq(flag_neq[j]),
               .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
               .done_steady(done_steady),
+              .clken_PC_vstreamout(clken_PC_vstreamout),
               .clken_PC(clken_PC[j]),
               .load_PC(load_PC[j]),
               .incr_PC(incr_PC[j]),
