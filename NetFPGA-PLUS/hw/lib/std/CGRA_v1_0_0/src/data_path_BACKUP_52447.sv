@@ -182,7 +182,11 @@ module data_path(
         .state(streamin_state));
         
     
+<<<<<<< HEAD
+    assign t_stall = (|is_vle32_vv) || (|is_vse32_vv) || (|is_not_vect); // if any columns are not streaming-instructions, stall stream
+=======
     assign t_stall = (|stall_FIFO) || (|is_not_vect);
+>>>>>>> 9459aa58dff9950e254ba0a306eea7d29bb56e61
     
     genvar j;
     generate 
