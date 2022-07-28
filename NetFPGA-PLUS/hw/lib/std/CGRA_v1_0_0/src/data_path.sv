@@ -188,7 +188,7 @@ module data_path(
     generate 
         for (j=0; j<num_col; j++) begin
             assign stall_FIFO[j] = (is_vle32_vv[j]) || (is_vse32_vv[j]);
-            assign stall_rd_autovect[j] = (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_i[j] || (is_vstreamout_global & !supplier[j]));
+            assign stall_rd_autovect[j] = (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_i[j]) || (is_vstreamout_global & !supplier[j]) || (!is_vstreamout_global & is_vstreamout[j]);
             assign stall_wr_autovect[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_o[j]);
             // if it is vmacc and tvalids are zero then you should stall auto_vect but not input FIFO 
             assign valid_PE_i[j] = (|tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & tvalid_RF[j]; // PH: changed from & to |
@@ -360,7 +360,7 @@ module data_path(
               .is_not_vect(is_not_vect[j]),
               .done_auto_incr(done_auto_incr[j]),
               .is_bne(is_bne[j]),
-              .is_vstreamout(is_vstreamout_global),
+              .is_vstreamout(is_vstreamout[j]),
               .flag_neq(flag_neq[j]),
               .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
               .done_steady(done_steady),

@@ -52,8 +52,9 @@ module vstreamout_control(
                 end
             end
             streamout_inactive: begin
+                is_vstreamout_global <= '0;
                 // If any streamout go high, setup control signals
-                if (|is_vstreamout) begin
+                if (&is_vstreamout) begin
                     next_state_streamout = streamout_active;
                     next_mux_control = {{(num_col-1){1'b0}},1'b1};
                     streamout_addr = rd_addr;
@@ -61,7 +62,6 @@ module vstreamout_control(
                     next_state_streamout = streamout_inactive;
                     next_supplier = {{(num_col-1){1'b0}},1'b1}; 
                     next_mux_control = '0;
-                    is_vstreamout_global <= '0;
                 end
             end            
         endcase

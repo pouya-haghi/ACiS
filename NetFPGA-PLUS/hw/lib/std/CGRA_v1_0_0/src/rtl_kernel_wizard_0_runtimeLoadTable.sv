@@ -151,7 +151,7 @@ logic [LP_LOG_BURST_LEN-1:0]              final_burst_len;
 logic                                     single_transaction;
 logic                                     ar_idle = 1'b1;
 logic                                     ar_done;
-logic [(num_col*dwidth_configadd)-1:0]    PC_ptr;
+logic [(num_col*12)-1:0]                  PC_ptr;
 // AXI Read Address Channel
 logic                                     arxfer;
 logic                                     arvalid_r = 1'b0;
@@ -302,11 +302,11 @@ inst_ar_to_r_transaction_cntr (
 // assign m_axi_rready  = m_axis_tready;
 // assign m_axis_tlast  = m_axi_rlast;
 
-  localparam [dwidth_configadd-1:0] num_entry_config_table = depth_config;
+  localparam [12-1:0] num_entry_config_table = depth_config;
   localparam [1:0] init = 2'b00, first_sixteen_column = 2'b01, second_sixteen_column =2'b10;
   logic [1:0] config_state, config_state_next;
   // logic transition_signal;
-  logic [dwidth_configadd-1:0] wr_add; // for state_table and config table
+  logic [12-1:0] wr_add; // for state_table and config table
   logic [num_col-1:0] wr_en; // for state_table and config tables
 
     // config_table
@@ -315,7 +315,7 @@ inst_ar_to_r_transaction_cntr (
         for(i=0; i<num_col; i++) begin
             config_table config_table_inst(
             .clk(aclk), 
-            .rd_add(PC_ptr[(dwidth_configadd*(i+1))-1:dwidth_configadd*i]), 
+            .rd_add(PC_ptr[(12*(i+1))-1:12*i]), 
             .wr_add(wr_add), 
             .wr_en(wr_en[i] & rxfer), // wr_en[i] & m_axi_rvalid
             .wr_data(m_axi_rdata[((i+1)*dwidth_int)-1:i*dwidth_int]),
@@ -323,15 +323,15 @@ inst_ar_to_r_transaction_cntr (
             );
          // same rd_add, wr_add, wr_data but different wr_en
             
-            PC #(dwidth_configadd) PC_inst( // 12 because we have 12 bits immediate in beq
+            PC #(12) PC_inst( // 12 because we have 12 bits immediate in beq
             .clk(aclk),
             .clken(clken_PC[i]), // stall when vle32.vv or vse32.vv is seen but load_done or store_done signal is not.
             //  if it is macc wait for done signal from auto_incr
             .rst(areset),
             .load(load_PC[i]),
             .incr(incr_PC[i]),
-            .load_value(load_value_PC[((i+1)*dwidth_configadd)-1:i*dwidth_configadd]), // 12 because we have 12 bits immediate in beq
-            .count(PC_ptr[((i+1)*dwidth_configadd)-1:i*dwidth_configadd])
+            .load_value(load_value_PC[((i+1)*12)-1:i*12]), // 12 because we have 12 bits immediate in beq
+            .count(PC_ptr[((i+1)*12)-1:i*12])
             );
          end
     endgenerate

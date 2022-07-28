@@ -9,8 +9,8 @@
 //organized in 512 bit write to facilitate easy writing to the table (512 bit wr_data matches AXIS QDMA)
 module config_table(
     input logic clk,
-    input logic [dwidth_configadd-1:0] rd_add,
-    input logic [dwidth_configadd-1:0] wr_add,
+    input logic [12-1:0] rd_add,
+    input logic [12-1:0] wr_add,
     input logic wr_en,
     input logic [dwidth_int-1:0] wr_data,
     output logic [dwidth_int-1:0] rd_data
