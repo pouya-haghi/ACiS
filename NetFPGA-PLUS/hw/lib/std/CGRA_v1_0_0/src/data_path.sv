@@ -6,18 +6,20 @@
 `endif
 
 module data_path(
+    // misc
+    input  logic [dwidth_int-1:0]               cycle_register
     input  logic                                done_loader,
-    input  logic [(dwidth_inst*num_col)-1:0]    instr, // vector instruction
+    input  logic [(dwidth_inst*num_col)-1:0]    instr, // vector, scalar, config
     input  logic                                clk,
     input  logic                                rst,
     output logic                                ap_done,
-    // stream
+    // stream_in
     input  logic [phit_size-1:0]                tdata_stream_in,
     input  logic                                tvalid_stream_in,
     output logic                                tready_stream_in,
     input  logic                                tlast_stream_in,
     input  logic [phit_size/8-1:0]              tkeep_stream_in,
-    
+    // stream_out
     output logic [phit_size-1:0]                tdata_stream_out,
     output logic                                tvalid_stream_out,
     input  logic                                tready_stream_out,
@@ -44,13 +46,11 @@ module data_path(
     output logic [num_col-1:0]                  bready_HBM,
     output logic [(dwidth_aximm*num_col)-1:0]   awaddr_HBM,
     input  logic [num_col-1:0]                  awready_HBM,
-    //PC
+    // PC
     output logic [num_col-1:0]                  clken_PC,
     output logic [num_col-1:0]                  load_PC,
     output logic [num_col-1:0]                  incr_PC,
-    output logic [(num_col*12)-1:0]             load_value_PC,
-    input  logic [dwidth_int-1:0]               cycle_register
-    
+    output logic [(num_col*12)-1:0]             load_value_PC
     );
     
     localparam phitplus = phit_size + SIMD_degree; // bundle {tvalid, tdata}
@@ -100,7 +100,7 @@ module data_path(
     logic [(SIMD_degree*num_col)-1:0] tlast_stream;
     
     // This part is ISA-specific:
-    logic [num_col-1:0] tvalid_RF; //generated internally based on op
+    logic [num_col-1:0] tvalid_RF; // generated internally based on op
     logic [(dwidth_RFadd*num_col)-1:0] ITR;
     logic [num_col-1:0] wen_ITR;
     logic [SIMD_degree-1:0] full_FIFO_in, empty_FIFO_in, full_FIFO_out, empty_FIFO_out;
@@ -182,8 +182,8 @@ module data_path(
             // if it is vmacc and tvalids are zero then you should stall auto_vect but not input FIFO 
             assign valid_PE_i[j] = (|tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & tvalid_RF[j]; // PH: changed from & to |
             assign valid_PE_o[j] = (|o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]); // PH: changed from & to |
-//            assign rready_HBM[j] = 1'b1;
             
+            // *********************************     Front End       *******************************
             ISA_decoder ISA_decoder_inst(
              .instr(instr[((j+1)*dwidth_inst)-1:j*dwidth_inst]),
              .clk(clk),
@@ -193,7 +193,6 @@ module data_path(
              .rs2(rs2[((j+1)*5)-1:j*5]),
              .rd(rd[((j+1)*5)-1:j*5]),
              .ITR(ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
-//             .wen_ITR(wen_ITR[j]),
              .is_vsetivli(is_vsetivli[j]),
              .vr_addr(vr_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vw_addr(vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
@@ -215,9 +214,10 @@ module data_path(
              .done_steady(done_steady)
              );
              
-             // Register pipeline - delay VD into auto_incr_vect vw
-             register_pipe #(dwidth_RFadd*num_col, latencyPEC) rp_inst0(clk,rst, vw_addr,vw_addr_d);
+             // Register pipeline: delay VD into auto_incr_vect vw
+             register_pipe #(dwidth_RFadd*num_col, latencyPEC) rp_inst0(clk, rst, vw_addr, vw_addr_d);
              
+             // auto increment vector
              auto_incr_vect auto_incr_vect_inst(
              .clk(clk), 
              .rst(rst),
@@ -240,6 +240,63 @@ module data_path(
              .wen_ITR(wen_ITR[j]),
              .done(done_auto_incr[j]) // one clock pulse
              );
+
+             // PC logic
+             PC_logic PC_logic_inst0(
+              .is_not_vect(is_not_vect[j]),
+              .done_auto_incr(done_auto_incr[j]),
+              .is_bne(is_bne[j]),
+              .is_vstreamout(is_vstreamout_global),
+              .flag_neq(flag_neq[j]),
+              .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
+              .done_steady(done_steady),
+              .supplier(supplier[j]),
+              .clken_PC(clken_PC[j]),
+              .load_PC(load_PC[j]),
+              .incr_PC(incr_PC[j]),
+              .load_value_PC(load_value_PC[((j+1)*12)-1:j*12])
+             );
+
+             // *********************************     Back End       *******************************
+             // scalar PE
+             PE_scalar PE_scalar_inst0(
+              .inp1(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
+              .inp2(rddata2_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
+              .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]),
+              .op_scalar(op_scalar[((j+1)*3)-1:j*3]),
+              .out1(wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
+              .flag_neq(flag_neq[j])
+             );
+
+             // scalar regFile   
+             regFile_scalar regFile_scalar_inst0(
+             .clk(clk),
+             .we(wen_RF_scalar[j]),
+             .rr1(rs1[((j+1)*5)-1:j*5]),
+             .rr2(rs2[((j+1)*5)-1:j*5]),
+             .wr(rd[((j+1)*5)-1:j*5]),
+             .wd((is_csr[j])? cycle_register: ((is_lui[j])? R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]: wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int])),
+             .dr1(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
+             .dr2(rddata2_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int])
+             );
+
+             // vectorized PE
+             vectorized_PE vectorized_PE_inst0(
+             .i1_PE_typeC(tdata_stream[(phit_size*(j+1))-1:phit_size*j]),
+             .i2_PE_typeC(o1_RF[(phit_size*(j+1))-1:phit_size*j]),
+             .i3_PE_typeC(o2_RF[(phit_size*(j+1))-1:phit_size*j]),
+             .i_tlast1_PE_typeC(tlast_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
+             .i_tlast2_PE_typeC(tlast1_RF[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
+             .i_tvalid1_PE_typeC(tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
+             .i_tvalid2_PE_typeC({(SIMD_degree){valid_PE_i[j]}}),
+             .clk(clk),
+             .rst(rst),
+             .op(op[((j+1)*3)-1:j*3]),
+             .state(streamin_state),
+             .o_PE_typeC(o_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
+             .o_tlast_PE_typeC(o_tlast_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
+             .o_tvalid_PE_typeC(o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j])
+             );
              
              // vectorized regFile
              regFile_mask regFile_inst0( // PH: modified wen
@@ -254,18 +311,6 @@ module data_path(
              .d_out1(o1_RF[(phit_size*(j+1))-1:phit_size*j]),
              .d_out2(o2_RF[(phit_size*(j+1))-1:phit_size*j]),
              .tlast_out1(tlast1_RF[(SIMD_degree*(j+1))-1:SIMD_degree*j]));
-             
-             // scalar regFile   
-             regFile_scalar regFile_scalar_inst0(
-             .clk(clk),
-             .we(wen_RF_scalar[j]),
-             .rr1(rs1[((j+1)*5)-1:j*5]),
-             .rr2(rs2[((j+1)*5)-1:j*5]),
-             .wr(rd[((j+1)*5)-1:j*5]),
-             .wd((is_csr[j])? cycle_register: ((is_lui[j])? R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]: wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int])),
-             .dr1(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
-             .dr2(rddata2_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int])
-             );
              
              // HBM read master
              HBM_read_master HBM_read_master_inst0(
@@ -312,52 +357,8 @@ module data_path(
              .s_axis_tready(user_wready_HBM[j]),
              .s_axis_tdata(o1_RF[(phit_size*(j+1))-1:phit_size*j]) 
              );
-             
-             // vectorized PE
-             vectorized_PE vectorized_PE_inst0(
-             .i1_PE_typeC(tdata_stream[(phit_size*(j+1))-1:phit_size*j]),
-             .i2_PE_typeC(o1_RF[(phit_size*(j+1))-1:phit_size*j]),
-             .i3_PE_typeC(o2_RF[(phit_size*(j+1))-1:phit_size*j]),
-             .i_tlast1_PE_typeC(tlast_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
-             .i_tlast2_PE_typeC(tlast1_RF[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
-             .i_tvalid1_PE_typeC(tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
-             .i_tvalid2_PE_typeC({(SIMD_degree){valid_PE_i[j]}}),
-             .clk(clk),
-             .rst(rst),
-             .op(op[((j+1)*3)-1:j*3]),
-             .state(streamin_state),
-             .o_PE_typeC(o_PE_typeC[(phit_size*(j+1))-1:phit_size*j]),
-             .o_tlast_PE_typeC(o_tlast_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
-             .o_tvalid_PE_typeC(o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j])
-             );
-             
-             // scalar PE
-             PE_scalar PE_scalar_inst0(
-              .inp1(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
-              .inp2(rddata2_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
-              .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]),
-              .op_scalar(op_scalar[((j+1)*3)-1:j*3]),
-              .out1(wdata_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
-              .flag_neq(flag_neq[j]) // correct me
-             );
-
-             // PC logic
-             PC_logic PC_logic_inst0(
-              .is_not_vect(is_not_vect[j]),
-              .done_auto_incr(done_auto_incr[j]),
-              .is_bne(is_bne[j]),
-              .is_vstreamout(is_vstreamout_global),
-              .flag_neq(flag_neq[j]),
-              .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
-              .done_steady(done_steady),
-              .supplier(supplier[j]),
-              .clken_PC(clken_PC[j]),
-              .load_PC(load_PC[j]),
-              .incr_PC(incr_PC[j]),
-              .load_value_PC(load_value_PC[((j+1)*12)-1:j*12])
-             );
         
-        
+        // MUXes for PEs
         if (j == num_col-1) begin
 //            mux2 #(phitplusplus) mux2_inst0 ({tlast_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j], (is_vstreamout_global) ? tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j] : {SIMD_degree{1'b0}}, tdata_stream[(phit_size*(j+1))-1:phit_size*j]}, 
             mux2 #(phitplusplus) mux2_inst0 ({tlast_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j], tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j], tdata_stream[(phit_size*(j+1))-1:phit_size*j]}, 
