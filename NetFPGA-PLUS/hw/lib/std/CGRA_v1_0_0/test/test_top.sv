@@ -173,7 +173,7 @@ module test_top;
         string s, path;
         initial begin
             s.itoa(c);
-            path = {"./instructions/gcn_",s,".bin"};
+            path = {"../../../../instructions/gcn_",s,".bin"};
             $readmemb(path,read_inst);
             #1;
             mem[c] = read_inst;
@@ -352,7 +352,7 @@ module test_top;
         
         
         
-        #(clk_pd*(128+5)*32*16);
+//        #(clk_pd*(128+5)*32*16);
     $finish;
     end
 
