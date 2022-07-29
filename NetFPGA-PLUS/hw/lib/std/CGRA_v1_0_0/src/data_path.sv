@@ -7,7 +7,7 @@
 
 module data_path(
     // misc
-    input  logic [dwidth_int-1:0]               cycle_register
+    input  logic [dwidth_int-1:0]               cycle_register,
     input  logic                                done_loader,
     input  logic [(dwidth_inst*num_col)-1:0]    instr, // vector, scalar, config
     input  logic                                clk,
