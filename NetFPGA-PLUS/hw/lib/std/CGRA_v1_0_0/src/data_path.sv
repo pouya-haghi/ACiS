@@ -90,11 +90,11 @@ module data_path(
     logic [num_col-1:0] valid_PE_i, valid_PE_o;
     
     // Internal Stream in/out
-    logic [SIMD_degree-1:0] tvalid_stream_in_lane  ;
-    logic [SIMD_degree-1:0] tready_stream_in_lane  ; 
-    logic [SIMD_degree-1:0] tvalid_stream_out_lane ; 
-    logic [SIMD_degree-1:0] tlast_stream_out_lane  ; 
-    logic [SIMD_degree*num_col-1:0] o_tlast_PE_typeC ; 
+    logic [SIMD_degree-1:0] tvalid_stream_in_lane;
+    logic [SIMD_degree-1:0] tready_stream_in_lane; 
+    logic [SIMD_degree-1:0] tvalid_stream_out_lane; 
+    logic [SIMD_degree-1:0] tlast_stream_out_lane; 
+    logic [SIMD_degree*num_col-1:0] o_tlast_PE_typeC; 
     logic [(phit_size*num_col)-1:0] tdata_stream;
     logic [(SIMD_degree*num_col)-1:0] tvalid_stream;
     logic [(SIMD_degree*num_col)-1:0] tlast_stream;
@@ -104,12 +104,18 @@ module data_path(
     logic [(dwidth_RFadd*num_col)-1:0] ITR;
     logic [num_col-1:0] wen_ITR;
     logic [SIMD_degree-1:0] full_FIFO_in, empty_FIFO_in, full_FIFO_out, empty_FIFO_out;
+
+    // Stream out control
+    logic is_vstreamout_global;
+    logic [num_col-1:0] supplier;
+    logic [num_col-1:0] sel_mux2;
     
     // FSM for done_loader
     logic done_steady;
     logic curr_state_done_loader, next_state_done_loader;
     localparam steady_off = 1'b0;
     localparam steady_on  = 1'b1;
+
     always_ff @(posedge clk) begin
         if (rst) begin
             curr_state_done_loader <= steady_off;
@@ -118,7 +124,6 @@ module data_path(
             curr_state_done_loader <= next_state_done_loader;
         end
     end
-
     always_comb begin
         case(curr_state_done_loader)
             steady_off: next_state_done_loader = (done_loader) ? steady_on : steady_off;
@@ -128,25 +133,9 @@ module data_path(
     end
     assign done_steady = curr_state_done_loader;
 
-    // Stream out control
-    logic is_vstreamout_global;
-    logic [num_col-1:0] supplier;
-    logic [num_col-1:0] sel_mux2;
-
-    vstreamout_control vstreamout_control_inst0(
-        .clk(clk),
-        .rst(rst),
-        .is_vstreamout(is_vstreamout),
-        .done(done_auto_incr),
-        .supplier(supplier),
-        .clken_PC_vstreamout(clken_PC_vstreamout),
-        .is_vstreamout_global(is_vstreamout_global),
-        .mux_control(sel_mux2));
      
-    // Stream in/out concatination
+    // Stream in concatination
     assign tready_stream_in = &tready_stream_in_lane;
-    assign tvalid_stream_out = &tvalid_stream_out_lane;
-    assign tlast_stream_out = &tlast_stream_out_lane;
     
     // Sync FIFO for stream in
     genvar i;
@@ -173,20 +162,20 @@ module data_path(
     // Disassembler
     logic [1:0] streamin_state;
     disassembler disassembler_inst0(
-        .clk(clk),
-        .rst(rst),
-        .tready(tready_stream_in),
-        .tlast(&tlast_stream),
-        .tvalid(&tvalid_stream),
-        .empty(empty_FIFO_in),
-        .state(streamin_state));
+    .clk(clk),
+    .rst(rst),
+    .tready(tready_stream_in),
+    .tlast(&tlast_stream),
+    .tvalid(&tvalid_stream),
+    .empty(empty_FIFO_in),
+    .state(streamin_state));
         
     
     assign t_stall = (|stall_FIFO) || (|is_not_vect);
     
     genvar j;
     generate 
-        for (j=0; j<num_col; j++) begin
+        for (j = 0; j < num_col; j++) begin
             assign stall_FIFO[j] = (is_vle32_vv[j]) || (is_vse32_vv[j]);
             assign stall_rd_autovect[j] = (is_vse32_vv[j] & (!(user_wready_HBM[j]&wvalid_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_i[j]) || (is_vstreamout_global & !supplier[j]) || (!is_vstreamout_global & is_vstreamout[j]);
             assign stall_wr_autovect[j] = (is_vle32_vv[j] & (!(user_rvalid_HBM[j]&rready_HBM[j]))) || (is_vmacc_vv[j] & !valid_PE_o[j]);
@@ -195,8 +184,8 @@ module data_path(
             assign valid_PE_o[j] = (|o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]); // PH: changed from & to |
 //            assign rready_HBM[j] = 1'b1;
             
-            ISA_decoder ISA_decoder_inst
-            (.instr(instr[((j+1)*dwidth_inst)-1:j*dwidth_inst]),
+            ISA_decoder ISA_decoder_inst(
+             .instr(instr[((j+1)*dwidth_inst)-1:j*dwidth_inst]),
              .clk(clk),
              .rst(rst),
              .tvalid_RF(tvalid_RF[j]),
@@ -301,8 +290,7 @@ module data_path(
              );
              
              // HBM write master
-             HBM_write_master HBM_write_master_inst0
-             (
+             HBM_write_master HBM_write_master_inst0(
              .aclk(clk),
              .areset(rst),
              .ctrl_start(wen_ITR[j]),              // Pulse high for one cycle to begin reading
@@ -326,8 +314,7 @@ module data_path(
              );
              
              // vectorized PE
-             vectorized_PE vectorized_PE_inst0
-             (
+             vectorized_PE vectorized_PE_inst0(
              .i1_PE_typeC(tdata_stream[(phit_size*(j+1))-1:phit_size*j]),
              .i2_PE_typeC(o1_RF[(phit_size*(j+1))-1:phit_size*j]),
              .i3_PE_typeC(o2_RF[(phit_size*(j+1))-1:phit_size*j]),
@@ -345,8 +332,8 @@ module data_path(
              );
              
              // scalar PE
-             PE_scalar PE_scalar_inst0
-             (.inp1(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
+             PE_scalar PE_scalar_inst0(
+              .inp1(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
               .inp2(rddata2_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
               .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]),
               .op_scalar(op_scalar[((j+1)*3)-1:j*3]),
@@ -355,8 +342,7 @@ module data_path(
              );
 
              // PC logic
-             PC_logic PC_logic_inst0
-             (
+             PC_logic PC_logic_inst0(
               .is_not_vect(is_not_vect[j]),
               .done_auto_incr(done_auto_incr[j]),
               .is_bne(is_bne[j]),
@@ -364,7 +350,7 @@ module data_path(
               .flag_neq(flag_neq[j]),
               .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
               .done_steady(done_steady),
-              .clken_PC_vstreamout(clken_PC_vstreamout),
+              .supplier(supplier[j]),
               .clken_PC(clken_PC[j]),
               .load_PC(load_PC[j]),
               .incr_PC(incr_PC[j]),
@@ -390,6 +376,11 @@ module data_path(
         end
     endgenerate   
 
+    // Stream out concatination
+    assign tvalid_stream_out = &tvalid_stream_out_lane;
+    assign tlast_stream_out = &tlast_stream_out_lane;
+
+    // Sync FIFO for stream in
     generate
         for (i=0; i<SIMD_degree; i++) begin            
             sync_FIFO #(dwidth_float+2, 16) sync_FIFO_inst1(
@@ -406,5 +397,16 @@ module data_path(
             assign tkeep_stream_out[i*4+3:i*4] = {4{tvalid_stream_out_lane[i]}}; 
         end
     endgenerate
+
+    // vstreamout_control
+    vstreamout_control vstreamout_control_inst0(
+    .clk(clk),
+    .rst(rst),
+    .is_vstreamout(is_vstreamout),
+    .done(done_auto_incr),
+    .supplier(supplier),
+    .is_vstreamout_global(is_vstreamout_global),
+    .mux_control(sel_mux2)
+    );
         
 endmodule
