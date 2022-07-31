@@ -173,7 +173,7 @@ module test_top;
         string s, path;
         initial begin
             s.itoa(c);
-            path = {"../../../../instructions/gcn_",s,".bin"};
+            path = {"/ad/eng/research/eng_research_caad/haghi/CGRA_V5/CGRA_V5.srcs/sim_1/imports/CGRA_v1_0_0/test/instructions/gcn_",s,".bin"};
             $readmemb(path,read_inst);
             #1;
             mem[c] = read_inst;
@@ -188,12 +188,17 @@ module test_top;
             assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = mem[i][j];
         end
     end 
+    for (i=num_col;i<16-num_col;i++) begin
+        for (j=0;j<depth_config;j++) begin
+            assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = '0;
+        end
+    end 
     endgenerate   
     
     int k;
     
     initial begin
-        instructions = '{default:0};
+//        instructions = '{default:0};
         
         // Reset
         ap_clk                       = 1'b1;

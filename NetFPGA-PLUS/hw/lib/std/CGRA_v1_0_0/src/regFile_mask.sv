@@ -20,12 +20,12 @@ module regFile_mask( // support multibit wen (resolution at the granularity of P
     );
     
     logic [phit_size+SIMD_degree-1:0] mem [depth_RF-1:0];
-    integer i;
+    integer k;
     
     // This is for simulation
     initial begin
-        for (i=0;i<depth_RF;i=i+1)
-            mem[i] <= 0;
+        for (k=0;k<depth_RF;k=k+1)
+            mem[k] <= 0;
 //            mem[i] <= i*10;
     end
     // End of simulation
@@ -35,6 +35,7 @@ module regFile_mask( // support multibit wen (resolution at the granularity of P
             if(wen[i]) 
                 mem[wr_addr][dwidth_float*(i+1) - 1:dwidth_float*i] <= d_in[dwidth_float*(i+1) - 1:dwidth_float*i];
         end
+    end
     endgenerate
     
     always_ff @(posedge clk) begin

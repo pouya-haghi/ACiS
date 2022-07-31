@@ -22,7 +22,7 @@ parameter total_instr = num_col*depth_config;
 parameter C_S_AXI_ADDR_WIDTH = 5;
 parameter C_S_AXI_DATA_WIDTH = 32;
 parameter C_M_AXI_ADDR_WIDTH = 64;
-parameter packet_length = 64;
+parameter packet_length = 16; // VLEN of vmacc
 parameter header_bytes = 34;
 parameter header_deg = $ceil((header_bytes*SIMD_degree*8)/phit_size);
 function integer f_max (

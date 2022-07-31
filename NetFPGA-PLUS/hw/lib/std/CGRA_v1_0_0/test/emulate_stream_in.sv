@@ -33,8 +33,8 @@ module emulate_stream_in(
     
     always @(posedge ap_clk) begin
         if (rst) begin
-            next_state <= INACTIVE;
-            next_count <= '0;
+            state <= INACTIVE;
+            count <= '0;
         end else begin
             state <= next_state;
             count <= next_count;
@@ -45,7 +45,6 @@ module emulate_stream_in(
     float_generator fg_inst(count[4:0], temp_float);
     
     always_comb begin
-        rst = ~ap_rst_n;
         case(state)
             INACTIVE: begin
                 next_state = (axis00_tready) ? STREAM_IN : INACTIVE;
@@ -53,25 +52,35 @@ module emulate_stream_in(
                 axis00_tvalid = '0;
                 axis00_tlast  = '0;
                 axis00_tkeep  = '0;
+                next_count = '0;
             end 
             STREAM_IN: begin
-                next_state = (axis00_tready) ? STREAM_IN : INACTIVE;
-                axis00_tvalid = 1'b1;
-                axis00_tkeep  = {(phit_size/8){1'b1}};
                 if (count == 0) begin // if first clock of packet, insert header
-                    axis00_tdata = {{(phit_size-32){1'b0}},32'h12345678};
+                    axis00_tdata = {{(phit_size-32){1'b0}},32'h12345678}; // TODO: correct header size
                     axis00_tlast = 1'b0;
                     next_count = count+1;
+                    next_state = (axis00_tready) ? STREAM_IN : INACTIVE;
+                    axis00_tvalid = 1'b1;
+                    axis00_tkeep  = {(phit_size/8){1'b1}};
                 end else if (count == (packet_length-1)) begin // if last clock, assert tlast
                     axis00_tdata = {(phit_size/32){temp_float}};
                     axis00_tlast = 1'b1;
-                    next_count = 0;
+                    next_count = '0;
+                    next_state = (axis00_tready) ? STREAM_IN : INACTIVE;
+                    axis00_tvalid = 1'b1;
+                    axis00_tkeep  = {(phit_size/8){1'b1}};
                 end else begin // if somewhere in the middle
                     axis00_tdata = {(phit_size/32){temp_float}};
                     axis00_tlast  = 1'b0;
                     next_count = count+1;
+                    next_state = (axis00_tready) ? STREAM_IN : INACTIVE;
+                    axis00_tvalid = 1'b1;
+                    axis00_tkeep  = {(phit_size/8){1'b1}};
                 end
             end
         endcase
     end
+    
+    assign rst = ~ap_rst_n;
+    
 endmodule

@@ -88,6 +88,8 @@ module data_path(
     logic [(num_col*phit_size)-1:0] user_rdata_HBM;
     logic [num_col-1:0] user_rvalid_HBM, user_wready_HBM;
     logic [num_col-1:0] valid_PE_i, valid_PE_o;
+    logic [num_col-1:0] ap_done_decoder;
+    logic ap_done_t;
     
     // Internal Stream in/out
     logic [SIMD_degree-1:0] tvalid_stream_in_lane;
@@ -127,11 +129,28 @@ module data_path(
     always_comb begin
         case(curr_state_done_loader)
             steady_off: next_state_done_loader = (done_loader) ? steady_on : steady_off;
-            steady_on: next_state_done_loader = (ap_done) ? steady_off : steady_on;
+            steady_on: next_state_done_loader = (ap_done_t) ? steady_off : steady_on;
             default: next_state_done_loader = steady_off;
         endcase
     end
     assign done_steady = curr_state_done_loader;
+    
+        
+    // Disassembler
+    logic [1:0] streamin_state;
+    disassembler disassembler_inst0(
+    .clk(clk),
+    .rst(rst),
+    .tready(tready_stream_in),
+    .tlast(&tlast_stream),
+    .tvalid(&tvalid_stream),
+    .empty(empty_FIFO_in),
+    .state(streamin_state));
+        
+    
+    assign t_stall = (|stall_FIFO) || (|is_not_vect);
+    assign ap_done_t = &ap_done_decoder; // synchronization
+    assign ap_done = ap_done_t;
 
      
     // Stream in concatination
@@ -158,20 +177,6 @@ module data_path(
             assign tready_stream_in_lane[i] = !full_FIFO_in[i] & done_steady & !t_stall;
         end
     endgenerate
-    
-    // Disassembler
-    logic [1:0] streamin_state;
-    disassembler disassembler_inst0(
-    .clk(clk),
-    .rst(rst),
-    .tready(tready_stream_in),
-    .tlast(&tlast_stream),
-    .tvalid(&tvalid_stream),
-    .empty(empty_FIFO_in),
-    .state(streamin_state));
-        
-    
-    assign t_stall = (|stall_FIFO) || (|is_not_vect);
     
     genvar j;
     generate 
@@ -210,12 +215,17 @@ module data_path(
              .op(op[((j+1)*3)-1:j*3]),
              .op_scalar(op_scalar[((j+1)*3)-1:j*3]),
              .wen_RF_scalar(wen_RF_scalar[j]),
-             .ap_done(ap_done),
+             .ap_done(ap_done_decoder[j]),
              .done_steady(done_steady)
              );
              
              // Register pipeline: delay VD into auto_incr_vect vw
-             register_pipe #(dwidth_RFadd*num_col, latencyPEC) rp_inst0(clk, rst, vw_addr, vw_addr_d);
+             register_pipe #(dwidth_RFadd, latencyPEC) rp_inst0(
+             .clk(clk), 
+             .rst(rst), 
+             .din(vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]), 
+             .dout(vw_addr_d[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd])
+             );
              
              // auto increment vector
              auto_incr_vect auto_incr_vect_inst(
@@ -320,6 +330,7 @@ module data_path(
              .ctrl_done(read_done_HBM[j]),    
              .ctrl_addr_offset({32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}),
              .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // 6'b0 because each VRF entry is 64 Bytes
+//             .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}), // 6'b0 because each VRF entry is 64 Bytes
              // -64 because AXI needs ITR-1 (length-1)
              .m_axi_arvalid(arvalid_HBM[j]),
              .m_axi_arready(arready_HBM[j]),
@@ -381,7 +392,7 @@ module data_path(
     assign tvalid_stream_out = &tvalid_stream_out_lane;
     assign tlast_stream_out = &tlast_stream_out_lane;
 
-    // Sync FIFO for stream in
+    // Sync FIFO for stream out
     generate
         for (i=0; i<SIMD_degree; i++) begin            
             sync_FIFO #(dwidth_float+2, 16) sync_FIFO_inst1(
