@@ -38,6 +38,7 @@ module auto_incr_vect(
     input logic is_vsetivli,
 //    input logic [dwidth_int-1:0] rddata1_RF_scalar, // x register in vle32 and vse32 instructions, used for addressing memory
     output logic wen_ITR, // act as both wen and start signal
+    output logic [dwidth_RFadd-1:0] ITR_delay, // one clock delayed
     output logic [dwidth_RFadd-1:0] vr_addr1_auto_incr,
     output logic [dwidth_RFadd-1:0] vr_addr2_auto_incr,
     output logic [dwidth_RFadd-1:0] vw_addr_auto_incr,
@@ -45,7 +46,7 @@ module auto_incr_vect(
     );
     
     logic [dwidth_RFadd-1:0] ctr_ITR_rd, ctr_ITR_wr;// counter
-    logic [dwidth_RFadd-1:0] ITR_q, ITR_minusOne;
+    logic [dwidth_RFadd-1:0] ITR_q, ITR_d;
     logic count_rd, count_wr;
     logic is_vect, change_PC;
     logic curr_state_rd, next_state_rd, curr_state_wr, next_state_wr;
@@ -53,15 +54,16 @@ module auto_incr_vect(
     localparam waiting = 1'b0, count_started = 1'b1; 
     localparam left_inactive = 2'b00, left_active = 2'b01, right_inactive = 2'b10, right_active = 2'b11; 
     
-    assign ITR_minusOne = ITR - 1'b1;
-    
     reg_enr #(dwidth_RFadd) reg_enr_inst(
-        .d(ITR_minusOne),
+        .d(ITR),
         .clk(clk),
         .rst(rst),
         .en(is_vsetivli),
-        .q(ITR_q)
+        .q(ITR_d)
     );
+    
+    assign ITR_q = ITR_d - 1'b1;
+    assign ITR_delay = ITR_d;
     
     // FSM for wen_ITR
     always_ff @(posedge clk) begin

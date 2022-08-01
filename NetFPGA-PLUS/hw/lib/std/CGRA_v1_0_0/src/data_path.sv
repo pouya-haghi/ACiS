@@ -103,7 +103,7 @@ module data_path(
     
     // This part is ISA-specific:
     logic [num_col-1:0] tvalid_RF; // generated internally based on op
-    logic [(dwidth_RFadd*num_col)-1:0] ITR;
+    logic [(dwidth_RFadd*num_col)-1:0] ITR, ITR_delay;
     logic [num_col-1:0] wen_ITR;
     logic [SIMD_degree-1:0] full_FIFO_in, empty_FIFO_in, full_FIFO_out, empty_FIFO_out;
 
@@ -248,6 +248,7 @@ module data_path(
              .load_PC(load_PC[j]),
              .incr_PC(incr_PC[j]),
              .wen_ITR(wen_ITR[j]),
+             .ITR_delay(ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .done(done_auto_incr[j]) // one clock pulse
              );
 
@@ -329,8 +330,8 @@ module data_path(
              .ctrl_start(wen_ITR[j]),
              .ctrl_done(read_done_HBM[j]),    
              .ctrl_addr_offset({32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}),
-             .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // 6'b0 because each VRF entry is 64 Bytes
-//             .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}), // 6'b0 because each VRF entry is 64 Bytes
+//             .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // 6'b0 because each VRF entry is 64 Bytes
+             .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}), // 6'b0 because each VRF entry is 64 Bytes. PH: no need to decrement as runtimeloadtable itself does it
              // -64 because AXI needs ITR-1 (length-1)
              .m_axi_arvalid(arvalid_HBM[j]),
              .m_axi_arready(arready_HBM[j]),
@@ -352,8 +353,9 @@ module data_path(
              .ctrl_start(wen_ITR[j]),              // Pulse high for one cycle to begin reading
              .ctrl_done(write_done_HBM[j]),               // Pulses high for one cycle when transfer request is complete
              .ctrl_addr_offset({32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}),        // Starting Address offset
-             .ctrl_xfer_size_in_bytes({{(dwidth_aximm-dwidth_RFadd-6){1'b0}}, ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // Length in number of bytes, limited by the address width.
-             .m_axi_awvalid(awvalid_HBM[j]),
+//             .ctrl_xfer_size_in_bytes({{(dwidth_aximm-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // Length in number of bytes, limited by the address width.
+             .ctrl_xfer_size_in_bytes({{(dwidth_aximm-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}), //PH: no need to decrement as runtimeloadtable itself does it
+             .m_axi_awvalid(awvalid_HBM[j]), 
              .m_axi_awready(awready_HBM[j]),
              .m_axi_awaddr(awaddr_HBM[((j+1)*dwidth_aximm)-1:j*dwidth_aximm]),
              .m_axi_awlen(awlen_HBM[((j+1)*8)-1:j*8]),
