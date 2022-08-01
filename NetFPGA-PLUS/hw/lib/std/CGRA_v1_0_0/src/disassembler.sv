@@ -19,7 +19,7 @@ module disassembler(
     logic [1:0] HEADER = 2'b01;
     logic [1:0] PAYLOAD = 2'b10;
     
-    always @(posedge clk) begin
+    always_ff @(posedge clk) begin
        if(rst) begin
           state <= IDLE;
        end
@@ -37,6 +37,9 @@ module disassembler(
                 
                 PAYLOAD: state = (tlast) ? IDLE : PAYLOAD;
             endcase 
+        end
+        else begin
+            state = state_prev;
         end
     end
 
