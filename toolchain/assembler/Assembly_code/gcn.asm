@@ -19,7 +19,7 @@
             addi x5, x0, 0x000 // init to zero
             addi x6, x0, 0x004 // 4
             // LOOP_TK
-            addi x30, x0, 0x020 // 32
+            addi x30, x0, 0x004 // was 32 before
             addi x29, x0, 0x000 // init to zero
             // LOOP_M
             // addi x1, x0, 0x010 // 16
@@ -35,6 +35,7 @@
 
 LOOP_TM:    vsetivli zero, 16, e32, m2
             vle32.v v1, (x0) // vectorization for LOOP_TRF
+            addi x29, x0, 0x000 // re-init to zero
 LOOP_TK:    vsetivli zero, 32, e32, m2
             vle32.v v0, (x7) // vectorization for LOOP_K
             add x7, x7, x28 // LOOP_K
@@ -80,5 +81,4 @@ LOOP_TK:    vsetivli zero, 32, e32, m2
             
             addi x5, x5, 0x001 // LOOP_TM
             bne x5, x6, LOOP_TM // LOOP_TM
-
 wfi

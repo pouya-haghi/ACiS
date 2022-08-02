@@ -357,7 +357,8 @@ module test_top;
         
         
         
-        #(clk_pd*(128+5)*32*16);
+//        #(clk_pd*(128+5)*32*16);
+        #(clk_pd*9300);
     $finish;
     end
 
