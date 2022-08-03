@@ -1,0 +1,19 @@
+TACC:  Starting up job 10066083 
+TACC:  Starting parallel tasks... 
+0 Reddit_feat_L2.txt 0.0147937 8.2497e-05 0.0147112
+1 Reddit_feat_L2.txt 0.00761106 6.349e-05 0.00754757
+2 Reddit_feat_L2.txt 0.00415948 8.1742e-05 0.00407774
+3 Reddit_feat_L2.txt 0.00417171 6.4659e-05 0.00410705
+4 Reddit_feat_L2.txt 0.00456741 8.1024e-05 0.00448638
+5 Reddit_feat_L2.txt 0.00398188 6.1815e-05 0.00392007
+6 Reddit_feat_L2.txt 0.00329992 7.7021e-05 0.0032229
+7 Reddit_feat_L2.txt 0.00353311 7.447e-05 0.00345864
+0 Reddit_A.txt 0.122514 0.00762818 0.114885
+1 Reddit_A.txt 0.236274 0.00758895 0.228685
+2 Reddit_A.txt 0.389569 0.00736316 0.382206
+3 Reddit_A.txt 0.522015 0.00736365 0.514652
+4 Reddit_A.txt 0.808041 0.00732713 0.800714
+5 Reddit_A.txt 1.0448 0.00729632 1.0375
+6 Reddit_A.txt 1.01709 0.00706593 1.01003
+7 Reddit_A.txt 1.51684 0.007531 1.50931
+TACC:  Shutdown complete. Exiting. 

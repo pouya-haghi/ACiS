@@ -1,0 +1,11 @@
+TACC:  Starting up job 10066079 
+TACC:  Starting parallel tasks... 
+0 Citeseer_feat_L1.txt 0.000722837 0.000204947 0.00051789
+1 Citeseer_feat_L1.txt 0.00073185 0.000201584 0.000530266
+2 Citeseer_feat_L1.txt 0.000755454 0.000201569 0.000553885
+3 Citeseer_feat_L1.txt 0.000798241 0.000207669 0.000590572
+0 Citeseer_A.txt 0.000136809 0.000105503 3.1306e-05
+1 Citeseer_A.txt 0.000152326 0.000110421 4.1905e-05
+2 Citeseer_A.txt 0.000176024 0.000110493 6.5531e-05
+3 Citeseer_A.txt 0.000190059 0.000109609 8.045e-05
+TACC:  Shutdown complete. Exiting. 

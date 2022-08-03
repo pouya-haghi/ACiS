@@ -1,0 +1,19 @@
+TACC:  Starting up job 10066083 
+TACC:  Starting parallel tasks... 
+0 Cora_feat_L2.txt 0.000101752 5.6767e-05 4.4985e-05
+1 Cora_feat_L2.txt 0.000105854 6.1926e-05 4.3928e-05
+2 Cora_feat_L2.txt 9.6055e-05 5.16e-05 4.4455e-05
+3 Cora_feat_L2.txt 0.000106403 6.1141e-05 4.5262e-05
+4 Cora_feat_L2.txt 9.7485e-05 5.3525e-05 4.396e-05
+5 Cora_feat_L2.txt 0.000110975 6.5416e-05 4.5559e-05
+6 Cora_feat_L2.txt 9.8106e-05 5.3171e-05 4.4935e-05
+7 Cora_feat_L2.txt 0.00010926 6.2847e-05 4.6413e-05
+0 Cora_A.txt 0.000167889 0.000157205 1.0684e-05
+1 Cora_A.txt 0.000130605 0.000117517 1.3088e-05
+2 Cora_A.txt 0.00015059 0.000135672 1.4918e-05
+3 Cora_A.txt 8.8284e-05 7.1689e-05 1.6595e-05
+4 Cora_A.txt 0.000173614 0.000155719 1.7895e-05
+5 Cora_A.txt 0.00013948 0.000118839 2.0641e-05
+6 Cora_A.txt 0.000156055 0.000135327 2.0728e-05
+7 Cora_A.txt 9.1204e-05 7.162e-05 1.9584e-05
+TACC:  Shutdown complete. Exiting. 

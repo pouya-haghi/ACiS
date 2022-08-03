@@ -1,0 +1,7 @@
+TACC:  Starting up job 10066073 
+TACC:  Starting parallel tasks... 
+0 Reddit_feat_L1.txt 0.00989663 5.638e-05 0.00984025
+1 Reddit_feat_L1.txt 0.00987437 5.9626e-05 0.00981475
+0 Reddit_A.txt 0.631519 0.0071079 0.624411
+1 Reddit_A.txt 2.23948 0.00711472 2.23237
+TACC:  Shutdown complete. Exiting. 
