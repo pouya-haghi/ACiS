@@ -184,10 +184,14 @@ module test_top;
     endgenerate
     
     genvar i,j;
+    localparam num_instr = 52;
     generate
     for (i=0;i<num_col;i++) begin
         for (j=0;j<depth_config;j++) begin
-            assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = mem[i][j];
+            if (j<num_instr)
+                assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = mem[i][j];
+            else
+                assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = '0;
         end
     end 
     for (i=num_col;i<SIMD_degree;i++) begin
