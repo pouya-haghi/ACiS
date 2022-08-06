@@ -173,7 +173,9 @@ module test_top;
         string s, path;
         initial begin
             s.itoa(c);
-            path = {"/ad/eng/research/eng_research_caad/haghi/CGRA_V5/CGRA_V5.srcs/sim_1/imports/CGRA_v1_0_0/test/instructions/gcn_",s,".bin"};
+//            path = {"../../../../instructions/gcn_",s,".bin"};
+            path = {"/home/wkrska/Documents/Research-Files/G-FPin_HW/toolchain/assembler/Assembly_code/tm4tk4/gcn_",s,".bin"};
+//            path = {"/ad/eng/research/eng_research_caad/haghi/CGRA_V5/CGRA_V5.srcs/sim_1/imports/CGRA_v1_0_0/test/instructions/gcn_",s,".bin"};
             $readmemb(path,read_inst);
             #1;
             mem[c] = read_inst;
@@ -182,13 +184,17 @@ module test_top;
     endgenerate
     
     genvar i,j;
+    localparam num_instr = 52;
     generate
     for (i=0;i<num_col;i++) begin
         for (j=0;j<depth_config;j++) begin
-            assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = mem[i][j];
+            if (j<num_instr)
+                assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = mem[i][j];
+            else
+                assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = '0;
         end
     end 
-    for (i=num_col;i<16-num_col;i++) begin
+    for (i=num_col;i<SIMD_degree;i++) begin
         for (j=0;j<depth_config;j++) begin
             assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = '0;
         end
@@ -358,7 +364,7 @@ module test_top;
         
         
 //        #(clk_pd*(128+5)*32*16);
-        #(clk_pd*9300);
+        #(clk_pd*9500);
     $finish;
     end
 

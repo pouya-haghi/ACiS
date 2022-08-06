@@ -57,7 +57,7 @@ module data_path(
     localparam phitplusplus = phit_size + SIMD_degree*2; // bundle {tlast, tvalid, tdata}
 
     logic [((num_col)*3)-1:0] op;
-    logic clken_PC_vstreamout;
+//    logic clken_PC_vstreamout;
     logic [((num_col)*3)-1:0] op_scalar;
     logic [(phit_size*num_col)-1:0] o1_RF, o2_RF;
     logic [(phit_size*num_col)-1:0] o_PE_typeC; // the last bundle of SIMD_degree signals is for tvalid
@@ -254,18 +254,18 @@ module data_path(
 
              // PC logic
              PC_logic PC_logic_inst0(
-              .is_not_vect(is_not_vect[j]),
-              .done_auto_incr(done_auto_incr[j]),
-              .is_bne(is_bne[j]),
-              .is_vstreamout(is_vstreamout_global),
-              .flag_neq(flag_neq[j]),
-              .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
-              .done_steady(done_steady),
-              .supplier(supplier[j]),
-              .clken_PC(clken_PC[j]),
-              .load_PC(load_PC[j]),
-              .incr_PC(incr_PC[j]),
-              .load_value_PC(load_value_PC[((j+1)*12)-1:j*12])
+             .is_not_vect(is_not_vect[j]),
+             .done_auto_incr(done_auto_incr[j]),
+             .is_bne(is_bne[j]),
+             .is_vstreamout(is_vstreamout_global),
+             .streamout_incr((done_auto_incr[num_col-1] && supplier[num_col-1])),
+             .flag_neq(flag_neq[j]),
+             .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
+             .done_steady(done_steady),
+             .clken_PC(clken_PC[j]),
+             .load_PC(load_PC[j]),
+             .incr_PC(incr_PC[j]),
+             .load_value_PC(load_value_PC[((j+1)*12)-1:j*12])
              );
 
              // *********************************     Back End       *******************************
