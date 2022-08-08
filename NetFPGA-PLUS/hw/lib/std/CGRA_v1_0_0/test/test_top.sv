@@ -5,6 +5,8 @@
 `endif
 
 module test_top;
+
+    // ------------------Instantiate logic------------------ //
     // General I/O                                                           
     reg                      ap_clk                        ;
     reg                      ap_rst_n                      ;
@@ -106,6 +108,8 @@ module test_top;
     wire                     m02_axi_wlast          ;
     wire [(phit_size/8)-1:0] m02_axi_wstrb          ;
     
+    
+    // ------------------Instantiate Modules------------------ //
     top top_inst0(.*);    
     
     emulate_HBM emulate_HBM_inst0(
@@ -158,32 +162,10 @@ module test_top;
     
     emulate_stream_in emulate_stream_in_inst(.*);
     
-    // clock
-    always begin
-        #(clk_pd/2);
-        ap_clk = !ap_clk;      
-    end
-    
-    // ------------------Load instructions------------------ //
+    // ------------------Assign instructions------------------ //
     logic [phit_size-1:0] instructions[0:depth_config-1];
     logic [dwidth_int-1:0] mem[0:num_col-1][0:(depth_config)-1];
     
-    genvar c;
-    generate
-    for (c=0;c<num_col;c++) begin
-        logic [dwidth_int-1:0] read_inst[0:depth_config-1];
-        string s, path;
-        initial begin
-            s.itoa(c);
-//            path = {"../../../../instructions/gcn_",s,".bin"};
-            path = {"/home/wkrska/Documents/Research-Files/G-FPin_HW/toolchain/assembler/Assembly_code/tm4tk4/gcn_",s,".bin"};
-//            path = {"/ad/eng/research/eng_research_caad/haghi/CGRA_V5/CGRA_V5.srcs/sim_1/imports/CGRA_v1_0_0/test/instructions/gcn_",s,".bin"};
-            $readmemb(path,read_inst);
-            #1;
-            mem[c] = read_inst;
-        end
-    end
-    endgenerate
     genvar i,j;
     localparam num_instr = 52;
     generate
@@ -201,69 +183,103 @@ module test_top;
         end
     end 
     endgenerate  
-
-    int k;
     
-    initial begin        
-        // Reset
-        ap_clk                       = 1'b1;
-        ap_rst_n                     = 1'b0; 
-        
-        s_axi_control_araddr    <= 5'b0;
-        s_axi_control_arvalid   <= 1'b0;
-        s_axi_control_awaddr    <= 5'b0;
-        s_axi_control_awvalid   <= 1'b0;
-        s_axi_control_bready    <= 1'b0;
-        s_axi_control_rready    <= 1'b0;
-        s_axi_control_wdata     <= 32'b0;
-        s_axi_control_wstrb     <= 4'b0;
-        s_axi_control_wvalid    <= 1'b0;
-        m00_axi_arready         <= 1'b0;
-        m00_axi_rdata           <= 512'b0;
-        m00_axi_rlast           <= 1'b0;
-        m00_axi_rvalid          <= 1'b0;
-                
-        
-        #(depth_config*clk_pd); ap_rst_n = 1'b1;
-
-        // trigger ap_start
-        s_axi_control_awaddr <= 5'b0;
-        s_axi_control_awvalid <= 1'b1;
-        #80;
-        s_axi_control_awvalid <= 1'b0;
-        s_axi_control_wstrb[0] <= 1'b1;
-        s_axi_control_wdata[0] <= 1'b1;
-        s_axi_control_wvalid <= 1'b1;
-        #40;
-        // de-assert signals to release ctrl_start
-        s_axi_control_wstrb[0] <= 1'b0;
-        s_axi_control_wdata[0] <= 1'b0;
-        s_axi_control_wvalid <= 1'b0;
-        
-        #60; //ctrl start goes high and sample offset and size, arready is high, HBM latency
-        
-        // Start instructions write
-        m00_axi_rvalid <= 1'b1; 
-        
-        //start instructions
-        for (k=0; k<depth_config; k++) begin
-            m00_axi_rdata <= instructions[k];
-            $display("Instruction %d: %b",k,m00_axi_rdata);
-            if (k==(depth_config-1))
-                m00_axi_rlast <= 1'b1;
-            #clk_pd;
-            m00_axi_rlast <= 1'b0;
-        end
-        // stop loading
-        m00_axi_rvalid <= 1'b0;
-        #clk_pd;
-        
-        #(clk_pd*4*4*580);
-        
-        $display("Cycle count: %0d", csr_out);
-    $finish;
+    logic [dwidth_int-1:0] read_inst[0:depth_config-1];
+    string s, tks, tms, path;
+    int c,k,d,fd;
+    
+    // ------------------Simulation Things------------------ //
+    localparam num_dim = 2;
+    // clock
+    always begin
+        #(clk_pd/2);
+        ap_clk = !ap_clk;      
     end
-
+    // dimensions
+    string path_stub = "/home/wkrska/Documents/Research-Files/G-FPin_HW/toolchain/assembler/Assembly_code/";
+    integer tk[num_dim] = {4,32};
+    integer tm[num_dim] = {4,16};
+    
+    
+    // ------------------Begin Simulation------------------ //
+    initial begin
+        fd = $fopen({path_stub,"output.txt"}, "w");
+              
+        for (d=0; d<num_dim; d++) begin
+            // Load instructions
+            for (c=0;c<num_col;c++) begin
+                s.itoa(c);
+                tks.itoa(tk[d]);
+                tms.itoa(tm[d]);
+                path = {path_stub,"tk",tks,"tm",tms,"/gcn_",s,".bin"};
+                $readmemb(path,read_inst);
+                #1;
+                mem[c] = read_inst;
+            end
+            
+            #10;
+            
+            // Reset
+            ap_clk                       = 1'b1;
+            ap_rst_n                     = 1'b0; 
+            
+            s_axi_control_araddr    <= 5'b0;
+            s_axi_control_arvalid   <= 1'b0;
+            s_axi_control_awaddr    <= 5'b0;
+            s_axi_control_awvalid   <= 1'b0;
+            s_axi_control_bready    <= 1'b0;
+            s_axi_control_rready    <= 1'b0;
+            s_axi_control_wdata     <= 32'b0;
+            s_axi_control_wstrb     <= 4'b0;
+            s_axi_control_wvalid    <= 1'b0;
+            m00_axi_arready         <= 1'b0;
+            m00_axi_rdata           <= 512'b0;
+            m00_axi_rlast           <= 1'b0;
+            m00_axi_rvalid          <= 1'b0;
+                    
+            
+            #(depth_config*clk_pd); ap_rst_n = 1'b1;
+    
+            // trigger ap_start
+            s_axi_control_awaddr <= 5'b0;
+            s_axi_control_awvalid <= 1'b1;
+            #80;
+            s_axi_control_awvalid <= 1'b0;
+            s_axi_control_wstrb[0] <= 1'b1;
+            s_axi_control_wdata[0] <= 1'b1;
+            s_axi_control_wvalid <= 1'b1;
+            #40;
+            // de-assert signals to release ctrl_start
+            s_axi_control_wstrb[0] <= 1'b0;
+            s_axi_control_wdata[0] <= 1'b0;
+            s_axi_control_wvalid <= 1'b0;
+            
+            #60; //ctrl start goes high and sample offset and size, arready is high, HBM latency
+            
+            // Start instructions write
+            m00_axi_rvalid <= 1'b1; 
+            
+            //start instructions
+            for (k=0; k<depth_config; k++) begin
+                m00_axi_rdata <= instructions[k];
+                $display("Instruction %d: %b",k,m00_axi_rdata);
+                if (k==(depth_config-1))
+                    m00_axi_rlast <= 1'b1;
+                #clk_pd;
+                m00_axi_rlast <= 1'b0;
+            end
+            // stop loading
+            m00_axi_rvalid <= 1'b0;
+            #clk_pd;
+            
+            #(clk_pd*tk[d]*tm[d]*depth_config*12);
+            
+            $display("Cycle count: %0d", csr_out);
+            $fwrite(fd,"tk: %0d, tm: %0d, cycles: %0d\n",tk[d],tm[d],csr_out);
+        end
+        $fclose(fd);
+        $finish;
+    end
 endmodule
 
 
