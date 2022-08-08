@@ -13,6 +13,7 @@ module data_path(
     input  logic                                clk,
     input  logic                                rst,
     output logic                                ap_done,
+    output logic                                done_steady,
     // stream_in
     input  logic [phit_size-1:0]                tdata_stream_in,
     input  logic                                tvalid_stream_in,
@@ -113,7 +114,7 @@ module data_path(
     logic [num_col-1:0] sel_mux2;
     
     // FSM for done_loader
-    logic done_steady;
+    logic done_steady_t;
     logic curr_state_done_loader, next_state_done_loader;
     localparam steady_off = 1'b0;
     localparam steady_on  = 1'b1;
@@ -133,7 +134,8 @@ module data_path(
             default: next_state_done_loader = steady_off;
         endcase
     end
-    assign done_steady = curr_state_done_loader;
+    assign done_steady_t = curr_state_done_loader;
+    aaign done_steady = done_steady_t;
     
         
     // Disassembler
@@ -174,7 +176,7 @@ module data_path(
             .full(full_FIFO_in[i])
             );
             
-            assign tready_stream_in_lane[i] = !full_FIFO_in[i] & done_steady & !t_stall;
+            assign tready_stream_in_lane[i] = !full_FIFO_in[i] & done_steady_t & !t_stall;
         end
     endgenerate
     
@@ -216,7 +218,7 @@ module data_path(
              .op_scalar(op_scalar[((j+1)*3)-1:j*3]),
              .wen_RF_scalar(wen_RF_scalar[j]),
              .ap_done(ap_done_decoder[j]),
-             .done_steady(done_steady)
+             .done_steady(done_steady_t)
              );
              
              // Register pipeline: delay VD into auto_incr_vect vw
@@ -261,7 +263,7 @@ module data_path(
              .streamout_incr((done_auto_incr[num_col-1] && supplier[num_col-1])),
              .flag_neq(flag_neq[j]),
              .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
-             .done_steady(done_steady),
+             .done_steady(done_steady_t),
              .clken_PC(clken_PC[j]),
              .load_PC(load_PC[j]),
              .incr_PC(incr_PC[j]),

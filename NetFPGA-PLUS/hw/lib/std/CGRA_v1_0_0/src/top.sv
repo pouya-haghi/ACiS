@@ -181,6 +181,7 @@ module top(
     logic [(num_col*(phit_size/8))-1:0] data_wstrb   ; 
     
     logic ap_done;
+    logic done_steady;
 
 
     always @(posedge ap_clk) begin
@@ -205,6 +206,7 @@ module top(
         .m_axi_rvalid               (m00_axi_rvalid),
         .m_axi_rdata                (m00_axi_rdata),
         .m_axi_rlast                (m00_axi_rlast),
+        .done_steady                (done_steady),
         .clken_PC                   (clken_PC),
         .load_PC                    (load_PC),
         .incr_PC                    (incr_PC),
@@ -234,6 +236,7 @@ module top(
         .clk                        (ap_clk),
         .rst                        (areset),
         .ap_done                    (ap_done),
+        .done_steady                (done_steady),
         .tdata_stream_in            (axis00_tdata),
         .tvalid_stream_in           (axis00_tvalid),
         .tready_stream_out          (axis01_tready),

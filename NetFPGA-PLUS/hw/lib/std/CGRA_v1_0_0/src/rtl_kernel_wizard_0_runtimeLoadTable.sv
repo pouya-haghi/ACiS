@@ -110,6 +110,7 @@ module rtl_kernel_wizard_0_runtimeLoadTable #(
   // input  wire                          m_axis_tready,
   // output wire [C_M_AXI_DATA_WIDTH-1:0] m_axis_tdata,
   // output wire                          m_axis_tlast
+  input wire done_steady,
   input wire [num_col-1:0] clken_PC,
   input wire [num_col-1:0] load_PC,
   input wire [num_col-1:0] incr_PC,
@@ -343,7 +344,7 @@ inst_ar_to_r_transaction_cntr (
       )
       inst_r_transaction_cntr2 (
         .clk        ( aclk                          ) ,
-        .clken      ( 1'b1                          ) ,
+        .clken      ( done_steady | ctrl_start      ) ,
         .rst        ( areset                        ) ,
         .load       ( ctrl_start                    ) ,
         .incr       ( 1'b1                          ) ,
