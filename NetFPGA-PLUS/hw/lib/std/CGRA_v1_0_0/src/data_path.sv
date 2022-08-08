@@ -135,7 +135,7 @@ module data_path(
         endcase
     end
     assign done_steady_t = curr_state_done_loader;
-    aaign done_steady = done_steady_t;
+    assign done_steady = done_steady_t;
     
         
     // Disassembler
