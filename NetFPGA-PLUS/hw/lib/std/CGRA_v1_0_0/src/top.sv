@@ -14,6 +14,7 @@ module top(
     // General I/O
     input  logic                     ap_clk,
     input  logic                     ap_rst_n,
+    output logic [dwidth_int-1:0]    csr_out,
     // Control Plane other 
     output logic                     interrupt,
     
@@ -297,5 +298,5 @@ module top(
     assign m01_axi_wlast   = data_wlast  [0                              ]; 
     assign m01_axi_wstrb   = data_wstrb  [phit_size/8 -1   : 0           ]; 
         
-
+    assign csr_out = cycle_register;
 endmodule

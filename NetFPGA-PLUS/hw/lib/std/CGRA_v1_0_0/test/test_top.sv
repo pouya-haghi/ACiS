@@ -6,11 +6,12 @@
 
 module test_top;
     // General I/O                                                           
-    reg                      ap_clk                    ;
-    reg                      ap_rst_n                    ;
+    reg                      ap_clk                        ;
+    reg                      ap_rst_n                      ;
+    reg  [dwidth_int-1:0]    csr_out                       ;
     // --------- Control Plane --------- //
     // Other                          
-    wire                     interrupt              ;                                      
+    wire                     interrupt                     ;                                      
     // AXI Lite                                         
     //inputs                                                            
     reg  [C_S_AXI_ADDR_WIDTH-1:0]   s_axi_control_araddr   ;           
@@ -157,12 +158,13 @@ module test_top;
     
     emulate_stream_in emulate_stream_in_inst(.*);
     
+    // clock
     always begin
         #(clk_pd/2);
         ap_clk = !ap_clk;      
     end
     
-    // Load instructions
+    // ------------------Load instructions------------------ //
     logic [phit_size-1:0] instructions[0:depth_config-1];
     logic [dwidth_int-1:0] mem[0:num_col-1][0:(depth_config)-1];
     
@@ -182,7 +184,6 @@ module test_top;
         end
     end
     endgenerate
-    
     genvar i,j;
     localparam num_instr = 52;
     generate
@@ -199,13 +200,31 @@ module test_top;
             assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = '0;
         end
     end 
-    endgenerate   
+    endgenerate  
     
+//    // ------------------Timer Task------------------ //
+    
+//    task timer();
+//       fork : f
+//          begin
+//             // Timeout check
+//             #(clk_pd*4*4*150);
+//             $display("%t : timeout (ns)", $time/1000.0);
+//             disable f;
+//          end
+//          begin
+//             // Wait on signal
+//             @(posedge ap_done_out);
+//             $display("%t : Duration (ns)", (stop-start)/1000.0);
+//             disable f;
+//          end
+//       join
+//    endtask
+
+
     int k;
     
-    initial begin
-//        instructions = '{default:0};
-        
+    initial begin        
         // Reset
         ap_clk                       = 1'b1;
         ap_rst_n                     = 1'b0; 
@@ -246,6 +265,13 @@ module test_top;
         
         #(depth_config*clk_pd); ap_rst_n = 1'b1;
         
+//        fork
+//            timer;
+//            begin
+//                // Start timer
+//                start = $realtime;
+                
+                
         // trigger ap_start
         s_axi_control_awaddr <= 5'b0;
         s_axi_control_awvalid <= 1'b1;
@@ -277,7 +303,35 @@ module test_top;
         // stop loading
         m00_axi_rvalid <= 1'b0;
         #clk_pd;
+//            end
+//        join
         
+        #(clk_pd*4*4*600);
+        
+        $display("Cycle count: %0d", csr_out);
+    $finish;
+    end
+
+endmodule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //////////////// Start hard coded TB /////////////////////
 //        //      Scalar            // column 2                                       // column 1
 //        m00_axi_rdata <= {448'b0, 20'h12345, 5'h1, 7'h37                          , 20'h12345, 5'h1, 7'h37                            }; #clk_pd; //lui
@@ -360,12 +414,3 @@ module test_top;
 //        m01_axi_wready <= 1'b0;    m02_axi_wready <= 1'b0; 
 //        m01_axi_bvalid <= 1'b0;    m02_axi_bvalid <= 1'b0; 
 //////////////// End hard coded TB /////////////////////
-        
-        
-        
-//        #(clk_pd*(128+5)*32*16);
-        #(clk_pd*9500);
-    $finish;
-    end
-
-endmodule

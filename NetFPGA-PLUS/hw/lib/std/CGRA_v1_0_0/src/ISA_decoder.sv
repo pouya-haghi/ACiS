@@ -45,7 +45,7 @@ module ISA_decoder(
     logic [2:0] VLEN;
     logic t_is_vstreamout, t_is_vsetivli;
     assign is_vstreamout = t_is_vstreamout;
-    logic is_wfi, is_wfi_d;
+    logic is_wfi;
 
     // ***********************  decode ***************************
     assign is_vmacc_vv = (instr[6:0]==7'h57 && instr[14:12]==3'h0)?1'b1:1'b0;
@@ -62,15 +62,8 @@ module ISA_decoder(
     assign is_wfi = (instr == 32'b0001000_00101_00000_000_00000_1110011)?1'b1:1'b0;
     
     // ******************   AP done *********************
-    always @(posedge clk) begin
-        if (rst) begin
-            is_wfi_d <= 1'b0;
-        end else begin
-            is_wfi_d <= is_wfi;
-        end
-    end
-
-    assign ap_done = (is_wfi & !is_wfi_d & done_steady) ? 1'b1 : 1'b0;
+    
+    assign ap_done = (is_wfi & done_steady) ? 1'b1 : 1'b0;
         
     // ******************   configuration instructions *********************
     assign ITR = instr[29:18];
