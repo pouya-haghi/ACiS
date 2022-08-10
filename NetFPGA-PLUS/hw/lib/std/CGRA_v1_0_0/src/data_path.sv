@@ -79,8 +79,11 @@ module data_path(
     logic [phit_size-1:0] FIFO_out_tdata;
     logic [SIMD_degree-1:0] FIFO_out_tvalid;
     logic [SIMD_degree-1:0] FIFO_out_tlast;
+    logic [phit_size-1:0] assembler_tdata;
+    logic [SIMD_degree-1:0] assembler_tvalid;
+    logic [SIMD_degree-1:0] assembler_tlast;
     logic [num_col-1:0] wen_RF_scalar;
-    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_vsetivli, is_bne, is_csr, is_lui;
+    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_vsetivli, is_bne, is_csr, is_lui, is_spl;
     logic [num_col-1:0] stall_FIFO;
     logic [num_col-1:0] stall_rd_autovect, stall_wr_autovect;
     logic [num_col-1:0] read_done_HBM, write_done_HBM; 
@@ -212,6 +215,7 @@ module data_path(
              .is_bne(is_bne[j]),
              .is_csr(is_csr[j]),
              .is_lui(is_lui[j]),
+             .is_spl(is_spl[j]),
              .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
              .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]),
              .op(op[((j+1)*3)-1:j*3]),
@@ -393,9 +397,25 @@ module data_path(
     endgenerate   
 
     // Stream out concatination
-    assign tvalid_stream_out = &tvalid_stream_out_lane;
+    assign tvalid_stream_out = |tvalid_stream_out_lane; // if any values in phit are valid, tvalid = 1 but some tkeep = 0;
     assign tlast_stream_out = &tlast_stream_out_lane;
-
+    
+    // Assembler unit
+    assembler assembler_inst0(
+        .clk(clk),
+        .rst(rst),
+        .is_vstreamout_global(is_v_streamout),
+        .is_spl(is_spl[0]),
+        .RF_in(rddata1_RF_scalar[dwidth_int-1:0]),
+        .tdata_in(),
+        .tkeep_in(),
+        .tvalid_in(),
+        .tlast_in(),
+        .tdata_out(),
+        .tkeep_out(),
+        .tvalid_out(),
+        .tlast_out());
+        
     // Sync FIFO for stream out
     generate
         for (i=0; i<SIMD_degree; i++) begin            
