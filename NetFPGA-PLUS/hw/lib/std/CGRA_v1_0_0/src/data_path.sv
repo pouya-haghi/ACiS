@@ -157,7 +157,7 @@ module data_path(
             .push((tvalid_stream_in && (&tkeep_stream_in[(i*4)+3:i*4])) && !full_FIFO_in[i]),
             .pop(!t_stall && !empty_FIFO_in[i]), 
             .din({tkeep_stream_in[(i*4)+3:i*4], tdata_stream_in[((i+1)*dwidth_float)-1:i*dwidth_float]}),
-            .dout({ tdata_stream[((i+1)*dwidth_float)-1:i*dwidth_float]}),
+            .dout({ FIFO_in_tdata[((i+1)*dwidth_float)-1:i*dwidth_float]}),
             .empty(empty_FIFO_in[i]),
             .full(full_FIFO_in[i])
             );
