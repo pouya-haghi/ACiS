@@ -12,7 +12,7 @@ module assembler(
         input  logic is_spl,
         input  logic [31:0] RF_in,
         input  logic is_header,
-        input  logic header_in;
+        input  logic [header_bytes*8-1:0] header_in,
         input  logic [phit_size-1:0]   tdata_in,
         input  logic [SIMD_degree-1:0] tvalid_in,
         input  logic [SIMD_degree-1:0] tlast_in,
@@ -53,7 +53,7 @@ module assembler(
     logic [1:0] PAYLOAD = 2'b10;
     
     // delayed portion of beat
-    logic [({header_bytes*8)-1):0] tdata_d;
+    logic [(header_bytes*8)-1:0] tdata_d;
     logic [header_deg-1:0] tlast_d;
     logic [header_deg-1:0] tvalid_d;
     
@@ -76,12 +76,13 @@ module assembler(
         if (rst)
             header_out = '0;
         else
-            header_out <= header_out_t;
+//            header_out <= header_out_t;
+            header_out <= (is_header_d) ? {header_in_d[phit_size-1:208],checksum,header_in_d[191:144],spl_val,header_in_d[127:0]} : header_out;
     end
 
-    always_comb begin
-        header_out_t = (is_header_d) ? {header_in_d[phit_size-1:208],checksum,header_in_d[191:144],spl_val,header_in_d[127:0]} : header_out_t;
-    end
+//    always_comb begin
+//        header_out_t = (is_header_d) ? {header_in_d[phit_size-1:208],checksum,header_in_d[191:144],spl_val,header_in_d[127:0]} : header_out_t;
+//    end
 
     // --------------- Packet re-wrapping --------------- //
     always_ff @(posedge clk) begin
@@ -91,7 +92,7 @@ module assembler(
         end
         else begin
            state_prev <= state;
-           tdata_out <= (state == HEADER) ? {tdata_in[phit_size-header_bytes*8-1:0], header}, {tdata_in[phit_size-header_bytes*8-1:0], tdata_d};
+           tdata_out <= (state == HEADER) ? {tdata_in[phit_size-header_bytes*8-1:0], header_out} : {tdata_in[phit_size-header_bytes*8-1:0], tdata_d};
            //             is tlast      but end isn't valid                                 or   is delayed tlast and is valid
            tlast_out <= ((|tlast_in && !(|tvalid_in[phit_size-1:phit_size-header_bytes*8])) || (|tlast_d && |tvalid_d)) ? {SIMD_degree{1'b1}} : {SIMD_degree{1'b1}};
            tvalid_out <= (state == HEADER) ? {tvalid_in[SIMD_degree-header_deg-1:0], {header_deg{1'b1}}} : {tvalid_in[SIMD_degree-header_deg-1:0], tvalid_d};

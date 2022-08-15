@@ -113,7 +113,8 @@ module data_path(
     logic [num_col-1:0] tvalid_RF; // generated internally based on op
     logic [(dwidth_RFadd*num_col)-1:0] ITR, ITR_delay;
     logic [num_col-1:0] wen_ITR;
-    logic [SIMD_degree:0] full_FIFO_in, empty_FIFO_in, full_FIFO_out, empty_FIFO_out;
+    logic [SIMD_degree:0] full_FIFO_in, empty_FIFO_in;
+    logic [SIMD_degree-1:0] full_FIFO_out, empty_FIFO_out;
 
     // Stream out control
     logic is_vstreamout_global;
@@ -174,10 +175,10 @@ module data_path(
         .rst(rst),
         .push(tvalid_stream_in && !full_FIFO_in[SIMD_degree]),
         .pop(!t_stall && !empty_FIFO_in[SIMD_degree]), 
-        .din({tlast_stream_in, tlast_stream_in}),
+        .din({tvalid_stream_in, tlast_stream_in}),
         .dout({FIFO_in_tvalid, FIFO_in_tlast}),
-        .empty(empty_FIFO_in[i]),
-        .full(full_FIFO_in[i])
+        .empty(empty_FIFO_in[SIMD_degree]),
+        .full(full_FIFO_in[SIMD_degree])
         );
     
     // Disassembler
@@ -193,7 +194,7 @@ module data_path(
     .empty(empty_FIFO_in),
     .is_header(is_header),
     .tdata_out(tdata_stream[phit_size-1:0]),
-    .tlast_out(tlast_stream[SIMD_degree-1:0])
+    .tlast_out(tlast_stream[SIMD_degree-1:0]),
     .tvalid_out(tvalid_stream[SIMD_degree-1:0]));
     
 
@@ -332,7 +333,7 @@ module data_path(
             .rd_addr2(vr_addr2_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_2 is ONLY for vmacc, is VD iterated 
             .wr_addr(vw_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // write addr, delayed only if not vse
             .tlast_in(is_vmv_vi[j] ? {(SIMD_degree){1'b0}} : (is_vmacc_vv[j] ? o_tlast_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j] : {(SIMD_degree){1'b0}})),
-            /  .wen(is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_PE_o[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
+            // .wen(is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_PE_o[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
             .wen(is_vmv_vi[j] ? {(SIMD_degree){1'b0}} : (is_vmacc_vv[j] ? o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j] : is_vle32_vv[j] ? {(SIMD_degree){user_rvalid_HBM[j]}} : {(SIMD_degree){1'b0}})), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
             .d_out1(o1_RF[(phit_size*(j+1))-1:phit_size*j]),
             .d_out2(o2_RF[(phit_size*(j+1))-1:phit_size*j]),
@@ -418,7 +419,7 @@ module data_path(
         .is_spl(is_spl[0]),
         .RF_in(rddata1_RF_scalar[dwidth_int-1:0]),
         .is_header(is_header),
-        .header_in(tdata_stream[phit_size-1:0])
+        .header_in(tdata_stream[phit_size-1:phit_size-header_bytes*8]),
         .tdata_in(assembler_tdata),
         .tvalid_in(assembler_tvalid),
         .tlast_in(assembler_tlast),
