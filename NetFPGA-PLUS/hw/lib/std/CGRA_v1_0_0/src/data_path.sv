@@ -192,9 +192,9 @@ module data_path(
     .tvalid_in(FIFO_in_tvalid),
     .empty(empty_FIFO_in),
     .is_header(is_header),
-    .tdata_out(tdata_stream),
-    .tlast_out(tlast_stream)
-    .tvalid_out(tvalid_stream));
+    .tdata_out(tdata_stream[phit_size-1:0]),
+    .tlast_out(tlast_stream[SIMD_degree-1:0])
+    .tvalid_out(tvalid_stream[SIMD_degree-1:0]));
     
 
     genvar j;
@@ -417,6 +417,8 @@ module data_path(
         .is_vstreamout_global(is_vstreamout_global),
         .is_spl(is_spl[0]),
         .RF_in(rddata1_RF_scalar[dwidth_int-1:0]),
+        .is_header(is_header),
+        .header_in(tdata_stream[phit_size-1:0])
         .tdata_in(assembler_tdata),
         .tvalid_in(assembler_tvalid),
         .tlast_in(assembler_tlast),

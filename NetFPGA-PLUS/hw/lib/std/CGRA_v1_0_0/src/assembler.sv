@@ -21,7 +21,6 @@ module assembler(
         output logic [SIMD_degree-1:0] tlast_out 
     );
     
-    // logic [SIMD_degree-1:0] is_header = {{(SIMD_degree-header_deg){1'b0}},{header_deg{1'b1}}};
     logic [15:0] spl_val;
     
     localparam bitwidth = 20;
@@ -58,28 +57,6 @@ module assembler(
     logic [header_deg-1:0] tlast_d;
     logic [header_deg-1:0] tvalid_d;
     
-    // always_comb begin
-    //     case (state)
-    //         IDLE: begin
-    //             state_next = (is_vstreamout_global) ? HEADER : IDLE;
-    //             sel_mux = 1'b0; 
-    //         end
-    //         HEADER: begin
-    //             if (|tvalid_d) begin
-    //                 sel_mux = 1'b1; 
-    //                 state_next = PAYLOAD;
-    //             end else begin
-    //                 sel_mux = 1'b0; 
-    //                 state_next = HEADER;
-    //             end
-    //         end
-    //         PAYLOAD: begin 
-    //             state_next = (is_vstreamout_global) ? PAYLOAD : IDLE;
-    //             sel_mux = 1'b0;
-    //         end
-    //     endcase
-    // end
-   
     // --------------- Checksum and header generation --------------- //    
     registered_add #(bitwidth) add0(clk, rst, {4'b0, header_in[127:112]}, {4'b0, spl_val}, out0to4);
     registered_add #(bitwidth) add1(clk, rst, {4'b0, header_in[159:144]}, {4'b0, header_in[175:160]}, out1to4);
@@ -108,17 +85,17 @@ module assembler(
 
     // --------------- Packet re-wrapping --------------- //
     always_ff @(posedge clk) begin
-       if(rst) begin
-          state_prev <= IDLE;
-          tdata_out <= '0;
-       end
-       else begin
-          state_prev <= state;
-          tdata_out <= {tdata_in[header_bytes*8-1:0], tdata_d};
-          //             is tlast      but end isn't valid                    or   is delayed tlast and is valid
-          tlast_out <= ((|tlast_in && !(|tvalid_in[SIMD_degree-1:header_deg])) || (|tlast_d && tvalid_d)) ? {SIMD_degree{1'b1}} : {SIMD_degree{1'b1}};
-          tvalid_out <= {tvalid_in[header_deg-1:0], tvalid_d};
-       end
+        if(rst) begin
+           state_prev <= IDLE;
+           tdata_out <= '0;
+        end
+        else begin
+           state_prev <= state;
+           tdata_out <= (state == HEADER) ? {tdata_in[phit_size-header_bytes*8-1:0], header}, {tdata_in[phit_size-header_bytes*8-1:0], tdata_d};
+           //             is tlast      but end isn't valid                                 or   is delayed tlast and is valid
+           tlast_out <= ((|tlast_in && !(|tvalid_in[phit_size-1:phit_size-header_bytes*8])) || (|tlast_d && |tvalid_d)) ? {SIMD_degree{1'b1}} : {SIMD_degree{1'b1}};
+           tvalid_out <= (state == HEADER) ? {tvalid_in[SIMD_degree-header_deg-1:0], {header_deg{1'b1}}} : {tvalid_in[SIMD_degree-header_deg-1:0], tvalid_d};
+        end
     end
     
     always_comb begin
@@ -126,9 +103,9 @@ module assembler(
             IDLE: begin
                 if (is_vstreamout_global) begin
                     state = HEADER;
-                    tdata_d = tdata_in[phit_size-1:header_bytes*8];
-                    tlast_d = tlast_in[SIMD_degree-1:header_deg];
-                    tvalid_d= tvalid_in[SIMD_degree-1:header_deg];
+                    tdata_d = tdata_in[phit_size-1:phit_size-header_bytes*8];
+                    tlast_d = tlast_in[SIMD_degree-1:SIMD_degree-header_deg];
+                    tvalid_d= tvalid_in[SIMD_degree-1:SIMD_degree-header_deg];
                 end else begin
                     state = IDLE;
                     tdata_d = '0;
@@ -139,34 +116,26 @@ module assembler(
 
             HEADER: begin
                 state = (tlast_in) ? IDLE : PAYLOAD;
-                tdata_d = tdata_in[phit_size-1:header_bytes*8];
-                tlast_d = tlast_in[SIMD_degree-1:header_deg];
-                tvalid_d= tvalid_in[SIMD_degree-1:header_deg];
+                tdata_d = tdata_in[phit_size-1:phit_size-header_bytes*8];
+                tlast_d = tlast_in[SIMD_degree-1:SIMD_degree-header_deg];
+                tvalid_d= tvalid_in[SIMD_degree-1:SIMD_degree-header_deg];
             end
             
             PAYLOAD: begin
                 state = (tlast_in) ? IDLE : PAYLOAD;
-                tdata_d = tdata_in[phit_size-1:header_bytes*8];
-                tlast_d = tlast_in[SIMD_degree-1:header_deg];
-                tvalid_d= tvalid_in[SIMD_degree-1:header_deg];
+                tdata_d = tdata_in[phit_size-1:phit_size-header_bytes*8];
+                tlast_d = tlast_in[SIMD_degree-1:SIMD_degree-header_deg];
+                tvalid_d= tvalid_in[SIMD_degree-1:SIMD_degree-header_deg];
+            end
+
+            default: begin
+                state = state_prev;
+                tdata_d = '0;
+                tlast_d = '0;
+                tvalid_d = '0;
             end
         endcase 
     end
-
-
-
-
-
-
-    // --------------- Output generation --------------- //
-    register_pipe #((phit_size+(SIMD_degree*2)),6) rp1(clk, rst, {tlast_in, tvalid_in, tdata_in}, {tlast_d, tvalid_d, tdata_d});
-    
-    mux2 #((phit_size+(SIMD_degree*2))) mux2_inst0(
-            {tlast_d, tvalid_d, tdata_d},
-            {tlast_d, (tvalid_d | is_header), {tdata_d[phit_size-1:208],checksum,tdata_d[191:144],spl_val,tdata_d[127:0]}},
-            sel_mux,
-            {tlast_out, tvalid_out, tdata_out} );
-    
 endmodule
 
 // to do: change re-wrapping logic, add bubble logic
