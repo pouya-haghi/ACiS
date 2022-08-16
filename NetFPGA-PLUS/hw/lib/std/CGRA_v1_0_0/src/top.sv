@@ -5,11 +5,6 @@
   `include "my_interface.vh"
 `endif
 
-`ifndef MY_INTERFACE
-    `define MY_INTERFACE
-    `include "my_interface.vh"
-`endif
-
 module top(
     // General I/O
     input  logic                     ap_clk,

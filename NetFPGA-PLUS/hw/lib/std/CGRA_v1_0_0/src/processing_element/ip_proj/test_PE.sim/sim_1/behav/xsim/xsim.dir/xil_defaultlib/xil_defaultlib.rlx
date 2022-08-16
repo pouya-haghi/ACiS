@@ -1,8 +1,0 @@
-0.7
-2020.2
-Nov 18 2020
-09:20:35
-/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/PE_typeC.sv,1651588182,systemVerilog,,/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/test_PE_typeC.sv,,PE_typeC,,uvm,,,,,,
-/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/ip_proj/test_PE.gen/sources_1/ip/floating_point_acc/sim/floating_point_acc.v,1651594625,verilog,,,,floating_point_acc,,uvm,,,,,,
-/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/ip_proj/test_PE.sim/sim_1/behav/xsim/glbl.v,1605673889,verilog,,,,glbl,,uvm,,,,,,
-/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/test_PE_typeC.sv,1651582578,systemVerilog,,,,test_PE_typeC,,uvm,,,,,,
