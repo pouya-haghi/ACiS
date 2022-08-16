@@ -139,6 +139,7 @@ module test_top_manual;
         m00_axi_rdata           <= 512'b0;
         m00_axi_rlast           <= 1'b0;
         m00_axi_rvalid          <= 1'b0;
+        axis01_tready <= 1'b0;
         axis00_tlast <= 1'b0;
                 
         
@@ -173,7 +174,7 @@ module test_top_manual;
         m00_axi_rdata <= {448'b0, 6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd1, 7'h57 , 6'b101100, 1'b0, 5'd1, 5'h1 , 3'b0, 5'd1, 7'h57   }; #clk_pd; // vfmacc.xv
         m00_axi_rdata <= {448'b0, 12'b0, 5'b00010 , 3'b0, 5'd1, 7'h27             , 12'b0, 5'b00010 , 3'b0, 5'd1, 7'h27               }; #clk_pd; // vse32.vv
         
-        m00_axi_rdata <= {448'b0, 20'b0, 5'd1, 7'h7F                              , 20'b0, 5'd1, 7'h7F                                }; #clk_pd; //wfi
+        m00_axi_rdata <= {448'b0, 20'b0, 5'd1, 7'h7F                              , 20'b0, 5'd1, 7'h7F                                }; #clk_pd; //streamout
         m00_axi_rlast <= 1'b1;
         m00_axi_rdata <= {448'b0, 32'b0001000_00101_00000_000_00000_1110011       , 32'b0001000_00101_00000_000_00000_1110011         }; #clk_pd; //wfi
         
@@ -195,15 +196,15 @@ module test_top_manual;
                                                                                           
         m01_axi_rvalid <= 1'b1;          m02_axi_rvalid <= 1'b1;                              
         
-        m01_axi_rdata <= {32'h40000000, 480'b0};  m02_axi_rdata <= {32'h40000000, 480'b0};  #clk_pd;//2         
-        m01_axi_rdata <= {32'h40400000, 480'b0};  m02_axi_rdata <= {32'h40400000, 480'b0};  #clk_pd;//3         
-        m01_axi_rdata <= {32'h40800000, 480'b0};  m02_axi_rdata <= {32'h40800000, 480'b0};  #clk_pd;//4         
-        m01_axi_rdata <= {32'h40a00000, 480'b0};  m02_axi_rdata <= {32'h40a00000, 480'b0};  #clk_pd;//5         
-        m01_axi_rdata <= {32'h40c00000, 480'b0};  m02_axi_rdata <= {32'h40c00000, 480'b0};  #clk_pd;//6         
-        m01_axi_rdata <= {32'h40e00000, 480'b0};  m02_axi_rdata <= {32'h40e00000, 480'b0};  #clk_pd;//7         
-        m01_axi_rdata <= {32'h41000000, 480'b0};  m02_axi_rdata <= {32'h41000000, 480'b0};  #clk_pd;//8         
+        m01_axi_rdata <= {480'b0, 32'h40000000};  m02_axi_rdata <= {480'b0, 32'h40000000};  #clk_pd;//2         
+        m01_axi_rdata <= {480'b0, 32'h40400000};  m02_axi_rdata <= {480'b0, 32'h40400000};  #clk_pd;//3         
+        m01_axi_rdata <= {480'b0, 32'h40800000};  m02_axi_rdata <= {480'b0, 32'h40800000};  #clk_pd;//4         
+        m01_axi_rdata <= {480'b0, 32'h40a00000};  m02_axi_rdata <= {480'b0, 32'h40a00000};  #clk_pd;//5         
+        m01_axi_rdata <= {480'b0, 32'h40c00000};  m02_axi_rdata <= {480'b0, 32'h40c00000};  #clk_pd;//6         
+        m01_axi_rdata <= {480'b0, 32'h40e00000};  m02_axi_rdata <= {480'b0, 32'h40e00000};  #clk_pd;//7         
+        m01_axi_rdata <= {480'b0, 32'h41000000};  m02_axi_rdata <= {480'b0, 32'h41000000};  #clk_pd;//8         
         m01_axi_rlast <= 1'b1;                    m02_axi_rlast <= 1'b1;                           
-        m01_axi_rdata <= {32'h41100000, 480'b0};  m02_axi_rdata <= {32'h41100000, 480'b0};  #clk_pd;//9         
+        m01_axi_rdata <= {480'b0, 32'h41100000};  m02_axi_rdata <= {480'b0, 32'h41100000};  #clk_pd;//9         
                                                                                           
         m01_axi_rvalid <= 1'b0;          m02_axi_rvalid <= 1'b0;                              
         m01_axi_rlast <= 1'b0;           m02_axi_rlast <= 1'b0;                               
@@ -215,15 +216,15 @@ module test_top_manual;
         axis00_tvalid <= 1'h1;
         axis00_tkeep <= 64'hFFFFFFFFFFFFFFFF;
         
-        axis00_tdata <= {32'h40000000, 208'b0, 160'h3FFF_3FFF_3FFF_3FFF_0000_3FFF_3FFF_3FFF_0000_3FFF, 112'b0}; #clk_pd;//2 
-        axis00_tdata <= {32'h40400000, 480'b0}; #clk_pd;//3 
-        axis00_tdata <= {32'h40800000, 480'b0}; #clk_pd;//4 
-        axis00_tdata <= {32'h40a00000, 480'b0}; #clk_pd;//5 
-        axis00_tdata <= {32'h40c00000, 480'b0}; #clk_pd;//6 
-        axis00_tdata <= {32'h40e00000, 480'b0}; #clk_pd;//7 
-        axis00_tdata <= {32'h41000000, 480'b0}; #clk_pd;//8 
+        axis00_tdata <= {208'b0, 32'h40000000, 160'h3FFF_3FFF_3FFF_3FFF_0000_3FFF_3FFF_3FFF_0000_3FFF, 112'b0}; #clk_pd;//2 --> 40c
+        axis00_tdata <= {208'b0, 32'h40400000, 272'b0}; #clk_pd;//3 --> 411  /9
+        axis00_tdata <= {208'b0, 32'h40800000, 272'b0}; #clk_pd;//4 --> 414  /12
+        axis00_tdata <= {208'b0, 32'h40a00000, 272'b0}; #clk_pd;//5 --> 417  /15
+        axis00_tdata <= {208'b0, 32'h40c00000, 272'b0}; #clk_pd;//6 --> 419  /18
+        axis00_tdata <= {208'b0, 32'h40e00000, 272'b0}; #clk_pd;//7 --> 41a8 /21
+        axis00_tdata <= {208'b0, 32'h41000000, 272'b0}; #clk_pd;//8 --> 41c  /24
         axis00_tlast <= 1'b1;
-        axis00_tdata <= {32'h41100000, 480'b0}; #clk_pd;//9 
+        axis00_tdata <= {208'b0, 32'h41100000, 272'b0}; #clk_pd;//9 --> 41d8 /27
          
         axis00_tvalid <= 1'h0;
         axis00_tlast <= 1'b0;
@@ -243,7 +244,8 @@ module test_top_manual;
         m01_axi_awready <= 1'b0;   m02_axi_awready <= 1'b0;
         m01_axi_wready <= 1'b0;    m02_axi_wready <= 1'b0; 
         m01_axi_bvalid <= 1'b0;    m02_axi_bvalid <= 1'b0; 
-
+        
+        axis01_tready <= 1'b1;
         #240; // streamout things
         $finish;
     end

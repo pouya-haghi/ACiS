@@ -36,26 +36,36 @@ module disassembler(
     logic tlast_d;
     logic tvalid_d;
     
+    // temp - delayed portion of beat
+    logic [(phit_size-(header_bytes*8)-1):0] tdata_t;
+    logic [(phit_size/8-header_bytes-1):0] tkeep_t;
+    logic tlast_t;
+    logic tvalid_t;
+    
     always_ff @(posedge clk) begin
-       if(rst) begin
-          state_prev <= IDLE;
-          tdata_out <= '0;
-          tkeep_out <= '0;
-          tlast_out <= '0;
-          tvalid_out <= '0;
-          is_header <= '0;
-       end
-       else begin
-          state_prev <= state;
-          tdata_out <= {tdata_in[header_bytes*8-1:0], tdata_d};
-          tkeep_out <= {tkeep_in[header_bytes-1:0], tkeep_d};
-          //             is tlast      but end isn't kept                      or   is delayed tlast and is valid
-          tlast_out <= ((tlast_in && !(|tkeep_in[phit_size/8-1:header_bytes])) || (|tkeep_d && tlast_d && tvalid_d)) ? {SIMD_degree{1'b1}} : {SIMD_degree{1'b0}};
-          tvalid_out <= (tvalid_in) ? tkeep_condensed : '0;
-          is_header <= is_header_t;
-       end
+        if(rst) begin
+            state_prev <= IDLE;
+            tdata_d <= '0;
+            tkeep_d <= '0;
+            tlast_d <= '0;
+            tvalid_d <= '0;
+        end
+        else begin
+            state_prev <= state;
+            tdata_d   <= tdata_t    ;
+            tkeep_d   <= tkeep_t    ;
+            tlast_d   <= tlast_t    ;
+            tvalid_d  <= tvalid_t   ;          
+        end
     end
     
+    assign tdata_out = {tdata_in[header_bytes*8-1:0], tdata_d};
+    assign tkeep_out = {tkeep_in[header_bytes-1:0], tkeep_d};
+    //            is tlast      but end isn't kept                      or   is delayed tlast and is valid
+    assign tlast_out = ((tlast_in && !(|tkeep_in[phit_size/8-1:header_bytes])) || (|tkeep_d && tlast_d && tvalid_d)) ? {SIMD_degree{1'b1}} : {SIMD_degree{1'b0}};
+    assign tvalid_out = (tvalid_d && !is_header) ? tkeep_condensed : '0;
+    assign is_header = is_header_t;
+        
     // assign tkeep/tvalid for each float as and of whole float
     genvar i;
     generate
@@ -69,55 +79,55 @@ module disassembler(
                 IDLE: begin
                     if (!(&empty) && !tlast_in) begin
                         state = HEADER;
-                        tdata_d = tdata_in[phit_size-1:header_bytes*8];
-                        tkeep_d = tkeep_in[phit_size/8-1:header_bytes];
-                        tlast_d = tlast_in;
-                        tvalid_d= tvalid_in;
+                        tdata_t = tdata_in[phit_size-1:header_bytes*8];
+                        tkeep_t = tkeep_in[phit_size/8-1:header_bytes];
+                        tlast_t = tlast_in;
+                        tvalid_t= tvalid_in;
                         is_header_t = 1'b1;
                     end else begin
                         state = IDLE;
-                        tdata_d = '0;
-                        tkeep_d = '0;
-                        tlast_d = '0;
-                        tvalid_d= '0;                        
+                        tdata_t = '0;
+                        tkeep_t = '0;
+                        tlast_t = '0;
+                        tvalid_t= '0;                        
                         is_header_t = '0;
                     end
                 end
     
                 HEADER: begin
                     state = (tlast_in) ? IDLE : PAYLOAD;
-                    tdata_d = tdata_in[phit_size-1:header_bytes*8];
-                    tkeep_d = tkeep_in[phit_size/8-1:header_bytes];
-                    tlast_d = tlast_in;
-                    tvalid_d= tvalid_in;
+                    tdata_t = tdata_in[phit_size-1:header_bytes*8];
+                    tkeep_t = tkeep_in[phit_size/8-1:header_bytes];
+                    tlast_t = tlast_in;
+                    tvalid_t= tvalid_in;
                     is_header_t = '0;
                 end
                 
                 PAYLOAD: begin
                     state = (tlast_in) ? IDLE : PAYLOAD;
-                    tdata_d = tdata_in[phit_size-1:header_bytes*8];
-                    tkeep_d = tkeep_in[phit_size/8-1:header_bytes];
-                    tlast_d = tlast_in;
-                    tvalid_d= tvalid_in;
+                    tdata_t = tdata_in[phit_size-1:header_bytes*8];
+                    tkeep_t = tkeep_in[phit_size/8-1:header_bytes];
+                    tlast_t = tlast_in;
+                    tvalid_t= tvalid_in;
                     is_header_t = '0;
                 end
 
                 default: begin
                     state = state_prev;
-                    tdata_d = tdata_d;
-                    tkeep_d = tkeep_d;
-                    tlast_d = tlast_d;
-                    tvalid_d= tvalid_d;
+                    tdata_t = tdata_t;
+                    tkeep_t = tkeep_t;
+                    tlast_t = tlast_t;
+                    tvalid_t= tvalid_t;
                     is_header_t = is_header_t;
                 end
             endcase 
         end
         else begin
             state = state_prev;
-            tdata_d = (state != IDLE) ? tdata_d : '0;
-            tkeep_d = (state != IDLE) ? tkeep_d : '0;
-            tlast_d = (state != IDLE) ? tlast_d : '0;
-            tvalid_d= (state != IDLE) ? tvalid_d: '0;
+            tdata_t = (state != IDLE) ? tdata_t : '0;
+            tkeep_t = (state != IDLE) ? tkeep_t : '0;
+            tlast_t = (state != IDLE) ? tlast_t : '0;
+            tvalid_t= (state != IDLE) ? tvalid_t: '0;
             is_header_t = '0;
         end
     end  

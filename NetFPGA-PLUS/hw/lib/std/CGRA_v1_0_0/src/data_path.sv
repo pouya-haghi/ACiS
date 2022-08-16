@@ -422,7 +422,7 @@ module data_path(
         .header_in(tdata_stream[phit_size-1:phit_size-header_bytes*8]),
         .tdata_in(assembler_tdata),
         .tvalid_in(assembler_tvalid),
-        .tlast_in(assembler_tlast),
+        .tlast_in((supplier[num_col-1]) ? assembler_tlast : {SIMD_degree{1'b0}}),
         .tdata_out(FIFO_out_tdata),
         .tvalid_out(FIFO_out_tvalid),
         .tlast_out(FIFO_out_tlast));

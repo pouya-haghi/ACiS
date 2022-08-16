@@ -26,14 +26,10 @@ module assembler(
     localparam bitwidth = 20;
     logic [bitwidth-1:0] out0to4, out1to4, out2to5, out3to5, out4to6, out5to6, out6to7, out7to8, in_d;
     logic [15:0] checksum_inv, checksum;
-    
-    logic [phit_size-1:0]   tdata_d;
-    logic [SIMD_degree-1:0] tvalid_d;
-    logic [SIMD_degree-1:0] tlast_d;
 
     logic is_header_d;
     logic [header_bytes*8-1:0] header_in_d;
-    logic [header_bytes*8-1:0] header_out, header_out_t;
+    logic [header_bytes*8-1:0] header_out;
     
     // Save SPL val
     reg_enr #(16) reg_enr_inst0 
@@ -44,9 +40,7 @@ module assembler(
     .en(is_spl),
     .q(spl_val)
     ); 
-    
-    logic sel_mux;
-    
+        
     logic [1:0] state, state_prev;
     logic [1:0] IDLE = 2'b0;
     logic [1:0] HEADER = 2'b1;
@@ -56,6 +50,10 @@ module assembler(
     logic [(header_bytes*8)-1:0] tdata_d;
     logic [header_deg-1:0] tlast_d;
     logic [header_deg-1:0] tvalid_d;
+    
+    logic [(header_bytes*8)-1:0] tdata_t;
+    logic [header_deg-1:0] tlast_t;
+    logic [header_deg-1:0] tvalid_t;
     
     // --------------- Checksum and header generation --------------- //    
     registered_add #(bitwidth) add0(clk, rst, {4'b0, header_in[127:112]}, {4'b0, spl_val}, out0to4);
@@ -77,7 +75,7 @@ module assembler(
             header_out = '0;
         else
 //            header_out <= header_out_t;
-            header_out <= (is_header_d) ? {header_in_d[phit_size-1:208],checksum,header_in_d[191:144],spl_val,header_in_d[127:0]} : header_out;
+            header_out <= (is_header_d) ? {header_in_d[header_bytes*8-1:208],checksum,header_in_d[191:144],spl_val,header_in_d[127:0]} : header_out;
     end
 
 //    always_comb begin
@@ -92,48 +90,52 @@ module assembler(
         end
         else begin
            state_prev <= state;
-           tdata_out <= (state == HEADER) ? {tdata_in[phit_size-header_bytes*8-1:0], header_out} : {tdata_in[phit_size-header_bytes*8-1:0], tdata_d};
-           //             is tlast      but end isn't valid                                 or   is delayed tlast and is valid
-           tlast_out <= ((|tlast_in && !(|tvalid_in[phit_size-1:phit_size-header_bytes*8])) || (|tlast_d && |tvalid_d)) ? {SIMD_degree{1'b1}} : {SIMD_degree{1'b1}};
-           tvalid_out <= (state == HEADER) ? {tvalid_in[SIMD_degree-header_deg-1:0], {header_deg{1'b1}}} : {tvalid_in[SIMD_degree-header_deg-1:0], tvalid_d};
+           tdata_d <= tdata_t;
+           tlast_d <= tlast_t;
+           tvalid_d <= tvalid_t;
         end
     end
+    
+    assign tdata_out = (state == HEADER) ? {tdata_in[(phit_size-header_bytes*8-1):0], header_out} : {tdata_in[(phit_size-header_bytes*8-1):0], tdata_d};
+    //             is tlast      but end isn't valid                                 or   is delayed tlast and is valid
+    assign tlast_out = ((|tlast_in && !(|tvalid_in[phit_size-1:phit_size-header_bytes*8])) || (|tlast_d && |tvalid_d)) ? {SIMD_degree{1'b1}} : {SIMD_degree{1'b1}};
+    assign tvalid_out = (state == HEADER) ? {tvalid_in[SIMD_degree-header_deg-1:0], {header_deg{1'b1}}} : {tvalid_in[SIMD_degree-header_deg-1:0], tvalid_d};
     
     always_comb begin
         case(state_prev)
             IDLE: begin
                 if (is_vstreamout_global) begin
                     state = HEADER;
-                    tdata_d = tdata_in[phit_size-1:phit_size-header_bytes*8];
-                    tlast_d = tlast_in[SIMD_degree-1:SIMD_degree-header_deg];
-                    tvalid_d= tvalid_in[SIMD_degree-1:SIMD_degree-header_deg];
+                    tdata_t = tdata_in[phit_size-1:phit_size-header_bytes*8];
+                    tlast_t = tlast_in[SIMD_degree-1:SIMD_degree-header_deg];
+                    tvalid_t= tvalid_in[SIMD_degree-1:SIMD_degree-header_deg];
                 end else begin
                     state = IDLE;
-                    tdata_d = '0;
-                    tlast_d = '0;
-                    tvalid_d= '0;
+                    tdata_t = '0;
+                    tlast_t = '0;
+                    tvalid_t= '0;
                 end
             end
 
             HEADER: begin
                 state = (tlast_in) ? IDLE : PAYLOAD;
-                tdata_d = tdata_in[phit_size-1:phit_size-header_bytes*8];
-                tlast_d = tlast_in[SIMD_degree-1:SIMD_degree-header_deg];
-                tvalid_d= tvalid_in[SIMD_degree-1:SIMD_degree-header_deg];
+                tdata_t = tdata_in[phit_size-1:phit_size-header_bytes*8];
+                tlast_t = tlast_in[SIMD_degree-1:SIMD_degree-header_deg];
+                tvalid_t= tvalid_in[SIMD_degree-1:SIMD_degree-header_deg];
             end
             
             PAYLOAD: begin
                 state = (tlast_in) ? IDLE : PAYLOAD;
-                tdata_d = tdata_in[phit_size-1:phit_size-header_bytes*8];
-                tlast_d = tlast_in[SIMD_degree-1:SIMD_degree-header_deg];
-                tvalid_d= tvalid_in[SIMD_degree-1:SIMD_degree-header_deg];
+                tdata_t = tdata_in[phit_size-1:phit_size-header_bytes*8];
+                tlast_t = tlast_in[SIMD_degree-1:SIMD_degree-header_deg];
+                tvalid_t= tvalid_in[SIMD_degree-1:SIMD_degree-header_deg];
             end
 
             default: begin
                 state = state_prev;
-                tdata_d = '0;
-                tlast_d = '0;
-                tvalid_d = '0;
+                tdata_t = '0;
+                tlast_t = '0;
+                tvalid_t = '0;
             end
         endcase 
     end
