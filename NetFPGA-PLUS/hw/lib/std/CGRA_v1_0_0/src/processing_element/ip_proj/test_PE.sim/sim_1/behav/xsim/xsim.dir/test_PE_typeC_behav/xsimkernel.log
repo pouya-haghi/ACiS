@@ -1,7 +1,0 @@
-Running: xsim.dir/test_PE_typeC_behav/xsimk -simmode gui -wdb test_PE_typeC_behav.wdb -simrunnum 0 -socket 54118
-Design successfully loaded
-Design Loading Memory Usage: 46096 KB (Peak: 46096 KB)
-Design Loading CPU Usage: 50 ms
-Simulation completed
-Simulation Memory Usage: 136296 KB (Peak: 185368 KB)
-Simulation CPU Usage: 90 ms

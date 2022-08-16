@@ -1,8 +1,0 @@
-INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/ip_proj/test_PE.gen/sources_1/ip/floating_point_acc/sim/floating_point_acc.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module floating_point_acc
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/PE_typeC.sv" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module PE_typeC
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/test_PE_typeC.sv" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module test_PE_typeC
-INFO: [VRFC 10-2263] Analyzing Verilog file "/ad/eng/research/eng_research_caad/haghi/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/src/processing_element/ip_proj/test_PE.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module glbl
