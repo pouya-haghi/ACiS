@@ -1,0 +1,11 @@
+Wed Aug 17 16:00:56 2022: Server was asked to start on port: '44090'
+Wed Aug 17 16:00:56 2022: Server is using token UUID: '2d9a7624-8b09-402d-8d38-502a2741fcf3'
+Wed Aug 17 16:00:56 2022: Attempting to start server on port '44090'
+Wed Aug 17 16:00:56 2022: XRC main fifo: created main fifo '/tmp/xrcmain2d9a7624-8b09-402d-8d38-502a2741fcf3', fd read = 13
+Wed Aug 17 16:00:56 2022: Running Rule Check Server
+Wed Aug 17 16:00:56 2022: Version 1.6.1
+Wed Aug 17 16:00:56 2022: Rule Check Server: Accepted socket connection from client
+Wed Aug 17 16:00:56 2022: EXCHANGE_TOKEN received, server token: 2d9a7624-8b09-402d-8d38-502a2741fcf3, passed token: 2d9a7624-8b09-402d-8d38-502a2741fcf3
+Wed Aug 17 16:00:56 2022: SESSION_MGR: creating session with session uuid: '054ab04f-d986-4e4d-badd-e1051590232a' and name 'v++_compile_krnl_mm2s'
+Wed Aug 17 16:01:32 2022: Rule Check Server: Accepted socket connection from client
+Wed Aug 17 16:02:13 2022: SESSION_MGR: closing session for UUID '054ab04f-d986-4e4d-badd-e1051590232a' with name 'v++_compile_krnl_mm2s'

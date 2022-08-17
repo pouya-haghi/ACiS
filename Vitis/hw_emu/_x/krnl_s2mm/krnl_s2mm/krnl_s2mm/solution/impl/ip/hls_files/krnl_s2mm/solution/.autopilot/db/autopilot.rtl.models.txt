@@ -1,0 +1,12 @@
+krnl_s2mm_flow_control_loop_pipe_sequential_init
+krnl_s2mm_control_s_axi
+krnl_s2mm_gmem_m_axi
+krnl_s2mm_regslice_both
+krnl_s2mm_regslice_both
+krnl_s2mm_regslice_both
+krnl_s2mm_regslice_both
+krnl_s2mm_regslice_both
+krnl_s2mm_regslice_both
+krnl_s2mm_regslice_both
+krnl_s2mm_Pipeline_VITIS_LOOP_66_1
+krnl_s2mm

@@ -1,0 +1,19 @@
+#-----------------------------------------------------------
+# Vivado v2021.2 (64-bit)
+# SW Build 3367213 on Tue Oct 19 02:47:39 MDT 2021
+# IP Build 3369179 on Thu Oct 21 08:25:16 MDT 2021
+# Start of session at: Wed Aug 17 16:00:06 2022
+# Process ID: 2401
+# Current directory: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/ip
+# Command line: vivado -notrace -mode batch -source run_ippack.tcl
+# Log file: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/ip/vivado.log
+# Journal file: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/ip/vivado.jou
+# Running On: caadlab-01, OS: Linux, CPU Frequency: 2399.926 MHz, CPU Physical cores: 12, Host memory: 135057 MB
+#-----------------------------------------------------------
+source run_ippack.tcl -notrace
+ipx::create_core: Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 2903.887 ; gain = 2.020 ; free physical = 37520 ; free virtual = 112901
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/opt/Xilinx/Vivado/2021.2/data/ip'.
+Running package_xo -xo_path /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/export.xo -kernel_name krnl_s2mm -kernel_xml /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/ip/../kernel/kernel.xml -kernel_files /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/src/krnl_s2mm.cpp -ip_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/ip/ip_unzip_dir -design_xml /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/.autopilot/db/krnl_s2mm.design.xml -debug_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/.debug -hls_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/ip/hls_files
+INFO: [Common 17-206] Exiting Vivado at Wed Aug 17 16:00:28 2022...

@@ -1,0 +1,36 @@
+{
+ "session": {
+  "name": "v++_compile_krnl_mm2s",
+  "uuid": "ecf529d2-e877-44b0-88ba-7d734d78e980",
+  "description": "v++  -t sw_emu --platform xilinx_u280_xdma_201920_3 --save-temps -k krnl_mm2s -c -o _x.xilinx_u280_xdma_201920_3/krnl_mm2s.xo src/krnl_mm2s.cpp ",
+  "timestamp": "0",
+  "report_file": {
+   "scheme": "FILE",
+   "host": "",
+   "port": 0,
+   "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x/reports/krnl_mm2s/v++_compile_krnl_mm2s_guidance.html",
+   "query": "",
+   "fragment": "",
+   "media_type": "",
+   "encoding": "",
+   "data": ""
+  },
+  "proto_file": {
+   "scheme": "FILE",
+   "host": "",
+   "port": 0,
+   "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x/v++_compile_krnl_mm2s_guidance.pb",
+   "query": "",
+   "fragment": "",
+   "media_type": "",
+   "encoding": "",
+   "data": ""
+  },
+  "build_target": "",
+  "config_files": []
+ },
+ "violation_count": 0,
+ "waived_count": 0,
+ "affirmation_count": 0
+}
+

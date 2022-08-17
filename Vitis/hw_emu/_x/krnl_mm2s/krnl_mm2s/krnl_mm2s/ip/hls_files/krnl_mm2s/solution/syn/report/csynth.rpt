@@ -1,0 +1,153 @@
+
+
+================================================================
+== Synthesis Summary Report of 'krnl_mm2s'
+================================================================
++ General Information: 
+    * Date:           Wed Aug 17 16:01:34 2022
+    * Version:        2021.2 (Build 3367213 on Tue Oct 19 02:47:39 MDT 2021)
+    * Project:        krnl_mm2s
+    * Solution:       solution (Vitis Kernel Flow Target)
+    * Product family: virtexuplus
+    * Target device:  xcu280-fsvh2892-2L-e
+    
+
++ Performance & Resource Estimates: 
+    
+    PS: '+' for module; 'o' for loop; '*' for dataflow
+    +---------------------------------------+------+------+---------+--------+----------+---------+------+----------+----------+----+------------+------------+-----+
+    |                Modules                | Issue|      | Latency | Latency| Iteration|         | Trip |          |          |    |            |            |     |
+    |                & Loops                | Type | Slack| (cycles)|  (ns)  |  Latency | Interval| Count| Pipelined|   BRAM   | DSP|     FF     |     LUT    | URAM|
+    +---------------------------------------+------+------+---------+--------+----------+---------+------+----------+----------+----+------------+------------+-----+
+    |+ krnl_mm2s                            |     -|  0.00|        -|       -|         -|        -|     -|        no|  30 (~0%)|   -|  4039 (~0%)|  4059 (~0%)|    -|
+    | + krnl_mm2s_Pipeline_VITIS_LOOP_69_1  |     -|  0.00|        -|       -|         -|        -|     -|        no|         -|   -|  2235 (~0%)|  2085 (~0%)|    -|
+    |  o VITIS_LOOP_69_1                    |     -|  2.43|        -|       -|        33|        1|     -|       yes|         -|   -|           -|           -|    -|
+    +---------------------------------------+------+------+---------+--------+----------+---------+------+----------+----------+----+------------+------------+-----+
+
+
+================================================================
+== HW Interfaces
+================================================================
+* M_AXI
++------------+------------+---------------+---------+--------+----------+-----------+--------------+--------------+-------------+-------------+-------------------+
+| Interface  | Data Width | Address Width | Latency | Offset | Register | Max Widen | Max Read     | Max Write    | Num Read    | Num Write   | Resource Estimate |
+|            | (SW->HW)   |               |         |        |          | Bitwidth  | Burst Length | Burst Length | Outstanding | Outstanding |                   |
++------------+------------+---------------+---------+--------+----------+-----------+--------------+--------------+-------------+-------------+-------------------+
+| m_axi_gmem | 512 -> 512 | 64            | 64      | slave  | 0        | 512       | 16           | 16           | 16          | 16          | BRAM=30           |
++------------+------------+---------------+---------+--------+----------+-----------+--------------+--------------+-------------+-------------+-------------------+
+
+* S_AXILITE Interfaces
++---------------+------------+---------------+--------+----------+
+| Interface     | Data Width | Address Width | Offset | Register |
++---------------+------------+---------------+--------+----------+
+| s_axi_control | 32         | 6             | 16     | 0        |
++---------------+------------+---------------+--------+----------+
+
+* S_AXILITE Registers
++---------------+----------+--------+-------+--------+----------------------------------+------------------------------------------------------------------------+
+| Interface     | Register | Offset | Width | Access | Description                      | Bit Fields                                                             |
++---------------+----------+--------+-------+--------+----------------------------------+------------------------------------------------------------------------+
+| s_axi_control | CTRL     | 0x00   | 32    | RW     | Control signals                  | 0=AP_START 1=AP_DONE 2=AP_IDLE 3=AP_READY 4=AP_CONTINUE 7=AUTO_RESTART |
+| s_axi_control | GIER     | 0x04   | 32    | RW     | Global Interrupt Enable Register | 0=Enable                                                               |
+| s_axi_control | IP_IER   | 0x08   | 32    | RW     | IP Interrupt Enable Register     | 0=CHAN0_INT_EN 1=CHAN1_INT_EN 5=CHAN2_INT_EN                           |
+| s_axi_control | IP_ISR   | 0x0c   | 32    | RW     | IP Interrupt Status Register     | 0=CHAN0_INT_ST 1=CHAN1_INT_ST 5=CHAN2_INT_ST                           |
+| s_axi_control | in_r_1   | 0x10   | 32    | W      | Data signal of in_r              |                                                                        |
+| s_axi_control | in_r_2   | 0x14   | 32    | W      | Data signal of in_r              |                                                                        |
+| s_axi_control | size     | 0x1c   | 32    | W      | Data signal of size              |                                                                        |
+| s_axi_control | dest     | 0x24   | 32    | W      | Data signal of dest              |                                                                        |
++---------------+----------+--------+-------+--------+----------------------------------+------------------------------------------------------------------------+
+
+* AXIS
++-----------+---------------+-------+-------+-----+-------+-------+--------+-------+-------+--------+
+| Interface | Register Mode | TDATA | TDEST | TID | TKEEP | TLAST | TREADY | TSTRB | TUSER | TVALID |
++-----------+---------------+-------+-------+-----+-------+-------+--------+-------+-------+--------+
+| k2n       | both          | 512   | 16    | 1   | 64    | 1     | 1      | 64    | 1     | 1      |
++-----------+---------------+-------+-------+-----+-------+-------+--------+-------+-------+--------+
+
+* TOP LEVEL CONTROL
++-----------+---------------+-----------+
+| Interface | Type          | Ports     |
++-----------+---------------+-----------+
+| ap_clk    | clock         | ap_clk    |
+| ap_rst_n  | reset         | ap_rst_n  |
+| interrupt | interrupt     | interrupt |
+| ap_ctrl   | ap_ctrl_chain |           |
++-----------+---------------+-----------+
+
+
+================================================================
+== SW I/O Information
+================================================================
+* Top Function Arguments
++----------+-----------+-----------------------------------------------+
+| Argument | Direction | Datatype                                      |
++----------+-----------+-----------------------------------------------+
+| in       | in        | ap_uint<512>*                                 |
+| k2n      | out       | stream<hls::axis<ap_uint<512>, 1, 1, 16>, 0>& |
+| size     | in        | unsigned int                                  |
+| dest     | in        | unsigned int                                  |
++----------+-----------+-----------------------------------------------+
+
+* SW-to-HW Mapping
++----------+---------------+-----------+----------+--------------------------------+
+| Argument | HW Interface  | HW Type   | HW Usage | HW Info                        |
++----------+---------------+-----------+----------+--------------------------------+
+| in       | m_axi_gmem    | interface |          |                                |
+| in       | s_axi_control | interface | offset   |                                |
+| k2n      | k2n           | interface |          |                                |
+| size     | s_axi_control | register  |          | name=size offset=0x1c range=32 |
+| dest     | s_axi_control | register  |          | name=dest offset=0x24 range=32 |
++----------+---------------+-----------+----------+--------------------------------+
+
+
+================================================================
+== M_AXI Burst Information
+================================================================
+ Note: All burst requests might be further partitioned into multiple requests during RTL generation based on max_read_burst_length or max_write_burst_length settings.
+
+* Inferred Bursts and Widening Missed
++--------------+----------+-----------------------------+------------+------------------------------------------------------------------------------------+
+| HW Interface | Variable | Problem                     | Resolution | Location                                                                           |
++--------------+----------+-----------------------------+------------+------------------------------------------------------------------------------------+
+| m_axi_gmem   | in       | Access is clobbered by call | 214-231    | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/src/krnl_mm2s.cpp:72:21 |
++--------------+----------+-----------------------------+------------+------------------------------------------------------------------------------------+
+
+    * Resolution URL: www.xilinx.com/cgi-bin/docs/rdoc?v=2021.2;t=hls+guidance;d=XXX-YYY.html (replace XXX-YYY with column value)
+
+================================================================
+== Bind Op Report
+================================================================
++---------------------------------------+-----+--------+----------+-----+--------+---------+
+| Name                                  | DSP | Pragma | Variable | Op  | Impl   | Latency |
++---------------------------------------+-----+--------+----------+-----+--------+---------+
+| + krnl_mm2s                           | 0   |        |          |     |        |         |
+|   sub_fu_146_p2                       | -   |        | sub      | add | fabric | 0       |
+|  + krnl_mm2s_Pipeline_VITIS_LOOP_69_1 | 0   |        |          |     |        |         |
+|    add_ln69_fu_238_p2                 | -   |        | add_ln69 | add | fabric | 0       |
+|    add_ln78_fu_265_p2                 | -   |        | add_ln78 | add | fabric | 0       |
++---------------------------------------+-----+--------+----------+-----+--------+---------+
+
+
+================================================================
+== Bind Storage Report
+================================================================
+  No bind storage info in design
+
+================================================================
+== User Pragma Report
+================================================================
+* Valid Pragma Syntax
++-----------+----------------------------------------------+----------------------------------------------------------------------------------------------+
+| Type      | Options                                      | Location                                                                                     |
++-----------+----------------------------------------------+----------------------------------------------------------------------------------------------+
+| interface | m_axi port = in offset = slave bundle = gmem | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/src/krnl_mm2s.cpp:56 in krnl_mm2s |
+| interface | axis port = k2n                              | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/src/krnl_mm2s.cpp:57 in krnl_mm2s |
+| interface | s_axilite port = in bundle = control         | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/src/krnl_mm2s.cpp:58 in krnl_mm2s |
+| interface | s_axilite port = size bundle = control       | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/src/krnl_mm2s.cpp:59 in krnl_mm2s |
+| interface | s_axilite port = dest bundle = control       | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/src/krnl_mm2s.cpp:60 in krnl_mm2s |
+| interface | s_axilite port = return bundle = control     | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/src/krnl_mm2s.cpp:61 in krnl_mm2s |
+| latency   | min=1 max=1000                               | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/src/krnl_mm2s.cpp:70 in krnl_mm2s |
+| pipeline  | II=1                                         | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/src/krnl_mm2s.cpp:71 in krnl_mm2s |
++-----------+----------------------------------------------+----------------------------------------------------------------------------------------------+
+
+

@@ -1,0 +1,2 @@
+performing high-level synthesis for kernel: krnl_mm2s
+Log file: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x/krnl_mm2s/krnl_mm2s/vitis_hls.log

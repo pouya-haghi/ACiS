@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="krnl_mm2s" dir="">
+  <FileSets>
+    <FileSet Name="kernel_krnl_mm2s" Type="DesignSrcs">
+      <File Path="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/src/krnl_mm2s.cpp"/>
+      <Config/>
+    </FileSet>
+  </FileSets>
+  <Runs/>
+</project>
