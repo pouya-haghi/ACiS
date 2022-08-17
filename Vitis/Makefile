@@ -1,0 +1,109 @@
+SHELL=/bin/bash
+
+.PHONY: help
+
+help:
+	@echo "Makefile Usage:"
+	@echo "  make all DEVICE=<FPGA platform> TARGETING=<hw/hw_emu/sw_emu>"
+	@echo "      Command to generate the xo for specified device and Interface."
+	@echo "      By default, DEVICE=xilinx_u280_xdma_201920_3, TARGETING=hw"
+	@echo "      DESIGN also supports the string basic"
+	@echo ""
+	@echo "  make clean "
+	@echo "      Command to remove the generated non-hardware files."
+	@echo ""
+	@echo "  make distclean"
+	@echo "      Command to remove all the generated files in the current directory"
+	@echo ""
+	@echo "  make distcleanall"
+	@echo "      Command to remove all the generated in the current directory and one level down"
+	@echo ""
+
+
+DEVICE ?= xilinx_u280_xdma_201920_3
+TARGETING ?= hw
+
+XSA := $(strip $(patsubst %.xpfm, % , $(shell basename $(DEVICE)))) # board name basically
+TEMP_DIR := _x.$(XSA) #temp dir is targeting method and then .xo dir
+VPP := $(XILINX_VITIS)/bin/v++ # v++ path
+CLFLAGS += -t $(TARGETING) --platform $(DEVICE) --save-temps # CL flag based on targeting method
+
+BUILD_DIR := ./$(TARGETING).$(XSA) # where the build goes
+BINARY_CONTAINERS = $(BUILD_DIR)/$(TARGETING).xclbin 
+
+BASICDIR    = $(TARGETING)/
+CGRADIR    = CGRA/
+
+LIST_REPOS = 
+
+# Include application kernels depending on the design
+LIST_XO += $(CGRADIR)rtl_kernel_CGRA_accelerator.xo
+LIST_XO += $(BASICDIR)$(TEMP_DIR)/krnl_mm2s.xo
+LIST_XO += $(BASICDIR)$(TEMP_DIR)/krnl_s2mm.xo
+# endif
+
+.PHONY: all clean distclean distcleanall
+# all: check-devices check-vitis check-xrt check-design check-interface create-conf-file $(BINARY_CONTAINERS)
+all: check-devices check-vitis check-xrt $(BINARY_CONTAINERS)
+
+# Cleaning stuff
+clean:
+	rm -rf *v++* *.log *.jou *.str
+
+distclean: clean
+	rm -rf _x* *.tmp.ini .Xil hw*/ hw_emu*/ sw_emu*/ .ipcache/
+
+distcleanall: distclean
+	make -C $(BASICDIR) distclean
+#     make -C $(CGRADIR) distclean
+
+# Building xclbin
+$(BUILD_DIR)/${XCLBIN_NAME}.xclbin: $(LIST_XO)
+	mkdir -p $(BUILD_DIR)
+	$(VPP) $(CLFLAGS) $(CONFIGFLAGS) --temp_dir $(BUILD_DIR) -l -o'$@' $^ $(LIST_REPOS) -j 8
+
+$(BASICDIR)$(TEMP_DIR)/%.xo: $(BASICDIR)src/*.cpp
+	make -C $(BASICDIR) all DEVICE=$(DEVICE) -j3
+
+# $(CGRADIR)$(TEMP_DIR)/%.xo: $(CGRADIR)src/*.cpp
+# 	make -C $(CGRADIR) all DEVICE=$(DEVICE) -j3
+
+check-devices:
+ifndef DEVICE
+	$(error DEVICE not set. Please set the DEVICE properly and rerun. Run "make help" for more details.)
+endif
+
+#Checks for XILINX_VITIS
+check-vitis:
+ifndef XILINX_VITIS
+	$(error XILINX_VITIS variable is not set, please set correctly and rerun)
+endif
+
+#Checks for XILINX_XRT
+check-xrt:
+ifndef XILINX_XRT
+	$(error XILINX_XRT variable is not set, please set correctly and rerun)
+endif
+
+#Check if the design name is supported
+check-targeting:
+	@if [[ ($(TARGETING) != "hw") && ($(TARGETING) != "hw_emu") && $(TARGETING) != "sw_emu") ]]; then\
+		echo "TARGETING=$(TARGETING) is not supported!";\
+		exit 1;\
+	fi
+
+#Create configuration file for current design and settings
+# create-conf-file:
+# 	cp config_files/connectivity_$(DESIGN)_if$(INTERFACE).ini configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
+# 	echo "" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
+# 	echo "" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
+# 	echo "[advanced]" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
+# 	echo "param=compiler.userPostSysLinkOverlayTcl=$(POSTSYSLINKTCL)" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
+# 	#echo "param=compiler.worstNegativeSlack=-2" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
+# 	#echo "param=compiler.compiler.errorOnHoldViolation=false" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
+# 	echo "[vivado]" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
+# 	echo "prop=run.impl_1.strategy=Performance_NetDelay_low" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
+# 	@if [[ $(DEVICE) = *"u5"* ]]; then\
+# 		sed -i 's/SLR2/SLR1/g' configuration_$(DESIGN)_if$(INTERFACE).tmp.ini;\
+# 		sed -i 's/DDR\[1\]/HBM\[0\]/g' configuration_$(DESIGN)_if$(INTERFACE).tmp.ini;\
+# 	fi
