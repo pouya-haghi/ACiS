@@ -3064,8 +3064,8 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Krnl_s2mm</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>2112641330</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-08-17T15:50:30Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112641360</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-08-17T16:20:47Z</xilinx:coreCreationDateTime>
       <xilinx:sdxKernelAttributes>
         <xilinx:sdx_kernel>true</xilinx:sdx_kernel>
         <xilinx:sdx_kernel_type>hls</xilinx:sdx_kernel_type>

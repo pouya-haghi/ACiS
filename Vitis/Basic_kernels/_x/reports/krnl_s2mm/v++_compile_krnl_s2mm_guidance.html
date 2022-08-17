@@ -3407,7 +3407,7 @@ window.onload = function () { addSorting(); }
 <center><h1>Design Guidance Report</h1></center><center><table class="header" border="0">
 <tr><td><b>Copyright</b></td><td>Copyright 1986-2021 Xilinx, Inc. All Rights Reserved.</td></tr>
 <tr><td><b>Tool Version</b></td><td>xrcserver v.2021.2 (lin64) Build 0 </td></tr>
-<tr><td><b>Date</b></td><td>Wed Aug 17 11:50:42 2022</td></tr>
+<tr><td><b>Date</b></td><td>Wed Aug 17 12:20:58 2022</td></tr>
 <tr><td><b>Host</b></td><td>caadlab-01 running 64-bit CentOS Linux release 7.9.2009 (Core)</td></tr>
 <tr><td><b>Command</b></td><td>v++  -t hw --platform xilinx_u280_xdma_201920_3 --save-temps -k krnl_s2mm -c -o _x.xilinx_u280_xdma_201920_3/krnl_s2mm.xo src/krnl_s2mm.cpp </td></tr>
 </table></center><br>
@@ -3433,17 +3433,6 @@ window.onload = function () { addSorting(); }
 <th align="left">Categories</th>
 <th align="left" width="350">Details</th>
 <th align="left" width="380">Resolution</th>
-</tr>
-<tr>
-<td align="left">1</td>
-<td align="left">Interface</td>
-<td align="left">advisory</td>
-<td align="left"><undefined></td>
-<td align="left">HLS Interface Related</td>
-<td align="left">Accelerator.krnl_s2mm.Interface</td>
-<td align="left">Multiple burst writes of variable length and bit width 512 in loop 'VITIS_LOOP_66_1'(/home/Will/Documents/Research-Files/G-FPin_HW<a href="file:///Vitis/Basic_kernels/src/krnl_s2mm.cpp#line=66">krnl_s2mm.cpp</a>) has been inferred on bundle 'gmem'. These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings. (/home/Will/Documents/Research-Files/G-FPin_HW<a href="file:///Vitis/Basic_kernels/src/krnl_s2mm.cpp#line=66">krnl_s2mm.cpp</a>)
-</td>
-<td align="left"></td>
 </tr>
 <tr>
 <td align="left">2</td>
@@ -3486,6 +3475,17 @@ window.onload = function () { addSorting(); }
 <td align="left">HLS Kernel Related</td>
 <td align="left">Accelerator.krnl_s2mm.Kernel</td>
 <td align="left">**** Estimated Fmax: 411.00 MHz
+</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="left">Interface</td>
+<td align="left">advisory</td>
+<td align="left"><undefined></td>
+<td align="left">HLS Interface Related</td>
+<td align="left">Accelerator.krnl_s2mm.Interface</td>
+<td align="left">Multiple burst writes of variable length and bit width 512 in loop 'VITIS_LOOP_66_1'(/home/Will/Documents/Research-Files/G-FPin_HW<a href="file:///Vitis/Basic_kernels/src/krnl_s2mm.cpp#line=66">krnl_s2mm.cpp</a>) has been inferred on bundle 'gmem'. These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings. (/home/Will/Documents/Research-Files/G-FPin_HW<a href="file:///Vitis/Basic_kernels/src/krnl_s2mm.cpp#line=66">krnl_s2mm.cpp</a>)
 </td>
 <td align="left"></td>
 </tr>

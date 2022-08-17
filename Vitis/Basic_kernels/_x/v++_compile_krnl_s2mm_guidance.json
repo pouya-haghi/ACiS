@@ -1,7 +1,7 @@
 {
  "session": {
   "name": "v++_compile_krnl_s2mm",
-  "uuid": "7a3664d3-def2-4a13-8968-19b2ef35c82e",
+  "uuid": "e1c635de-a6d4-4524-b191-56d490b3a2ae",
   "description": "v++  -t hw --platform xilinx_u280_xdma_201920_3 --save-temps -k krnl_s2mm -c -o _x.xilinx_u280_xdma_201920_3/krnl_s2mm.xo src/krnl_s2mm.cpp ",
   "timestamp": "0",
   "report_file": {
@@ -34,115 +34,6 @@
  "affirmation_count": 0,
  "violations": {
   "hashmap": {
-   "1": {
-    "id": 1,
-    "severity": "SEV_ADVISORY",
-    "rule_key": "Interface",
-    "examples": {
-     "uri": [
-      {
-       "link_text": "Vitis HLS User Guide (UG1399)",
-       "url": {
-        "scheme": "HTTP",
-        "host": "www.xilinx.com",
-        "port": 0,
-        "path": "/cgi-bin/docs/rdoc?v=2021.2;d=ug1399-vitis-hls.pdf;",
-        "query": "",
-        "fragment": "",
-        "media_type": "",
-        "encoding": "",
-        "data": ""
-       },
-       "docgen_filename": ""
-      }
-     ]
-    },
-    "build_target": "",
-    "expects": "",
-    "details": {
-     "text": "Multiple burst writes of variable length and bit width 512 in loop 'VITIS_LOOP_66_1'(/home/Will/Documents/Research-Files/G-FPin_HW!%1!) has been inferred on bundle 'gmem'. These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings. (/home/Will/Documents/Research-Files/G-FPin_HW!%2!)\n",
-     "args": {
-      "arg": [
-       {
-        "string_val": "Multiple burst writes of variable length and bit width 512 in loop 'VITIS_LOOP_66_1'(/home/Will/Documents/Research-Files/G-FPin_HW%REF) has been inferred on bundle 'gmem'. These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings. (/home/Will/Documents/Research-Files/G-FPin_HW%REF)\n"
-       },
-       {
-        "ref": {
-         "type": "AXI",
-         "name": "krnl_s2mm.cpp",
-         "id": 0,
-         "uuid": "",
-         "url": {
-          "scheme": "FILE",
-          "host": "",
-          "port": 0,
-          "path": "/Vitis/Basic_kernels/src/krnl_s2mm.cpp",
-          "query": "",
-          "fragment": "line=66",
-          "media_type": "",
-          "encoding": "",
-          "data": ""
-         }
-        },
-        "string_val": ""
-       },
-       {
-        "ref": {
-         "type": "AXI",
-         "name": "krnl_s2mm.cpp",
-         "id": 0,
-         "uuid": "",
-         "url": {
-          "scheme": "FILE",
-          "host": "",
-          "port": 0,
-          "path": "/Vitis/Basic_kernels/src/krnl_s2mm.cpp",
-          "query": "",
-          "fragment": "line=66",
-          "media_type": "",
-          "encoding": "",
-          "data": ""
-         }
-        },
-        "string_val": ""
-       }
-      ]
-     }
-    },
-    "resolution": {
-     "text": "",
-     "args": {
-      "arg": [
-       {
-        "uri": {
-         "link_text": "Vitis HLS User Guide (UG1399)",
-         "url": {
-          "scheme": "HTTP",
-          "host": "www.xilinx.com",
-          "port": 0,
-          "path": "/cgi-bin/docs/rdoc?v=2021.2;d=ug1399-vitis-hls.pdf;",
-          "query": "",
-          "fragment": "",
-          "media_type": "",
-          "encoding": "",
-          "data": ""
-         },
-         "docgen_filename": ""
-        },
-        "string_val": ""
-       }
-      ]
-     }
-    },
-    "categories": {
-     "0": "Accelerator",
-     "1": "krnl_s2mm",
-     "2": "Interface"
-    },
-    "extended_categories": {},
-    "impact": "IMPACT_UNKNOWN",
-    "group": ""
-   },
    "2": {
     "id": 2,
     "severity": "SEV_ADVISORY",
@@ -204,9 +95,9 @@
      }
     },
     "categories": {
+     "2": "Throughput",
      "0": "Accelerator",
-     "1": "krnl_s2mm",
-     "2": "Throughput"
+     "1": "krnl_s2mm"
     },
     "extended_categories": {},
     "impact": "IMPACT_UNKNOWN",
@@ -342,9 +233,9 @@
      }
     },
     "categories": {
+     "2": "Kernel",
      "0": "Accelerator",
-     "1": "krnl_s2mm",
-     "2": "Kernel"
+     "1": "krnl_s2mm"
     },
     "extended_categories": {},
     "impact": "IMPACT_UNKNOWN",
@@ -414,6 +305,115 @@
      "0": "Accelerator",
      "1": "krnl_s2mm",
      "2": "Kernel"
+    },
+    "extended_categories": {},
+    "impact": "IMPACT_UNKNOWN",
+    "group": ""
+   },
+   "1": {
+    "id": 1,
+    "severity": "SEV_ADVISORY",
+    "rule_key": "Interface",
+    "examples": {
+     "uri": [
+      {
+       "link_text": "Vitis HLS User Guide (UG1399)",
+       "url": {
+        "scheme": "HTTP",
+        "host": "www.xilinx.com",
+        "port": 0,
+        "path": "/cgi-bin/docs/rdoc?v=2021.2;d=ug1399-vitis-hls.pdf;",
+        "query": "",
+        "fragment": "",
+        "media_type": "",
+        "encoding": "",
+        "data": ""
+       },
+       "docgen_filename": ""
+      }
+     ]
+    },
+    "build_target": "",
+    "expects": "",
+    "details": {
+     "text": "Multiple burst writes of variable length and bit width 512 in loop 'VITIS_LOOP_66_1'(/home/Will/Documents/Research-Files/G-FPin_HW!%1!) has been inferred on bundle 'gmem'. These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings. (/home/Will/Documents/Research-Files/G-FPin_HW!%2!)\n",
+     "args": {
+      "arg": [
+       {
+        "string_val": "Multiple burst writes of variable length and bit width 512 in loop 'VITIS_LOOP_66_1'(/home/Will/Documents/Research-Files/G-FPin_HW%REF) has been inferred on bundle 'gmem'. These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings. (/home/Will/Documents/Research-Files/G-FPin_HW%REF)\n"
+       },
+       {
+        "ref": {
+         "type": "AXI",
+         "name": "krnl_s2mm.cpp",
+         "id": 0,
+         "uuid": "",
+         "url": {
+          "scheme": "FILE",
+          "host": "",
+          "port": 0,
+          "path": "/Vitis/Basic_kernels/src/krnl_s2mm.cpp",
+          "query": "",
+          "fragment": "line=66",
+          "media_type": "",
+          "encoding": "",
+          "data": ""
+         }
+        },
+        "string_val": ""
+       },
+       {
+        "ref": {
+         "type": "AXI",
+         "name": "krnl_s2mm.cpp",
+         "id": 0,
+         "uuid": "",
+         "url": {
+          "scheme": "FILE",
+          "host": "",
+          "port": 0,
+          "path": "/Vitis/Basic_kernels/src/krnl_s2mm.cpp",
+          "query": "",
+          "fragment": "line=66",
+          "media_type": "",
+          "encoding": "",
+          "data": ""
+         }
+        },
+        "string_val": ""
+       }
+      ]
+     }
+    },
+    "resolution": {
+     "text": "",
+     "args": {
+      "arg": [
+       {
+        "uri": {
+         "link_text": "Vitis HLS User Guide (UG1399)",
+         "url": {
+          "scheme": "HTTP",
+          "host": "www.xilinx.com",
+          "port": 0,
+          "path": "/cgi-bin/docs/rdoc?v=2021.2;d=ug1399-vitis-hls.pdf;",
+          "query": "",
+          "fragment": "",
+          "media_type": "",
+          "encoding": "",
+          "data": ""
+         },
+         "docgen_filename": ""
+        },
+        "string_val": ""
+       }
+      ]
+     }
+    },
+    "categories": {
+     "2": "Interface",
+     "0": "Accelerator",
+     "1": "krnl_s2mm"
     },
     "extended_categories": {},
     "impact": "IMPACT_UNKNOWN",
@@ -505,9 +505,9 @@
     "expects": "",
     "affirm_msg": "",
     "dynamic_categories": {
-     "0": false,
      "1": true,
-     "2": false
+     "2": false,
+     "0": false
     },
     "extensible_categories": [],
     "impact": "IMPACT_UNKNOWN",
@@ -521,9 +521,9 @@
     "msg_abbrev": "",
     "msg_id": "0",
     "categories": {
-     "2": "Throughput",
      "0": "Accelerator",
-     "1": "Kernel"
+     "1": "Kernel",
+     "2": "Throughput"
     },
     "resolution_msg": "",
     "examples": {

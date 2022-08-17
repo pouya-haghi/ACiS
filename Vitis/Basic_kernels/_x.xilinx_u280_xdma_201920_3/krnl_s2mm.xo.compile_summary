@@ -9,10 +9,10 @@
 <ENTRY>
 {
  "type": "ET_CmdStep",
- "dateTimestamp": "Wed Aug 17 11:49:19 2022",
- "timestampMillis": "1660751359973",
+ "dateTimestamp": "Wed Aug 17 12:19:37 2022",
+ "timestampMillis": "1660753177642",
  "buildStep": {
-  "cmdId": "8a56aeeb-54c6-4501-b029-b14dfecd94e9",
+  "cmdId": "8cb06e49-4a6f-43ea-8df8-d0c9a7acbf67",
   "name": "v++",
   "logFile": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm.steps.log",
   "commandLine": "/opt/Xilinx/Vitis/2021.2/bin/unwrapped/lnx64.o/v++  --vivado.prop \"run.__KERNEL__.{STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS}={-directive sdx_optimization_effort_high}\" --advanced.misc \"report=type report_timing_summary name impl_report_timing_summary_route_design_summary steps {route_design} runs {impl_1} options {-max_paths 10}\" --advanced.misc \"report=type report_timing_summary name impl_report_timing_summary_post_route_phys_opt_design_summary steps {post_route_phys_opt_design} runs {impl_1} options {-max_paths 10}\" -t hw --platform xilinx_u280_xdma_201920_3 --save-temps -k krnl_s2mm -c -o _x.xilinx_u280_xdma_201920_3/krnl_s2mm.xo src/krnl_s2mm.cpp ",
@@ -37,10 +37,10 @@
 <ENTRY>
 {
  "type": "ET_Status",
- "dateTimestamp": "Wed Aug 17 11:49:19 2022",
- "timestampMillis": "1660751359973",
+ "dateTimestamp": "Wed Aug 17 12:19:37 2022",
+ "timestampMillis": "1660753177643",
  "status": {
-  "cmdId": "8a56aeeb-54c6-4501-b029-b14dfecd94e9",
+  "cmdId": "8cb06e49-4a6f-43ea-8df8-d0c9a7acbf67",
   "state": "CS_RUNNING"
  }
 }
@@ -48,8 +48,8 @@
 <ENTRY>
 {
  "type": "ET_FlowMetaData",
- "dateTimestamp": "Wed Aug 17 11:49:35 2022",
- "timestampMillis": "1660751375988",
+ "dateTimestamp": "Wed Aug 17 12:19:54 2022",
+ "timestampMillis": "1660753194508",
  "buildSummary": {
   "hardwarePlatform": "xilinx_u280_xdma_201920_3.xpfm",
   "hardwareDsa": "xilinx_u280_xdma_201920_3.xsa",
@@ -84,10 +84,10 @@
 <ENTRY>
 {
  "type": "ET_SubCmdStep",
- "dateTimestamp": "Wed Aug 17 11:49:35 2022",
- "timestampMillis": "1660751375994",
+ "dateTimestamp": "Wed Aug 17 12:19:54 2022",
+ "timestampMillis": "1660753194514",
  "buildStep": {
-  "cmdId": "08428adc-b364-4307-b398-8254deef78ab",
+  "cmdId": "b0a51040-accd-4003-86b5-8c6a849159b5",
   "name": "vitis_hls",
   "logFile": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/vitis_hls.log",
   "commandLine": "vitis_hls -f /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm.tcl -messageDb vitis_hls.pb",
@@ -106,10 +106,10 @@
 <ENTRY>
 {
  "type": "ET_Status",
- "dateTimestamp": "Wed Aug 17 11:49:35 2022",
- "timestampMillis": "1660751375994",
+ "dateTimestamp": "Wed Aug 17 12:19:54 2022",
+ "timestampMillis": "1660753194515",
  "status": {
-  "cmdId": "08428adc-b364-4307-b398-8254deef78ab",
+  "cmdId": "b0a51040-accd-4003-86b5-8c6a849159b5",
   "state": "CS_RUNNING"
  }
 }
@@ -117,10 +117,10 @@
 <ENTRY>
 {
  "type": "ET_Status",
- "dateTimestamp": "Wed Aug 17 11:50:41 2022",
- "timestampMillis": "1660751441900",
+ "dateTimestamp": "Wed Aug 17 12:20:58 2022",
+ "timestampMillis": "1660753258468",
  "status": {
-  "cmdId": "08428adc-b364-4307-b398-8254deef78ab",
+  "cmdId": "b0a51040-accd-4003-86b5-8c6a849159b5",
   "state": "CS_PASSED"
  }
 }
@@ -128,8 +128,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Wed Aug 17 11:50:41 2022",
- "timestampMillis": "1660751441920",
+ "dateTimestamp": "Wed Aug 17 12:20:58 2022",
+ "timestampMillis": "1660753258489",
  "report": {
   "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/.autopilot/db/krnl_s2mm.design.xml",
   "name": "krnl_s2mm",
@@ -142,8 +142,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Wed Aug 17 11:50:41 2022",
- "timestampMillis": "1660751441920",
+ "dateTimestamp": "Wed Aug 17 12:20:58 2022",
+ "timestampMillis": "1660753258490",
  "report": {
   "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/.autopilot/db/.message_syn.xml",
   "name": "krnl_s2mm",
@@ -156,8 +156,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Wed Aug 17 11:50:41 2022",
- "timestampMillis": "1660751441922",
+ "dateTimestamp": "Wed Aug 17 12:20:58 2022",
+ "timestampMillis": "1660753258492",
  "report": {
   "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/reports/krnl_s2mm/hls_reports/krnl_s2mm_csynth.rpt",
   "name": "krnl_s2mm",
@@ -170,8 +170,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Wed Aug 17 11:50:41 2022",
- "timestampMillis": "1660751441922",
+ "dateTimestamp": "Wed Aug 17 12:20:58 2022",
+ "timestampMillis": "1660753258492",
  "report": {
   "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/syn/report/krnl_s2mm_csynth.xml",
   "name": "krnl_s2mm",
@@ -184,8 +184,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Wed Aug 17 11:50:41 2022",
- "timestampMillis": "1660751441927",
+ "dateTimestamp": "Wed Aug 17 12:20:58 2022",
+ "timestampMillis": "1660753258498",
  "report": {
   "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/reports/krnl_s2mm/system_estimate_krnl_s2mm.xtxt",
   "name": "",
@@ -198,8 +198,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Wed Aug 17 11:50:42 2022",
- "timestampMillis": "1660751442093",
+ "dateTimestamp": "Wed Aug 17 12:20:58 2022",
+ "timestampMillis": "1660753258674",
  "report": {
   "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/reports/krnl_s2mm/v++_compile_krnl_s2mm_guidance.html",
   "name": "",
@@ -212,8 +212,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Wed Aug 17 11:50:42 2022",
- "timestampMillis": "1660751442094",
+ "dateTimestamp": "Wed Aug 17 12:20:58 2022",
+ "timestampMillis": "1660753258674",
  "report": {
   "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/v++_compile_krnl_s2mm_guidance.pb",
   "name": "",
@@ -226,10 +226,10 @@
 <ENTRY>
 {
  "type": "ET_Status",
- "dateTimestamp": "Wed Aug 17 11:50:42 2022",
- "timestampMillis": "1660751442095",
+ "dateTimestamp": "Wed Aug 17 12:20:58 2022",
+ "timestampMillis": "1660753258675",
  "status": {
-  "cmdId": "8a56aeeb-54c6-4501-b029-b14dfecd94e9",
+  "cmdId": "8cb06e49-4a6f-43ea-8df8-d0c9a7acbf67",
   "state": "CS_PASSED"
  }
 }

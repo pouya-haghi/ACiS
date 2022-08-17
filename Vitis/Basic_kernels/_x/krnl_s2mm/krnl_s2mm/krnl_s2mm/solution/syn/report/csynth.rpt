@@ -4,7 +4,7 @@
 == Synthesis Summary Report of 'krnl_s2mm'
 ================================================================
 + General Information: 
-    * Date:           Wed Aug 17 11:49:59 2022
+    * Date:           Wed Aug 17 12:20:19 2022
     * Version:        2021.2 (Build 3367213 on Tue Oct 19 02:47:39 MDT 2021)
     * Project:        krnl_s2mm
     * Solution:       solution (Vitis Kernel Flow Target)

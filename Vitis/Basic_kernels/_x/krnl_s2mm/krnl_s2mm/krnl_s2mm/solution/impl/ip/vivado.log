@@ -2,18 +2,18 @@
 # Vivado v2021.2 (64-bit)
 # SW Build 3367213 on Tue Oct 19 02:47:39 MDT 2021
 # IP Build 3369179 on Thu Oct 21 08:25:16 MDT 2021
-# Start of session at: Wed Aug 17 11:50:05 2022
-# Process ID: 5004
+# Start of session at: Wed Aug 17 12:20:25 2022
+# Process ID: 10672
 # Current directory: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/ip
 # Command line: vivado -notrace -mode batch -source run_ippack.tcl
 # Log file: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/ip/vivado.log
 # Journal file: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/ip/vivado.jou
-# Running On: caadlab-01, OS: Linux, CPU Frequency: 2399.542 MHz, CPU Physical cores: 12, Host memory: 135057 MB
+# Running On: caadlab-01, OS: Linux, CPU Frequency: 2400.183 MHz, CPU Physical cores: 12, Host memory: 135057 MB
 #-----------------------------------------------------------
 source run_ippack.tcl -notrace
-ipx::create_core: Time (s): cpu = 00:00:08 ; elapsed = 00:00:08 . Memory (MB): peak = 2893.980 ; gain = 2.020 ; free physical = 41969 ; free virtual = 117191
+ipx::create_core: Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 2901.918 ; gain = 2.020 ; free physical = 41939 ; free virtual = 117180
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1704] No user IP repositories specified
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/opt/Xilinx/Vivado/2021.2/data/ip'.
 Running package_xo -xo_path /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/export.xo -kernel_name krnl_s2mm -kernel_xml /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/ip/../kernel/kernel.xml -kernel_files /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp -ip_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/ip/ip_unzip_dir -design_xml /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/.autopilot/db/krnl_s2mm.design.xml -debug_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/.debug -hls_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm/solution/impl/ip/hls_files
-INFO: [Common 17-206] Exiting Vivado at Wed Aug 17 11:50:31 2022...
+INFO: [Common 17-206] Exiting Vivado at Wed Aug 17 12:20:47 2022...
