@@ -953,3 +953,12 @@ Command         ap_source done; 0.11 sec.
 Execute         source /opt/Xilinx/Vitis_HLS/2021.2/common/technology/xilinx/DSP48/dsp48.gen 
 Command       ap_source done; 0.15 sec.
 INFO-FLOW: DBG:PUTS:     IP package: exec /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/pack.sh
+INFO-FLOW: DBG:PUTS:     IP package: success /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/pack.sh
+Execute       get_config_export -output 
+Execute       send_msg_by_id INFO @200-802@%s krnl_mm2s/solution/impl/export.xo 
+INFO: [HLS 200-802] Generated output file krnl_mm2s/solution/impl/export.xo
+Command     export_design done; 35.98 sec.
+INFO: [HLS 200-111] Finished Command export_design CPU user time: 27.56 seconds. CPU system time: 2.45 seconds. Elapsed time: 35.98 seconds; current allocated memory: 0.000 MB.
+Execute     close_project 
+Execute       cleanup_all -project 
+Execute     cleanup_all 

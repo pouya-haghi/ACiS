@@ -34,3 +34,7 @@ Wed Aug 17 12:21:13 2022: SESSION_MGR: creating session with session uuid: '8677
 Wed Aug 17 12:21:13 2022: KERNEL_SVC: creating session with uuid: '8677525c-fd58-44e2-b19c-07c16b0d6682' and name 'v++_compile_krnl_mm2s'
 Wed Aug 17 12:21:13 2022: GUIDANCE_SMGR: creating guidance session with uuid: '8677525c-fd58-44e2-b19c-07c16b0d6682' and name 'v++_compile_krnl_mm2s'
 Wed Aug 17 12:21:13 2022: SYSTEM_DIAGRAM: creating session with uuid: '8677525c-fd58-44e2-b19c-07c16b0d6682' and name 'v++_compile_krnl_mm2s'
+Wed Aug 17 12:22:31 2022: SESSION_MGR: closing session for UUID '8677525c-fd58-44e2-b19c-07c16b0d6682' with name 'v++_compile_krnl_mm2s'
+Wed Aug 17 12:22:31 2022: KERNEL_SVC: closing session for UUID '8677525c-fd58-44e2-b19c-07c16b0d6682' with name 'v++_compile_krnl_mm2s'
+Wed Aug 17 12:22:31 2022: GUIDANCE_SMGR: closing session for UUID '8677525c-fd58-44e2-b19c-07c16b0d6682' with name 'v++_compile_krnl_mm2s'
+Wed Aug 17 12:22:31 2022: SYSTEM_DIAGRAM: closing session for UUID '8677525c-fd58-44e2-b19c-07c16b0d6682' with name 'v++_compile_krnl_mm2s'

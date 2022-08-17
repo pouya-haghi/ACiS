@@ -134,3 +134,8 @@ INFO: [IP_Flow 19-1704] No user IP repositories specified
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/opt/Xilinx/Vivado/2021.2/data/ip'.
 Running package_xo -xo_path /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/export.xo -kernel_name krnl_mm2s -kernel_xml /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/../kernel/kernel.xml -kernel_files /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp -ip_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/ip_unzip_dir -design_xml /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/.autopilot/db/krnl_mm2s.design.xml -debug_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/.debug -hls_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/hls_files
 INFO: [Common 17-206] Exiting Vivado at Wed Aug 17 12:22:20 2022...
+INFO: [HLS 200-802] Generated output file krnl_mm2s/solution/impl/export.xo
+INFO: [HLS 200-111] Finished Command export_design CPU user time: 27.56 seconds. CPU system time: 2.45 seconds. Elapsed time: 35.98 seconds; current allocated memory: 0.000 MB.
+HLS completed successfully
+INFO: [HLS 200-112] Total CPU user time: 49.6 seconds. Total CPU system time: 5.74 seconds. Total elapsed time: 58.04 seconds; peak allocated memory: 1.173 GB.
+INFO: [Common 17-206] Exiting vitis_hls at Wed Aug 17 12:22:31 2022...

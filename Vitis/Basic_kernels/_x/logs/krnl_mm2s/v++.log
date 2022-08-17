@@ -24,4 +24,3 @@ INFO: [v++ 60-586] Created _x.xilinx_u280_xdma_201920_3/krnl_mm2s.xo
 INFO: [v++ 60-2343] Use the vitis_analyzer tool to visualize and navigate the relevant reports. Run the following command. 
     vitis_analyzer /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x.xilinx_u280_xdma_201920_3/krnl_mm2s.xo.compile_summary 
 INFO: [v++ 60-791] Total elapsed time: 0h 1m 29s
-INFO: [v++ 60-1653] Closing dispatch client.

@@ -114,3 +114,123 @@
  }
 }
 </ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Wed Aug 17 12:22:31 2022",
+ "timestampMillis": "1660753351407",
+ "status": {
+  "cmdId": "31621b85-8862-40d3-8a00-efd97c1a80cc",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Wed Aug 17 12:22:31 2022",
+ "timestampMillis": "1660753351428",
+ "report": {
+  "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/.autopilot/db/krnl_mm2s.design.xml",
+  "name": "krnl_mm2s",
+  "fileType": "XML",
+  "reportType": "KERNEL_HLS_REPORT",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Wed Aug 17 12:22:31 2022",
+ "timestampMillis": "1660753351429",
+ "report": {
+  "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/.autopilot/db/.message_syn.xml",
+  "name": "krnl_mm2s",
+  "fileType": "XML",
+  "reportType": "KERNEL_HLS_DRC_SYNTHESIS",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Wed Aug 17 12:22:31 2022",
+ "timestampMillis": "1660753351430",
+ "report": {
+  "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/reports/krnl_mm2s/hls_reports/krnl_mm2s_csynth.rpt",
+  "name": "krnl_mm2s",
+  "fileType": "TEXT",
+  "reportType": "KERNEL_HLS_CSYNTH",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Wed Aug 17 12:22:31 2022",
+ "timestampMillis": "1660753351431",
+ "report": {
+  "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/syn/report/krnl_mm2s_csynth.xml",
+  "name": "krnl_mm2s",
+  "fileType": "XML",
+  "reportType": "KERNEL_HLS_CSYNTH",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Wed Aug 17 12:22:31 2022",
+ "timestampMillis": "1660753351436",
+ "report": {
+  "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/reports/krnl_mm2s/system_estimate_krnl_mm2s.xtxt",
+  "name": "",
+  "fileType": "TEXT",
+  "reportType": "GLOBAL_SYSTEM_ESTIMATE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Wed Aug 17 12:22:31 2022",
+ "timestampMillis": "1660753351607",
+ "report": {
+  "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/reports/krnl_mm2s/v++_compile_krnl_mm2s_guidance.html",
+  "name": "",
+  "fileType": "HTML",
+  "reportType": "GLOBAL_RULECHECK_GUIDANCE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Wed Aug 17 12:22:31 2022",
+ "timestampMillis": "1660753351608",
+ "report": {
+  "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/v++_compile_krnl_mm2s_guidance.pb",
+  "name": "",
+  "fileType": "BINARY_PROTOBUF",
+  "reportType": "GLOBAL_RULECHECK_GUIDANCE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Wed Aug 17 12:22:31 2022",
+ "timestampMillis": "1660753351609",
+ "status": {
+  "cmdId": "937ff9ed-a1fe-4f00-b7f6-708490ebec6c",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
