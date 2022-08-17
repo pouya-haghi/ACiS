@@ -1,0 +1,42 @@
+===============================================================================
+Version:    v++ v2021.2 (64-bit)
+Build:      SW Build 3363252 on 2021-10-14-04:41:01
+Copyright:  Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+Created:    Wed Aug 17 11:50:41 2022
+===============================================================================
+
+-------------------------------------------------------------------------------
+Design Name:             krnl_s2mm
+Target Device:           xilinx:u280:xdma:201920.3
+Target Clock:            300.000000MHz
+Total number of kernels: 1
+-------------------------------------------------------------------------------
+
+Kernel Summary
+Kernel Name  Type  Target              OpenCL Library  Compute Units
+-----------  ----  ------------------  --------------  -------------
+krnl_s2mm    c     fpga0:OCL_REGION_0  krnl_s2mm       1
+
+
+-------------------------------------------------------------------------------
+OpenCL Binary:     krnl_s2mm
+Kernels mapped to: clc_region
+
+Timing Information (MHz)
+Compute Unit  Kernel Name  Module Name                         Target Frequency  Estimated Frequency
+------------  -----------  ----------------------------------  ----------------  -------------------
+krnl_s2mm_1   krnl_s2mm    krnl_s2mm_Pipeline_VITIS_LOOP_66_1  300.300293        411.015198
+krnl_s2mm_1   krnl_s2mm    krnl_s2mm                           300.300293        411.015198
+
+Latency Information
+Compute Unit  Kernel Name  Module Name                         Start Interval  Best (cycles)  Avg (cycles)  Worst (cycles)  Best (absolute)  Avg (absolute)  Worst (absolute)
+------------  -----------  ----------------------------------  --------------  -------------  ------------  --------------  ---------------  --------------  ----------------
+krnl_s2mm_1   krnl_s2mm    krnl_s2mm_Pipeline_VITIS_LOOP_66_1  3 ~ -1          3              undef         undef           9.999 ns         undef           undef
+krnl_s2mm_1   krnl_s2mm    krnl_s2mm                           3 ~ 0           2              undef         undef           6.666 ns         undef           undef
+
+Area Information
+Compute Unit  Kernel Name  Module Name                         FF    LUT   DSP  BRAM  URAM
+------------  -----------  ----------------------------------  ----  ----  ---  ----  ----
+krnl_s2mm_1   krnl_s2mm    krnl_s2mm_Pipeline_VITIS_LOOP_66_1  541   112   0    0     0
+krnl_s2mm_1   krnl_s2mm    krnl_s2mm                           2333  2467  0    30    0
+-------------------------------------------------------------------------------
