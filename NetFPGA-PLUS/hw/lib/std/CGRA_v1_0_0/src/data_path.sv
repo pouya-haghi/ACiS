@@ -54,7 +54,7 @@ module data_path(
     output logic [(num_col*12)-1:0]             load_value_PC
     );
     
-    localparam phitplus = phit_size + SIMD_degree; // bundle {tvalid, tdata}
+    localparam phitplus = phit_size + phit_size/8 + 3; // bundle {tvalid, tdata}
     localparam phitplusplus = phit_size + SIMD_degree*2; // bundle {tlast, tvalid, tdata}
 
     logic [((num_col)*3)-1:0] op;
@@ -109,6 +109,12 @@ module data_path(
     logic [(SIMD_degree*num_col)-1:0] tvalid_stream;
     logic [(SIMD_degree*num_col)-1:0] tlast_stream;
     
+    logic [phit_size-1:0] tdata_stream_out_t;
+    logic tvalid_stream_out_t;
+    logic tready_stream_in_t;
+    logic tlast_stream_out_t;
+    logic [phit_size/8-1:0] tkeep_stream_out_t;
+    
     // This part is ISA-specific:
     logic [num_col-1:0] tvalid_RF; // generated internally based on op
     logic [(dwidth_RFadd*num_col)-1:0] ITR, ITR_delay;
@@ -150,7 +156,7 @@ module data_path(
     assign ap_done = ap_done_t;
 
     // Stream in concatination
-    assign tready_stream_in = &tready_stream_in_lane;
+    assign tready_stream_in_t = &tready_stream_in_lane;
     
     // Sync FIFO for stream in
     genvar i;
@@ -408,8 +414,8 @@ module data_path(
     endgenerate   
 
     // Stream out concatination
-    assign tvalid_stream_out = |tvalid_stream_out_lane; // if any values in phit are valid, tvalid = 1 but some tkeep = 0;
-    assign tlast_stream_out = &tlast_stream_out_lane;
+    assign tvalid_stream_out_t = |tvalid_stream_out_lane; // if any values in phit are valid, tvalid = 1 but some tkeep = 0;
+    assign tlast_stream_out_t = &tlast_stream_out_lane;
     
     // Assembler unit
     assembler assembler_inst0(
@@ -436,12 +442,12 @@ module data_path(
             .push(FIFO_out_tvalid[i] && is_vstreamout_global && !full_FIFO_out[i]), // fixing a bug: instead of tvalid_stream_in[i], we use last_PE valid signal
             .pop(tready_stream_out && !empty_FIFO_out[i]),
             .din({FIFO_out_tlast[i], FIFO_out_tvalid[i],FIFO_out_tdata[(dwidth_float*(i+1))-1:dwidth_float*i]}),
-            .dout({tlast_stream_out_lane[i], tvalid_stream_out_lane[i], tdata_stream_out[((i+1)*dwidth_float)-1:i*dwidth_float]}),
+            .dout({tlast_stream_out_lane[i], tvalid_stream_out_lane[i], tdata_stream_out_t[((i+1)*dwidth_float)-1:i*dwidth_float]}),
             .empty(empty_FIFO_out[i]),
             .full(full_FIFO_out[i])
             );
             
-            assign tkeep_stream_out[i*4+3:i*4] = {4{tvalid_stream_out_lane[i]}}; 
+            assign tkeep_stream_out_t[i*4+3:i*4] = {4{tvalid_stream_out_lane[i]}}; 
         end
     endgenerate
 
@@ -456,4 +462,10 @@ module data_path(
     .mux_control(sel_mux2)
     );
         
+    // Mux to passthrough stream
+    mux2 #(phitplus) mux2_inst2(
+        {tready_stream_out, tvalid_stream_in, tlast_stream_in, tkeep_stream_in, tdata_stream_in},
+        {tready_stream_in_t, tvalid_stream_out_t, tlast_stream_out_t, tkeep_stream_out_t, tdata_stream_out_t},
+        done_steady,
+        {tready_stream_in, tvalid_stream_out, tlast_stream_out, tkeep_stream_out, tdata_stream_out});
 endmodule
