@@ -1,0 +1,40 @@
+Wed Aug 17 12:19:29 2022: Running xcd server. This server was built by gradle.
+Wed Aug 17 12:19:29 2022: Server was asked to start on port: '44104'
+Wed Aug 17 12:19:29 2022: Server is using token UUID: '0ac7f723-948a-4a07-b09d-1e8884e1e1cd'
+Wed Aug 17 12:19:29 2022: SESSION_MGR: creating session with session uuid: '6d04a3e9-ade5-4ab9-8d63-1f78fcd2ec76' and name 'default'
+Wed Aug 17 12:19:29 2022: Attempting to start server on port '44104'
+Wed Aug 17 12:19:29 2022: XCD main fifo: created main fifo '/tmp/xcdmain0ac7f723-948a-4a07-b09d-1e8884e1e1cd', fd read = 13
+Wed Aug 17 12:19:29 2022: Running Dispatch Server
+Wed Aug 17 12:19:29 2022: Version 2.2.0
+Wed Aug 17 12:19:37 2022: Dispatch Server: Accepted socket connection from client
+Wed Aug 17 12:19:37 2022: Starting Socket connection
+Wed Aug 17 12:19:37 2022: EXCHANGE_TOKEN received, server token: 0ac7f723-948a-4a07-b09d-1e8884e1e1cd, passed token: 0ac7f723-948a-4a07-b09d-1e8884e1e1cd
+Wed Aug 17 12:19:39 2022: DISPATCH_HANDLER: Adding handler from function makeHandler in library libxv_system_diagram
+Wed Aug 17 12:19:39 2022: SESSION_MGR: creating session with session uuid: '3eadc7a6-f26d-4569-8f1d-d4a3ca513596' and name 'v++_compile_krnl_s2mm'
+Wed Aug 17 12:19:39 2022: KERNEL_SVC: creating session with uuid: '3eadc7a6-f26d-4569-8f1d-d4a3ca513596' and name 'v++_compile_krnl_s2mm'
+Wed Aug 17 12:19:39 2022: GUIDANCE_SMGR: creating guidance session with uuid: '3eadc7a6-f26d-4569-8f1d-d4a3ca513596' and name 'v++_compile_krnl_s2mm'
+Wed Aug 17 12:19:39 2022: SYSTEM_DIAGRAM: creating session with uuid: '3eadc7a6-f26d-4569-8f1d-d4a3ca513596' and name 'v++_compile_krnl_s2mm'
+Wed Aug 17 12:20:58 2022: SESSION_MGR: closing session for UUID '3eadc7a6-f26d-4569-8f1d-d4a3ca513596' with name 'v++_compile_krnl_s2mm'
+Wed Aug 17 12:20:58 2022: KERNEL_SVC: closing session for UUID '3eadc7a6-f26d-4569-8f1d-d4a3ca513596' with name 'v++_compile_krnl_s2mm'
+Wed Aug 17 12:20:58 2022: GUIDANCE_SMGR: closing session for UUID '3eadc7a6-f26d-4569-8f1d-d4a3ca513596' with name 'v++_compile_krnl_s2mm'
+Wed Aug 17 12:20:58 2022: SYSTEM_DIAGRAM: closing session for UUID '3eadc7a6-f26d-4569-8f1d-d4a3ca513596' with name 'v++_compile_krnl_s2mm'
+Wed Aug 17 12:21:03 2022: Running xcd server. This server was built by gradle.
+Wed Aug 17 12:21:03 2022: Server was asked to start on port: '36791'
+Wed Aug 17 12:21:03 2022: Server is using token UUID: '4ad26ced-c46a-42d5-b0a7-b178f3a7278e'
+Wed Aug 17 12:21:03 2022: SESSION_MGR: creating session with session uuid: '6d04a3e9-ade5-4ab9-8d63-1f78fcd2ec76' and name 'default'
+Wed Aug 17 12:21:03 2022: Attempting to start server on port '36791'
+Wed Aug 17 12:21:03 2022: XCD main fifo: created main fifo '/tmp/xcdmain4ad26ced-c46a-42d5-b0a7-b178f3a7278e', fd read = 13
+Wed Aug 17 12:21:03 2022: Running Dispatch Server
+Wed Aug 17 12:21:03 2022: Version 2.2.0
+Wed Aug 17 12:21:11 2022: Dispatch Server: Accepted socket connection from client
+Wed Aug 17 12:21:11 2022: Starting Socket connection
+Wed Aug 17 12:21:11 2022: EXCHANGE_TOKEN received, server token: 4ad26ced-c46a-42d5-b0a7-b178f3a7278e, passed token: 4ad26ced-c46a-42d5-b0a7-b178f3a7278e
+Wed Aug 17 12:21:13 2022: DISPATCH_HANDLER: Adding handler from function makeHandler in library libxv_system_diagram
+Wed Aug 17 12:21:13 2022: SESSION_MGR: creating session with session uuid: '8677525c-fd58-44e2-b19c-07c16b0d6682' and name 'v++_compile_krnl_mm2s'
+Wed Aug 17 12:21:13 2022: KERNEL_SVC: creating session with uuid: '8677525c-fd58-44e2-b19c-07c16b0d6682' and name 'v++_compile_krnl_mm2s'
+Wed Aug 17 12:21:13 2022: GUIDANCE_SMGR: creating guidance session with uuid: '8677525c-fd58-44e2-b19c-07c16b0d6682' and name 'v++_compile_krnl_mm2s'
+Wed Aug 17 12:21:13 2022: SYSTEM_DIAGRAM: creating session with uuid: '8677525c-fd58-44e2-b19c-07c16b0d6682' and name 'v++_compile_krnl_mm2s'
+Wed Aug 17 12:22:31 2022: SESSION_MGR: closing session for UUID '8677525c-fd58-44e2-b19c-07c16b0d6682' with name 'v++_compile_krnl_mm2s'
+Wed Aug 17 12:22:31 2022: KERNEL_SVC: closing session for UUID '8677525c-fd58-44e2-b19c-07c16b0d6682' with name 'v++_compile_krnl_mm2s'
+Wed Aug 17 12:22:31 2022: GUIDANCE_SMGR: closing session for UUID '8677525c-fd58-44e2-b19c-07c16b0d6682' with name 'v++_compile_krnl_mm2s'
+Wed Aug 17 12:22:31 2022: SYSTEM_DIAGRAM: closing session for UUID '8677525c-fd58-44e2-b19c-07c16b0d6682' with name 'v++_compile_krnl_mm2s'

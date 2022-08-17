@@ -1,0 +1,161 @@
+
+
+================================================================
+== Vitis HLS Report for 'krnl_mm2s'
+================================================================
+* Date:           Wed Aug 17 12:21:52 2022
+
+* Version:        2021.2 (Build 3367213 on Tue Oct 19 02:47:39 MDT 2021)
+* Project:        krnl_mm2s
+* Solution:       solution (Vitis Kernel Flow Target)
+* Product family: virtexuplus
+* Target device:  xcu280-fsvh2892-2L-e
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+---------+----------+------------+
+    |  Clock |  Target | Estimated| Uncertainty|
+    +--------+---------+----------+------------+
+    |ap_clk  |  3.33 ns|  2.433 ns|     0.90 ns|
+    +--------+---------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+----------+----------+-----+-----+---------+
+    |  Latency (cycles) |  Latency (absolute) |  Interval | Pipeline|
+    |   min   |   max   |    min   |    max   | min | max |   Type  |
+    +---------+---------+----------+----------+-----+-----+---------+
+    |        ?|        ?|         ?|         ?|    ?|    ?|       no|
+    +---------+---------+----------+----------+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        N/A
+
+============================================================
++ Verbose Summary: Synthesis Manager
+============================================================
+InlineROM: 1
+ExposeGlobal: 0
+============================================================
++ Verbose Summary: CDFG Model
+============================================================
+IsTopModel: 1
+ResetActiveHigh: 1
+IsCombinational: 0
+IsDatapathOnly: 0
+HasWiredReturn: 1
+HasMFsm: 0
+HasVarLatency: 1
+IsPipeline: 0
+IsRtlPipelined: 0
+IsInstanceOverlapped: 0
+IsDontTouch: 0
+HasImplIP: 0
+IsGatedGlobalClock: 0
+
+
+============================================================
++ Verbose Summary: Schedule
+============================================================
+* Number of FSM states : 4
+* Pipeline : 0
+* Dataflow Pipeline: 0
+
+* FSM state transitions: 
+1 --> 2 
+2 --> 3 
+3 --> 4 
+4 --> 
+
+* FSM state operations: 
+
+State 1 <SV = 0> <Delay = 1.84>
+ST_1 : Operation 5 [1/1] (1.00ns)   --->   "%dest_read = read i32 @_ssdm_op_Read.ap_none.i32, i32 %dest" [/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:52]   --->   Operation 5 'read' 'dest_read' <Predicate = true> <Delay = 1.00> <CoreInst = "s_axilite">   --->   Core 122 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
+ST_1 : Operation 6 [1/1] (1.00ns)   --->   "%size_read = read i32 @_ssdm_op_Read.ap_none.i32, i32 %size" [/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:52]   --->   Operation 6 'read' 'size_read' <Predicate = true> <Delay = 1.00> <CoreInst = "s_axilite">   --->   Core 122 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
+ST_1 : Operation 7 [1/1] (1.00ns)   --->   "%in_r_read = read i64 @_ssdm_op_Read.s_axilite.i64, i64 %in_r" [/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:52]   --->   Operation 7 'read' 'in_r_read' <Predicate = true> <Delay = 1.00> <CoreInst = "s_axilite">   --->   Core 122 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
+ST_1 : Operation 8 [1/1] (0.00ns)   --->   "%div_cast = partselect i26 @_ssdm_op_PartSelect.i26.i32.i32.i32, i32 %size_read, i32 6, i32 31" [/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:52]   --->   Operation 8 'partselect' 'div_cast' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 9 [1/1] (0.00ns)   --->   "%div_cast_cast = zext i26 %div_cast" [/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:52]   --->   Operation 9 'zext' 'div_cast_cast' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 10 [1/1] (0.84ns)   --->   "%sub = add i27 %div_cast_cast, i27 134217727" [/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:52]   --->   Operation 10 'add' 'sub' <Predicate = true> <Delay = 0.84> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.84> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_1 : Operation 11 [1/1] (0.00ns)   --->   "%empty = trunc i32 %dest_read" [/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:52]   --->   Operation 11 'trunc' 'empty' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 12 [1/1] (0.00ns)   --->   "%trunc_ln72_1 = partselect i58 @_ssdm_op_PartSelect.i58.i64.i32.i32, i64 %in_r_read, i32 6, i32 63" [/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:72]   --->   Operation 12 'partselect' 'trunc_ln72_1' <Predicate = true> <Delay = 0.00>
+
+State 2 <SV = 1> <Delay = 2.43>
+ST_2 : Operation 13 [1/1] (0.00ns)   --->   "%empty_24 = wait i32 @_ssdm_op_Wait"   --->   Operation 13 'wait' 'empty_24' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 14 [2/2] (2.43ns)   --->   "%call_ln72 = call void @krnl_mm2s_Pipeline_VITIS_LOOP_69_1, i512 %gmem, i58 %trunc_ln72_1, i26 %div_cast, i16 %empty, i512 %k2n_V_data_V, i64 %k2n_V_keep_V, i64 %k2n_V_strb_V, i1 %k2n_V_user_V, i1 %k2n_V_last_V, i1 %k2n_V_id_V, i16 %k2n_V_dest_V, i64 %in_r_read, i26 %div_cast, i27 %sub" [/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:72]   --->   Operation 14 'call' 'call_ln72' <Predicate = true> <Delay = 2.43> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+
+State 3 <SV = 2> <Delay = 2.43>
+ST_3 : Operation 15 [1/2] (2.43ns)   --->   "%call_ln72 = call void @krnl_mm2s_Pipeline_VITIS_LOOP_69_1, i512 %gmem, i58 %trunc_ln72_1, i26 %div_cast, i16 %empty, i512 %k2n_V_data_V, i64 %k2n_V_keep_V, i64 %k2n_V_strb_V, i1 %k2n_V_user_V, i1 %k2n_V_last_V, i1 %k2n_V_id_V, i16 %k2n_V_dest_V, i64 %in_r_read, i26 %div_cast, i27 %sub" [/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:72]   --->   Operation 15 'call' 'call_ln72' <Predicate = true> <Delay = 2.43> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+
+State 4 <SV = 3> <Delay = 0.00>
+ST_4 : Operation 16 [1/1] (0.00ns)   --->   "%spectopmodule_ln0 = spectopmodule void @_ssdm_op_SpecTopModule, void @empty_10"   --->   Operation 16 'spectopmodule' 'spectopmodule_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 17 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 0, void @empty_1, i32 0, i32 0, void @empty_5, i32 0, i32 0, void @empty_5, void @empty_5, void @empty_5, i32 0, i32 0, i32 0, i32 0, void @empty_5, void @empty_5"   --->   Operation 17 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 18 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i512 %gmem, void @empty_6, i32 0, i32 0, void @empty_5, i32 64, i32 0, void @empty_7, void @empty, void @empty_5, i32 16, i32 16, i32 16, i32 16, void @empty_5, void @empty_5"   --->   Operation 18 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 19 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i512 %gmem"   --->   Operation 19 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 20 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %in_r, void @empty_0, i32 0, i32 0, void @empty_5, i32 0, i32 0, void @empty_2, void @empty_9, void @empty_5, i32 0, i32 0, i32 0, i32 0, void @empty_5, void @empty_3"   --->   Operation 20 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 21 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %in_r, void @empty_12, i32 0, i32 0, void @empty_5, i32 0, i32 0, void @empty_5, void @empty_5, void @empty_5, i32 0, i32 0, i32 0, i32 0, void @empty_5, void @empty_3"   --->   Operation 21 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 22 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i512 %k2n_V_data_V, i64 %k2n_V_keep_V, i64 %k2n_V_strb_V, i1 %k2n_V_user_V, i1 %k2n_V_last_V, i1 %k2n_V_id_V, i16 %k2n_V_dest_V, void @empty_13, i32 1, i32 1, void @empty_14, i32 0, i32 0, void @empty_5, void @empty_5, void @empty_5, i32 0, i32 0, i32 0, i32 0, void @empty_5, void @empty_5"   --->   Operation 22 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 23 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i512 %k2n_V_data_V"   --->   Operation 23 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 24 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i64 %k2n_V_keep_V"   --->   Operation 24 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 25 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i64 %k2n_V_strb_V"   --->   Operation 25 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 26 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i1 %k2n_V_user_V"   --->   Operation 26 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 27 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i1 %k2n_V_last_V"   --->   Operation 27 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 28 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i1 %k2n_V_id_V"   --->   Operation 28 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 29 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i16 %k2n_V_dest_V"   --->   Operation 29 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 30 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i32 %size"   --->   Operation 30 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 31 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %size, void @empty_0, i32 0, i32 0, void @empty_5, i32 0, i32 0, void @empty_2, void @empty_15, void @empty_5, i32 0, i32 0, i32 0, i32 0, void @empty_5, void @empty_5"   --->   Operation 31 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 32 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %size, void @empty_16, i32 0, i32 0, void @empty_5, i32 0, i32 0, void @empty_5, void @empty_5, void @empty_5, i32 0, i32 0, i32 0, i32 0, void @empty_5, void @empty_5"   --->   Operation 32 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 33 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i32 %dest"   --->   Operation 33 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 34 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %dest, void @empty_0, i32 0, i32 0, void @empty_5, i32 0, i32 0, void @empty_2, void @empty_8, void @empty_5, i32 0, i32 0, i32 0, i32 0, void @empty_5, void @empty_5"   --->   Operation 34 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 35 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %dest, void @empty_16, i32 0, i32 0, void @empty_5, i32 0, i32 0, void @empty_5, void @empty_5, void @empty_5, i32 0, i32 0, i32 0, i32 0, void @empty_5, void @empty_5"   --->   Operation 35 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 36 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 0, void @empty_0, i32 0, i32 0, void @empty_5, i32 0, i32 0, void @empty_2, void @empty_5, void @empty_5, i32 0, i32 0, i32 0, i32 0, void @empty_5, void @empty_5"   --->   Operation 36 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 37 [1/1] (0.00ns)   --->   "%ret_ln86 = ret" [/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:86]   --->   Operation 37 'ret' 'ret_ln86' <Predicate = true> <Delay = 0.00>
+
+
+============================================================
++ Verbose Summary: Timing violations
+============================================================
+Target clock period: 3.33ns, clock uncertainty: 0.9ns.
+
+ <State 1>: 1.84ns
+The critical path consists of the following:
+	wire read operation ('size_read', /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:52) on port 'size' (/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:52) [34]  (1 ns)
+	'add' operation ('sub', /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:52) [38]  (0.844 ns)
+
+ <State 2>: 2.43ns
+The critical path consists of the following:
+	'call' operation ('call_ln72', /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:72) to 'krnl_mm2s_Pipeline_VITIS_LOOP_69_1' [42]  (2.43 ns)
+
+ <State 3>: 2.43ns
+The critical path consists of the following:
+	'call' operation ('call_ln72', /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:72) to 'krnl_mm2s_Pipeline_VITIS_LOOP_69_1' [42]  (2.43 ns)
+
+ <State 4>: 0ns
+The critical path consists of the following:
+
+
+============================================================
++ Verbose Summary: Binding
+============================================================
+N/A
+* FSMD analyzer results:
+  - Output states:
+ - Input state : 
+  - Chain level:
+	State 1
+	State 2
+	State 3
+	State 4
+
+
+============================================================
++ Verbose Summary: Datapath Resource usage 
+============================================================
+N/A

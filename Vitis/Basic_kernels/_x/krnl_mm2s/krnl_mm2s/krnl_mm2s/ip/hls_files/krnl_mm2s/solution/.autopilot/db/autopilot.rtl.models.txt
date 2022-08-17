@@ -1,0 +1,12 @@
+krnl_mm2s_urem_29ns_12ns_11_33_1
+krnl_mm2s_control_s_axi
+krnl_mm2s_gmem_m_axi
+krnl_mm2s_regslice_both
+krnl_mm2s_regslice_both
+krnl_mm2s_regslice_both
+krnl_mm2s_regslice_both
+krnl_mm2s_regslice_both
+krnl_mm2s_regslice_both
+krnl_mm2s_regslice_both
+krnl_mm2s_Pipeline_VITIS_LOOP_69_1
+krnl_mm2s
