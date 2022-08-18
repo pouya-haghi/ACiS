@@ -24,10 +24,11 @@ LIST_XO = $(TEMP_DIR)krnl_mm2s.xo $(TEMP_DIR)krnl_s2mm.xo ./CGRA/rtl_kernel_CGRA
 
 # all: check-devices check-vitis check-xrt check-targeting $(LIST_XO)
 all: $(LIST_XO)
-	@echo "TEMP_DIR=$(TEMP_DIR)"
-	@echo "LIST_XO=$(LISS_XO)"
 	v++ -l -t hw --platform $(DEVICE) --save-temps --config ./config.cfg $(LIST_XO) -o $(TARGETING).xclbin
 
+temp: 
+	@echo "TEMP_DIR=$(TEMP_DIR)"
+	@echo "LIST_XO=$(LISS_XO)"
 # Cleaning stuff
 clean:
 	rm -rf *v++* *.log *.jou *.str
