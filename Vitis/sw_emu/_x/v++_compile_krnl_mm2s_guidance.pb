@@ -1,3 +1,0 @@
-
-Æ
-v++_compile_krnl_mm2s$ecf529d2-e877-44b0-88ba-7d734d78e980êv++  -t sw_emu --platform xilinx_u280_xdma_201920_3 --save-temps -k krnl_mm2s -c -o _x.xilinx_u280_xdma_201920_3/krnl_mm2s.xo src/krnl_mm2s.cpp *w"s/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x/reports/krnl_mm2s/v++_compile_krnl_mm2s_guidance.html2c"_/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x/v++_compile_krnl_mm2s_guidance.pb

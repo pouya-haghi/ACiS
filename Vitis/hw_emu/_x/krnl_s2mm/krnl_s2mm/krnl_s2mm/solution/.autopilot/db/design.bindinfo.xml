@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<BindInfo>
-	<BindNode BINDTYPE="op" DISPLAY="bind_op icmp" ID="" IMPL="auto" LATENCY="0" OPTYPE="icmp" PRAGMA="" RTLNAME="icmp_ln66_fu_134_p2" SOURCE="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/src/krnl_s2mm.cpp:66" VARIABLE="icmp_ln66" MODULE="krnl_s2mm_Pipeline_VITIS_LOOP_66_1" LOOP="VITIS_LOOP_66_1" BUNDLEDNAME="" DSP="0" BRAM="0" URAM="0"/>
-	<BindNode BINDTYPE="op" DISPLAY="bind_op add" ID="" IMPL="fabric" LATENCY="0" OPTYPE="add" PRAGMA="" RTLNAME="add_ln66_fu_140_p2" SOURCE="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/src/krnl_s2mm.cpp:66" VARIABLE="add_ln66" MODULE="krnl_s2mm_Pipeline_VITIS_LOOP_66_1" LOOP="VITIS_LOOP_66_1" BUNDLEDNAME="" DSP="0" BRAM="0" URAM="0"/>
-	<BindNode BINDTYPE="op" DISPLAY="bind_op icmp" ID="" IMPL="auto" LATENCY="0" OPTYPE="icmp" PRAGMA="" RTLNAME="icmp_ln66_fu_139_p2" SOURCE="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw_emu/src/krnl_s2mm.cpp:66" VARIABLE="icmp_ln66" MODULE="krnl_s2mm" LOOP="" BUNDLEDNAME="" DSP="0" BRAM="0" URAM="0"/>
-	<BindNode BINDTYPE="adapter" DISPLAY="bind_adapter axilite" ID="" IMPL="" LATENCY="" OPTYPE="" PRAGMA="yes" RTLNAME="control_s_axi_U" SOURCE="" VARIABLE="" MODULE="krnl_s2mm" LOOP="" BUNDLEDNAME="control" DSP="0" BRAM="0" URAM="0"/>
-	<BindNode BINDTYPE="adapter" DISPLAY="bind_adapter axi_master" ID="" IMPL="" LATENCY="" OPTYPE="" PRAGMA="yes" RTLNAME="gmem_m_axi_U" SOURCE="" VARIABLE="" MODULE="krnl_s2mm" LOOP="" BUNDLEDNAME="gmem" DSP="0" BRAM="30" URAM="0"/>
-</BindInfo>

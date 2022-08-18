@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<Runs Version="1" Minor="0">
-	<Run Id="krnl_mm2s" LaunchDir="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x/krnl_mm2s/krnl_mm2s" FlowId="Build_IP" FromStepId="vitis_hls" ToStepId="vitis_hls"/>
-</Runs>
-

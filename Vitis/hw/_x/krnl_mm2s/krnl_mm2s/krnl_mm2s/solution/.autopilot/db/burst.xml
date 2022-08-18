@@ -1,7 +1,0 @@
-<VitisHLS:BurstInfo>
-    <burst group="BURST_VERBOSE_MISSED" fe_name="NonByteSizeMemoryAccessMissed" src_info="/opt/Xilinx/Vitis_HLS/2021.2/common/technology/autopilot/ap_axi_sdata.h:303:21" msg_id="214-226" msg_severity="INFO" msg_body="Non byte size access is unsupported" resolution="214-226" ID="bb5.store.7" VarName="tmp.i" ParentFunc="krnl_mm2s"/>
-    <burst group="BURST_VERBOSE_MISSED" fe_name="NonByteSizeMemoryAccessMissed" src_info="/opt/Xilinx/Vitis_HLS/2021.2/common/technology/autopilot/ap_axi_sdata.h:303:21" msg_id="214-226" msg_severity="INFO" msg_body="Non byte size access is unsupported" resolution="214-226" ID="bb5.store.8" VarName="tmp.i" ParentFunc="krnl_mm2s"/>
-    <burst group="BURST_VERBOSE_MISSED" fe_name="NonByteSizeMemoryAccessMissed" src_info="/opt/Xilinx/Vitis_HLS/2021.2/common/technology/autopilot/ap_axi_sdata.h:303:21" msg_id="214-226" msg_severity="INFO" msg_body="Non byte size access is unsupported" resolution="214-226" ID="bb5.store.9" VarName="tmp.i" ParentFunc="krnl_mm2s"/>
-    <burst group="BURST_VERBOSE_MISSED" fe_name="AccessClobberedMissed" src_info="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:72:21" msg_id="214-231" msg_severity="INFO" msg_body="Access is clobbered by call" resolution="214-231" ID="bb2.load.4" BundleName="gmem" VarName="in" ParentFunc="krnl_mm2s"/>
-</VitisHLS:BurstInfo>
-
