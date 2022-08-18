@@ -1,3 +1,5 @@
+SHELL=/bin/bash
+
 help:
 	@echo "Makefile Usage:"
 	@echo "  make all DEVICE=<FPGA platform> TARGETING=<hw/hw_emu/sw_emu>"
@@ -52,7 +54,7 @@ endif
 
 #Check if the design name is supported
 check-targeting:
-	@if [[ ($(TARGETING) != "hw") && ($(TARGETING) != "hw_emu") && $(TARGETING) != "sw_emu") ]]; then\
+	@if [[ ($(TARGETING) != "hw") && ($(TARGETING) != "hw_emu") && ($(TARGETING) != "sw_emu") ]]; then\
 		echo "TARGETING=$(TARGETING) is not supported!";\
 		exit 1;\
 	fi
