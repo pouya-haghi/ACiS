@@ -5,7 +5,7 @@ catch {::common::set_param -quiet hls.xocc.mode csynth};
 
 open_project krnl_s2mm
 set_top krnl_s2mm
-add_files "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp" -cflags " "
+add_files "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp" -cflags " "
 open_solution -flow_target vitis solution
 set_part xcu280-fsvh2892-2L-e
 create_clock -period 300.000000MHz -name default

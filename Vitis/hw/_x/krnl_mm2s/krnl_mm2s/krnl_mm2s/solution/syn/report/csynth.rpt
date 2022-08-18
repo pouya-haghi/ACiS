@@ -4,7 +4,7 @@
 == Synthesis Summary Report of 'krnl_mm2s'
 ================================================================
 + General Information: 
-    * Date:           Wed Aug 17 12:21:53 2022
+    * Date:           Thu Aug 18 15:17:41 2022
     * Version:        2021.2 (Build 3367213 on Tue Oct 19 02:47:39 MDT 2021)
     * Project:        krnl_mm2s
     * Solution:       solution (Vitis Kernel Flow Target)
@@ -106,11 +106,11 @@
  Note: All burst requests might be further partitioned into multiple requests during RTL generation based on max_read_burst_length or max_write_burst_length settings.
 
 * Inferred Bursts and Widening Missed
-+--------------+----------+-----------------------------+------------+-------------------------------------------------------------------------------------------+
-| HW Interface | Variable | Problem                     | Resolution | Location                                                                                  |
-+--------------+----------+-----------------------------+------------+-------------------------------------------------------------------------------------------+
-| m_axi_gmem   | in       | Access is clobbered by call | 214-231    | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:72:21 |
-+--------------+----------+-----------------------------+------------+-------------------------------------------------------------------------------------------+
++--------------+----------+-----------------------------+------------+--------------------------------------------------------------------------------+
+| HW Interface | Variable | Problem                     | Resolution | Location                                                                       |
++--------------+----------+-----------------------------+------------+--------------------------------------------------------------------------------+
+| m_axi_gmem   | in       | Access is clobbered by call | 214-231    | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:72:21 |
++--------------+----------+-----------------------------+------------+--------------------------------------------------------------------------------+
 
     * Resolution URL: www.xilinx.com/cgi-bin/docs/rdoc?v=2021.2;t=hls+guidance;d=XXX-YYY.html (replace XXX-YYY with column value)
 
@@ -137,17 +137,17 @@
 == User Pragma Report
 ================================================================
 * Valid Pragma Syntax
-+-----------+----------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| Type      | Options                                      | Location                                                                                            |
-+-----------+----------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| interface | m_axi port = in offset = slave bundle = gmem | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:56 in krnl_mm2s |
-| interface | axis port = k2n                              | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:57 in krnl_mm2s |
-| interface | s_axilite port = in bundle = control         | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:58 in krnl_mm2s |
-| interface | s_axilite port = size bundle = control       | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:59 in krnl_mm2s |
-| interface | s_axilite port = dest bundle = control       | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:60 in krnl_mm2s |
-| interface | s_axilite port = return bundle = control     | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:61 in krnl_mm2s |
-| latency   | min=1 max=1000                               | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:70 in krnl_mm2s |
-| pipeline  | II=1                                         | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:71 in krnl_mm2s |
-+-----------+----------------------------------------------+-----------------------------------------------------------------------------------------------------+
++-----------+----------------------------------------------+------------------------------------------------------------------------------------------+
+| Type      | Options                                      | Location                                                                                 |
++-----------+----------------------------------------------+------------------------------------------------------------------------------------------+
+| interface | m_axi port = in offset = slave bundle = gmem | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:56 in krnl_mm2s |
+| interface | axis port = k2n                              | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:57 in krnl_mm2s |
+| interface | s_axilite port = in bundle = control         | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:58 in krnl_mm2s |
+| interface | s_axilite port = size bundle = control       | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:59 in krnl_mm2s |
+| interface | s_axilite port = dest bundle = control       | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:60 in krnl_mm2s |
+| interface | s_axilite port = return bundle = control     | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:61 in krnl_mm2s |
+| latency   | min=1 max=1000                               | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:70 in krnl_mm2s |
+| pipeline  | II=1                                         | /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:71 in krnl_mm2s |
++-----------+----------------------------------------------+------------------------------------------------------------------------------------------+
 
 

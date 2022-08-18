@@ -995,7 +995,7 @@
                 </Resources>
             </AreaEstimates>
             <BindNodes>
-                <BindNode BINDTYPE="op" BRAM="0" BUNDLEDNAME="" DISPNAME="bind_op add" DSP="0" ID="" IMPL="fabric" LATENCY="0" LOOP="VITIS_LOOP_66_1" OPTYPE="add" PRAGMA="" RTLNAME="add_ln66_fu_140_p2" SOURCE="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp:66" URAM="0" VARIABLE="add_ln66"/>
+                <BindNode BINDTYPE="op" BRAM="0" BUNDLEDNAME="" DISPNAME="bind_op add" DSP="0" ID="" IMPL="fabric" LATENCY="0" LOOP="VITIS_LOOP_66_1" OPTYPE="add" PRAGMA="" RTLNAME="add_ln66_fu_140_p2" SOURCE="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp:66" URAM="0" VARIABLE="add_ln66"/>
             </BindNodes>
         </Module>
         <Module>
@@ -1326,23 +1326,23 @@
             <item name="Inferred Burst Summary">
                 <table>
                     <keys size="6">HW Interface, Loop, Direction, Length, Width, Location</keys>
-                    <column name="m_axi_gmem">VITIS_LOOP_66_1, write, variable, 512, /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp:66:20</column>
+                    <column name="m_axi_gmem">VITIS_LOOP_66_1, write, variable, 512, /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp:66:20</column>
                 </table>
             </item>
             <item name="Inferred Bursts and Widening Missed">
                 <table>
                     <keys size="4">HW Interface, Variable, Problem, Location</keys>
-                    <column name="m_axi_gmem">out, Could not widen since the size of type 'i512' is greater than or equal to the max_widen_bitwidth threshold of '512'., /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp:66:20</column>
+                    <column name="m_axi_gmem">out, Could not widen since the size of type 'i512' is greater than or equal to the max_widen_bitwidth threshold of '512'., /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp:66:20</column>
                 </table>
             </item>
         </section>
     </ReportBurst>
     <PragmaReport>
-        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp:53" status="valid" parentFunction="krnl_s2mm" variable="" isDirective="0" options="m_axi port = out offset = slave bundle = gmem"/>
-        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp:54" status="valid" parentFunction="krnl_s2mm" variable="" isDirective="0" options="axis port = n2k"/>
-        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp:55" status="valid" parentFunction="krnl_s2mm" variable="" isDirective="0" options="s_axilite port = out bundle = control"/>
-        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp:56" status="valid" parentFunction="krnl_s2mm" variable="" isDirective="0" options="s_axilite port = size bundle = control"/>
-        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp:57" status="valid" parentFunction="krnl_s2mm" variable="" isDirective="0" options="s_axilite port = return bundle = control"/>
+        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp:53" status="valid" parentFunction="krnl_s2mm" variable="" isDirective="0" options="m_axi port = out offset = slave bundle = gmem"/>
+        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp:54" status="valid" parentFunction="krnl_s2mm" variable="" isDirective="0" options="axis port = n2k"/>
+        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp:55" status="valid" parentFunction="krnl_s2mm" variable="" isDirective="0" options="s_axilite port = out bundle = control"/>
+        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp:56" status="valid" parentFunction="krnl_s2mm" variable="" isDirective="0" options="s_axilite port = size bundle = control"/>
+        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp:57" status="valid" parentFunction="krnl_s2mm" variable="" isDirective="0" options="s_axilite port = return bundle = control"/>
     </PragmaReport>
 </profile>
 

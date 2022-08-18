@@ -1,13 +1,10 @@
 SHELL=/bin/bash
 
-.PHONY: help
-
 help:
 	@echo "Makefile Usage:"
 	@echo "  make all DEVICE=<FPGA platform> TARGETING=<hw/hw_emu/sw_emu>"
 	@echo "      Command to generate the xo for specified device and Interface."
 	@echo "      By default, DEVICE=xilinx_u280_xdma_201920_3, TARGETING=hw"
-	@echo "      DESIGN also supports the string basic"
 	@echo ""
 	@echo "  make clean "
 	@echo "      Command to remove the generated non-hardware files."
@@ -19,54 +16,46 @@ help:
 	@echo "      Command to remove all the generated in the current directory and one level down"
 	@echo ""
 
-
+# Params
 DEVICE ?= xilinx_u280_xdma_201920_3
 TARGETING ?= hw
 
+# Load dirs
+STREAM_DIR = ./$(TARGETING)/
+CGRA_DIR = ./CGRA/
+LIST_XO += $(STREAM_DIR)_x.$(DEVICE)/krnl_mm2s.xo
+LIST_XO += $(STREAM_DIR)_x.$(DEVICE)/krnl_s2mm.xo
+LIST_XO += $(CGRA_DIR)rtl_kernel_CGRA_accelerator.xo
+
+# Save and exe dirs
 XSA := $(strip $(patsubst %.xpfm, % , $(shell basename $(DEVICE)))) # board name basically
-TEMP_DIR := _x.$(XSA) #temp dir is targeting method and then .xo dir
 VPP := $(XILINX_VITIS)/bin/v++ # v++ path
-CLFLAGS += -t $(TARGETING) --platform $(DEVICE) --save-temps # CL flag based on targeting method
-
 BUILD_DIR := ./$(TARGETING).$(XSA) # where the build goes
-BINARY_CONTAINERS = $(BUILD_DIR)/$(TARGETING).xclbin 
+BINARY_CONTAINERS = $(BUILD_DIR)/$(TARGETING).xclbin
 
-BASICDIR    = $(TARGETING)/
-CGRADIR    = CGRA/
+# all: check-devices check-vitis check-xrt check-targeting $(LIST_XO)
+all: check-devices check-vitis check-xrt check-targeting $(BINARY_CONTAINERS)
+# 	v++ -l -t hw --platform $(DEVICE) --save-temps --config ./config.cfg $(LIST_XO) -o hw.xclbin
 
-LIST_REPOS = 
+$(BINARY_CONTAINERS): $(LIST_XO)
+	mkdir -p $(BUILD_DIR)
+	v++ -l -t hw --platform $(DEVICE) --save-temps --config ./config.cfg $(LIST_XO) -o hw.xclbin
 
-# Include application kernels depending on the design
-LIST_XO += $(CGRADIR)rtl_kernel_CGRA_accelerator.xo
-LIST_XO += $(BASICDIR)$(TEMP_DIR)/krnl_mm2s.xo
-LIST_XO += $(BASICDIR)$(TEMP_DIR)/krnl_s2mm.xo
-# endif
+$(STREAM_DIR)_x.$(DEVICE)/%.xo: $(STREAM_DIR)src/*.cpp
+	make -C $(STREAM_DIR) all -j2
 
-.PHONY: all clean distclean distcleanall
-# all: check-devices check-vitis check-xrt check-design check-interface create-conf-file $(BINARY_CONTAINERS)
-all: check-devices check-vitis check-xrt $(BINARY_CONTAINERS)
+debug: 
+	@echo "LIST_XO=$(LIST_XO)"
 
 # Cleaning stuff
 clean:
 	rm -rf *v++* *.log *.jou *.str
 
 distclean: clean
-	rm -rf _x* *.tmp.ini .Xil hw*/ hw_emu*/ sw_emu*/ .ipcache/
+	rm -rf _x* *.tmp.ini .Xil .ipcache/
 
 distcleanall: distclean
-	make -C $(BASICDIR) distclean
-#     make -C $(CGRADIR) distclean
-
-# Building xclbin
-$(BUILD_DIR)/${XCLBIN_NAME}.xclbin: $(LIST_XO)
-	mkdir -p $(BUILD_DIR)
-	$(VPP) $(CLFLAGS) $(CONFIGFLAGS) --temp_dir $(BUILD_DIR) -l -o'$@' $^ $(LIST_REPOS) -j 8
-
-$(BASICDIR)$(TEMP_DIR)/%.xo: $(BASICDIR)src/*.cpp
-	make -C $(BASICDIR) all DEVICE=$(DEVICE) -j3
-
-# $(CGRADIR)$(TEMP_DIR)/%.xo: $(CGRADIR)src/*.cpp
-# 	make -C $(CGRADIR) all DEVICE=$(DEVICE) -j3
+	make -C $(TARGETING)/ distclean
 
 check-devices:
 ifndef DEVICE
@@ -87,23 +76,7 @@ endif
 
 #Check if the design name is supported
 check-targeting:
-	@if [[ ($(TARGETING) != "hw") && ($(TARGETING) != "hw_emu") && $(TARGETING) != "sw_emu") ]]; then\
+	@if [[ ($(TARGETING) != "hw") && ($(TARGETING) != "hw_emu") && ($(TARGETING) != "sw_emu") ]]; then\
 		echo "TARGETING=$(TARGETING) is not supported!";\
 		exit 1;\
 	fi
-
-#Create configuration file for current design and settings
-# create-conf-file:
-# 	cp config_files/connectivity_$(DESIGN)_if$(INTERFACE).ini configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
-# 	echo "" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
-# 	echo "" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
-# 	echo "[advanced]" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
-# 	echo "param=compiler.userPostSysLinkOverlayTcl=$(POSTSYSLINKTCL)" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
-# 	#echo "param=compiler.worstNegativeSlack=-2" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
-# 	#echo "param=compiler.compiler.errorOnHoldViolation=false" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
-# 	echo "[vivado]" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
-# 	echo "prop=run.impl_1.strategy=Performance_NetDelay_low" >> configuration_$(DESIGN)_if$(INTERFACE).tmp.ini
-# 	@if [[ $(DEVICE) = *"u5"* ]]; then\
-# 		sed -i 's/SLR2/SLR1/g' configuration_$(DESIGN)_if$(INTERFACE).tmp.ini;\
-# 		sed -i 's/DDR\[1\]/HBM\[0\]/g' configuration_$(DESIGN)_if$(INTERFACE).tmp.ini;\
-# 	fi

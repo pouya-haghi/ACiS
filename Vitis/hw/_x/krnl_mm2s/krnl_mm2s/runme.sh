@@ -20,7 +20,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s'
+HD_PWD='/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s'
 cd "$HD_PWD"
 
 HD_LOG=runme.log

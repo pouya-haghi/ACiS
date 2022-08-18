@@ -996,8 +996,8 @@
                 </Resources>
             </AreaEstimates>
             <BindNodes>
-                <BindNode BINDTYPE="op" BRAM="0" BUNDLEDNAME="" DISPNAME="bind_op add" DSP="0" ID="" IMPL="fabric" LATENCY="0" LOOP="VITIS_LOOP_69_1" OPTYPE="add" PRAGMA="" RTLNAME="add_ln69_fu_238_p2" SOURCE="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:69" URAM="0" VARIABLE="add_ln69"/>
-                <BindNode BINDTYPE="op" BRAM="0" BUNDLEDNAME="" DISPNAME="bind_op add" DSP="0" ID="" IMPL="fabric" LATENCY="0" LOOP="VITIS_LOOP_69_1" OPTYPE="add" PRAGMA="" RTLNAME="add_ln78_fu_265_p2" SOURCE="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:78" URAM="0" VARIABLE="add_ln78"/>
+                <BindNode BINDTYPE="op" BRAM="0" BUNDLEDNAME="" DISPNAME="bind_op add" DSP="0" ID="" IMPL="fabric" LATENCY="0" LOOP="VITIS_LOOP_69_1" OPTYPE="add" PRAGMA="" RTLNAME="add_ln69_fu_238_p2" SOURCE="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:69" URAM="0" VARIABLE="add_ln69"/>
+                <BindNode BINDTYPE="op" BRAM="0" BUNDLEDNAME="" DISPNAME="bind_op add" DSP="0" ID="" IMPL="fabric" LATENCY="0" LOOP="VITIS_LOOP_69_1" OPTYPE="add" PRAGMA="" RTLNAME="add_ln78_fu_265_p2" SOURCE="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:78" URAM="0" VARIABLE="add_ln78"/>
             </BindNodes>
         </Module>
         <Module>
@@ -1039,7 +1039,7 @@
                 </Resources>
             </AreaEstimates>
             <BindNodes>
-                <BindNode BINDTYPE="op" BRAM="0" BUNDLEDNAME="" DISPNAME="bind_op add" DSP="0" ID="" IMPL="fabric" LATENCY="0" LOOP="" OPTYPE="add" PRAGMA="" RTLNAME="sub_fu_146_p2" SOURCE="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:52" URAM="0" VARIABLE="sub"/>
+                <BindNode BINDTYPE="op" BRAM="0" BUNDLEDNAME="" DISPNAME="bind_op add" DSP="0" ID="" IMPL="fabric" LATENCY="0" LOOP="" OPTYPE="add" PRAGMA="" RTLNAME="sub_fu_146_p2" SOURCE="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:52" URAM="0" VARIABLE="sub"/>
             </BindNodes>
         </Module>
     </ModuleInformation>
@@ -1345,20 +1345,20 @@
             <item name="Inferred Bursts and Widening Missed">
                 <table>
                     <keys size="5">HW Interface, Variable, Problem, Resolution, Location</keys>
-                    <column name="m_axi_gmem">in, Access is clobbered by call, 214-231, /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:72:21</column>
+                    <column name="m_axi_gmem">in, Access is clobbered by call, 214-231, /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:72:21</column>
                 </table>
             </item>
         </section>
     </ReportBurst>
     <PragmaReport>
-        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:56" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="m_axi port = in offset = slave bundle = gmem"/>
-        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:57" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="axis port = k2n"/>
-        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:58" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="s_axilite port = in bundle = control"/>
-        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:59" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="s_axilite port = size bundle = control"/>
-        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:60" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="s_axilite port = dest bundle = control"/>
-        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:61" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="s_axilite port = return bundle = control"/>
-        <Pragma type="latency" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:70" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="min=1 max=1000"/>
-        <Pragma type="pipeline" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp:71" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="II=1"/>
+        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:56" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="m_axi port = in offset = slave bundle = gmem"/>
+        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:57" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="axis port = k2n"/>
+        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:58" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="s_axilite port = in bundle = control"/>
+        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:59" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="s_axilite port = size bundle = control"/>
+        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:60" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="s_axilite port = dest bundle = control"/>
+        <Pragma type="interface" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:61" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="s_axilite port = return bundle = control"/>
+        <Pragma type="latency" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:70" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="min=1 max=1000"/>
+        <Pragma type="pipeline" location="/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp:71" status="valid" parentFunction="krnl_mm2s" variable="" isDirective="0" options="II=1"/>
     </PragmaReport>
 </profile>
 

@@ -1,14 +1,14 @@
 {
  "session": {
   "name": "v++_compile_krnl_mm2s",
-  "uuid": "391ac945-5410-4f7f-aaaf-ac796017ac30",
+  "uuid": "22a97e75-0ed0-4fb3-b6a1-31a3062b2f8b",
   "description": "v++  -t hw --platform xilinx_u280_xdma_201920_3 --save-temps -k krnl_mm2s -c -o _x.xilinx_u280_xdma_201920_3/krnl_mm2s.xo src/krnl_mm2s.cpp ",
   "timestamp": "0",
   "report_file": {
    "scheme": "FILE",
    "host": "",
    "port": 0,
-   "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/reports/krnl_mm2s/v++_compile_krnl_mm2s_guidance.html",
+   "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/reports/krnl_mm2s/v++_compile_krnl_mm2s_guidance.html",
    "query": "",
    "fragment": "",
    "media_type": "",
@@ -19,7 +19,7 @@
    "scheme": "FILE",
    "host": "",
    "port": 0,
-   "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/v++_compile_krnl_mm2s_guidance.pb",
+   "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/v++_compile_krnl_mm2s_guidance.pb",
    "query": "",
    "fragment": "",
    "media_type": "",
@@ -34,164 +34,6 @@
  "affirmation_count": 0,
  "violations": {
   "hashmap": {
-   "1": {
-    "id": 1,
-    "severity": "SEV_ADVISORY",
-    "rule_key": "Interface",
-    "examples": {
-     "uri": [
-      {
-       "link_text": "Vitis HLS User Guide (UG1399)",
-       "url": {
-        "scheme": "HTTP",
-        "host": "www.xilinx.com",
-        "port": 0,
-        "path": "/cgi-bin/docs/rdoc?v=2021.2;d=ug1399-vitis-hls.pdf;",
-        "query": "",
-        "fragment": "",
-        "media_type": "",
-        "encoding": "",
-        "data": ""
-       },
-       "docgen_filename": ""
-      }
-     ]
-    },
-    "build_target": "",
-    "expects": "",
-    "details": {
-     "text": "Inferring multiple bus burst read of variable length on port 'gmem' (/home/Will/Documents/Research-Files/G-FPin_HW!%1!). These data requests might be further partitioned to multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.\n",
-     "args": {
-      "arg": [
-       {
-        "string_val": "Inferring multiple bus burst read of variable length on port 'gmem' (/home/Will/Documents/Research-Files/G-FPin_HW%REF). These data requests might be further partitioned to multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.\n"
-       },
-       {
-        "ref": {
-         "type": "AXI",
-         "name": "krnl_mm2s.cpp",
-         "id": 0,
-         "uuid": "",
-         "url": {
-          "scheme": "FILE",
-          "host": "",
-          "port": 0,
-          "path": "/Vitis/Basic_kernels/src/krnl_mm2s.cpp",
-          "query": "",
-          "fragment": "line=72",
-          "media_type": "",
-          "encoding": "",
-          "data": ""
-         }
-        },
-        "string_val": ""
-       }
-      ]
-     }
-    },
-    "resolution": {
-     "text": "",
-     "args": {
-      "arg": [
-       {
-        "uri": {
-         "link_text": "Vitis HLS User Guide (UG1399)",
-         "url": {
-          "scheme": "HTTP",
-          "host": "www.xilinx.com",
-          "port": 0,
-          "path": "/cgi-bin/docs/rdoc?v=2021.2;d=ug1399-vitis-hls.pdf;",
-          "query": "",
-          "fragment": "",
-          "media_type": "",
-          "encoding": "",
-          "data": ""
-         },
-         "docgen_filename": ""
-        },
-        "string_val": ""
-       }
-      ]
-     }
-    },
-    "categories": {
-     "2": "Interface",
-     "0": "Accelerator",
-     "1": "krnl_mm2s"
-    },
-    "extended_categories": {},
-    "impact": "IMPACT_UNKNOWN",
-    "group": ""
-   },
-   "2": {
-    "id": 2,
-    "severity": "SEV_ADVISORY",
-    "rule_key": "Throughput",
-    "examples": {
-     "uri": [
-      {
-       "link_text": "Vitis HLS User Guide (UG1399)",
-       "url": {
-        "scheme": "HTTP",
-        "host": "www.xilinx.com",
-        "port": 0,
-        "path": "/cgi-bin/docs/rdoc?v=2021.2;d=ug1399-vitis-hls.pdf;",
-        "query": "",
-        "fragment": "",
-        "media_type": "",
-        "encoding": "",
-        "data": ""
-       },
-       "docgen_filename": ""
-      }
-     ]
-    },
-    "build_target": "",
-    "expects": "",
-    "details": {
-     "text": "Pipelining result : Target II = 1, Final II = 1, Depth = 33, loop 'VITIS_LOOP_69_1'\n",
-     "args": {
-      "arg": [
-       {
-        "string_val": "Pipelining result : Target II = 1, Final II = 1, Depth = 33, loop 'VITIS_LOOP_69_1'\n"
-       }
-      ]
-     }
-    },
-    "resolution": {
-     "text": "",
-     "args": {
-      "arg": [
-       {
-        "uri": {
-         "link_text": "Vitis HLS User Guide (UG1399)",
-         "url": {
-          "scheme": "HTTP",
-          "host": "www.xilinx.com",
-          "port": 0,
-          "path": "/cgi-bin/docs/rdoc?v=2021.2;d=ug1399-vitis-hls.pdf;",
-          "query": "",
-          "fragment": "",
-          "media_type": "",
-          "encoding": "",
-          "data": ""
-         },
-         "docgen_filename": ""
-        },
-        "string_val": ""
-       }
-      ]
-     }
-    },
-    "categories": {
-     "2": "Throughput",
-     "0": "Accelerator",
-     "1": "krnl_mm2s"
-    },
-    "extended_categories": {},
-    "impact": "IMPACT_UNKNOWN",
-    "group": ""
-   },
    "3": {
     "id": 3,
     "severity": "SEV_ADVISORY",
@@ -322,9 +164,167 @@
      }
     },
     "categories": {
+     "2": "Kernel",
+     "0": "Accelerator",
+     "1": "krnl_mm2s"
+    },
+    "extended_categories": {},
+    "impact": "IMPACT_UNKNOWN",
+    "group": ""
+   },
+   "1": {
+    "id": 1,
+    "severity": "SEV_ADVISORY",
+    "rule_key": "Interface",
+    "examples": {
+     "uri": [
+      {
+       "link_text": "Vitis HLS User Guide (UG1399)",
+       "url": {
+        "scheme": "HTTP",
+        "host": "www.xilinx.com",
+        "port": 0,
+        "path": "/cgi-bin/docs/rdoc?v=2021.2;d=ug1399-vitis-hls.pdf;",
+        "query": "",
+        "fragment": "",
+        "media_type": "",
+        "encoding": "",
+        "data": ""
+       },
+       "docgen_filename": ""
+      }
+     ]
+    },
+    "build_target": "",
+    "expects": "",
+    "details": {
+     "text": "Inferring multiple bus burst read of variable length on port 'gmem' (/home/Will/Documents/Research-Files/G-FPin_HW!%1!). These data requests might be further partitioned to multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.\n",
+     "args": {
+      "arg": [
+       {
+        "string_val": "Inferring multiple bus burst read of variable length on port 'gmem' (/home/Will/Documents/Research-Files/G-FPin_HW%REF). These data requests might be further partitioned to multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.\n"
+       },
+       {
+        "ref": {
+         "type": "AXI",
+         "name": "krnl_mm2s.cpp",
+         "id": 0,
+         "uuid": "",
+         "url": {
+          "scheme": "FILE",
+          "host": "",
+          "port": 0,
+          "path": "/Vitis/hw/src/krnl_mm2s.cpp",
+          "query": "",
+          "fragment": "line=72",
+          "media_type": "",
+          "encoding": "",
+          "data": ""
+         }
+        },
+        "string_val": ""
+       }
+      ]
+     }
+    },
+    "resolution": {
+     "text": "",
+     "args": {
+      "arg": [
+       {
+        "uri": {
+         "link_text": "Vitis HLS User Guide (UG1399)",
+         "url": {
+          "scheme": "HTTP",
+          "host": "www.xilinx.com",
+          "port": 0,
+          "path": "/cgi-bin/docs/rdoc?v=2021.2;d=ug1399-vitis-hls.pdf;",
+          "query": "",
+          "fragment": "",
+          "media_type": "",
+          "encoding": "",
+          "data": ""
+         },
+         "docgen_filename": ""
+        },
+        "string_val": ""
+       }
+      ]
+     }
+    },
+    "categories": {
      "0": "Accelerator",
      "1": "krnl_mm2s",
-     "2": "Kernel"
+     "2": "Interface"
+    },
+    "extended_categories": {},
+    "impact": "IMPACT_UNKNOWN",
+    "group": ""
+   },
+   "2": {
+    "id": 2,
+    "severity": "SEV_ADVISORY",
+    "rule_key": "Throughput",
+    "examples": {
+     "uri": [
+      {
+       "link_text": "Vitis HLS User Guide (UG1399)",
+       "url": {
+        "scheme": "HTTP",
+        "host": "www.xilinx.com",
+        "port": 0,
+        "path": "/cgi-bin/docs/rdoc?v=2021.2;d=ug1399-vitis-hls.pdf;",
+        "query": "",
+        "fragment": "",
+        "media_type": "",
+        "encoding": "",
+        "data": ""
+       },
+       "docgen_filename": ""
+      }
+     ]
+    },
+    "build_target": "",
+    "expects": "",
+    "details": {
+     "text": "Pipelining result : Target II = 1, Final II = 1, Depth = 33, loop 'VITIS_LOOP_69_1'\n",
+     "args": {
+      "arg": [
+       {
+        "string_val": "Pipelining result : Target II = 1, Final II = 1, Depth = 33, loop 'VITIS_LOOP_69_1'\n"
+       }
+      ]
+     }
+    },
+    "resolution": {
+     "text": "",
+     "args": {
+      "arg": [
+       {
+        "uri": {
+         "link_text": "Vitis HLS User Guide (UG1399)",
+         "url": {
+          "scheme": "HTTP",
+          "host": "www.xilinx.com",
+          "port": 0,
+          "path": "/cgi-bin/docs/rdoc?v=2021.2;d=ug1399-vitis-hls.pdf;",
+          "query": "",
+          "fragment": "",
+          "media_type": "",
+          "encoding": "",
+          "data": ""
+         },
+         "docgen_filename": ""
+        },
+        "string_val": ""
+       }
+      ]
+     }
+    },
+    "categories": {
+     "0": "Accelerator",
+     "1": "krnl_mm2s",
+     "2": "Throughput"
     },
     "extended_categories": {},
     "impact": "IMPACT_UNKNOWN",
@@ -371,9 +371,9 @@
     "expects": "",
     "affirm_msg": "",
     "dynamic_categories": {
-     "2": false,
      "0": false,
-     "1": true
+     "1": true,
+     "2": false
     },
     "extensible_categories": [],
     "impact": "IMPACT_UNKNOWN",
@@ -387,9 +387,9 @@
     "msg_abbrev": "",
     "msg_id": "0",
     "categories": {
-     "0": "Accelerator",
      "1": "Kernel",
-     "2": "Kernel"
+     "2": "Kernel",
+     "0": "Accelerator"
     },
     "resolution_msg": "",
     "examples": {
@@ -461,9 +461,9 @@
     "expects": "",
     "affirm_msg": "",
     "dynamic_categories": {
-     "2": false,
      "0": false,
-     "1": true
+     "1": true,
+     "2": false
     },
     "extensible_categories": [],
     "impact": "IMPACT_UNKNOWN",

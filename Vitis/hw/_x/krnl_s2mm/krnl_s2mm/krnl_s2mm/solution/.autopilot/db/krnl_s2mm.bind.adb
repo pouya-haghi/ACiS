@@ -34,7 +34,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1856</coreId>
+						<coreId>4294967292</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>512</bitwidth>
@@ -70,7 +70,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>32</coreId>
+						<coreId>840979276</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>64</bitwidth>
@@ -106,7 +106,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>4250901424</coreId>
+						<coreId>176</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>512</bitwidth>
@@ -142,7 +142,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1764651835</coreId>
+						<coreId>1464360704</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>64</bitwidth>
@@ -178,7 +178,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1935764839</coreId>
+						<coreId>846421868</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>64</bitwidth>
@@ -214,7 +214,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1767321445</coreId>
+						<coreId>757593040</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>1</bitwidth>
@@ -381,8 +381,8 @@
 						<type>0</type>
 						<id>29</id>
 						<name>size_read</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>50</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -390,13 +390,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item class_id="10" tracking_level="0" version="0">
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second class_id="11" tracking_level="0" version="0">
 									<count>1</count>
 									<item_version>0</item_version>
 									<item class_id="12" tracking_level="0" version="0">
 										<first class_id="13" tracking_level="0" version="0">
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>50</second>
@@ -438,8 +438,8 @@
 						<type>0</type>
 						<id>30</id>
 						<name>out_r_read</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>50</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -447,13 +447,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>50</second>
@@ -495,8 +495,8 @@
 						<type>0</type>
 						<id>31</id>
 						<name>div</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>50</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -504,13 +504,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>50</second>
@@ -526,7 +526,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>4250908256</coreId>
+						<coreId>0</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>26</bitwidth>
@@ -554,8 +554,8 @@
 						<type>0</type>
 						<id>32</id>
 						<name>div_cast</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>50</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -563,13 +563,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>50</second>
@@ -585,7 +585,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>4250909768</coreId>
+						<coreId>757600976</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>32</bitwidth>
@@ -610,8 +610,8 @@
 						<type>0</type>
 						<id>33</id>
 						<name>icmp_ln66</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>66</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -619,13 +619,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>66</second>
@@ -667,8 +667,8 @@
 						<type>0</type>
 						<id>34</id>
 						<name>br_ln66</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>66</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -676,13 +676,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>66</second>
@@ -698,7 +698,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>796160111</coreId>
+						<coreId>1630434403</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>0</bitwidth>
@@ -725,8 +725,8 @@
 						<type>0</type>
 						<id>36</id>
 						<name>trunc_ln</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>66</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -734,13 +734,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>66</second>
@@ -756,7 +756,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>4250733152</coreId>
+						<coreId>1702043701</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>58</bitwidth>
@@ -784,8 +784,8 @@
 						<type>0</type>
 						<id>37</id>
 						<name>sext_ln66</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>66</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -793,13 +793,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>66</second>
@@ -815,7 +815,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1226980729</coreId>
+						<coreId>757607568</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>64</bitwidth>
@@ -840,8 +840,8 @@
 						<type>0</type>
 						<id>38</id>
 						<name>gmem_addr</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>66</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -849,13 +849,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>66</second>
@@ -871,7 +871,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>4250917296</coreId>
+						<coreId>0</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>512</bitwidth>
@@ -897,8 +897,8 @@
 						<type>0</type>
 						<id>39</id>
 						<name>empty</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>66</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -906,13 +906,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>66</second>
@@ -972,7 +972,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>4250918256</coreId>
+						<coreId>512</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>32</bitwidth>
@@ -998,8 +998,8 @@
 						<type>0</type>
 						<id>41</id>
 						<name>_ln66</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>66</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -1007,13 +1007,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>66</second>
@@ -1029,7 +1029,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>0</coreId>
+						<coreId>757612176</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>0</bitwidth>
@@ -1066,8 +1066,8 @@
 						<type>0</type>
 						<id>42</id>
 						<name>empty_24</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>76</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -1075,13 +1075,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>76</second>
@@ -1125,8 +1125,8 @@
 						<type>0</type>
 						<id>43</id>
 						<name>br_ln76</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>76</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -1134,13 +1134,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>76</second>
@@ -1156,7 +1156,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1953852527</coreId>
+						<coreId>1629888622</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>0</bitwidth>
@@ -1181,8 +1181,8 @@
 						<type>0</type>
 						<id>45</id>
 						<name>_ln76</name>
-						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</fileName>
-						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
+						<fileName>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</fileName>
+						<fileDirectory>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</fileDirectory>
 						<lineNumber>76</lineNumber>
 						<contextFuncName>krnl_s2mm</contextFuncName>
 						<contextNormFuncName>krnl_s2mm</contextNormFuncName>
@@ -1190,13 +1190,13 @@
 							<count>1</count>
 							<item_version>0</item_version>
 							<item>
-								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_s2mm/krnl_s2mm</first>
+								<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_s2mm/krnl_s2mm</first>
 								<second>
 									<count>1</count>
 									<item_version>0</item_version>
 									<item>
 										<first>
-											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp</first>
+											<first>/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp</first>
 											<second>krnl_s2mm</second>
 										</first>
 										<second>76</second>
@@ -1212,7 +1212,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1935635246</coreId>
+						<coreId>1936617321</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>0</bitwidth>
@@ -1257,7 +1257,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>539110958</coreId>
+						<coreId>1869440365</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>32</bitwidth>
@@ -1288,7 +1288,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1969430587</coreId>
+						<coreId>1819243365</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>32</bitwidth>
@@ -1319,7 +1319,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1701978146</coreId>
+						<coreId>543973742</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>26</bitwidth>
@@ -1350,7 +1350,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1835872883</coreId>
+						<coreId>1869377656</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>32</bitwidth>
@@ -1381,7 +1381,7 @@
 						<coreName></coreName>
 						<isStorage>0</isStorage>
 						<storageDepth>0</storageDepth>
-						<coreId>1701865808</coreId>
+						<coreId>2228334</coreId>
 						<rtlModuleName></rtlModuleName>
 					</Obj>
 					<bitwidth>0</bitwidth>
@@ -1415,7 +1415,7 @@
 					<coreName></coreName>
 					<isStorage>0</isStorage>
 					<storageDepth>0</storageDepth>
-					<coreId>1126185575</coreId>
+					<coreId>1914708525</coreId>
 					<rtlModuleName></rtlModuleName>
 				</Obj>
 				<node_objs>
@@ -1451,7 +1451,7 @@
 					<coreName></coreName>
 					<isStorage>0</isStorage>
 					<storageDepth>0</storageDepth>
-					<coreId>4250913968</coreId>
+					<coreId>0</coreId>
 					<rtlModuleName></rtlModuleName>
 				</Obj>
 				<node_objs>
@@ -1489,7 +1489,7 @@
 					<coreName></coreName>
 					<isStorage>0</isStorage>
 					<storageDepth>0</storageDepth>
-					<coreId>1397508191</coreId>
+					<coreId>1851880020</coreId>
 					<rtlModuleName></rtlModuleName>
 				</Obj>
 				<node_objs>

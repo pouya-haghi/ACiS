@@ -120,7 +120,7 @@
     "ZipFile": "xilinx_com_hls_krnl_mm2s_1_0.zip"
   },
   "Files": {
-    "CSource": ["\/home\/Will\/Documents\/Research-Files\/G-FPin_HW\/Vitis\/Basic_kernels\/src\/krnl_mm2s.cpp"],
+    "CSource": ["\/home\/Will\/Documents\/Research-Files\/G-FPin_HW\/Vitis\/hw\/src\/krnl_mm2s.cpp"],
     "Vhdl": [
       "impl\/vhdl\/krnl_mm2s_control_s_axi.vhd",
       "impl\/vhdl\/krnl_mm2s_gmem_m_axi.vhd",
@@ -1020,7 +1020,7 @@
   "GenerateBdFiles": "0",
   "GenData": {
     "DataVersion": "0.2",
-    "Time": "2022-08-17 12:21:54 EDT",
+    "Time": "2022-08-18 15:17:42 EDT",
     "ToolName": "vitis_hls",
     "ToolVersion": "2021.2"
   }

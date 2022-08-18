@@ -1,4 +1,4 @@
-# 1 "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp"
+# 1 "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp"
 # 1 "<built-in>" 1
 # 1 "<built-in>" 3
 # 375 "<built-in>" 3
@@ -154,8 +154,8 @@ extern "C" {
 
 }
 # 2 "<built-in>" 2
-# 1 "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp" 2
-# 39 "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp"
+# 1 "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp" 2
+# 39 "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp"
 # 1 "/opt/Xilinx/Vitis_HLS/2021.2/common/technology/autopilot/ap_axi_sdata.h" 1
 # 87 "/opt/Xilinx/Vitis_HLS/2021.2/common/technology/autopilot/ap_axi_sdata.h"
 # 1 "/opt/Xilinx/Vitis_HLS/2021.2/tps/lnx64/gcc-6.2.0/lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../include/c++/6.2.0/climits" 1 3
@@ -6223,9 +6223,9 @@ private:
 };
 
 }
-# 40 "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp" 2
+# 40 "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp" 2
 # 1 "/opt/Xilinx/Vitis_HLS/2021.2/common/technology/autopilot/ap_int.h" 1
-# 41 "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp" 2
+# 41 "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp" 2
 
 
 
@@ -6239,7 +6239,7 @@ __attribute__((sdx_kernel("krnl_s2mm", 0))) void krnl_s2mm(ap_uint<512> *out,
                unsigned int size
                ) {
 #pragma HLSDIRECTIVE TOP name=krnl_s2mm
-# 52 "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_s2mm.cpp"
+# 52 "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_s2mm.cpp"
 
 #pragma HLS INTERFACE m_axi port = out offset = slave bundle = gmem
 #pragma HLS INTERFACE axis port = n2k

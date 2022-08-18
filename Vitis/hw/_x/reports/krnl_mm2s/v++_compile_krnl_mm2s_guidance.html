@@ -3407,7 +3407,7 @@ window.onload = function () { addSorting(); }
 <center><h1>Design Guidance Report</h1></center><center><table class="header" border="0">
 <tr><td><b>Copyright</b></td><td>Copyright 1986-2021 Xilinx, Inc. All Rights Reserved.</td></tr>
 <tr><td><b>Tool Version</b></td><td>xrcserver v.2021.2 (lin64) Build 0 </td></tr>
-<tr><td><b>Date</b></td><td>Wed Aug 17 12:22:31 2022</td></tr>
+<tr><td><b>Date</b></td><td>Thu Aug 18 15:18:18 2022</td></tr>
 <tr><td><b>Host</b></td><td>caadlab-01 running 64-bit CentOS Linux release 7.9.2009 (Core)</td></tr>
 <tr><td><b>Command</b></td><td>v++  -t hw --platform xilinx_u280_xdma_201920_3 --save-temps -k krnl_mm2s -c -o _x.xilinx_u280_xdma_201920_3/krnl_mm2s.xo src/krnl_mm2s.cpp </td></tr>
 </table></center><br>
@@ -3435,28 +3435,6 @@ window.onload = function () { addSorting(); }
 <th align="left" width="380">Resolution</th>
 </tr>
 <tr>
-<td align="left">1</td>
-<td align="left">Interface</td>
-<td align="left">advisory</td>
-<td align="left"><undefined></td>
-<td align="left">HLS Interface Related</td>
-<td align="left">Accelerator.krnl_mm2s.Interface</td>
-<td align="left">Inferring multiple bus burst read of variable length on port 'gmem' (/home/Will/Documents/Research-Files/G-FPin_HW<a href="file:///Vitis/Basic_kernels/src/krnl_mm2s.cpp#line=72">krnl_mm2s.cpp</a>). These data requests might be further partitioned to multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.
-</td>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">2</td>
-<td align="left">Throughput</td>
-<td align="left">advisory</td>
-<td align="left"><undefined></td>
-<td align="left">HLS Throughput Related</td>
-<td align="left">Accelerator.krnl_mm2s.Throughput</td>
-<td align="left">Pipelining result : Target II = 1, Final II = 1, Depth = 33, loop 'VITIS_LOOP_69_1'
-</td>
-<td align="left"></td>
-</tr>
-<tr>
 <td align="left">3</td>
 <td align="left">Kernel</td>
 <td align="left">advisory</td>
@@ -3475,6 +3453,28 @@ window.onload = function () { addSorting(); }
 <td align="left">HLS Kernel Related</td>
 <td align="left">Accelerator.krnl_mm2s.Kernel</td>
 <td align="left">**** Estimated Fmax: 411.00 MHz
+</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="left">Interface</td>
+<td align="left">advisory</td>
+<td align="left"><undefined></td>
+<td align="left">HLS Interface Related</td>
+<td align="left">Accelerator.krnl_mm2s.Interface</td>
+<td align="left">Inferring multiple bus burst read of variable length on port 'gmem' (/home/Will/Documents/Research-Files/G-FPin_HW<a href="file:///Vitis/hw/src/krnl_mm2s.cpp#line=72">krnl_mm2s.cpp</a>). These data requests might be further partitioned to multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.
+</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">Throughput</td>
+<td align="left">advisory</td>
+<td align="left"><undefined></td>
+<td align="left">HLS Throughput Related</td>
+<td align="left">Accelerator.krnl_mm2s.Throughput</td>
+<td align="left">Pipelining result : Target II = 1, Final II = 1, Depth = 33, loop 'VITIS_LOOP_69_1'
 </td>
 <td align="left"></td>
 </tr>

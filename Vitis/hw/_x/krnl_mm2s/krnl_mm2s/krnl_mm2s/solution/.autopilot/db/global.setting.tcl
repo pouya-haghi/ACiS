@@ -42,9 +42,9 @@ set SCTraceFileName mytrace
 set SCTraceFileFormat vcd
 set SCTraceOption all
 set TargetInfo xcu280:-fsvh2892:-2L-e
-set SourceFiles {sc {} c /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp}
+set SourceFiles {sc {} c /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp}
 set SourceFlags {sc {} c {{}}}
-set DirectiveFile /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/solution.directive
+set DirectiveFile /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/solution.directive
 set TBFiles {bc {} c {} sc {} cas {} vhdl {} verilog {}}
 set SpecLanguage C
 set TVInFiles {bc {} c {} sc {} cas {} vhdl {} verilog {}}

@@ -2,18 +2,18 @@
 # Vivado v2021.2 (64-bit)
 # SW Build 3367213 on Tue Oct 19 02:47:39 MDT 2021
 # IP Build 3369179 on Thu Oct 21 08:25:16 MDT 2021
-# Start of session at: Wed Aug 17 12:21:59 2022
-# Process ID: 11379
-# Current directory: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip
+# Start of session at: Thu Aug 18 15:17:47 2022
+# Process ID: 14602
+# Current directory: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip
 # Command line: vivado -notrace -mode batch -source run_ippack.tcl
-# Log file: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/vivado.log
-# Journal file: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/vivado.jou
-# Running On: caadlab-01, OS: Linux, CPU Frequency: 2400.311 MHz, CPU Physical cores: 12, Host memory: 135057 MB
+# Log file: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/vivado.log
+# Journal file: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/vivado.jou
+# Running On: caadlab-01, OS: Linux, CPU Frequency: 2399.926 MHz, CPU Physical cores: 12, Host memory: 135057 MB
 #-----------------------------------------------------------
 source run_ippack.tcl -notrace
-ipx::create_core: Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 2901.914 ; gain = 2.020 ; free physical = 41956 ; free virtual = 117221
+ipx::create_core: Time (s): cpu = 00:00:07 ; elapsed = 00:00:06 . Memory (MB): peak = 2901.914 ; gain = 2.020 ; free physical = 47620 ; free virtual = 116436
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1704] No user IP repositories specified
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/opt/Xilinx/Vivado/2021.2/data/ip'.
-Running package_xo -xo_path /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/export.xo -kernel_name krnl_mm2s -kernel_xml /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/../kernel/kernel.xml -kernel_files /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/src/krnl_mm2s.cpp -ip_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/ip_unzip_dir -design_xml /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/.autopilot/db/krnl_mm2s.design.xml -debug_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/.debug -hls_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/hls_files
-INFO: [Common 17-206] Exiting Vivado at Wed Aug 17 12:22:20 2022...
+Running package_xo -xo_path /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/export.xo -kernel_name krnl_mm2s -kernel_xml /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/../kernel/kernel.xml -kernel_files /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/src/krnl_mm2s.cpp -ip_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/ip_unzip_dir -design_xml /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/.autopilot/db/krnl_mm2s.design.xml -debug_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/.debug -hls_directory /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/hls_files
+INFO: [Common 17-206] Exiting Vivado at Thu Aug 18 15:18:07 2022...

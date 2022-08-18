@@ -2,12 +2,12 @@
 # Vivado v2021.2 (64-bit)
 # SW Build 3367213 on Tue Oct 19 02:47:39 MDT 2021
 # IP Build 3369179 on Thu Oct 21 08:25:16 MDT 2021
-# Start of session at: Wed Aug 17 12:21:59 2022
-# Process ID: 11379
-# Current directory: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip
+# Start of session at: Thu Aug 18 15:17:47 2022
+# Process ID: 14602
+# Current directory: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip
 # Command line: vivado -notrace -mode batch -source run_ippack.tcl
-# Log file: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/vivado.log
-# Journal file: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/Basic_kernels/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/vivado.jou
-# Running On: caadlab-01, OS: Linux, CPU Frequency: 2400.311 MHz, CPU Physical cores: 12, Host memory: 135057 MB
+# Log file: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/vivado.log
+# Journal file: /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/hw/_x/krnl_mm2s/krnl_mm2s/krnl_mm2s/solution/impl/ip/vivado.jou
+# Running On: caadlab-01, OS: Linux, CPU Frequency: 2399.926 MHz, CPU Physical cores: 12, Host memory: 135057 MB
 #-----------------------------------------------------------
 source run_ippack.tcl -notrace
