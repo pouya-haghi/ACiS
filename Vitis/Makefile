@@ -30,7 +30,7 @@ all: $(LIST_XO)
 
 temp: 
 	@echo "TEMP_DIR=$(TEMP_DIR)"
-	@echo "LIST_XO=$(LISt_XO)"
+	@echo "LIST_XO=$(LIST_XO)"
 # Cleaning stuff
 clean:
 	rm -rf *v++* *.log *.jou *.str
