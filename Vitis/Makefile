@@ -22,7 +22,8 @@ TARGETING ?= hw
 TEMP_DIR = ./$(TARGETING)/$(DEVICE)/
 LIST_XO = $(TEMP_DIR)krnl_mm2s.xo $(TEMP_DIR)krnl_s2mm.xo ./CGRA/rtl_kernel_CGRA_accelerator.xo
 
-all: check-devices check-vitis check-xrt check-targeting $(LIST_XO)
+# all: check-devices check-vitis check-xrt check-targeting $(LIST_XO)
+all: $(LIST_XO)
 	v++ -l -t hw --platform $(DEVICE) --save-temps --config ./config.cfg $(LIST_XO) -o $(TARGETING).xclbin
 
 # Cleaning stuff
