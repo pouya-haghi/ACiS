@@ -14,6 +14,7 @@ module vectorized_PE(
     input logic [SIMD_degree-1:0] i_tvalid1_PE_typeC,
     input logic [SIMD_degree-1:0] i_tvalid2_PE_typeC,  
 //    input logic [SIMD_degree-1:0] i_tvalid3_PE_typeC,
+    input logic en_ITR_sp, // added
     input logic clk,
     input logic rst,
     input logic [2:0] op,
@@ -36,6 +37,7 @@ module vectorized_PE(
             .t_valid_inp1(i_tvalid1_PE_typeC[i]),
             .t_valid_inp2(i_tvalid2_PE_typeC[i]),
 //            .t_valid_inp3(i_tvalid3_PE_typeC[i]),
+            .en_ITR_sp(en_ITR_sp),
             .clk(clk),
             .rst(rst),
             .op((i_tvalid1_PE_typeC[i] && i_tvalid2_PE_typeC[i]) ? op[2:0] : nop), 

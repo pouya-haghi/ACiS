@@ -25,6 +25,7 @@ module ISA_decoder(
     output logic is_csr,
     output logic is_lui,
     output logic is_spl,
+    output logic is_spvacc_xv, // added
     output logic [dwidth_RFadd-1:0] vr_addr, // vector register file
     output logic [dwidth_RFadd-1:0] vw_addr, // vector register file
     output logic is_not_vect, // used to inform us about stall (if it is zero we should stall)
@@ -39,7 +40,10 @@ module ISA_decoder(
     // if it is v2 and VLEN_phy=32 then the correct base address is: 2*VLEN_phy
     );
     
+    localparam [2:0] ADD = 3'b000, ACC = 3'b001, MUL = 3'b010, MACC= 3'b011, NOP = 3'b100;
+
     logic [4:0] vs2, vd;
+    logic [dwidth_RFadd-1:0] vr_addr_t,vw_addr_t;
 //    logic is_vsetivli; // configuration
     logic is_addi, is_add; // integer scalar
     logic [dwidth_int-1:0] lui_immediate, addi_immediate;
@@ -63,6 +67,8 @@ module ISA_decoder(
     assign is_add = (instr[6:0]==7'b0110011 && instr[14:12]==3'b000 && instr[31:25]==7'b0000000)?1'b1:1'b0;
     assign is_spl = (instr[6:0]==7'b1110011 && instr[11:7] == 5'b0  && instr[14:12] == 3'b001)?1'b1:1'b0;   // CSRRW, based on ISA extension. rd must be x0, rs is source, and csr can be anything
     assign is_wfi = (instr == 32'b0001000_00101_00000_000_00000_1110011)?1'b1:1'b0;
+    assign is_spvacc_xv = (instr[6:0]==7'h55 && instr[14:12]==3'h0)?1'b1:1'b0; // ISA extension ([1:0]='01')
+    
     
     // ******************   AP done *********************
     
@@ -98,54 +104,56 @@ module ISA_decoder(
     assign op_scalar = (is_lui)? 3'b000: ((is_addi)?3'b001:(is_bne)?3'b010:(is_add)?3'b011:3'b100);
     
     // ************************  vectorized instructions *************************
-    assign op = (is_vmacc_vv)? 3'b011: 3'b100; //else: NoP 
+    assign op = (is_vmacc_vv)? MACC: ((is_spvacc_xv) ? ACC : NOP); //else: NoP 
     assign is_vect = |{is_vmacc_vv, is_vle32_vv, is_vse32_vv, is_vmv_vi, is_vstreamout};
     assign is_not_vect = !is_vect;
     // vs1 is hardwire to O1 or O2 (no matter what you put in)
     assign vs2 = (is_vse32_vv || is_vstreamout)? instr[11:7]: instr[24:20]; // vs2
     assign vd = instr[11:7]; // vd
    
-   
     always_comb begin
         case(VLEN)
             3'b000: begin 
-                        vr_addr = {vs2[0], {(dwidth_RFadd-1){1'b0}}}; 
-                        vw_addr = {vd[0], {(dwidth_RFadd-1){1'b0}}};
+                        vr_addr_t = {vs2[0], {(dwidth_RFadd-1){1'b0}}}; 
+                        vw_addr_t = {vd[0], {(dwidth_RFadd-1){1'b0}}};
                     end
             3'b001: begin
-                        vr_addr = {vs2[1:0], {(dwidth_RFadd-2){1'b0}}}; 
-                        vw_addr = {vd[1:0],  {(dwidth_RFadd-2){1'b0}}};
+                        vr_addr_t = {vs2[1:0], {(dwidth_RFadd-2){1'b0}}}; 
+                        vw_addr_t = {vd[1:0],  {(dwidth_RFadd-2){1'b0}}};
                     end
             3'b010: begin
-                        vr_addr = {vs2[2:0], {(dwidth_RFadd-3){1'b0}}}; 
-                        vw_addr = {vd[2:0],  {(dwidth_RFadd-3){1'b0}}};    
+                        vr_addr_t = {vs2[2:0], {(dwidth_RFadd-3){1'b0}}}; 
+                        vw_addr_t = {vd[2:0],  {(dwidth_RFadd-3){1'b0}}};    
                     end
             3'b011: begin
-                        vr_addr = {vs2[3:0], {(dwidth_RFadd-4){1'b0}}}; 
-                        vw_addr = {vd[3:0],  {(dwidth_RFadd-4){1'b0}}};    
+                        vr_addr_t = {vs2[3:0], {(dwidth_RFadd-4){1'b0}}}; 
+                        vw_addr_t = {vd[3:0],  {(dwidth_RFadd-4){1'b0}}};    
                     end
             3'b100: begin
-                        vr_addr = {vs2[4:0], {(dwidth_RFadd-5){1'b0}}}; 
-                        vw_addr = {vd[4:0],  {(dwidth_RFadd-5){1'b0}}};    
+                        vr_addr_t = {vs2[4:0], {(dwidth_RFadd-5){1'b0}}}; 
+                        vw_addr_t = {vd[4:0],  {(dwidth_RFadd-5){1'b0}}};    
                     end
             3'b101: begin 
-                        vr_addr = {1'b0, vs2[4:0], {(dwidth_RFadd-6){1'b0}}}; 
-                        vw_addr = {1'b0, vd[4:0], {(dwidth_RFadd-6){1'b0}}};
+                        vr_addr_t = {1'b0, vs2[4:0], {(dwidth_RFadd-6){1'b0}}}; 
+                        vw_addr_t = {1'b0, vd[4:0], {(dwidth_RFadd-6){1'b0}}};
                     end
             3'b110: begin 
-                        vr_addr = {2'b0, vs2[4:0], {(dwidth_RFadd-7){1'b0}}}; 
-                        vw_addr = {2'b0, vd[4:0], {(dwidth_RFadd-7){1'b0}}};
+                        vr_addr_t = {2'b0, vs2[4:0], {(dwidth_RFadd-7){1'b0}}}; 
+                        vw_addr_t = {2'b0, vd[4:0], {(dwidth_RFadd-7){1'b0}}};
                     end
             3'b111: begin 
-                        vr_addr = {3'b0, vs2[4:0], {(dwidth_RFadd-8){1'b0}}}; 
-                        vw_addr = {3'b0, vd[4:0], {(dwidth_RFadd-8){1'b0}}};
+                        vr_addr_t = {3'b0, vs2[4:0], {(dwidth_RFadd-8){1'b0}}}; 
+                        vw_addr_t = {3'b0, vd[4:0], {(dwidth_RFadd-8){1'b0}}};
                     end
             default: begin 
-                        vr_addr = {vs2[0], {(dwidth_RFadd-1){1'b0}}}; 
-                        vw_addr = {vd[0], {(dwidth_RFadd-1){1'b0}}};
+                        vr_addr_t = {vs2[0], {(dwidth_RFadd-1){1'b0}}}; 
+                        vw_addr_t = {vd[0], {(dwidth_RFadd-1){1'b0}}};
                     end
         endcase
     end
+    
+    assign vr_addr = (is_vmacc_vv)? {{(dwidth_RFadd-5){1'b0}}, vs2}: vr_addr_t; // if vmacc: no need to concatenate (always mapped to first group)
+    assign vw_addr = (is_spvacc_xv)? {{(dwidth_RFadd-5){1'b0}}, vd}: vw_addr_t; // if spvacc: no need to concatenate (always mapped to first group)
     
     assign tvalid_RF = (t_is_vstreamout | is_addi | is_add | is_bne | is_vmacc_vv)? 1'b1: 1'b0;
    
