@@ -1,0 +1,4 @@
+*.xclbin
+**/vadd
+**/_x
+*.log
