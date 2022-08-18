@@ -1,4 +1,8 @@
 *.xclbin
-**/vadd
+# *.xclbin.*
 **/_x
+# **/_x.*
 *.log
+*.xo
+# *.ltx
+# **/.ipcache
