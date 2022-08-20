@@ -1,0 +1,166 @@
+<ENTRY>
+{
+ "thisFile": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x.xilinx_u280_xdma_201920_3/krnl_s2mm.xo.compile_summary",
+ "connectId": "",
+ "serverToken": "",
+ "timestamp": "0"
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_CmdStep",
+ "dateTimestamp": "Wed Aug 17 15:59:24 2022",
+ "timestampMillis": "1660766364400",
+ "buildStep": {
+  "cmdId": "ffb94b60-e8bb-45f0-992c-7856e54c6917",
+  "name": "v++",
+  "logFile": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x/krnl_s2mm/krnl_s2mm.steps.log",
+  "commandLine": "/opt/Xilinx/Vitis/2021.2/bin/unwrapped/lnx64.o/v++  --vivado.prop \"run.__KERNEL__.{STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS}={-directive sdx_optimization_effort_high}\" --advanced.misc \"report=type report_timing_summary name impl_report_timing_summary_route_design_summary steps {route_design} runs {impl_1} options {-max_paths 10}\" --advanced.misc \"report=type report_timing_summary name impl_report_timing_summary_post_route_phys_opt_design_summary steps {post_route_phys_opt_design} runs {impl_1} options {-max_paths 10}\" -t sw_emu --platform xilinx_u280_xdma_201920_3 --save-temps -k krnl_s2mm -c -o _x.xilinx_u280_xdma_201920_3/krnl_s2mm.xo src/krnl_s2mm.cpp ",
+  "args": [
+   "-t",
+   "sw_emu",
+   "--platform",
+   "xilinx_u280_xdma_201920_3",
+   "--save-temps",
+   "-k",
+   "krnl_s2mm",
+   "-c",
+   "-o",
+   "_x.xilinx_u280_xdma_201920_3/krnl_s2mm.xo",
+   "src/krnl_s2mm.cpp"
+  ],
+  "iniFiles": [],
+  "cwd": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Wed Aug 17 15:59:24 2022",
+ "timestampMillis": "1660766364400",
+ "status": {
+  "cmdId": "ffb94b60-e8bb-45f0-992c-7856e54c6917",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_FlowMetaData",
+ "dateTimestamp": "Wed Aug 17 15:59:41 2022",
+ "timestampMillis": "1660766381299",
+ "buildSummary": {
+  "hardwarePlatform": "xilinx_u280_xdma_201920_3.xpfm",
+  "hardwareDsa": "xilinx_u280_xdma_201920_3.xsa",
+  "platformDirectory": "/opt/xilinx/platforms/xilinx_u280_xdma_201920_3",
+  "runtime": "OpenCL",
+  "systemConfig": "Linux",
+  "flow": "BF_COMPILE",
+  "target": "TT_SW_EMU",
+  "kernels": [
+   {
+    "base": {
+     "type": "KERNEL",
+     "name": "krnl_s2mm",
+     "file": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x.xilinx_u280_xdma_201920_3/krnl_s2mm.xo",
+     "reports": [],
+     "uuid": ""
+    },
+    "sources": [
+     "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/src/krnl_s2mm.cpp"
+    ],
+    "psSources": [],
+    "cuNames": [],
+    "type": "HLS",
+    "frequency": 0,
+    "freqUnits": ""
+   }
+  ],
+  "toolVersion": "Vitis V++ Compiler Release 2021.2. SW Build 3363252 on 2021-10-14-04:41:01"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_SubCmdStep",
+ "dateTimestamp": "Wed Aug 17 15:59:41 2022",
+ "timestampMillis": "1660766381307",
+ "buildStep": {
+  "cmdId": "61e18855-4ce0-48a9-b58e-017666cbda9f",
+  "name": "vitis_hls",
+  "logFile": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x/krnl_s2mm/krnl_s2mm/vitis_hls.log",
+  "commandLine": "vitis_hls -f /home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm.tcl -messageDb vitis_hls.pb",
+  "args": [
+   "vitis_hls",
+   "-f",
+   "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x/krnl_s2mm/krnl_s2mm/krnl_s2mm.tcl",
+   "-messageDb",
+   "vitis_hls.pb"
+  ],
+  "iniFiles": [],
+  "cwd": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Wed Aug 17 15:59:41 2022",
+ "timestampMillis": "1660766381307",
+ "status": {
+  "cmdId": "61e18855-4ce0-48a9-b58e-017666cbda9f",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Wed Aug 17 16:00:01 2022",
+ "timestampMillis": "1660766401736",
+ "status": {
+  "cmdId": "61e18855-4ce0-48a9-b58e-017666cbda9f",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Wed Aug 17 16:00:01 2022",
+ "timestampMillis": "1660766401869",
+ "report": {
+  "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x/reports/krnl_s2mm/v++_compile_krnl_s2mm_guidance.html",
+  "name": "",
+  "fileType": "HTML",
+  "reportType": "GLOBAL_RULECHECK_GUIDANCE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Wed Aug 17 16:00:01 2022",
+ "timestampMillis": "1660766401870",
+ "report": {
+  "path": "/home/Will/Documents/Research-Files/G-FPin_HW/Vitis/sw_emu/_x/v++_compile_krnl_s2mm_guidance.pb",
+  "name": "",
+  "fileType": "BINARY_PROTOBUF",
+  "reportType": "GLOBAL_RULECHECK_GUIDANCE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Wed Aug 17 16:00:01 2022",
+ "timestampMillis": "1660766401871",
+ "status": {
+  "cmdId": "ffb94b60-e8bb-45f0-992c-7856e54c6917",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>

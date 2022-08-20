@@ -18,6 +18,7 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
     input logic t_valid_inp1,
     input logic t_valid_inp2,
 //    input logic t_valid_inp3,
+    input logic en_ITR_sp, // added
     output logic [dwidth_float-1:0] out,
     output logic t_valid_out,
     output logic t_last_out,
@@ -47,24 +48,25 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
     logic [2:0] op_d, op_dd;
 //    logic t_valid_out_t, t_valid_out_tt;
 //    logic [dwidth_float-1:0] out_t, out_tt;
+//    assign en_sp = tvalid_PE & (~en_ITR_sp) & ACC;  
     
-    
+    // PH: important: if you change your Vector regiter file from 0 cycle read latency to 2 cycles you need 2 delay cycles for t_valid_inp1_d if it is spvacc
     floating_point_add fp_add_inst0 (
       .aclk(clk),                                        // input wire aclk
-      .aresetn(!rst),                                  // input wire aresetn
-      .s_axis_a_tvalid((op_d == ADD) ? t_valid_inp1_d : ((op_d == MACC) ? t_valid_mul : 1'b0)),                  // input wire s_axis_a_tvalid
-      .s_axis_a_tdata((op_d == ADD) ? inp1_d : o_fp_mul),                    // input wire [31 : 0] s_axis_a_tdata
-      .s_axis_a_tlast((op_d == ADD) ? t_last_d : t_last_mul),
-      .s_axis_b_tvalid((op_d == ADD) ? t_valid_inp2_d : ((op_d == MACC) ? t_valid_inp3_d : 1'b0)),                  // input wire s_axis_b_tvalid
+      .aresetn(!rst),                                  // input wire aresetn 
+      .s_axis_a_tvalid((op_d == ADD) ? (t_valid_inp1_d) : ((op_d == MACC) ? t_valid_mul : ((op_d == ACC)?(t_valid_inp1_d & t_valid_inp2_d & (~en_ITR_sp)):1'b0))), // PH: for vmacc: I need tvalid from the stream_in. we want (~en_ITR_sp) to invalidate the first beat which contains VLEN
+      .s_axis_a_tdata((op_d == ADD) ? inp1_d : ((op_d == ACC)? inp2_d : o_fp_mul)),  // input wire [31 : 0] s_axis_a_tdata
+      .s_axis_a_tlast((op_d == ADD || op_d == ACC) ? t_last_d : t_last_mul),
+      .s_axis_b_tvalid((op_d == ADD) ? t_valid_inp2_d : ((op_d == MACC) ? t_valid_inp3_d : ((op_d == ACC)?(t_valid_inp1_d & t_valid_inp3_d & (~en_ITR_sp)):1'b0))),                  // input wire s_axis_b_tvalid
       .s_axis_b_tdata((op_d == ADD) ? inp2_d : inp3_d),                    // input wire [31 : 0] s_axis_b_tdata
-      .s_axis_operation_tvalid(t_valid_inp1_d & t_valid_inp2_d & (op_d == ADD || op_d == MACC)),  // input wire s_axis_operation_tvalid
+      .s_axis_operation_tvalid((t_valid_inp1_d & t_valid_inp2_d & (op_d == ADD || op_d == MACC)) | ((~en_ITR_sp)&t_valid_inp1_d & t_valid_inp2_d & t_valid_inp3_d & (op_d == ACC))),  // input wire s_axis_operation_tvalid
       .s_axis_operation_tdata(8'b0),    // input wire [7 : 0] s_axis_operation_tdata
       .m_axis_result_tvalid(t_valid_add),        // output wire m_axis_result_tvalid
       .m_axis_result_tdata(o_fp_add),          // output wire [31 : 0] m_axis_result_tdata
       .m_axis_result_tlast(t_last_add)
     );
      
-    floating_point_multiplier fp_mul_inst0 (
+    floating_point_mul fp_mul_inst0 (
       .aclk(clk),                                        // input wire aclk
       .s_axis_a_tvalid(t_valid_inp1 && (op == MUL || op == MACC)),                  // input wire s_axis_a_tvalid
       // only if it is a multiplier
@@ -109,10 +111,10 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
                 t_valid_out = t_valid_add;
                 t_last_out = t_last_add;
             end
-            ACC: begin // NOP for now
-                out = inp1_dd;
-                t_valid_out = t_valid_inp1_dd;
-                t_last_out = t_last_dd;
+            ACC: begin
+                out = o_fp_add;
+                t_valid_out = t_valid_add;
+                t_last_out = t_last_add;
             end
             MUL: begin
                 out = o_fp_mul_d;
@@ -125,6 +127,11 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
                 t_last_out = t_last_add;
             end
             NOP: begin
+                out = inp1_dd;
+                t_valid_out = t_valid_inp1_dd;
+                t_last_out = t_last_dd;
+            end
+            default: begin
                 out = inp1_dd;
                 t_valid_out = t_valid_inp1_dd;
                 t_last_out = t_last_dd;
