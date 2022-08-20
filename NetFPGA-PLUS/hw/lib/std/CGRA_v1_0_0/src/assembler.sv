@@ -98,7 +98,7 @@ module assembler(
     
     assign tdata_out = (state == HEADER) ? {tdata_in[(phit_size-header_bytes*8-1):0], header_out} : {tdata_in[(phit_size-header_bytes*8-1):0], tdata_d};
     //             is tlast      but end isn't valid                                 or   is delayed tlast and is valid
-    assign tlast_out = ((|tlast_in && !(|tvalid_in[SIMD_degree-1:SIMD_degree-header_deg])) || (|tlast_d && |tvalid_d)) ? {SIMD_degree{1'b1}} : {SIMD_degree{1'b1}};
+    assign tlast_out = ((|tlast_in && !(|tvalid_in[SIMD_degree-1:SIMD_degree-header_deg])) || (|tlast_d && |tvalid_d)) ? {SIMD_degree{1'b1}} : {SIMD_degree{1'b0}};
     assign tvalid_out = (state == HEADER) ? {tvalid_in[SIMD_degree-header_deg-1:0], {header_deg{1'b1}}} : {tvalid_in[SIMD_degree-header_deg-1:0], tvalid_d};
     
     always_comb begin
