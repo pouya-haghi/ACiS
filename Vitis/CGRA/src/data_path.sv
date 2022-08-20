@@ -54,7 +54,7 @@ module data_path(
     output logic [(num_col*12)-1:0]             load_value_PC
     );
     
-    localparam phitplus = phit_size + SIMD_degree; // bundle {tvalid, tdata}
+    localparam phitplus = phit_size + phit_size/8 + 3; // bundle {tvalid, tdata}
     localparam phitplusplus = phit_size + SIMD_degree*2; // bundle {tlast, tvalid, tdata}
 
     logic [((num_col)*3)-1:0] op;
@@ -87,7 +87,7 @@ module data_path(
     logic [SIMD_degree-1:0] assembler_tvalid;
     logic [SIMD_degree-1:0] assembler_tlast;
     logic [num_col-1:0] wen_RF_scalar;
-    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_vsetivli, is_bne, is_csr, is_lui, is_spl, is_spvacc_xv;
+    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_vsetivli, is_bne, is_csr, is_lui, is_spl;
     logic [num_col-1:0] stall_FIFO;
     logic [num_col-1:0] stall_rd_autovect, stall_wr_autovect;
     logic [num_col-1:0] read_done_HBM, write_done_HBM; 
@@ -99,8 +99,6 @@ module data_path(
     logic [num_col-1:0] ap_done_decoder;
     logic ap_done_t;
     logic is_header;
-    logic [(num_col*dwidth_RFadd)-1:0] ITR_sp, vr_addr_sp;
-    logic [num_col-1:0] wen_ITR_sp, done_sp, en_ITR_sp, stall_sp;
     
     // Internal Stream in/out
     logic [SIMD_degree-1:0] tvalid_stream_in_lane;
@@ -111,7 +109,7 @@ module data_path(
     logic [(phit_size*num_col)-1:0] tdata_stream;
     logic [(SIMD_degree*num_col)-1:0] tvalid_stream;
     logic [(SIMD_degree*num_col)-1:0] tlast_stream;
-
+    
     logic [phit_size-1:0] tdata_stream_out_t;
     logic tvalid_stream_out_t;
     logic tready_stream_in_t;
@@ -217,7 +215,6 @@ module data_path(
             assign valid_PE_o[j] = (|o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]); // PH: changed from & to |
             
             // *********************************     Front End       *******************************
-            // ISA decoder
             ISA_decoder ISA_decoder_inst(
             .instr(instr[((j+1)*dwidth_inst)-1:j*dwidth_inst]),
             .clk(clk),
@@ -240,7 +237,6 @@ module data_path(
             .is_csr(is_csr[j]),
             .is_lui(is_lui[j]),
             .is_spl(is_spl[j]),
-            .is_spvacc_xv(is_spvacc_xv[j]),
             .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
             .R_immediate(R_immediate[((j+1)*dwidth_int)-1:j*dwidth_int]),
             .op(op[((j+1)*3)-1:j*3]),
@@ -263,11 +259,6 @@ module data_path(
             .clk(clk), 
             .rst(rst),
             .ITR(ITR[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
-            .ITR_sp(ITR_sp[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]), // added
-            .wen_ITR_sp(wen_ITR_sp[j]), // added
-            .is_spvacc_xv(is_spvacc_xv[j]), // added
-            .stall_sp(stall_sp[j]), // added
-            .vr_addr_sp(vr_addr_sp[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]), // added
             .stall_rd(stall_rd_autovect[j]), // clk_en
             .stall_wr(stall_wr_autovect[j]),
             .is_vmacc_vv(is_vmacc_vv[j]),
@@ -285,10 +276,8 @@ module data_path(
             .incr_PC(incr_PC[j]),
             .wen_ITR(wen_ITR[j]),
             .ITR_delay(ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
-            .done(done_auto_incr[j]), // one clock pulse
-            .done_sp(done_sp[j])
+            .done(done_auto_incr[j]) // one clock pulse
             );
-            
             // PC logic
             PC_logic PC_logic_inst0(
             .is_not_vect(is_not_vect[j]),
@@ -325,22 +314,6 @@ module data_path(
             .dr1(rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]),
             .dr2(rddata2_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int])
             );
-            
-            // sparse_control
-            sparse_control(
-            .clk(clk),
-            .rst(rst),
-            .is_spvacc_xv(is_spvacc_xv[j]),
-            .vr_addr1(vr_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
-            .tvalid_PE(tvalid_stream[SIMD_degree*j]), // here we get tvalid from the first PE
-            .tdata_PE(tdata_stream[(phit_size*j)+dwidth_float-1:phit_size*j]),
-            .ITR_threshold_sp(done_sp[j]), // when auto_incr_vect is finished
-            .ITR_sp(ITR_sp[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]), // for spvacc
-            .en_ITR_sp(en_ITR_sp[j]),
-            .wen_ITR_sp(wen_ITR_sp[j]),
-            .vr_addr_sp(vr_addr_sp[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd])
-            );
-            
             // vectorized PE
             vectorized_PE vectorized_PE_inst0(
             .i1_PE_typeC(tdata_stream[(phit_size*(j+1))-1:phit_size*j]),
@@ -350,7 +323,6 @@ module data_path(
             .i_tlast2_PE_typeC(tlast1_RF[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
             .i_tvalid1_PE_typeC(tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]),
             .i_tvalid2_PE_typeC({(SIMD_degree){valid_PE_i[j]}}),
-            .en_ITR_sp(en_ITR_sp[j]), // added
             .clk(clk),
             .rst(rst),
             .op(op[((j+1)*3)-1:j*3]),
@@ -361,9 +333,9 @@ module data_path(
             
             // vectorized regFile
             regFile_mask regFile_inst0( // PH: modified wen
-            .d_in(is_vmv_vi[j] ? {(phit_size){1'b0}} : ((is_vmacc_vv[j] | is_spvacc_xv[j]) ? o_PE_typeC[(phit_size*(j+1))-1:phit_size*j] : user_rdata_HBM[(phit_size*(j+1))-1:phit_size*j])), // based on op I would choose wdata, o1_RF or HBM. vmv.v.i is not supported: ctrl_din_RF[(j*3)+0]==1 :rdata_config_table[(phit_size*(j+1))-1:phit_size*j]
+            .d_in(is_vmv_vi[j] ? {(phit_size){1'b0}} : (is_vmacc_vv[j] ? o_PE_typeC[(phit_size*(j+1))-1:phit_size*j] : user_rdata_HBM[(phit_size*(j+1))-1:phit_size*j])), // based on op I would choose wdata, o1_RF or HBM. vmv.v.i is not supported: ctrl_din_RF[(j*3)+0]==1 :rdata_config_table[(phit_size*(j+1))-1:phit_size*j]
             .clk(clk),
-            .rd_addr1((is_spvacc_xv[j]) ? vr_addr_sp[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd] : vr_addr1_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // PH: modified
+            .rd_addr1(vr_addr1_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_RF is one of the fields in tables (auto-increment address generator)
             .rd_addr2(vr_addr2_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_2 is ONLY for vmacc, is VD iterated 
             .wr_addr(vw_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // write addr, delayed only if not vse
             .tlast_in(is_vmv_vi[j] ? {(SIMD_degree){1'b0}} : (is_vmacc_vv[j] ? o_tlast_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j] : {(SIMD_degree){1'b0}})),
@@ -494,6 +466,6 @@ module data_path(
     mux2 #(phitplus) mux2_inst2(
         {tready_stream_out, tvalid_stream_in, tlast_stream_in, tkeep_stream_in, tdata_stream_in},
         {tready_stream_in_t, tvalid_stream_out_t, tlast_stream_out_t, tkeep_stream_out_t, tdata_stream_out_t},
-        done_steady,
-        {tready_stream_in, tvalid_stream_out, tlast_stream_out, tkeep_stream_out, tdata_stream_out});    
+        !done_steady,
+        {tready_stream_in, tvalid_stream_out, tlast_stream_out, tkeep_stream_out, tdata_stream_out});
 endmodule
