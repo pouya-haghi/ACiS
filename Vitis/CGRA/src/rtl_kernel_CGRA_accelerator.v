@@ -19,7 +19,7 @@ module rtl_kernel_CGRA_accelerator #(
 (
     // General I/O
     input wire                ap_clk,
-    input wire                ap_rst_n,
+    input wire                ap_reset_n,
 //    output wire [dwidth_int-1:0]    csr_out,
     // Control Plane other 
     output wire                     interrupt,
@@ -48,14 +48,25 @@ module rtl_kernel_CGRA_accelerator #(
     // AXI MM Control Plane                         
     //input                                         
     input  wire                     m00_axi_arready  ,
+    input  wire                     m00_axi_awready  ,
+    input  wire                     m00_axi_bvalid   ,
     input  wire [phit_size-1:0]     m00_axi_rdata    ,
     input  wire                     m00_axi_rlast    ,
     input  wire                     m00_axi_rvalid   ,
+    input  wire                     m00_axi_wready   ,
     //output                                          ,
     output wire [C_M_AXI_ADDR_WIDTH-1:0] m00_axi_araddr   ,
     output wire [8-1:0]             m00_axi_arlen    ,
     output wire                     m00_axi_arvalid  ,
+    output wire [dwidth_aximm-1:0]  m00_axi_awaddr   ,
+    output wire [7:0]               m00_axi_awlen    ,
+    output wire                     m00_axi_awvalid  ,
+    output wire                     m00_axi_bready   ,
     output wire                     m00_axi_rready   ,
+    output wire                     m00_axi_wvalid   ,
+    output wire [phit_size-1:0]     m00_axi_wdata    ,
+    output wire                     m00_axi_wlast    ,
+    output wire [(phit_size/8)-1:0] m00_axi_wstrb    ,
     
     // Data Path
     // Stream
@@ -164,6 +175,16 @@ module rtl_kernel_CGRA_accelerator #(
     wire [num_col-1:0]                 data_rvalid ;
     wire [num_col-1:0]                 data_wready ;
     
+    // we dont need write portion of AXI_mm0 (we only read from it to load config tables); making all of them invalid
+    assign m00_axi_awaddr = {(dwidth_aximm){1'b0}};
+    assign m00_axi_awlen = {(8){1'b0}};
+    assign m00_axi_awvalid = 1'b0;
+    assign m00_axi_bready = 1'b0;
+    assign m00_axi_wvalid = 1'b0;
+    assign m00_axi_wdata = {(phit_size){1'b0}};
+    assign m00_axi_wlast = 1'b0;
+    assign m00_axi_wstrb = {(phit_size/8){1'b0}};
+    
     assign data_arready = {m02_axi_arready , m01_axi_arready};
     assign data_awready = {m02_axi_awready , m01_axi_awready};
     assign data_bvalid  = {m02_axi_bvalid  , m01_axi_bvalid };
@@ -191,13 +212,13 @@ module rtl_kernel_CGRA_accelerator #(
 
 
     always @(posedge ap_clk) begin
-      areset <= ~ap_rst_n;
+      areset <= ~ap_reset_n;
     end
     
     control_plane control_plane_inst0(
         //inputs
         .ap_clk                     (ap_clk),  
-        .ap_rst_n                   (ap_rst_n),
+        .ap_rst_n                   (ap_reset_n),
         .ap_done_i                  (ap_done),
         .AWADDR                     (s_axi_control_awaddr),               
         .AWVALID                    (s_axi_control_awvalid),               
@@ -306,6 +327,10 @@ module rtl_kernel_CGRA_accelerator #(
     assign m01_axi_wdata   = data_wdata  [phit_size-1      : 0           ]; 
     assign m01_axi_wlast   = data_wlast  [0                              ]; 
     assign m01_axi_wstrb   = data_wstrb  [phit_size/8 -1   : 0           ]; 
+    
+
+    
+    
         
 //    assign csr_out = cycle_register;
 endmodule
