@@ -1,157 +1,168 @@
 `timescale 1ns / 1ps
 
-`ifndef MY_INTERFACE
-  `define MY_INTERFACE
-  `include "my_interface.vh"
-`endif
+//`ifndef MY_INTERFACE
+//  `define MY_INTERFACE
+//  `include "my_interface.vh"
+//`endif
 
-module rtl_kernel_CGRA_accelerator(
+module rtl_kernel_CGRA_accelerator #(
+    parameter C_S_AXI_ADDR_WIDTH = 5,
+    parameter C_S_AXI_DATA_WIDTH = 32,
+    parameter C_M_AXI_ADDR_WIDTH = 64,
+    parameter phit_size = 512,
+    parameter dwidth_aximm = 64,
+    parameter num_col = 2,
+    parameter dwidth_int = 32
+
+)
+
+(
     // General I/O
-    input  logic                     ap_clk,
-    input  logic                     ap_rst_n,
-//    output logic [dwidth_int-1:0]    csr_out,
+    input wire                ap_clk,
+    input wire                ap_rst_n,
+//    output wire [dwidth_int-1:0]    csr_out,
     // Control Plane other 
-    output logic                     interrupt,
+    output wire                     interrupt,
     
     // AXI Lite Control Plane                               
     //inputs                                                
-    input  logic [C_S_AXI_ADDR_WIDTH-1:0]   s_axi_control_araddr  ,
-    input  logic                            s_axi_control_arvalid ,
-    input  logic [C_S_AXI_ADDR_WIDTH-1:0]   s_axi_control_awaddr  ,
-    input  logic                            s_axi_control_awvalid ,
-    input  logic                            s_axi_control_bready  ,
-    input  logic                            s_axi_control_rready  ,
-    input  logic [C_S_AXI_DATA_WIDTH-1:0]   s_axi_control_wdata   ,
-    input  logic [C_S_AXI_DATA_WIDTH/8-1:0] s_axi_control_wstrb   ,
-    input  logic                            s_axi_control_wvalid  ,
+    input  wire [C_S_AXI_ADDR_WIDTH-1:0]   s_axi_control_araddr  ,
+    input  wire                            s_axi_control_arvalid ,
+    input  wire [C_S_AXI_ADDR_WIDTH-1:0]   s_axi_control_awaddr  ,
+    input  wire                            s_axi_control_awvalid ,
+    input  wire                            s_axi_control_bready  ,
+    input  wire                            s_axi_control_rready  ,
+    input  wire [C_S_AXI_DATA_WIDTH-1:0]   s_axi_control_wdata   ,
+    input  wire [C_S_AXI_DATA_WIDTH/8-1:0] s_axi_control_wstrb   ,
+    input  wire                            s_axi_control_wvalid  ,
     //output                                               ,
-    output logic                            s_axi_control_arready ,
-    output logic                            s_axi_control_awready ,
-    output logic [1:0]                      s_axi_control_bresp   ,
-    output logic                            s_axi_control_bvalid  ,
-    output logic [C_S_AXI_DATA_WIDTH-1:0]   s_axi_control_rdata   ,
-    output logic                            s_axi_control_rvalid  ,
-    output logic [1:0]                      s_axi_control_rresp   ,
-    output logic                            s_axi_control_wready  ,
+    output wire                            s_axi_control_arready ,
+    output wire                            s_axi_control_awready ,
+    output wire [1:0]                      s_axi_control_bresp   ,
+    output wire                            s_axi_control_bvalid  ,
+    output wire [C_S_AXI_DATA_WIDTH-1:0]   s_axi_control_rdata   ,
+    output wire                            s_axi_control_rvalid  ,
+    output wire [1:0]                      s_axi_control_rresp   ,
+    output wire                            s_axi_control_wready  ,
     
     // AXI MM Control Plane                         
     //input                                         
-    input  logic                     m00_axi_arready  ,
-    input  logic [phit_size-1:0]     m00_axi_rdata    ,
-    input  logic                     m00_axi_rlast    ,
-    input  logic                     m00_axi_rvalid   ,
+    input  wire                     m00_axi_arready  ,
+    input  wire [phit_size-1:0]     m00_axi_rdata    ,
+    input  wire                     m00_axi_rlast    ,
+    input  wire                     m00_axi_rvalid   ,
     //output                                          ,
-    output logic [C_M_AXI_ADDR_WIDTH-1:0] m00_axi_araddr   ,
-    output logic [8-1:0]             m00_axi_arlen    ,
-    output logic                     m00_axi_arvalid  ,
-    output logic                     m00_axi_rready   ,
+    output wire [C_M_AXI_ADDR_WIDTH-1:0] m00_axi_araddr   ,
+    output wire [8-1:0]             m00_axi_arlen    ,
+    output wire                     m00_axi_arvalid  ,
+    output wire                     m00_axi_rready   ,
     
     // Data Path
     // Stream
     // Stream in
-    input  logic [phit_size-1:0]     axis00_tdata      ,
-    input  logic                     axis00_tvalid     ,
-    input  logic                     axis00_tlast     ,
-    output logic                     axis00_tready     ,
-    input  logic [phit_size/8-1:0]   axis00_tkeep     ,
+    input  wire [phit_size-1:0]     axis00_tdata      ,
+    input  wire                     axis00_tvalid     ,
+    input  wire                     axis00_tlast     ,
+    output wire                     axis00_tready     ,
+    input  wire [phit_size/8-1:0]   axis00_tkeep     ,
     // Stream out
-    output logic [phit_size-1:0]     axis01_tdata      ,
-    output logic                     axis01_tvalid     ,
-    output logic                     axis01_tlast     ,
-    input  logic                     axis01_tready     ,
-    output logic [phit_size/8-1:0]   axis01_tkeep     ,
+    output wire [phit_size-1:0]     axis01_tdata      ,
+    output wire                     axis01_tvalid     ,
+    output wire                     axis01_tlast     ,
+    input  wire                     axis01_tready     ,
+    output wire [phit_size/8-1:0]   axis01_tkeep     ,
     
     // Col 1
     //input
-    input  logic                     m01_axi_arready  ,
-    input  logic                     m01_axi_awready  ,
-    input  logic                     m01_axi_bvalid   ,
-    input  logic [phit_size-1:0]     m01_axi_rdata    ,
-    input  logic                     m01_axi_rlast    ,
-    input  logic                     m01_axi_rvalid   ,
-    input  logic                     m01_axi_wready   ,
+    input  wire                     m01_axi_arready  ,
+    input  wire                     m01_axi_awready  ,
+    input  wire                     m01_axi_bvalid   ,
+    input  wire [phit_size-1:0]     m01_axi_rdata    ,
+    input  wire                     m01_axi_rlast    ,
+    input  wire                     m01_axi_rvalid   ,
+    input  wire                     m01_axi_wready   ,
     //output                        
-    output logic [dwidth_aximm-1:0]  m01_axi_araddr   ,
-    output logic [7:0]               m01_axi_arlen    ,
-    output logic                     m01_axi_arvalid  ,
-    output logic [dwidth_aximm-1:0]  m01_axi_awaddr   ,
-    output logic [7:0]               m01_axi_awlen    ,
-    output logic                     m01_axi_awvalid  ,
-    output logic                     m01_axi_bready   ,
-    output logic                     m01_axi_rready   ,
-    output logic                     m01_axi_wvalid   ,
-    output logic [phit_size-1:0]     m01_axi_wdata    ,
-    output logic                     m01_axi_wlast    ,
-    output logic [(phit_size/8)-1:0] m01_axi_wstrb    ,
+    output wire [dwidth_aximm-1:0]  m01_axi_araddr   ,
+    output wire [7:0]               m01_axi_arlen    ,
+    output wire                     m01_axi_arvalid  ,
+    output wire [dwidth_aximm-1:0]  m01_axi_awaddr   ,
+    output wire [7:0]               m01_axi_awlen    ,
+    output wire                     m01_axi_awvalid  ,
+    output wire                     m01_axi_bready   ,
+    output wire                     m01_axi_rready   ,
+    output wire                     m01_axi_wvalid   ,
+    output wire [phit_size-1:0]     m01_axi_wdata    ,
+    output wire                     m01_axi_wlast    ,
+    output wire [(phit_size/8)-1:0] m01_axi_wstrb    ,
     
     // Col 2
     //input
-    input  logic                     m02_axi_arready  ,
-    input  logic                     m02_axi_awready  ,
-    input  logic                     m02_axi_bvalid   ,
-    input  logic [phit_size-1:0]     m02_axi_rdata    ,
-    input  logic                     m02_axi_rlast    ,
-    input  logic                     m02_axi_rvalid   ,
-    input  logic                     m02_axi_wready   ,
+    input  wire                     m02_axi_arready  ,
+    input  wire                     m02_axi_awready  ,
+    input  wire                     m02_axi_bvalid   ,
+    input  wire [phit_size-1:0]     m02_axi_rdata    ,
+    input  wire                     m02_axi_rlast    ,
+    input  wire                     m02_axi_rvalid   ,
+    input  wire                     m02_axi_wready   ,
     //output                           
-    output logic [dwidth_aximm-1:0]  m02_axi_araddr   ,
-    output logic [7:0]               m02_axi_arlen    ,
-    output logic                     m02_axi_arvalid  ,
-    output logic [dwidth_aximm-1:0]  m02_axi_awaddr   ,
-    output logic [7:0]               m02_axi_awlen    ,
-    output logic                     m02_axi_awvalid  ,
-    output logic                     m02_axi_bready   ,
-    output logic                     m02_axi_rready   ,
-    output logic                     m02_axi_wvalid   ,
-    output logic [phit_size-1:0]     m02_axi_wdata    ,
-    output logic                     m02_axi_wlast    ,
-    output logic [(phit_size/8)-1:0] m02_axi_wstrb    
+    output wire [dwidth_aximm-1:0]  m02_axi_araddr   ,
+    output wire [7:0]               m02_axi_arlen    ,
+    output wire                     m02_axi_arvalid  ,
+    output wire [dwidth_aximm-1:0]  m02_axi_awaddr   ,
+    output wire [7:0]               m02_axi_awlen    ,
+    output wire                     m02_axi_awvalid  ,
+    output wire                     m02_axi_bready   ,
+    output wire                     m02_axi_rready   ,
+    output wire                     m02_axi_wvalid   ,
+    output wire [phit_size-1:0]     m02_axi_wdata    ,
+    output wire                     m02_axi_wlast    ,
+    output wire [(phit_size/8)-1:0] m02_axi_wstrb    
     
 //    // Col 3
 //    //input
-//    input  logic                     m01_axi_arready  ,
-//    input  logic                     m01_axi_awready  ,
-//    input  logic                     m01_axi_bvalid   ,
-//    input  logic [phit_size-1:0]     m01_axi_rdata    ,
-//    input  logic                     m01_axi_rlast    ,
-//    input  logic                     m01_axi_rvalid   ,
-//    input  logic                     m01_axi_wready   ,
+//    input  wire                     m01_axi_arready  ,
+//    input  wire                     m01_axi_awready  ,
+//    input  wire                     m01_axi_bvalid   ,
+//    input  wire [phit_size-1:0]     m01_axi_rdata    ,
+//    input  wire                     m01_axi_rlast    ,
+//    input  wire                     m01_axi_rvalid   ,
+//    input  wire                     m01_axi_wready   ,
 //    //output                        
-//    output logic [width_aximm-1:0]   m01_axi_araddr   ,
-//    output logic [7:0]               m01_axi_arlen    ,
-//    output logic                     m01_axi_arvalid  ,
-//    output logic [dwidth_aximm-1:0]  m01_axi_awaddr   ,
-//    output logic [7:0]               m01_axi_awlen    ,
-//    output logic                     m01_axi_awvalid  ,
-//    output logic                     m01_axi_bready   ,
-//    output logic                     m01_axi_rready   ,
-//    output logic                     m01_axi_wvalid   ,
-//    output logic [phit_size-1:0]     m01_axi_wdata    ,
-//    output logic                     m01_axi_wlast    ,
-//    output logic [(phit_size/8)-1:0] m01_axi_wstrb    ,
+//    output wire [width_aximm-1:0]   m01_axi_araddr   ,
+//    output wire [7:0]               m01_axi_arlen    ,
+//    output wire                     m01_axi_arvalid  ,
+//    output wire [dwidth_aximm-1:0]  m01_axi_awaddr   ,
+//    output wire [7:0]               m01_axi_awlen    ,
+//    output wire                     m01_axi_awvalid  ,
+//    output wire                     m01_axi_bready   ,
+//    output wire                     m01_axi_rready   ,
+//    output wire                     m01_axi_wvalid   ,
+//    output wire [phit_size-1:0]     m01_axi_wdata    ,
+//    output wire                     m01_axi_wlast    ,
+//    output wire [(phit_size/8)-1:0] m01_axi_wstrb    ,
     
 //    ...
     
     );
     // Internal Signals
-    logic [(num_col*dwidth_int)-1:0] instr;
-    logic done_loader;
-    logic [num_col-1:0] clken_PC;
-    logic [num_col-1:0] load_PC;
-    logic [num_col-1:0] incr_PC;
-    logic [num_col*12-1:0] load_value_PC;
-    logic [dwidth_int-1:0] cycle_register;
-    logic areset;
+    wire [(num_col*dwidth_int)-1:0] instr;
+    wire done_loader;
+    wire [num_col-1:0] clken_PC;
+    wire [num_col-1:0] load_PC;
+    wire [num_col-1:0] incr_PC;
+    wire [num_col*12-1:0] load_value_PC;
+    wire [dwidth_int-1:0] cycle_register;
+    reg areset;
 
     // Data Path concatinated signals       
     //input
-    logic [num_col-1:0]                 data_arready;
-    logic [num_col-1:0]                 data_awready;
-    logic [num_col-1:0]                 data_bvalid ;
-    logic [(phit_size*num_col)-1:0]     data_rdata  ;
-    logic [num_col-1:0]                 data_rlast  ;
-    logic [num_col-1:0]                 data_rvalid ;
-    logic [num_col-1:0]                 data_wready ;
+    wire [num_col-1:0]                 data_arready;
+    wire [num_col-1:0]                 data_awready;
+    wire [num_col-1:0]                 data_bvalid ;
+    wire [(phit_size*num_col)-1:0]     data_rdata  ;
+    wire [num_col-1:0]                 data_rlast  ;
+    wire [num_col-1:0]                 data_rvalid ;
+    wire [num_col-1:0]                 data_wready ;
     
     assign data_arready = {m02_axi_arready , m01_axi_arready};
     assign data_awready = {m02_axi_awready , m01_axi_awready};
@@ -162,21 +173,21 @@ module rtl_kernel_CGRA_accelerator(
     assign data_wready  = {m02_axi_wready  , m01_axi_wready };
     
     //outputs
-    logic [(dwidth_aximm*num_col)-1:0]  data_araddr  ; 
-    logic [(num_col*8)-1:0]             data_arlen   ; 
-    logic [num_col-1:0]                 data_arvalid ; 
-    logic [(dwidth_aximm*num_col)-1:0]  data_awaddr  ; 
-    logic [(num_col*8)-1:0]             data_awlen   ; 
-    logic [num_col-1:0]                 data_awvalid ; 
-    logic [num_col-1:0]                 data_bready  ; 
-    logic [num_col-1:0]                 data_rready  ; 
-    logic [num_col-1:0]                 data_wvalid  ; 
-    logic [(num_col*phit_size)-1:0]     data_wdata   ; 
-    logic [num_col-1:0]                 data_wlast   ; 
-    logic [(num_col*(phit_size/8))-1:0] data_wstrb   ; 
+    wire [(dwidth_aximm*num_col)-1:0]  data_araddr  ; 
+    wire [(num_col*8)-1:0]             data_arlen   ; 
+    wire [num_col-1:0]                 data_arvalid ; 
+    wire [(dwidth_aximm*num_col)-1:0]  data_awaddr  ; 
+    wire [(num_col*8)-1:0]             data_awlen   ; 
+    wire [num_col-1:0]                 data_awvalid ; 
+    wire [num_col-1:0]                 data_bready  ; 
+    wire [num_col-1:0]                 data_rready  ; 
+    wire [num_col-1:0]                 data_wvalid  ; 
+    wire [(num_col*phit_size)-1:0]     data_wdata   ; 
+    wire [num_col-1:0]                 data_wlast   ; 
+    wire [(num_col*(phit_size/8))-1:0] data_wstrb   ; 
     
-    logic ap_done;
-    logic done_steady;
+    wire ap_done;
+    wire done_steady;
 
 
     always @(posedge ap_clk) begin
