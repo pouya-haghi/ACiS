@@ -19,7 +19,7 @@ module rtl_kernel_CGRA_accelerator #(
 (
     // General I/O
     input wire                ap_clk,
-    input wire                ap_reset_n,
+    input wire                ap_rst_n,
 //    output wire [dwidth_int-1:0]    csr_out,
     // Control Plane other 
     output wire                     interrupt,
@@ -212,13 +212,13 @@ module rtl_kernel_CGRA_accelerator #(
 
 
     always @(posedge ap_clk) begin
-      areset <= ~ap_reset_n;
+      areset <= ~ap_rst_n;
     end
     
     control_plane control_plane_inst0(
         //inputs
         .ap_clk                     (ap_clk),  
-        .ap_rst_n                   (ap_reset_n),
+        .ap_rst_n                   (ap_rst_n),
         .ap_done_i                  (ap_done),
         .AWADDR                     (s_axi_control_awaddr),               
         .AWVALID                    (s_axi_control_awvalid),               
