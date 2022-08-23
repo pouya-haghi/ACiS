@@ -1,4 +1,5 @@
-ipx::package_project -root_dir /home/pouya/xilinx_projects/package_CGRA_n/package_CGRA_n.srcs/sources_1/imports -vendor user.org -library user -taxonomy /UserIP
+set_property file_type "Verilog Header" [get_files <path to header file>/my_interface.vh]
+set_property is_global_include true [get_files <path to header file>/my_interface.vh]
 set_property ipi_drc {ignore_freq_hz false} [ipx::current_core]
 set_property sdx_kernel true [ipx::current_core]
 set_property sdx_kernel_type rtl [ipx::current_core]
