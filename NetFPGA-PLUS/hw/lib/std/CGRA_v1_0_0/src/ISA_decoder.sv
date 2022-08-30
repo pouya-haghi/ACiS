@@ -34,7 +34,7 @@ module ISA_decoder(
     output logic [2:0] op,
     output logic [2:0] op_scalar,
     output logic wen_RF_scalar,
-    output logic [15:0] CSR,
+    //output logic [15:0] CSR,
     output logic ap_done
 //    output logic [dwidth_RFadd-1:0] VLEN_phy // to get the chunk size 
     // if it is v2 and VLEN_phy=32 then the correct base address is: 2*VLEN_phy

@@ -131,6 +131,11 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
                 t_valid_out = t_valid_inp1_dd;
                 t_last_out = t_last_dd;
             end
+            default: begin
+                out = inp1_dd;
+                t_valid_out = t_valid_inp1_dd;
+                t_last_out = t_last_dd;
+            end
         endcase    
     end
 
