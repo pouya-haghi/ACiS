@@ -35,11 +35,10 @@ BINARY_CONTAINERS = $(BUILD_DIR)/$(TARGETING).xclbin
 
 # all: check-devices check-vitis check-xrt check-targeting $(LIST_XO)
 all: check-devices check-vitis check-xrt check-targeting $(BINARY_CONTAINERS)
-# 	v++ -l -t hw --platform $(DEVICE) --save-temps --config ./config.cfg $(LIST_XO) -o hw.xclbin
 
 $(BINARY_CONTAINERS): $(LIST_XO)
 	mkdir -p $(BUILD_DIR)
-	v++ -l -t hw --platform $(DEVICE) --save-temps --config ./config.cfg $(LIST_XO) -o hw.xclbin
+	v++ -l -t $(TARGETING) --platform $(DEVICE) --save-temps --config ./config.cfg $(LIST_XO) -o $(TARGETING).xclbin
 
 $(STREAM_DIR)_x.$(DEVICE)/%.xo: $(STREAM_DIR)src/*.cpp
 	make -C $(STREAM_DIR) all -j2
