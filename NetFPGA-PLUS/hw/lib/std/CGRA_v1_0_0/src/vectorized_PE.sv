@@ -14,15 +14,16 @@ module vectorized_PE(
     input logic [SIMD_degree-1:0] i_tvalid1_PE_typeC,
     input logic [SIMD_degree-1:0] i_tvalid2_PE_typeC,  
 //    input logic [SIMD_degree-1:0] i_tvalid3_PE_typeC,
-    input logic en_ITR_sp, // added
     input logic clk,
     input logic rst,
     input logic [2:0] op,
+    input logic [1:0] state,
     output logic [phit_size-1:0] o_PE_typeC,
     output logic [SIMD_degree-1:0] o_tlast_PE_typeC,
     output logic [SIMD_degree-1:0] o_tvalid_PE_typeC
     );
     
+    logic [SIMD_degree-1:0] is_header = {{(SIMD_degree-header_deg){1'b0}},{header_deg{1'b1}}};
     logic [2:0] nop = 3'b100;
     
     genvar i;
@@ -37,10 +38,9 @@ module vectorized_PE(
             .t_valid_inp1(i_tvalid1_PE_typeC[i]),
             .t_valid_inp2(i_tvalid2_PE_typeC[i]),
 //            .t_valid_inp3(i_tvalid3_PE_typeC[i]),
-            .en_ITR_sp(en_ITR_sp),
             .clk(clk),
             .rst(rst),
-            .op((i_tvalid1_PE_typeC[i] && i_tvalid2_PE_typeC[i]) ? op[2:0] : nop), 
+            .op(((state == 2'b01) && is_header[i]) ? nop : op[2:0]), // if state == HEADER && this lane is in the header, do no-op
             .out(o_PE_typeC[((i+1)*dwidth_float)-1:(i*dwidth_float)]), 
             .t_last_out(o_tlast_PE_typeC[i]),
             .t_valid_out(o_tvalid_PE_typeC[i])

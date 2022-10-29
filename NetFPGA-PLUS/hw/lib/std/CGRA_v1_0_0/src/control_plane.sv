@@ -36,7 +36,6 @@ module control_plane(
     input  logic                            m_axi_rvalid             ,
     input  logic [phit_size-1:0]            m_axi_rdata              ,
     input  logic                            m_axi_rlast              ,
-    input  logic                            done_steady              ,
     input  logic [num_col-1:0]              clken_PC                 ,
     input  logic [num_col-1:0]              load_PC                  ,
     input  logic [num_col-1:0]              incr_PC                  ,
@@ -60,7 +59,13 @@ logic [63:0] axi00_ptr0;
 logic [63:0] xfer_size_bytes = total_instr;
 
 
-control_s_axi control_s_axi_inst0 (
+
+
+
+
+
+
+rtl_kernel_wizard_0_control_s_axi control_s_axi_inst0 (
     .ACLK      (ap_clk), //input
     .ARESET    (areset), //input
     .ACLK_EN   (1'b1  ), //input
@@ -98,7 +103,6 @@ rtl_kernel_wizard_0_runtimeLoadTable runtimeLoadTable_inst0(
     .m_axi_rvalid           (m_axi_rvalid), //input
     .m_axi_rdata            (m_axi_rdata), //input*
     .m_axi_rlast            (m_axi_rlast), //input
-    .done_steady            (done_steady), // input
     .clken_PC               (clken_PC), //input
     .load_PC                (load_PC), //input
     .incr_PC                (incr_PC), //input

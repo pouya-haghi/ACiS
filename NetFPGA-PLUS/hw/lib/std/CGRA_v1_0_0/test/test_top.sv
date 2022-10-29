@@ -5,15 +5,12 @@
 `endif
 
 module test_top;
-
-    // ------------------Instantiate logic------------------ //
     // General I/O                                                           
-    reg                      ap_clk                        ;
-    reg                      ap_rst_n                      ;
-    reg  [dwidth_int-1:0]    csr_out                       ;
+    reg                      ap_clk                    ;
+    reg                      ap_rst_n                    ;
     // --------- Control Plane --------- //
     // Other                          
-    wire                     interrupt                     ;                                      
+    wire                     interrupt              ;                                      
     // AXI Lite                                         
     //inputs                                                            
     reg  [C_S_AXI_ADDR_WIDTH-1:0]   s_axi_control_araddr   ;           
@@ -47,259 +44,417 @@ module test_top;
     wire                     m00_axi_arvalid        ;           
     wire                     m00_axi_rready         ;           
                                                                 
-    // --------- Data Path --------- //
-    // Stream                                                   
-    // in                                                    
-    wire [phit_size-1:0]     axis00_tdata           ;           
-    wire                     axis00_tvalid          ;           
-    wire                     axis00_tready          ;           
-    wire                     axis00_tlast           ;           
-    wire [phit_size/8-1:0]   axis00_tkeep           ;           
-    // out
-    wire [phit_size-1:0]     axis01_tdata           ;           
-    wire                     axis01_tvalid          ;           
-    wire                     axis01_tready          ;           
-    wire                     axis01_tlast           ;           
-    wire [phit_size/8-1:0]   axis01_tkeep           ;           
+//    // --------- Data Path --------- //
+//    // Stream                                                   
+//    // in                                                    
+//    wire [phit_size-1:0]     axis00_tdata           ;           
+//    wire                     axis00_tvalid          ;           
+//    wire                     axis00_tready          ;           
+//    wire                     axis00_tlast           ;           
+//    wire [phit_size/8-1:0]   axis00_tkeep           ;           
+//    // out
+//    wire [phit_size-1:0]     axis01_tdata           ;           
+//    wire                     axis01_tvalid          ;           
+//    wire                     axis01_tready          ;           
+//    wire                     axis01_tlast           ;           
+//    wire [phit_size/8-1:0]   axis01_tkeep           ;           
                                                                        
-    // AXI Col 1                                                           
-    //input                                                            
-    wire                     m01_axi_arready        ;
-    wire                     m01_axi_awready        ;
-    wire                     m01_axi_bvalid         ;
-    wire [phit_size-1:0]     m01_axi_rdata          ;
-    wire                     m01_axi_rlast          ;
-    wire                     m01_axi_rvalid         ;
-    wire                     m01_axi_wready         ;
-    //output                               
-    wire [dwidth_aximm-1:0]  m01_axi_araddr         ;
-    wire [7:0]               m01_axi_arlen          ;
-    wire                     m01_axi_arvalid        ;
-    wire [dwidth_aximm-1:0]  m01_axi_awaddr         ;
-    wire [7:0]               m01_axi_awlen          ;
-    wire                     m01_axi_awvalid        ;
-    wire                     m01_axi_bready         ;
-    wire                     m01_axi_rready         ;
-    wire                     m01_axi_wvalid         ;
-    wire [phit_size-1:0]     m01_axi_wdata          ;
-    wire                     m01_axi_wlast          ;
-    wire [(phit_size/8)-1:0] m01_axi_wstrb          ;
+//    // AXI Col 1                                                           
+//    //input                                                            
+//    wire                     m01_axi_arready        ;
+//    wire                     m01_axi_awready        ;
+//    wire                     m01_axi_bvalid         ;
+//    wire [phit_size-1:0]     m01_axi_rdata          ;
+//    wire                     m01_axi_rlast          ;
+//    wire                     m01_axi_rvalid         ;
+//    wire                     m01_axi_wready         ;
+//    //output                               
+//    wire [dwidth_aximm-1:0]  m01_axi_araddr         ;
+//    wire [7:0]               m01_axi_arlen          ;
+//    wire                     m01_axi_arvalid        ;
+//    wire [dwidth_aximm-1:0]  m01_axi_awaddr         ;
+//    wire [7:0]               m01_axi_awlen          ;
+//    wire                     m01_axi_awvalid        ;
+//    wire                     m01_axi_bready         ;
+//    wire                     m01_axi_rready         ;
+//    wire                     m01_axi_wvalid         ;
+//    wire [phit_size-1:0]     m01_axi_wdata          ;
+//    wire                     m01_axi_wlast          ;
+//    wire [(phit_size/8)-1:0] m01_axi_wstrb          ;
                                          
-    // AXI Col 2                             
-    //input                              
-    wire                     m02_axi_arready        ;
-    wire                     m02_axi_awready        ;
-    wire                     m02_axi_bvalid         ;
-    wire [phit_size-1:0]     m02_axi_rdata          ;
-    wire                     m02_axi_rlast          ;
-    wire                     m02_axi_rvalid         ;
-    wire                     m02_axi_wready         ;
-    //output                              
-    wire [dwidth_aximm-1:0]  m02_axi_araddr         ;
-    wire [7:0]               m02_axi_arlen          ;
-    wire                     m02_axi_arvalid        ;
-    wire [dwidth_aximm-1:0]  m02_axi_awaddr         ;
-    wire [7:0]               m02_axi_awlen          ;
-    wire                     m02_axi_awvalid        ;
-    wire                     m02_axi_bready         ;
-    wire                     m02_axi_rready         ;
-    wire                     m02_axi_wvalid         ;
-    wire [phit_size-1:0]     m02_axi_wdata          ;
-    wire                     m02_axi_wlast          ;
-    wire [(phit_size/8)-1:0] m02_axi_wstrb          ;
+//    // AXI Col 2                             
+//    //input                              
+//    wire                     m02_axi_arready        ;
+//    wire                     m02_axi_awready        ;
+//    wire                     m02_axi_bvalid         ;
+//    wire [phit_size-1:0]     m02_axi_rdata          ;
+//    wire                     m02_axi_rlast          ;
+//    wire                     m02_axi_rvalid         ;
+//    wire                     m02_axi_wready         ;
+//    //output                              
+//    wire [dwidth_aximm-1:0]  m02_axi_araddr         ;
+//    wire [7:0]               m02_axi_arlen          ;
+//    wire                     m02_axi_arvalid        ;
+//    wire [dwidth_aximm-1:0]  m02_axi_awaddr         ;
+//    wire [7:0]               m02_axi_awlen          ;
+//    wire                     m02_axi_awvalid        ;
+//    wire                     m02_axi_bready         ;
+//    wire                     m02_axi_rready         ;
+//    wire                     m02_axi_wvalid         ;
+//    wire [phit_size-1:0]     m02_axi_wdata          ;
+//    wire                     m02_axi_wlast          ;
+//    wire [(phit_size/8)-1:0] m02_axi_wstrb          ;
+     logic [phit_size-1:0]                tdata_stream_in;
+     logic                                tvalid_stream_in;
+     logic                                tready_stream_in;
+     logic                                tlast_stream_in;
+     logic [phit_size/8-1:0]              tkeep_stream_in;
+//    eam_out
+     logic [phit_size-1:0]                tdata_stream_out;
+     logic                                tvalid_stream_out;
+     logic                                tready_stream_out;
+     logic                                tlast_stream_out;
+     logic [phit_size/8-1:0]              tkeep_stream_out;
+//     read
+     logic [(dwidth_aximm*num_col)-1:0]   araddr_HBM;
+     logic [num_col-1:0]                  arready_HBM;
+     logic [num_col-1:0]                  rvalid_HBM;
+     logic [(phit_size*num_col)-1:0]      rdata_HBM;
+     logic [num_col-1:0]                  rready_HBM;
+     logic [num_col-1:0]                  arvalid_HBM;
+     logic [(8*num_col)-1:0]              arlen_HBM;
+     logic [num_col-1:0]                  rlast_HBM;
+//     write
+     logic [num_col-1:0]                  wvalid_HBM;
+     logic [num_col-1:0]                  wready_HBM;
+     logic [num_col-1:0]                  awvalid_HBM;
+     logic [(num_col*8)-1:0]              awlen_HBM;
+     logic [(num_col*phit_size)-1:0]      wdata_HBM;
+     logic [(num_col*(phit_size/8))-1:0]  wstrb_HBM;
+     logic [num_col-1:0]                  wlast_HBM;
+     logic [num_col-1:0]                  bvalid_HBM;
+     logic [num_col-1:0]                  bready_HBM;
+     logic [(dwidth_aximm*num_col)-1:0]   awaddr_HBM;
+     logic [num_col-1:0]                  awready_HBM;
     
     
-    // ------------------Instantiate Modules------------------ //
+    wire [(num_col*dwidth_RFadd)-1:0] AXI_vlen;
+    wire ap_done_o;
+    
     top top_inst0(.*);    
     
-    emulate_HBM emulate_HBM_inst0(
+//    emulate_HBM emulate_HBM_inst0(
+//        .ap_clk     (ap_clk         ),
+//        .ap_rst_n   (ap_rst_n       ),
+//        .axi_arready(m01_axi_arready), 
+//        .axi_awready(m01_axi_awready), 
+//        .axi_bvalid (m01_axi_bvalid ), 
+//        .axi_rdata  (m01_axi_rdata  ), 
+//        .axi_rlast  (m01_axi_rlast  ), 
+//        .axi_rvalid (m01_axi_rvalid ), 
+//        .axi_wready (m01_axi_wready ), 
+//        .axi_araddr (m01_axi_araddr ), 
+//        .axi_arlen  (m01_axi_arlen  ), 
+//        .axi_arvalid(m01_axi_arvalid), 
+//        .axi_awaddr (m01_axi_awaddr ), 
+//        .axi_awlen  (m01_axi_awlen  ), 
+//        .axi_awvalid(m01_axi_awvalid), 
+//        .axi_bready (m01_axi_bready ), 
+//        .axi_rready (m01_axi_rready ), 
+//        .axi_wvalid (m01_axi_wvalid ), 
+//        .axi_wdata  (m01_axi_wdata  ), 
+//        .axi_wlast  (m01_axi_wlast  ), 
+//        .axi_wstrb  (m01_axi_wstrb  ),
+//        .AXI_vlen   (AXI_vlen[dwidth_RFadd-1:0]) 
+//    );
+    
+//    emulate_HBM emulate_HBM_inst1(
+//        .ap_clk     (ap_clk         ),
+//        .ap_rst_n   (ap_rst_n       ),
+//        .axi_arready(m02_axi_arready), 
+//        .axi_awready(m02_axi_awready), 
+//        .axi_bvalid (m02_axi_bvalid ), 
+//        .axi_rdata  (m02_axi_rdata  ), 
+//        .axi_rlast  (m02_axi_rlast  ), 
+//        .axi_rvalid (m02_axi_rvalid ), 
+//        .axi_wready (m02_axi_wready ), 
+//        .axi_araddr (m02_axi_araddr ), 
+//        .axi_arlen  (m02_axi_arlen  ), 
+//        .axi_arvalid(m02_axi_arvalid), 
+//        .axi_awaddr (m02_axi_awaddr ), 
+//        .axi_awlen  (m02_axi_awlen  ), 
+//        .axi_awvalid(m02_axi_awvalid), 
+//        .axi_bready (m02_axi_bready ), 
+//        .axi_rready (m02_axi_rready ), 
+//        .axi_wvalid (m02_axi_wvalid ), 
+//        .axi_wdata  (m02_axi_wdata  ), 
+//        .axi_wlast  (m02_axi_wlast  ), 
+//        .axi_wstrb  (m02_axi_wstrb  ),
+//        .AXI_vlen(AXI_vlen[(2*dwidth_RFadd)-1:dwidth_RFadd])
+//    );
+    
+    genvar j;
+    generate 
+    for (j=0; j<num_col; j++) begin
+        emulate_HBM emulate_HBM_inst0(
         .ap_clk     (ap_clk         ),
         .ap_rst_n   (ap_rst_n       ),
-        .axi_arready(m01_axi_arready), 
-        .axi_awready(m01_axi_awready), 
-        .axi_bvalid (m01_axi_bvalid ), 
-        .axi_rdata  (m01_axi_rdata  ), 
-        .axi_rlast  (m01_axi_rlast  ), 
-        .axi_rvalid (m01_axi_rvalid ), 
-        .axi_wready (m01_axi_wready ), 
-        .axi_araddr (m01_axi_araddr ), 
-        .axi_arlen  (m01_axi_arlen  ), 
-        .axi_arvalid(m01_axi_arvalid), 
-        .axi_awaddr (m01_axi_awaddr ), 
-        .axi_awlen  (m01_axi_awlen  ), 
-        .axi_awvalid(m01_axi_awvalid), 
-        .axi_bready (m01_axi_bready ), 
-        .axi_rready (m01_axi_rready ), 
-        .axi_wvalid (m01_axi_wvalid ), 
-        .axi_wdata  (m01_axi_wdata  ), 
-        .axi_wlast  (m01_axi_wlast  ), 
-        .axi_wstrb  (m01_axi_wstrb  ) 
+        .axi_arready(arready_HBM[j]), 
+        .axi_awready(awready_HBM[j]), 
+        .axi_bvalid (bvalid_HBM[j] ), 
+        .axi_rdata  (rdata_HBM[(phit_size*(j+1))-1:phit_size*j]), 
+        .axi_rlast  (rlast_HBM[j]  ), 
+        .axi_rvalid (rvalid_HBM[j] ), 
+        .axi_wready (wready_HBM[j] ), 
+        .axi_araddr (araddr_HBM[(dwidth_aximm*(j+1))-1:dwidth_aximm*j] ), 
+        .axi_arlen  (arlen_HBM[((j+1)*8)-1:j*8]  ), 
+        .axi_arvalid(arvalid_HBM[j]), 
+        .axi_awaddr (awaddr_HBM[((j+1)*dwidth_aximm)-1:dwidth_aximm*j] ), 
+        .axi_awlen  (awlen_HBM[((j+1)*8)-1:j*8]  ), 
+        .axi_awvalid(awvalid_HBM[j]), 
+        .axi_bready (bready_HBM[j] ), 
+        .axi_rready (rready_HBM[j] ), 
+        .axi_wvalid (wvalid_HBM[j] ), 
+        .axi_wdata  (wdata_HBM[((j+1)*phit_size)-1:phit_size*j]  ), 
+        .axi_wlast  (wlast_HBM[j]  ), 
+        .axi_wstrb  (wstrb_HBM[((j+1)*(phit_size/8))-1:(phit_size/8)*j]  ),
+        .AXI_vlen   (AXI_vlen[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]) 
+        );
+        
+    end
+    endgenerate
+    
+    emulate_stream_in emulate_stream_in_inst(
+    .ap_clk(ap_clk),
+    .ap_rst_n(ap_rst_n),
+    .axis00_tdata(tdata_stream_in),
+    .axis00_tvalid(tvalid_stream_in),
+    .axis00_tready(tready_stream_in),
+    .axis00_tlast(tlast_stream_in),
+    .axis00_tkeep(tkeep_stream_in),
+    
+    .axis01_tdata(tdata_stream_out),
+    .axis01_tvalid(tvalid_stream_out),
+    .axis01_tready(tready_stream_out),
+    .axis01_tlast(tlast_stream_out),
+    .axis01_tkeep(tkeep_stream_out)
     );
+
     
-    emulate_HBM emulate_HBM_inst1(
-        .ap_clk     (ap_clk         ),
-        .ap_rst_n   (ap_rst_n       ),
-        .axi_arready(m02_axi_arready), 
-        .axi_awready(m02_axi_awready), 
-        .axi_bvalid (m02_axi_bvalid ), 
-        .axi_rdata  (m02_axi_rdata  ), 
-        .axi_rlast  (m02_axi_rlast  ), 
-        .axi_rvalid (m02_axi_rvalid ), 
-        .axi_wready (m02_axi_wready ), 
-        .axi_araddr (m02_axi_araddr ), 
-        .axi_arlen  (m02_axi_arlen  ), 
-        .axi_arvalid(m02_axi_arvalid), 
-        .axi_awaddr (m02_axi_awaddr ), 
-        .axi_awlen  (m02_axi_awlen  ), 
-        .axi_awvalid(m02_axi_awvalid), 
-        .axi_bready (m02_axi_bready ), 
-        .axi_rready (m02_axi_rready ), 
-        .axi_wvalid (m02_axi_wvalid ), 
-        .axi_wdata  (m02_axi_wdata  ), 
-        .axi_wlast  (m02_axi_wlast  ), 
-        .axi_wstrb  (m02_axi_wstrb  ) 
-    );
-    
-    emulate_stream_in emulate_stream_in_inst(.*);
-    
-    // ------------------Assign instructions------------------ //
-    logic [phit_size-1:0] instructions[0:depth_config-1];
-    logic [dwidth_int-1:0] mem[0:num_col-1][0:(depth_config)-1];
-    
-    genvar i,j;
-    localparam num_instr = 52;
-    generate
-    for (i=0;i<num_col;i++) begin
-        for (j=0;j<depth_config;j++) begin
-            if (j<num_instr)
-                assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = mem[i][j];
-            else
-                assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = '0;
-        end
-    end 
-    for (i=num_col;i<SIMD_degree;i++) begin
-        for (j=0;j<depth_config;j++) begin
-            assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = '0;
-        end
-    end 
-    endgenerate  
-    
-    logic [dwidth_int-1:0] read_inst[0:depth_config-1];
-    string s, tks, tms, path;
-    int c,k,d,fd;
-    
-    // ------------------Simulation Things------------------ //
-    localparam num_dim = 2;
-    // clock
     always begin
         #(clk_pd/2);
         ap_clk = !ap_clk;      
     end
-    // dimensions
-    string path_stub = "/home/wkrska/Documents/Research-Files/G-FPin_HW/toolchain/assembler/Assembly_code/";
-    integer tk[num_dim] = {4,32};
-    integer tm[num_dim] = {4,16};
     
+    time time_pos_in_stream, time_neg_in_stream;
+    time time_pos_out_stream, time_neg_out_stream;
+    time time_pos_ap_done, time_neg_ap_done;
     
-    // ------------------Begin Simulation------------------ //
-    initial begin
-        fd = $fopen({path_stub,"output.txt"}, "w");
-              
-        for (d=0; d<num_dim; d++) begin
-            // Load instructions
-            for (c=0;c<num_col;c++) begin
-                s.itoa(c);
-                tks.itoa(tk[d]);
-                tms.itoa(tm[d]);
-                path = {path_stub,"tk",tks,"tm",tms,"/gcn_",s,".bin"};
-                $readmemb(path,read_inst);
-                #1;
-                mem[c] = read_inst;
-            end
-            
-            #10;
-            
-            // Reset
-            ap_clk                       = 1'b1;
-            ap_rst_n                     = 1'b0; 
-            
-            s_axi_control_araddr    <= 5'b0;
-            s_axi_control_arvalid   <= 1'b0;
-            s_axi_control_awaddr    <= 5'b0;
-            s_axi_control_awvalid   <= 1'b0;
-            s_axi_control_bready    <= 1'b0;
-            s_axi_control_rready    <= 1'b0;
-            s_axi_control_wdata     <= 32'b0;
-            s_axi_control_wstrb     <= 4'b0;
-            s_axi_control_wvalid    <= 1'b0;
-            m00_axi_arready         <= 1'b0;
-            m00_axi_rdata           <= 512'b0;
-            m00_axi_rlast           <= 1'b0;
-            m00_axi_rvalid          <= 1'b0;
-                    
-            
-            #(depth_config*clk_pd); ap_rst_n = 1'b1;
-    
-            // trigger ap_start
-            s_axi_control_awaddr <= 5'b0;
-            s_axi_control_awvalid <= 1'b1;
-            #80;
-            s_axi_control_awvalid <= 1'b0;
-            s_axi_control_wstrb[0] <= 1'b1;
-            s_axi_control_wdata[0] <= 1'b1;
-            s_axi_control_wvalid <= 1'b1;
-            #40;
-            // de-assert signals to release ctrl_start
-            s_axi_control_wstrb[0] <= 1'b0;
-            s_axi_control_wdata[0] <= 1'b0;
-            s_axi_control_wvalid <= 1'b0;
-            
-            #60; //ctrl start goes high and sample offset and size, arready is high, HBM latency
-            
-            // Start instructions write
-            m00_axi_rvalid <= 1'b1; 
-            
-            //start instructions
-            for (k=0; k<depth_config; k++) begin
-                m00_axi_rdata <= instructions[k];
-                $display("Instruction %d: %b",k,m00_axi_rdata);
-                if (k==(depth_config-1))
-                    m00_axi_rlast <= 1'b1;
-                #clk_pd;
-                m00_axi_rlast <= 1'b0;
-            end
-            // stop loading
-            m00_axi_rvalid <= 1'b0;
-            #clk_pd;
-            
-            #(clk_pd*tk[d]*tm[d]*depth_config*12);
-            
-            $display("Cycle count: %0d", csr_out);
-            $fwrite(fd,"tk: %0d, tm: %0d, cycles: %0d\n",tk[d],tm[d],csr_out);
-        end
-        $fclose(fd);
-        $finish;
+    always @(posedge tvalid_stream_in) begin
+        time_pos_in_stream <= $time;
     end
-endmodule
+    always @(negedge tvalid_stream_in) begin
+        time_neg_in_stream <= $time;
+    end
+    
+    always @(posedge tvalid_stream_out) begin
+        time_pos_out_stream <= $time;
+    end
+    always @(negedge tvalid_stream_out) begin
+        time_neg_out_stream <= $time;
+    end
+    
+    always @(posedge ap_done_o) begin
+        time_pos_ap_done <= $time;
+    end
+    always @(negedge ap_done_o) begin
+        time_neg_ap_done <= $time;
+    end
+//    always @(posedge ap_done_o) begin
+//        time_pos_ap_done <= $time;
+//    end
+    
+    // Load instructions
+    logic [phit_size-1:0] instructions[0:depth_config-1];
+    logic [dwidth_int-1:0] mem[0:num_col-1][0:(depth_config)-1];
+    
+    genvar c;
+    generate
+    for (c=0;c<num_col;c++) begin
+        logic [dwidth_int-1:0] read_inst[0:depth_config-1];
+        string s, path;
+        initial begin
+            s.itoa(c);
+//            path = {"/home/pouya/github/G-FPin_HW_old/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/test/instructions/Cora/12/collective_",s,".bin"};
+            path = {"/home/pouya/github/G-FPin_HW_old/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/test/instructions/Cora/12/gcn_xv_",s,".bin"};
+            $readmemb(path,read_inst);
+            #1;
+            mem[c] = read_inst;
+        end
+    end
+    endgenerate
+    
+    genvar i;
+    generate
+    for (i=0;i<num_col;i++) begin
+        for (j=0;j<depth_config;j++) begin
+            assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = mem[i][j];
+        end
+    end 
+    for (i=num_col;i<16-num_col;i++) begin
+        for (j=0;j<depth_config;j++) begin
+            assign instructions[j][dwidth_int*(i+1)-1:dwidth_int*i] = '0;
+        end
+    end 
+    endgenerate   
+    
+    int k;
+    time t_sin_local, t_sin_tot;
+    time t_sout_local, t_sout_tot;
+    time t_ap_done;
+    integer tk=617;
+    integer tm=1;
+    genvar y, z;
+    
+    initial begin
+    integer z;
+            t_sout_tot = 0;
+       for (z=0; z<tm; z++) begin
+            wait(tvalid_stream_out);
+            wait(!tvalid_stream_out);
+            #2;
+    //        $display("time is: %t", $time);
+            t_sout_local = time_neg_out_stream-time_pos_out_stream;
+            $display("stream_out_tvalid took: %t", t_sout_local);
+            t_sout_tot += t_sout_local;
+        end
+         $display("total_time sout: %t", t_sout_tot); 
+//         wait(ap_done_o); 
+//         #2;
+//         $display("time_app: %t", time_pos_ap_done);
+//         $display("sout_BW: %t", t_sout_tot/(time_pos_ap_done-696));
+    end
+    
+    initial begin
+    integer y;
+        t_sin_tot = 0;
 
+        for (y=0; y<tk+1; y++) begin
+            wait(tvalid_stream_in);
+            wait(!tvalid_stream_in);
+            #2;
+    //        $display("time is: %t", $time);
+            t_sin_local = time_neg_in_stream-time_pos_in_stream;
+            $display("stream_in_tvalid took: %t", t_sin_local);
+            t_sin_tot += t_sin_local;
+        end
+        
+        $display("total_time sin: %t", t_sin_tot); 
 
+    end
+    
+    initial begin
+    integer y;
+            wait(ap_done_o);
+//            wait(!ap_done_o);
+            #2;
+    //        $display("time is: %t", $time);
+            t_ap_done = time_neg_ap_done-time_pos_ap_done;
+            $display("ap_done took: %t", time_pos_ap_done);
+        
 
+    end
+    
+//    initial begin
+//         wait(ap_done_o); 
+//         #2;
+//         $display("time_app: %t", time_pos_ap_done);
+////         $display("sin_BW: %t", t_sin_tot/(time_pos_ap_done-696)); 
+////         $display("sout_BW: %t", t_sout_tot/(time_pos_ap_done-696));
+//    end
+    
+    
+    
+    initial begin
+//        instructions = '{default:0};
+        
+        // Reset
+        ap_clk                       = 1'b1;
+        ap_rst_n                     = 1'b0; 
+        
+        s_axi_control_araddr    <= 5'b0;
+        s_axi_control_arvalid   <= 1'b0;
+        s_axi_control_awaddr    <= 5'b0;
+        s_axi_control_awvalid   <= 1'b0;
+        s_axi_control_bready    <= 1'b0;
+        s_axi_control_rready    <= 1'b0;
+        s_axi_control_wdata     <= 32'b0;
+        s_axi_control_wstrb     <= 4'b0;
+        s_axi_control_wvalid    <= 1'b0;
+        m00_axi_arready         <= 1'b0;
+        m00_axi_rdata           <= 512'b0;
+        m00_axi_rlast           <= 1'b0;
+        m00_axi_rvalid          <= 1'b0;
+//        axis00_tdata            <= 512'b0;
+//        axis00_tvalid           <= 1'b0;
+//        axis01_tready           <= 1'b0;
+//        axis00_tlast            <= 1'b0;
+//        axis00_tkeep            <= 64'b0;
+//        m01_axi_arready         <= 1'b0;
+//        m01_axi_awready         <= 1'b0;
+//        m01_axi_bvalid          <= 1'b0;
+//        m01_axi_rdata           <= 512'b0;
+//        m01_axi_rlast           <= 1'b0;
+//        m01_axi_rvalid          <= 1'b0;
+//        m01_axi_wready          <= 1'b0;
+//        m02_axi_arready         <= 1'b0;
+//        m02_axi_awready         <= 1'b0;
+//        m02_axi_bvalid          <= 1'b0;
+//        m02_axi_rdata           <= 512'b0;
+//        m02_axi_rlast           <= 1'b0;
+//        m02_axi_rvalid          <= 1'b0;
+//        m02_axi_wready          <= 1'b0;
+                
+        
+        #(depth_config*clk_pd); ap_rst_n = 1'b1;
+        
+        // trigger ap_start
+        s_axi_control_awaddr <= 5'b0;
+        s_axi_control_awvalid <= 1'b1;
+        #80;
+        s_axi_control_awvalid <= 1'b0;
+        s_axi_control_wstrb[0] <= 1'b1;
+        s_axi_control_wdata[0] <= 1'b1;
+        s_axi_control_wvalid <= 1'b1;
+        #40;
+        // de-assert signals to release ctrl_start
+        s_axi_control_wstrb[0] <= 1'b0;
+        s_axi_control_wdata[0] <= 1'b0;
+        s_axi_control_wvalid <= 1'b0;
+        
+        #60; //ctrl start goes high and sample offset and size, arready is high, HBM latency
+        
+        // Start instructions write
+        m00_axi_rvalid <= 1'b1; 
+        
+        //start instructions
+        for (k=0; k<depth_config; k++) begin
+            m00_axi_rdata <= instructions[k];
+            $display("Instruction %d: %b",k,m00_axi_rdata);
+            if (k==(depth_config-1))
+                m00_axi_rlast <= 1'b1;
+            #clk_pd;
+            m00_axi_rlast <= 1'b0;
+        end
+        // stop loading
+        m00_axi_rvalid <= 1'b0;
+        #clk_pd;
+        
+        
+        
+        #10000;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
 //////////////// Start hard coded TB /////////////////////
 //        //      Scalar            // column 2                                       // column 1
 //        m00_axi_rdata <= {448'b0, 20'h12345, 5'h1, 7'h37                          , 20'h12345, 5'h1, 7'h37                            }; #clk_pd; //lui
@@ -382,3 +537,12 @@ endmodule
 //        m01_axi_wready <= 1'b0;    m02_axi_wready <= 1'b0; 
 //        m01_axi_bvalid <= 1'b0;    m02_axi_bvalid <= 1'b0; 
 //////////////// End hard coded TB /////////////////////
+        
+        
+        
+//        #(clk_pd*(128+5)*32*16);
+        #(clk_pd*2000000);
+    $finish;
+    end
+
+endmodule
