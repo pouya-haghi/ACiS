@@ -12,7 +12,7 @@ program test(intf i_intf);
     env = new(i_intf);
     
     //setting the repeat count of generator as 4, means to generate 4 packets
-    env.gen.repeat_count = 100;
+    env.gen.repeat_count = 1000;
     
     //calling run of env, it interns calls generator and driver main tasks.
     env.run();

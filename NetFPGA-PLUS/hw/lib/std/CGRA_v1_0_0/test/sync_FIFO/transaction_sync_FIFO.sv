@@ -12,6 +12,10 @@ class transaction;
        bit [tb_fifo_width-1:0] dout;
        bit empty;
        bit full;
+  
+  // For constraining:     
+  //constaint, to generate any one among write and read
+//  constraint wr_rd_c { wr_en != rd_en; }; 
        
   function void display(string name);
     $display("-------------------------");

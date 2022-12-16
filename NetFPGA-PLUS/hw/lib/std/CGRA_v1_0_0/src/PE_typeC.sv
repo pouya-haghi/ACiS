@@ -35,11 +35,11 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
     logic t_valid_mul; //discard output valid signal
     logic o_fp_acc_t_last, o_fp_acc_tvalid;
     
-    localparam [2:0] ADD = 3'b000;
-    localparam [2:0] ACC = 3'b001;
-    localparam [2:0] MUL = 3'b010;
-    localparam [2:0] MACC= 3'b011;
-    localparam [2:0] NOP = 3'b100;
+//    localparam [2:0] ADD = 3'b000;
+////    localparam [2:0] ACC = 3'b001;
+//    localparam [2:0] MUL = 3'b010;
+//    localparam [2:0] MACC= 3'b011;
+//    localparam [2:0] NOP = 3'b100;
     
     logic t_valid_inp1_d, t_valid_inp1_dd, t_valid_inp2_d, t_valid_inp3_d, t_valid_mul_d;
     logic [dwidth_float-1:0] inp1_d, inp1_dd, inp2_d, inp3_d, o_fp_mul_d;
@@ -108,11 +108,6 @@ module PE_typeC #(parameter latency=16)( // 8 for multiply and 8 for adder
                 out = o_fp_add;
                 t_valid_out = t_valid_add;
                 t_last_out = t_last_add;
-            end
-            ACC: begin // NOP for now
-                out = inp1_dd;
-                t_valid_out = t_valid_inp1_dd;
-                t_last_out = t_last_dd;
             end
             MUL: begin
                 out = o_fp_mul_d;

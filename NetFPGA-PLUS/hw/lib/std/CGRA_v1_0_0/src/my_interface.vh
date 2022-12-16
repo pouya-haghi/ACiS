@@ -13,7 +13,7 @@ parameter dwidth_inst = 32;
 parameter dwidth_float = 32;
 parameter SIMD_degree = 16;
 parameter phit_size = 512;
-parameter num_col = 1; // up to 32
+parameter num_col = 2; // up to 32
 parameter entry_sz_state = 48;
 parameter sz_config = 36;
 parameter latencyPEA = 6;
@@ -27,6 +27,20 @@ parameter C_M_AXI_ADDR_WIDTH = 64;
 parameter packet_length = 16; // VLEN of vmacc
 parameter header_bytes = 34;
 parameter header_deg = $ceil((header_bytes*SIMD_degree*8)/phit_size);
+
+// FOR PEs:
+parameter [2:0] ADD = 3'b000;
+// localparam [2:0] ACC = 3'b001;
+parameter [2:0] MUL = 3'b010;
+parameter [2:0] MACC= 3'b011;
+parameter [2:0] NOP = 3'b100;
+
+// header/payload state:
+parameter [1:0] IDLE = 2'b00;
+parameter [1:0] HEADER = 2'b01;
+parameter [1:0] PAYLOAD = 2'b10;
+
+
 function integer f_max (
   input integer a,
   input integer b
