@@ -10,11 +10,21 @@
 module HBM_write_master #(
   // Set to the address width of the interface
   parameter integer C_M_AXI_ADDR_WIDTH  = 64,
+
   // Set the data width of the interface
   // Range: 32, 64, 128, 256, 512, 1024
   parameter integer C_M_AXI_DATA_WIDTH  = 512,
+
+  // Width of the ctrl_xfer_size_in_bytes input
+  // Range: 16:C_M_AXI_ADDR_WIDTH
+  parameter integer C_XFER_SIZE_WIDTH   = C_M_AXI_ADDR_WIDTH,
+
   // Specifies the maximum number of AXI4 transactions that may be outstanding.
-  parameter integer C_MAX_OUTSTANDING   = 16
+  parameter integer C_MAX_OUTSTANDING   = 32,
+
+  // Includes a data fifo between the AXI4-Stream slave and the AXI4 write
+  // channel master.  Depth is set to 32.
+  parameter integer C_INCLUDE_DATA_FIFO = 1
 )
 (
   // AXI Interface
@@ -26,7 +36,7 @@ module HBM_write_master #(
   output wire                            ctrl_done,               // Pulses high for one cycle when transfer request is complete
   // The following ctrl signals are sampled when ctrl_start is asserted
   input  wire [C_M_AXI_ADDR_WIDTH-1:0]   ctrl_addr_offset,        // Starting Address offset
-  input  wire [C_M_AXI_ADDR_WIDTH-1:0]    ctrl_xfer_size_in_bytes, // Length in number of bytes, limited by the address width.
+  input  wire [C_XFER_SIZE_WIDTH-1:0]    ctrl_xfer_size_in_bytes, // Length in number of bytes, limited by the address width.
 
   // AXI4 master interface (write only)
   output wire                            m_axi_awvalid,
@@ -43,12 +53,27 @@ module HBM_write_master #(
   input  wire                            m_axi_bvalid,
   output wire                            m_axi_bready,
   // AXI4-Stream interface
+  input  wire                            s_axis_aclk,
+  input  wire                            s_axis_areset,
   input  wire                            s_axis_tvalid,
-//  input  wire                            is_vse32_vv 
   output wire                            s_axis_tready,
   input  wire  [C_M_AXI_DATA_WIDTH-1:0]  s_axis_tdata
 
 );
+
+timeunit 1ps;
+timeprecision 1ps;
+
+///////////////////////////////////////////////////////////////////////////////
+// functions
+///////////////////////////////////////////////////////////////////////////////
+function integer f_min (
+  input integer a,
+  input integer b
+);
+  f_min = (a < b) ? a : b;
+endfunction
+
 /////////////////////////////////////////////////////////////////////////////
 // Local Parameters
 /////////////////////////////////////////////////////////////////////////////
@@ -59,7 +84,7 @@ localparam integer LP_MAX_BURST_BYTES            = 4096;  // Max AXI Protocol bu
 localparam integer LP_AXI_BURST_LEN              = f_min(LP_MAX_BURST_BYTES/LP_DW_BYTES, LP_MAX_BURST_LENGTH);
 localparam integer LP_LOG_BURST_LEN              = $clog2(LP_AXI_BURST_LEN);
 localparam integer LP_LOG_MAX_W_TO_AW            = 8; // Allow up to 256 outstanding w to aw transactions
-localparam integer LP_TOTAL_LEN_WIDTH            = C_M_AXI_ADDR_WIDTH-LP_LOG_DW_BYTES;
+localparam integer LP_TOTAL_LEN_WIDTH            = C_XFER_SIZE_WIDTH-LP_LOG_DW_BYTES;
 localparam integer LP_TRANSACTION_CNTR_WIDTH     = LP_TOTAL_LEN_WIDTH-LP_LOG_BURST_LEN;
 localparam [C_M_AXI_ADDR_WIDTH-1:0] LP_ADDR_MASK = LP_DW_BYTES*LP_AXI_BURST_LEN - 1;
 localparam integer LP_FIFO_DEPTH                 = 32;
@@ -166,11 +191,68 @@ always @(posedge aclk) begin
   end
 end
 
-  // Gate valid/ready signals with running so transfers don't occur before the
-  // xfer size is known.
-assign m_axi_wvalid  = s_axis_tvalid & w_running;
-assign m_axi_wdata   = s_axis_tdata;
-assign s_axis_tready = m_axi_wready & w_running;
+//generate
+//if (C_INCLUDE_DATA_FIFO == 1) begin : gen_fifo
+
+  // xpm_fifo_sync: Synchronous FIFO
+  // Xilinx Parameterized Macro, Version 2017.4
+  xpm_fifo_sync # (
+    .FIFO_MEMORY_TYPE    ( "distributed"        ) , // string; "auto", "block", "distributed", or "ultra";
+    .ECC_MODE            ( "no_ecc"             ) , // string; "no_ecc" or "en_ecc";
+    .FIFO_WRITE_DEPTH    ( LP_FIFO_DEPTH        ) , // positive integer
+    .WRITE_DATA_WIDTH    ( C_M_AXI_DATA_WIDTH   ) , // positive integer
+    .WR_DATA_COUNT_WIDTH ( LP_FIFO_COUNT_WIDTH  ) , // positive integer, not used
+    .PROG_FULL_THRESH    ( 10                   ) , // positive integer, not used
+    .FULL_RESET_VALUE    ( 1                    ) , // positive integer; 0 or 1
+    .USE_ADV_FEATURES    ( "1F1F"               ) , // string; "0000" to "1F1F";
+    .READ_MODE           ( "fwft"               ) , // string; "std" or "fwft";
+    .FIFO_READ_LATENCY   ( LP_FIFO_READ_LATENCY ) , // positive integer;
+    .READ_DATA_WIDTH     ( C_M_AXI_DATA_WIDTH   ) , // positive integer
+    .RD_DATA_COUNT_WIDTH ( LP_FIFO_COUNT_WIDTH  ) , // positive integer, not used
+    .PROG_EMPTY_THRESH   ( 10                   ) , // positive integer, not used
+    .DOUT_RESET_VALUE    ( "0"                  ) , // string, don't care
+    .WAKEUP_TIME         ( 0                    ) // positive integer; 0 or 2;
+  )
+  inst_xpm_fifo_sync (
+    .sleep         ( 1'b0                     ) ,
+    .rst           ( areset                   ) ,
+    .wr_clk        ( aclk                     ) ,
+    .wr_en         ( s_axis_tvalid            ) ,
+    .din           ( s_axis_tdata             ) ,
+    .full          ( s_axis_tready_n          ) ,
+    .overflow      (                          ) ,
+    .prog_full     (                          ) ,
+    .wr_data_count (                          ) ,
+    .almost_full   (                          ) ,
+    .wr_ack        (                          ) ,
+    .wr_rst_busy   (                          ) ,
+    .rd_en         ( m_axi_wready & w_running ) ,
+    .dout          ( m_axi_wdata              ) ,
+    .empty         (                          ) ,
+    .prog_empty    (                          ) ,
+    .rd_data_count (                          ) ,
+    .almost_empty  (                          ) ,
+    .data_valid    ( m_axi_wvalid_i           ) ,
+    .underflow     (                          ) ,
+    .rd_rst_busy   (                          ) ,
+    .injectsbiterr ( 1'b0                     ) ,
+    .injectdbiterr ( 1'b0                     ) ,
+    .sbiterr       (                          ) ,
+    .dbiterr       (                          )
+  );
+
+  assign s_axis_tready = ~s_axis_tready_n;
+  assign m_axi_wvalid = m_axi_wvalid_i & w_running;
+
+//end
+//else begin : gen_no_fifo
+//  // Gate valid/ready signals with running so transfers don't occur before the
+//  // xfer size is known.
+//  assign m_axi_wvalid  = s_axis_tvalid & w_running;
+//  assign m_axi_wdata   = s_axis_tdata;
+//  assign s_axis_tready = m_axi_wready & w_running;
+//end
+//endgenerate
 
 assign wxfer = m_axi_wvalid & m_axi_wready;
 

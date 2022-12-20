@@ -24,7 +24,6 @@ module regFile_scalar #(parameter width=32)
     
     always @(posedge clk) begin
         if(we)	mem[wr] <= wd;
-        else	mem[wr] <= mem[wr];
     end
     
     //register 0 is hardwired to 0 

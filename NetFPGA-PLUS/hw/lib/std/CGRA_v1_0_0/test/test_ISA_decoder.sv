@@ -19,7 +19,7 @@ module test_ISA_decoder;
     wire is_vle32_vv;
     wire is_vse32_vv;
     wire is_vmacc_vv;
-    wire is_vmv_vi;
+//    wire is_vmv_vi;
     wire is_vstreamout;
     wire is_vsetivli;
     wire is_bne;
@@ -37,30 +37,6 @@ module test_ISA_decoder;
     
     ISA_decoder ISA_decoder_inst(
           .*
-//        .instr(instr),
-//        .clk(clk),
-//        .rst(rst),
-//        .ctrl_i_mux2_tvalid(ctrl_i_mux2_tvalid),
-//        .rs1(rs1),
-//        .rs2(rs2),
-//        .rd(rd),
-//        .ITR(ITR),
-//        .wen_ITR(wen_ITR),
-//        .vr_addr(vr_addr),
-//        .vw_addr(vw_addr),
-//        .is_not_vect(is_not_vect),
-//        .is_vle32_vv(is_vle32_vv),
-//        .is_vse32_vv(is_vse32_vv),
-//        .is_vmacc_vv(is_vmacc_vv),
-//        .is_vstreamout(is_vstreamout),
-//        .is_vmv_vi(is_vmv_vi),
-//        .is_bne(is_bne),
-//        .is_csr(is_csr),
-//        .branch_immediate(branch_immediate),
-//        .R_immediate(R_immediate),
-//        .op(op),
-//        .op_scalar(op_scalar),
-//        .wen_RF_scalar(wen_RF_scalar)
         );
     always begin
         clk = 1;

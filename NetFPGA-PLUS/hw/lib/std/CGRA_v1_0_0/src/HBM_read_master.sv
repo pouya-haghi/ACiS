@@ -1,5 +1,4 @@
 `timescale 1ns / 1ps
-
 // default_nettype of none prevents implicit wire declaration.
 `default_nettype none
 
@@ -15,39 +14,73 @@ module HBM_read_master #(
   // Set the data width of the interface
   // Range: 32, 64, 128, 256, 512, 1024
   parameter integer C_M_AXI_DATA_WIDTH  = 512,
+
   // Width of the ctrl_xfer_size_in_bytes input
   // Range: 16:C_M_AXI_ADDR_WIDTH
-//  parameter integer C_XFER_SIZE_WIDTH   = C_M_AXI_ADDR_WIDTH,
+  parameter integer C_XFER_SIZE_WIDTH   = C_M_AXI_ADDR_WIDTH,
+
   // Specifies the maximum number of AXI4 transactions that may be outstanding.
   // Affects FIFO depth if data FIFO is enabled.
-  parameter integer C_MAX_OUTSTANDING   = 16
+  parameter integer C_MAX_OUTSTANDING   = 16,
+
+  // Includes a data fifo between the AXI4 read channel master and the AXI4-Stream
+  // master.  It will be sized to hold C_MAX_OUTSTANDING transactions. If no
+  // FIFO is instantiated then the AXI4 read channel is passed through to the
+  // AXI4-Stream slave interface.
+  // Range: 0, 1
+  parameter integer C_INCLUDE_DATA_FIFO = 1
 )
 (
   // System signals
   input  wire                          aclk,
   input  wire                          areset,
+
   // Control signals
   input  wire                          ctrl_start,              // Pulse high for one cycle to begin reading
   output wire                          ctrl_done,               // Pulses high for one cycle when transfer request is complete
+
   // The following ctrl signals are sampled when ctrl_start is asserted
   input  wire [C_M_AXI_ADDR_WIDTH-1:0] ctrl_addr_offset,        // Starting Address offset
-  input  wire [C_M_AXI_ADDR_WIDTH-1:0] ctrl_xfer_size_in_bytes, // Length in number of bytes, limited by the address width.
+  input  wire [C_XFER_SIZE_WIDTH-1:0]  ctrl_xfer_size_in_bytes, // Length in number of bytes, limited by the address width.
+
   // AXI4 master interface (read only)
   output wire                          m_axi_arvalid,
   input  wire                          m_axi_arready,
   output wire [C_M_AXI_ADDR_WIDTH-1:0] m_axi_araddr,
   output wire [8-1:0]                  m_axi_arlen,
+
   input  wire                          m_axi_rvalid,
   output wire                          m_axi_rready,
   input  wire [C_M_AXI_DATA_WIDTH-1:0] m_axi_rdata,
   input  wire                          m_axi_rlast,
+
   // AXI4-Stream master interface
+  input  wire                          m_axis_aclk,
+  input  wire                          m_axis_areset,
   output wire                          m_axis_tvalid,
-  input wire                           m_axis_tready,
-  output wire [C_M_AXI_DATA_WIDTH-1:0] m_axis_tdata
-//  output wire                          m_axis_tlast,
-//  input wire                           is_vle32_vv
+  input  wire                          m_axis_tready,
+  output wire [C_M_AXI_DATA_WIDTH-1:0] m_axis_tdata,
+  output wire                          m_axis_tlast
 );
+
+timeunit 1ps;
+timeprecision 1ps;
+///////////////////////////////////////////////////////////////////////////////
+// functions
+///////////////////////////////////////////////////////////////////////////////
+function integer f_max (
+  input integer a,
+  input integer b
+);
+  f_max = (a > b) ? a : b;
+endfunction
+
+function integer f_min (
+  input integer a,
+  input integer b
+);
+  f_min = (a < b) ? a : b;
+endfunction
 
 ///////////////////////////////////////////////////////////////////////////////
 // Local Parameters
@@ -59,7 +92,7 @@ localparam integer LP_MAX_BURST_BYTES            = 4096;  // Max AXI Protocol bu
 localparam integer LP_AXI_BURST_LEN              = f_min(LP_MAX_BURST_BYTES/LP_DW_BYTES, LP_MAX_BURST_LENGTH);
 localparam integer LP_LOG_BURST_LEN              = $clog2(LP_AXI_BURST_LEN);
 localparam integer LP_OUTSTANDING_CNTR_WIDTH     = $clog2(C_MAX_OUTSTANDING+1);
-localparam integer LP_TOTAL_LEN_WIDTH            = C_M_AXI_ADDR_WIDTH-LP_LOG_DW_BYTES;
+localparam integer LP_TOTAL_LEN_WIDTH            = C_XFER_SIZE_WIDTH-LP_LOG_DW_BYTES;
 localparam integer LP_TRANSACTION_CNTR_WIDTH     = LP_TOTAL_LEN_WIDTH-LP_LOG_BURST_LEN;
 localparam [C_M_AXI_ADDR_WIDTH-1:0] LP_ADDR_MASK = LP_DW_BYTES*LP_AXI_BURST_LEN - 1;
 // FIFO Parameters
@@ -71,7 +104,7 @@ localparam integer LP_FIFO_COUNT_WIDTH           = $clog2(LP_FIFO_DEPTH)+1;
 // Variables
 ///////////////////////////////////////////////////////////////////////////////
 // Control logic
-logic                                     done;
+logic                                     done = '0;
 logic                                     has_partial_bursts;
 logic                                     start_d1 = 1'b0;
 logic [C_M_AXI_ADDR_WIDTH-1:0]            addr_offset_r;
@@ -102,12 +135,7 @@ logic [LP_OUTSTANDING_CNTR_WIDTH-1:0]     outstanding_vacancy_count;
 ///////////////////////////////////////////////////////////////////////////////
 
 always @(posedge aclk) begin
-  if (areset) begin
-    done <= 1'b0;
-  end
-  else begin
-    done <= (rxfer & m_axi_rlast & r_final_transaction) ? 1'b1 : (ctrl_done ? 1'b0 : done);
-  end
+  done <= rxfer & m_axi_rlast & r_final_transaction ? 1'b1 : ctrl_done ? 1'b0 : done;
 end
 
 assign ctrl_done = done;
@@ -197,6 +225,7 @@ inst_ar_transaction_cntr (
 
 assign ar_done = ar_final_transaction && arxfer;
 
+
 // Keeps track of the number of outstanding transactions. Stalls
 // when the value is reached so that the FIFO won't overflow.
 // If no FIFO present, then just limit at max outstanding transactions.
@@ -216,18 +245,76 @@ inst_ar_to_r_transaction_cntr (
   .is_zero    ( stall_ar                          )
 );
 
+
 ///////////////////////////////////////////////////////////////////////////////
 // AXI Read Channel
 ///////////////////////////////////////////////////////////////////////////////
-  // All signals pass through.
-  assign m_axis_tvalid = m_axi_rvalid;
-  assign m_axis_tdata  = m_axi_rdata;
-  assign m_axi_rready  = m_axis_tready;
+//generate
+//if (C_INCLUDE_DATA_FIFO == 1) begin : gen_fifo
+
+  // xpm_fifo_sync: Synchronous FIFO
+  // Xilinx Parameterized Macro, Version 2017.4
+  xpm_fifo_sync # (
+    .FIFO_MEMORY_TYPE    ( "auto"               ) , // string; "auto", "block", "distributed", or "ultra";
+    .ECC_MODE            ( "no_ecc"             ) , // string; "no_ecc" or "en_ecc";
+    .FIFO_WRITE_DEPTH    ( LP_FIFO_DEPTH        ) , // positive integer
+    .WRITE_DATA_WIDTH    ( C_M_AXI_DATA_WIDTH+1 ) , // positive integer
+    .WR_DATA_COUNT_WIDTH ( LP_FIFO_COUNT_WIDTH  ) , // positive integer, not used
+    .PROG_FULL_THRESH    ( 10                   ) , // positive integer, not used
+    .FULL_RESET_VALUE    ( 1                    ) , // positive integer; 0 or 1
+    .USE_ADV_FEATURES    ( "1F1F"               ) , // string; "0000" to "1F1F";
+    .READ_MODE           ( "fwft"               ) , // string; "std" or "fwft";
+    .FIFO_READ_LATENCY   ( LP_FIFO_READ_LATENCY ) , // positive integer;
+    .READ_DATA_WIDTH     ( C_M_AXI_DATA_WIDTH+1 ) , // positive integer
+    .RD_DATA_COUNT_WIDTH ( LP_FIFO_COUNT_WIDTH  ) , // positive integer, not used
+    .PROG_EMPTY_THRESH   ( 10                   ) , // positive integer, not used
+    .DOUT_RESET_VALUE    ( "0"                  ) , // string, don't care
+    .WAKEUP_TIME         ( 0                    ) // positive integer; 0 or 2;
+  )
+  inst_rd_xpm_fifo_sync (
+    .sleep         ( 1'b0                        ) ,
+    .rst           ( areset                      ) ,
+    .wr_clk        ( aclk                        ) ,
+    .wr_en         ( m_axi_rvalid                ) ,
+    .din           ( {m_axi_rlast,m_axi_rdata}   ) ,
+    .full          (                             ) ,
+    .overflow      (                             ) ,
+    .prog_full     (                             ) ,
+    .wr_data_count (                             ) ,
+    .almost_full   (                             ) ,
+    .wr_ack        (                             ) ,
+    .wr_rst_busy   (                             ) ,
+    .rd_en         ( m_axis_tready               ) ,
+    .dout          ( {m_axis_tlast,m_axis_tdata} ) ,
+    .empty         (                             ) ,
+    .prog_empty    (                             ) ,
+    .rd_data_count (                             ) ,
+    .almost_empty  (                             ) ,
+    .data_valid    ( m_axis_tvalid               ) ,
+    .underflow     (                             ) ,
+    .rd_rst_busy   (                             ) ,
+    .injectsbiterr ( 1'b0                        ) ,
+    .injectdbiterr ( 1'b0                        ) ,
+    .sbiterr       (                             ) ,
+    .dbiterr       (                             )
+  ) ;
+
+  assign m_axi_rready = 1'b1;
+//end
+//else begin : gen_no_fifo
+
+//  // All signals pass through.
+//  assign m_axis_tvalid = m_axi_rvalid;
+//  assign m_axis_tdata  = m_axi_rdata;
+//  assign m_axi_rready  = m_axis_tready;
 //  assign m_axis_tlast  = m_axi_rlast;
+
+//end
+//endgenerate
 
 assign rxfer = m_axi_rready & m_axi_rvalid;
 
-assign r_completed = m_axi_rvalid & m_axi_rready & m_axi_rlast;
+assign r_completed = m_axis_tvalid & m_axis_tready & m_axis_tlast;
 
 always_comb begin
   decr_r_transaction_cntr = rxfer & m_axi_rlast;

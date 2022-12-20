@@ -80,14 +80,14 @@ module data_path(
     logic [SIMD_degree-1:0] FIFO_out_tvalid;
     logic [SIMD_degree-1:0] FIFO_out_tlast;
     logic [num_col-1:0] wen_RF_scalar;
-    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vmv_vi, is_vstreamout, is_vsetivli, is_bne, is_csr, is_lui;
+    logic [num_col-1:0] is_vle32_vv, is_vse32_vv, is_vmacc_vv, is_vstreamout, is_vsetivli, is_bne, is_csr, is_lui;
     logic [num_col-1:0] stall_FIFO;
     logic [num_col-1:0] stall_rd_autovect, stall_wr_autovect;
     logic [num_col-1:0] read_done_HBM, write_done_HBM; 
     logic [num_col-1:0] flag_neq;
     logic t_stall;
     logic [(num_col*phit_size)-1:0] user_rdata_HBM;
-    logic [num_col-1:0] user_rvalid_HBM, user_wready_HBM;
+    logic [num_col-1:0] user_rvalid_HBM, user_wready_HBM, user_rlast;
     logic [num_col-1:0] valid_PE_i, valid_PE_o;
     logic [num_col-1:0] ap_done_decoder;
     logic ap_done_t;
@@ -192,6 +192,7 @@ module data_path(
             // if it is vmacc and tvalids are zero then you should stall auto_vect but not input FIFO 
             assign valid_PE_i[j] = (|tvalid_stream[(SIMD_degree*(j+1))-1:SIMD_degree*j]) & tvalid_RF[j]; // PH: changed from & to |
             assign valid_PE_o[j] = (|o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j]); // PH: changed from & to |
+            assign load_value_PC[((j+1)*12)-1:j*12] = branch_immediate[((j+1)*12)-1:j*12];
             
             // *********************************     Front End       *******************************
             ISA_decoder ISA_decoder_inst(
@@ -210,7 +211,6 @@ module data_path(
              .is_vle32_vv(is_vle32_vv[j]),
              .is_vse32_vv(is_vse32_vv[j]),
              .is_vmacc_vv(is_vmacc_vv[j]),
-             .is_vmv_vi(is_vmv_vi[j]),
              .is_vstreamout(is_vstreamout[j]),
              .is_bne(is_bne[j]),
              .is_csr(is_csr[j]),
@@ -246,7 +246,7 @@ module data_path(
              .is_vsetivli(is_vsetivli[j]),
              .vr_addr1(vr_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vr_addr2(vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
-             .vw_addr((is_vse32_vv || is_vle32_vv) ? vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd] : vw_addr_d[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),  // if VSE or VLE, choose non-delayed VD. Else, use delayed VD
+             .vw_addr((is_vse32_vv || is_vle32_vv) ? vw_addr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd] : vw_addr_d[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),  // if VSE or VLE, choose non-delayed VD. Else (vmacc), use delayed VD
              .vr_addr1_auto_incr(vr_addr1_auto_incr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vr_addr2_auto_incr(vr_addr2_auto_incr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
              .vw_addr_auto_incr(vw_addr_auto_incr[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
@@ -264,13 +264,13 @@ module data_path(
               .is_bne(is_bne[j]),
               .is_vstreamout(is_vstreamout_global),
               .flag_neq(flag_neq[j]),
-              .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
+//              .branch_immediate(branch_immediate[((j+1)*12)-1:j*12]),
               .done_steady(done_steady),
               .supplier(supplier[j]),
               .clken_PC(clken_PC[j]),
               .load_PC(load_PC[j]),
-              .incr_PC(incr_PC[j]),
-              .load_value_PC(load_value_PC[((j+1)*12)-1:j*12])
+              .incr_PC(incr_PC[j])
+//              .load_value_PC(load_value_PC[((j+1)*12)-1:j*12])
              );
 
              // *********************************     Back End       *******************************
@@ -315,15 +315,16 @@ module data_path(
              );
              
              // vectorized regFile
-             regFile_mask regFile_inst0( // PH: modified wen
-             .d_in(is_vmv_vi[j] ? {(phit_size){1'b0}} : (is_vmacc_vv[j] ? o_PE_typeC[(phit_size*(j+1))-1:phit_size*j] : user_rdata_HBM[(phit_size*(j+1))-1:phit_size*j])), // based on op I would choose wdata, o1_RF or HBM. vmv.v.i is not supported: ctrl_din_RF[(j*3)+0]==1 :rdata_config_table[(phit_size*(j+1))-1:phit_size*j]
+//             regFile_mask regFile_inst0( // PH: modified wen
+             regFile regFile_inst0( // PH: modified wen
+             .d_in((is_vmacc_vv[j] ? o_PE_typeC[(phit_size*(j+1))-1:phit_size*j] : is_vle32_vv[j]? user_rdata_HBM[(phit_size*(j+1))-1:phit_size*j]:{(phit_size){1'b0}})), // based on op I would choose wdata, o1_RF or HBM. vmv.v.i is not supported: ctrl_din_RF[(j*3)+0]==1 :rdata_config_table[(phit_size*(j+1))-1:phit_size*j]
              .clk(clk),
              .rd_addr1(vr_addr1_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_RF is one of the fields in tables (auto-increment address generator)
              .rd_addr2(vr_addr2_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_2 is ONLY for vmacc, is VD iterated 
              .wr_addr(vw_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // write addr, delayed only if not vse
-             .tlast_in(is_vmv_vi[j] ? {(SIMD_degree){1'b0}} : (is_vmacc_vv[j] ? o_tlast_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j] : {(SIMD_degree){1'b0}})),
-            //  .wen(is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_PE_o[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
-             .wen(is_vmv_vi[j] ? {(SIMD_degree){1'b0}} : (is_vmacc_vv[j] ? o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j] : is_vle32_vv[j] ? {(SIMD_degree){user_rvalid_HBM[j]}} : {(SIMD_degree){1'b0}})), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
+             .tlast_in(is_vmacc_vv[j] ? o_tlast_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j] : is_vle32_vv[j]?user_rlast[j]:{(SIMD_degree){1'b0}}),
+             .wen(is_vmacc_vv[j]?valid_PE_o[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
+//             .wen(is_vmv_vi[j] ? {(SIMD_degree){1'b0}} : (is_vmacc_vv[j] ? o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j] : is_vle32_vv[j] ? {(SIMD_degree){user_rvalid_HBM[j]}} : {(SIMD_degree){1'b0}})), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
              .d_out1(o1_RF[(phit_size*(j+1))-1:phit_size*j]),
              .d_out2(o2_RF[(phit_size*(j+1))-1:phit_size*j]),
              .tlast_out1(tlast1_RF[(SIMD_degree*(j+1))-1:SIMD_degree*j]));
@@ -337,7 +338,7 @@ module data_path(
              .ctrl_addr_offset({32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}),
 //             .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // 6'b0 because each VRF entry is 64 Bytes
              .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}), // 6'b0 because each VRF entry is 64 Bytes. PH: no need to decrement as runtimeloadtable itself does it
-             // -64 because AXI needs ITR-1 (length-1)
+             // -64 because AXI needs ITR-1 (length-1) 
              .m_axi_arvalid(arvalid_HBM[j]),
              .m_axi_arready(arready_HBM[j]),
              .m_axi_araddr(araddr_HBM[((j+1)*dwidth_aximm)-1:j*dwidth_aximm]),
@@ -348,7 +349,8 @@ module data_path(
              .m_axi_rlast(rlast_HBM[j]),
              .m_axis_tvalid(user_rvalid_HBM[j]),
              .m_axis_tdata(user_rdata_HBM[((j+1)*phit_size)-1:j*phit_size]),
-             .m_axis_tready(is_vle32_vv[j])
+             .m_axis_tready(is_vle32_vv[j]),
+             .m_axis_tlast(user_rlast[j])
              );
              
              // HBM write master
