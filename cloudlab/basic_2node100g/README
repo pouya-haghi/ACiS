@@ -1,0 +1,3 @@
+# 2 nodes (one FPGA and one 100 Gb NIC) - using vnx-basic - use fpga-NIC profile - status: worked successfully 
+
+fpga just does the vnx-basic kernel (from xup) without any modification. This is switch attached accelerator. 100G NIC has to send data to accelerator which will be received by accelerator's host. Or conversely, accelerator's host has to send the data through the accelerator to 100g NIC.

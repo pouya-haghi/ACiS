@@ -1,0 +1,3 @@
+# 2 nodes (one FPGA and one 100 Gb NIC) - using vnx-basic - using fpga-NIC profile - status: working
+
+FPGA just loopbacks the networking kernel with an argument of size (AXilite). This is a headless scenario (we only have AXI-Lite, FPGA's host has to orchestrate the kernel).
