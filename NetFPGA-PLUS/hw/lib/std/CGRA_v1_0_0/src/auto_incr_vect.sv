@@ -11,7 +11,7 @@
 
 // 1. read: assert wen_ITR to 1 for one cycle (one high pulse) then the instruction should be a read from 
 // register file (one of these signals should be high: is_vmacc_vv, is_streamout, is_vse32_v), set ITR as 8, 
-// make stall_rd as zero. A couple of cycles later (less than ITR), make a high pulse for stall_rd. What should we expect?
+// make stall_rd as zero. A couple of cycles later (less tahn ITR), make a high pulse for stall_rd. What we should expect?
 //vr_addr_auto_incr should be auto incremented if stall_rd is zero and should keep its value when stall_wr is high
 // 8 valid increment should be done and at the end, done signal should give a high pulse
 
@@ -49,12 +49,10 @@ module auto_incr_vect(
     logic [dwidth_RFadd-1:0] ITR_q, ITR_d;
     logic count_rd, count_wr;
     logic is_vect, change_PC;
-    logic is_vect_rd_partial, is_vect_rd, is_vect_wr;
     logic curr_state_rd, next_state_rd, curr_state_wr, next_state_wr;
     logic [1:0] curr_state_wen_ITR, next_state_wen_ITR;
     localparam waiting = 1'b0, count_started = 1'b1; 
-    localparam s_inactive = 1'b0, s_active = 1'b1;
-//    localparam left_inactive = 2'b00, left_active = 2'b01, right_inactive = 2'b10, right_active = 2'b11; 
+    localparam left_inactive = 2'b00, left_active = 2'b01, right_inactive = 2'b10, right_active = 2'b11; 
     
     reg_enr #(dwidth_RFadd) reg_enr_inst(
         .d(ITR),
@@ -63,7 +61,6 @@ module auto_incr_vect(
         .en(is_vsetivli),
         .q(ITR_d)
     );
-
     
     assign ITR_q = ITR_d - 1'b1;
     assign ITR_delay = ITR_d;
@@ -71,24 +68,26 @@ module auto_incr_vect(
     // FSM for wen_ITR
     always_ff @(posedge clk) begin
         if (rst) begin
-            curr_state_wen_ITR <= s_inactive;
+            curr_state_wen_ITR <= left_inactive;
         end
         else begin
             curr_state_wen_ITR <= next_state_wen_ITR;
         end
     end
-    
+
     always_comb begin
         case(curr_state_wen_ITR)
-            s_inactive: next_state_wen_ITR = (change_PC) ? s_active : s_inactive;
-            s_active: next_state_wen_ITR = (change_PC) ? s_active : s_inactive;
-            default: next_state_wen_ITR = s_inactive;
+            left_inactive: next_state_wen_ITR = (change_PC) ? right_active : left_inactive;
+            left_active: next_state_wen_ITR = (is_vect) ? left_inactive : (change_PC) ? right_active : left_active;
+            right_inactive: next_state_wen_ITR = (change_PC) ? left_active : right_inactive;
+            right_active: next_state_wen_ITR = (is_vect) ? right_inactive : (change_PC) ? left_active : right_active;
+            default: next_state_wen_ITR = left_inactive;
         endcase
     end
     
     assign change_PC = (load_PC || incr_PC);
     assign is_vect = is_vse32_v || is_vle32_v || is_vstreamout || is_vmacc_vv;
-    assign wen_ITR = ((curr_state_wen_ITR == s_active) & is_vect) ? 1'b1 : 1'b0;
+    assign wen_ITR = ((curr_state_wen_ITR == right_active) & is_vect) || ((curr_state_wen_ITR == left_active) & is_vect) ? 1'b1 : 1'b0;
     
     
     // an FSM with wen_ITR as a start signal and asserting count_rd if we should count_rd the counter
@@ -103,16 +102,12 @@ module auto_incr_vect(
         end
     end
 
-    assign is_vect_rd_partial = (is_vstreamout || is_vse32_v);
-    assign is_vect_rd = is_vect_rd_partial || is_vmacc_vv;
-    assign is_vect_wr = is_vmacc_vv||is_vle32_v;
-    
     // for vmacc I will wait until all valid outputs are finised (not valid inputs) this introduces some bubbles
     // equal to the latency of PE
     always_comb begin
         case(curr_state_rd)
             waiting: next_state_rd = (wen_ITR) ? count_started: waiting;
-            count_started: next_state_rd = (is_vect_rd && ctr_ITR_rd==ITR_q) ? waiting : count_started;
+            count_started: next_state_rd = ((is_vmacc_vv || is_vstreamout || is_vse32_v) && ctr_ITR_rd==ITR_q) ? waiting : count_started;
             default: next_state_rd = waiting;
         endcase
     end
@@ -120,21 +115,24 @@ module auto_incr_vect(
     always_comb begin
         case(curr_state_wr)
             waiting: next_state_wr = (wen_ITR) ? count_started: waiting;
-            count_started: next_state_wr = (is_vect_wr && ctr_ITR_wr==ITR_q) ? waiting : count_started;
+            count_started: next_state_wr = ((is_vmacc_vv||is_vle32_v) && ctr_ITR_wr==ITR_q) ? waiting : count_started;
             default: next_state_wr = waiting;
         endcase
     end
     
     assign count_rd = (curr_state_rd == count_started) || (curr_state_rd == waiting & wen_ITR)? 1'b1: 1'b0;
     assign count_wr = (curr_state_wr == count_started) || (curr_state_wr == waiting & wen_ITR)? 1'b1: 1'b0;
-    assign done =  ((curr_state_rd == count_started) && (is_vect_rd_partial && ctr_ITR_rd==ITR_q)) || ((curr_state_wr == count_started) && (is_vect_wr && ctr_ITR_wr==ITR_q)) ? 1'b1: 1'b0;
+    assign done =  ((curr_state_rd == count_started || curr_state_wr == count_started) && ((is_vmacc_vv||is_vle32_v)&&ctr_ITR_wr==ITR_q) || ((is_vstreamout||is_vse32_v)&&ctr_ITR_rd==ITR_q))? 1'b1: 1'b0;
     
     // for read
     always_ff@(posedge clk) begin
         if (rst) begin
             ctr_ITR_rd <= 'b0;
             end
-        else if (count_rd && ctr_ITR_rd!=ITR_q && !stall_rd && is_vect_rd) begin
+//        else if (wen_ITR) begin
+//            ctr_ITR_rd <= 'b0; 
+//        end
+        else if (count_rd && ctr_ITR_rd!=ITR_q && !stall_rd && (is_vmacc_vv || is_vstreamout || is_vse32_v)) begin
                 ctr_ITR_rd <= ctr_ITR_rd + 1;
             end
         else if (count_rd && ctr_ITR_rd==ITR_q) begin
@@ -147,7 +145,10 @@ module auto_incr_vect(
         if (rst) begin
             ctr_ITR_wr <= 'b0;
             end
-        else if (count_wr && ctr_ITR_wr!=ITR_q && !stall_wr && is_vect_wr) begin
+//        else if (wen_ITR) begin
+//            ctr_ITR_wr <= 'b0; 
+//        end
+        else if (count_wr && ctr_ITR_wr!=ITR_q && !stall_wr && (is_vmacc_vv || is_vle32_v)) begin
                 ctr_ITR_wr <= ctr_ITR_wr + 1;
             end
         else if (count_wr && ctr_ITR_wr==ITR_q) begin

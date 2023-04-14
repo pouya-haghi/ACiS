@@ -14,7 +14,7 @@ module sync_FIFO #(parameter fifo_width=32,
     );
 
     localparam dwidth_size = $clog2(fifo_size);
-    logic [dwidth_size:0] fifo_counter;
+    logic [fifo_size-1:0] fifo_counter;
     
     logic [dwidth_size-1:0] rd_ptr, wr_ptr;
     // pointer to read and write addresses

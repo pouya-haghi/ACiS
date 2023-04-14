@@ -11,7 +11,7 @@ module test_register_pipe(
     reg [7:0] din;
     reg clk;
     reg rst;
-//    reg ce;
+    reg ce;
     wire  [7:0] dout;
     
     register_pipe #(8,6) inst0 (.*);
@@ -29,8 +29,8 @@ module test_register_pipe(
 //    inp2 <= 0;
 rst = 0;
 din<=0;
-//ce=1;
-#25;
+ce=1;
+#20;
 rst = 1;
 #60;
 rst = 0;

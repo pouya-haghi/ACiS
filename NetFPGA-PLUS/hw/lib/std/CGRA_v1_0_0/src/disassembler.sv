@@ -15,6 +15,9 @@ module disassembler(
     );
     
     logic [1:0] state_prev;
+    logic [1:0] IDLE = 2'b00;
+    logic [1:0] HEADER = 2'b01;
+    logic [1:0] PAYLOAD = 2'b10;
     
     always_ff @(posedge clk) begin
        if(rst) begin
@@ -29,12 +32,10 @@ module disassembler(
         if (tready && tvalid) begin
             case(state_prev)
                 IDLE: state = (!(&empty) && !tlast) ? HEADER : IDLE;
-                
+    
                 HEADER: state = (tlast) ? IDLE : PAYLOAD;
                 
                 PAYLOAD: state = (tlast) ? IDLE : PAYLOAD;
-                
-                default: state = IDLE;
             endcase 
         end
         else begin

@@ -18,7 +18,7 @@ module ISA_decoder(
     output logic is_vle32_vv,
     output logic is_vse32_vv,
     output logic is_vmacc_vv,
-//    output logic is_vmv_vi,
+    output logic is_vmv_vi,
     output logic is_vstreamout,
     output logic is_vsetivli,
     output logic is_bne,
@@ -51,7 +51,7 @@ module ISA_decoder(
     assign is_vmacc_vv = (instr[6:0]==7'h57 && instr[14:12]==3'h0)?1'b1:1'b0;
     assign is_vle32_vv = (instr[6:0]==7'h07)?1'b1:1'b0;
     assign is_vse32_vv = (instr[6:0]==7'h27)?1'b1:1'b0;
-//    assign is_vmv_vi = (instr[6:0]==7'h57 && instr[14:12]==3'h5)?1'b1:1'b0;
+    assign is_vmv_vi = (instr[6:0]==7'h57 && instr[14:12]==3'h5)?1'b1:1'b0;
     assign t_is_vsetivli = (instr[6:0]==7'h57 && instr[14:12]==3'h7)?1'b1:1'b0;
     assign t_is_vstreamout = (instr[6:0]==7'b1111111)?1'b1:1'b0; // based on ISA extension
     assign is_bne = (instr[6:0]==7'b1100011 && instr[14:12]==3'b001)?1'b1:1'b0;
@@ -102,7 +102,7 @@ module ISA_decoder(
     assign op_scalar = (is_lui)? 3'b000: ((is_addi)?3'b001:(is_bne)?3'b010:(is_add)?3'b011:3'b100);
     // ************************  vectorized instructions *************************
     assign op = (is_vmacc_vv)? 3'b011: 3'b100; //else: NoP 
-    assign is_vect = |{is_vmacc_vv, is_vle32_vv, is_vse32_vv, is_vstreamout}; // is_vmv_vi,
+    assign is_vect = |{is_vmacc_vv, is_vle32_vv, is_vse32_vv, is_vmv_vi, is_vstreamout};
     assign is_not_vect = !is_vect;
     // vs1 is hardwire to O1 or O2 (no matter what you put in)
     assign vs2 = (is_vse32_vv || is_vstreamout)? instr[11:7]: instr[24:20]; // vs2
