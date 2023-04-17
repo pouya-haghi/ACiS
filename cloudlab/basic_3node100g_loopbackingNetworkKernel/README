@@ -1,0 +1,6 @@
+# 3 nodes (one FPGA and one 100 Gb NIC) - using vnx-basic - using fpga-NIC profile - status: working
+
+FPGA just loopbacks the networking kernel with an argument of size (AXilite). This is a headless scenario (we only have AXI-Lite, FPGA's host has to orchestrate the kernel).
+
+# You just populate the socket table with two NICs once and run the kernel once. Each node gets the correct data. I think the reason is that each NIC sends data at different time but if they were to send data at the same time packet loss can happen and either you dont get part of data or you get the data from another wrong node. One thing we should do in future is to process packets based on src IP address.
+
