@@ -1,0 +1,12 @@
+# 3 nodes (one FPGA and two 100 Gb NIC) - using vnx-basic - using fpga-NIC profile - status: working
+# the kernel is simply adding each 32 bit element with constant 1 and then looping back the networking kernel
+# You just populate the socket table with two NICs once and run the kernel once. Each node gets the correct data. I think the reason is that each NIC sends data at different time but if they were to send data at the same time packet loss can happen and either you dont get part of data or you get the data from another wrong node. One thing we should do in future is to process packets based on src IP address.
+# This is the order: 
+# 1) local node starts (lb_wh = lb.start(size))
+# 2) remote NIC 1 post receive (start_new_thread(socket_receive_threaded, (sock,size,)))
+# 3) remote NIC 2 post receive (start_new_thread(socket_receive_threaded, (sock,size,)))
+# 4) remote NIC 1 sends (sock.sendto) 
+# 5) remote NIC 2 sends (sock.sendto) 
+# 6) local node waits (lb_wh.wait())
+# 7) remote NIC 1 prints (print(udp_message_global) , print(recv_data_global)) -- these two arrays should be the same
+# 8) remote NIC 2 prints (print(udp_message_global) , print(recv_data_global)) -- these two arrays should be the same
