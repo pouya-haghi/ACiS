@@ -1,0 +1,13 @@
+# 3 nodes (one FPGA and two 100 Gb NIC) - using vnx-basic - using fpga-NIC profile - status: working
+# the kernel is simply adding each 32 bit element from two different processes together (waits until all caclulation is finished and then writes it to stream out)
+# the limitation in this version is that it will not work if two remote processes send packet at the same time (the current version only works if the first process send packet and after finishing with that the second process should send packet). This is because the current version only works with payload without considering the headers
+# The way to solve the above issue is to also incorporate the header and update the local buffer bsed on source IP and port information at the correct index. This would be the next version.
+# What I observe from the output is that each 8-bit elements gets added together and in case of overflow, acarry will be added to the next byte, which is correct.
+# You just populate the socket table with two NICs once and run the kernel once. Each node gets the correct data. I think the reason is that each NIC sends data at different time but if they were to send data at the same time packet loss can happen and either you dont get part of data or you get the data from another wrong node. One thing we should do in future is to process packets based on src IP address.
+# This is the order: 
+# 1) local node starts (lb_wh = lb.start(size))
+# 2) remote NIC 1 post receive (start_new_thread(socket_receive_threaded, (sock,size,)))
+# 4) remote NIC 1 sends (sock.sendto) 
+# 5) remote NIC 2 sends (sock.sendto) 
+# 6) local node waits (lb_wh.wait())
+# 7) remote NIC 1 prints (print(udp_message_global) , print(recv_data_global)) -- these two arrays should be the same
