@@ -1,0 +1,11 @@
+# 3 nodes (one FPGA and two 100 Gb NIC) - using vnx-basic - using fpga-NIC profile - status: working
+# the kernel is simply doing a Reduction for 2 ranks
+# This time I'm also considering the header (based on incoming port number, which is my rank id) I will put the data and accumulate at the right index of buffers
+# Now, it works for the edge cases too: This is helpful since now even if the two client nodes send packet at the same time (as long as the switch ahas enogh buffer to store instead of dropping udp packet -- this means that the input packet size shouldnt be very large) then the reduction logic still works.
+# This is the order: 
+# 1) local node starts (lb_wh = lb.start(size))
+# 2) remote NIC 1 post receive (start_new_thread(socket_receive_threaded, (sock,size,)))
+# 4) remote NIC 1 sends (sock.sendto) 
+# 5) remote NIC 2 sends (sock.sendto) 
+# 6) local node waits (lb_wh.wait())
+# 7) remote NIC 1 prints (print(udp_message_global) , print(recv_data_global)) -- these two arrays should be the same
