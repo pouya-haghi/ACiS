@@ -1,0 +1,10 @@
+# 3 nodes (one FPGA and two 100 Gb NIC) - using vnx-basic - using fpga-NIC profile - status: working
+# the kernel is simply reporting some statistics from the packet header of input stream to the output stream (myPort, myIP, theirPort, TheirIP). 
+# However, the bit positions of these are not correct in this version yet. The correct one is: --> MSB: TheirIP (32 bits)  -  myIP (32 bits)  -  TheirPort (16 bits)  -   myPort (16 bits).  <-- LSB 
+# This is the order: 
+# 1) local node starts (lb_wh = lb.start(size))
+# 2) remote NIC 1 post receive (start_new_thread(socket_receive_threaded, (sock,size,)))
+# 4) remote NIC 1 sends (sock.sendto) 
+# 5) remote NIC 2 sends (sock.sendto) 
+# 6) local node waits (lb_wh.wait())
+# 7) remote NIC 1 prints (print(udp_message_global) , print(recv_data_global))
