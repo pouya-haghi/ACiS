@@ -13,6 +13,8 @@ module data_path(
     input  logic                                clk,
     input  logic                                rst,
     output logic                                ap_done,
+    input logic [63:0]                          axi01_ptr0,	
+    input logic [63:0]                          axi02_ptr0,
     // stream_in
     input  logic [phit_size-1:0]                tdata_stream_in,
     input  logic                                tvalid_stream_in,
@@ -75,6 +77,7 @@ module data_path(
     logic [(dwidth_int*num_col)-1:0] wdata_RF_scalar;
     logic [(dwidth_RFadd*num_col)-1:0] vr_addr1_auto_incr,vr_addr2_auto_incr;
     logic [(dwidth_RFadd*num_col)-1:0] vw_addr_auto_incr, vw_addr_d;
+    logic [(SIMD_degree*num_col)-1:0] i_tvalid2_PE_typeC, i_tvalid3_PE_typeC;
     logic [num_col-1:0] done_auto_incr;
     logic [phit_size-1:0] FIFO_out_tdata;
     logic [SIMD_degree-1:0] FIFO_out_tvalid;
@@ -87,10 +90,11 @@ module data_path(
     logic [num_col-1:0] flag_neq;
     logic t_stall;
     logic [(num_col*phit_size)-1:0] user_rdata_HBM;
-    logic [num_col-1:0] user_rvalid_HBM, user_wready_HBM;
+    logic [num_col-1:0] user_rvalid_HBM, user_wready_HBM, user_rlast;
     logic [num_col-1:0] valid_PE_i, valid_PE_o;
     logic [num_col-1:0] ap_done_decoder;
     logic ap_done_t;
+    logic [(64*num_col)-1:0] HBM_offset;
     
     // Internal Stream in/out
     logic [SIMD_degree-1:0] tvalid_stream_in_lane;
@@ -119,9 +123,11 @@ module data_path(
     localparam steady_off = 1'b0;
     localparam steady_on  = 1'b1;
     
-    logic [(num_col*dwidth_RFadd)-1:0] AXI_vlen;
+//    logic [(num_col*dwidth_RFadd)-1:0] AXI_vlen;
 //    assign AXI_vlen = ITR_delay[(2*dwidth_RFadd)-1:dwidth_RFadd];
-    assign AXI_vlen = ITR_delay;
+    assign AXI_vlen = ITR_delay; // one delay on ITR is b/c after vsetivli we have the vect operation	
+    assign HBM_offset[63:0] = axi01_ptr0;	
+    assign HBM_offset[127:64] = axi02_ptr0;
 
     always_ff @(posedge clk) begin
         if (rst) begin
@@ -318,10 +324,11 @@ module data_path(
              regFile_mask regFile_inst0( // PH: modified wen
              .d_in(is_vmv_vi[j] ? {(phit_size){1'b0}} : (is_vmacc_vv[j] ? o_PE_typeC[(phit_size*(j+1))-1:phit_size*j] : user_rdata_HBM[(phit_size*(j+1))-1:phit_size*j])), // based on op I would choose wdata, o1_RF or HBM. vmv.v.i is not supported: ctrl_din_RF[(j*3)+0]==1 :rdata_config_table[(phit_size*(j+1))-1:phit_size*j]
              .clk(clk),
+             .rst(rst),
              .rd_addr1(vr_addr1_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_RF is one of the fields in tables (auto-increment address generator)
              .rd_addr2(vr_addr2_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // rd_addr_2 is ONLY for vmacc, is VD iterated 
              .wr_addr(vw_addr_auto_incr[(dwidth_RFadd*(j+1))-1:dwidth_RFadd*j]), // write addr, delayed only if not vse
-             .tlast_in(is_vmv_vi[j] ? {(SIMD_degree){1'b0}} : (is_vmacc_vv[j] ? o_tlast_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j] : {(SIMD_degree){1'b0}})),
+             .tlast_in(is_vmv_vi[j] ? {(SIMD_degree){1'b0}} : (is_vmacc_vv[j] ? o_tlast_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j] : is_vle32_vv[j]? {(SIMD_degree){user_rlast[j]}}: {(SIMD_degree){1'b0}})),
             //  .wen(is_vmv_vi[j]?1'b0:(is_vmacc_vv[j]?valid_PE_o[j]:is_vle32_vv[j]?user_rvalid_HBM[j]:1'b0)), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
              .wen(is_vmv_vi[j] ? {(SIMD_degree){1'b0}} : (is_vmacc_vv[j] ? o_tvalid_PE_typeC[(SIMD_degree*(j+1))-1:SIMD_degree*j] : is_vle32_vv[j] ? {(SIMD_degree){user_rvalid_HBM[j]}} : {(SIMD_degree){1'b0}})), // based on op I would choose the correct tvalid_wdata or 1'b0 if it is a read. ctrl_din_RF[(j*3)+0]==1: tvalid_config_table[j]
              .d_out1(o1_RF[(phit_size*(j+1))-1:phit_size*j]),
@@ -332,9 +339,12 @@ module data_path(
              HBM_read_master HBM_read_master_inst0(
              .aclk(clk),
              .areset(rst),
+             .m_axis_aclk(clk),	
+             .m_axis_areset(rst),
              .ctrl_start(wen_ITR[j]),
              .ctrl_done(read_done_HBM[j]),    
-             .ctrl_addr_offset({32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}),
+//             .ctrl_addr_offset({32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}),
+             .ctrl_addr_offset(HBM_offset[((j+1)*64)-1:j*64] + {22'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int], 10'b0}), // need  a variable amount of zero based on vsetivli, i put 1K=10 bits fro VLEN
 //             .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // 6'b0 because each VRF entry is 64 Bytes
              .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}), // 6'b0 because each VRF entry is 64 Bytes. PH: no need to decrement as runtimeloadtable itself does it
              // -64 because AXI needs ITR-1 (length-1)
@@ -348,16 +358,20 @@ module data_path(
              .m_axi_rlast(rlast_HBM[j]),
              .m_axis_tvalid(user_rvalid_HBM[j]),
              .m_axis_tdata(user_rdata_HBM[((j+1)*phit_size)-1:j*phit_size]),
-             .m_axis_tready(is_vle32_vv[j])
+             .m_axis_tready(is_vle32_vv[j]),
+             .m_axis_tlast(user_rlast[j])	
              );
              
              // HBM write master
              HBM_write_master HBM_write_master_inst0(
              .aclk(clk),
              .areset(rst),
+             .s_axis_aclk(clk),	
+             .s_axis_areset(rst),
              .ctrl_start(wen_ITR[j]),              // Pulse high for one cycle to begin reading
              .ctrl_done(write_done_HBM[j]),               // Pulses high for one cycle when transfer request is complete
-             .ctrl_addr_offset({32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}),        // Starting Address offset
+//             .ctrl_addr_offset({32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}),        // Starting Address offset
+	         .ctrl_addr_offset(HBM_offset[((j+1)*64)-1:j*64] + {22'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int], 10'b0}), // need  a variable amount of zero based on vsetivli, i put 1K=10 bits fro VLEN               
 //             .ctrl_xfer_size_in_bytes({{(dwidth_aximm-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // Length in number of bytes, limited by the address width.
              .ctrl_xfer_size_in_bytes({{(dwidth_aximm-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}), //PH: no need to decrement as runtimeloadtable itself does it
              .m_axi_awvalid(awvalid_HBM[j]), 

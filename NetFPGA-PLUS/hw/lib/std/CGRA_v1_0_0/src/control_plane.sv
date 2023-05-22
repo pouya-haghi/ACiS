@@ -46,7 +46,9 @@ module control_plane(
     output logic                            m_axi_rready             ,
     output logic [dwidth_int-1:0]           cycle_register           ,
     output logic [(num_col*dwidth_int)-1:0] instr                    ,
-    output logic                            done_loader
+    output logic                            done_loader              ,
+    output logic [63:0]                     axi01_ptr0               ,
+    output logic [63:0]                     axi02_ptr0
 
     );
 
@@ -91,6 +93,8 @@ rtl_kernel_wizard_0_control_s_axi control_s_axi_inst0 (
     .RVALID    (RVALID), //output
     .interrupt (interrupt), //output
     .axi00_ptr0(axi00_ptr0), //output*
+    .axi01_ptr0(axi01_ptr0),
+    .axi02_ptr0(axi02_ptr0),
     .ap_start  (ap_start));//output
     
 rtl_kernel_wizard_0_runtimeLoadTable runtimeLoadTable_inst0(

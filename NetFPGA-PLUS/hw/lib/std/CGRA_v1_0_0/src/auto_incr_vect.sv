@@ -52,7 +52,7 @@ module auto_incr_vect(
     logic curr_state_rd, next_state_rd, curr_state_wr, next_state_wr;
     logic [1:0] curr_state_wen_ITR, next_state_wen_ITR;
     localparam waiting = 1'b0, count_started = 1'b1; 
-    localparam left_inactive = 2'b00, left_active = 2'b01, right_inactive = 2'b10, right_active = 2'b11; 
+    localparam [1:0] left_inactive = 2'b00, left_active = 2'b01, right_inactive = 2'b10, right_active = 2'b11; 
     
     reg_enr #(dwidth_RFadd) reg_enr_inst(
         .d(ITR),

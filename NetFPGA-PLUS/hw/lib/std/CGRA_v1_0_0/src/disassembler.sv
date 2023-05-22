@@ -14,33 +14,35 @@ module disassembler(
     output logic [1:0]            state
     );
     
-    logic [1:0] state_prev;
-    logic [1:0] IDLE = 2'b00;
-    logic [1:0] HEADER = 2'b01;
-    logic [1:0] PAYLOAD = 2'b10;
+    logic [1:0] state_prev, state_o;
+    localparam [1:0] IDLE = 2'b00, HEADER = 2'b01, PAYLOAD = 2'b10;
     
     always_ff @(posedge clk) begin
        if(rst) begin
-          state <= IDLE;
+          state_prev <= IDLE;
        end
        else begin
-          state_prev <= state;
+          state_prev <= state_o;
        end
     end
     
     always_comb begin
         if (tready && tvalid) begin
             case(state_prev)
-                IDLE: state = (!(&empty) && !tlast) ? HEADER : IDLE;
+                IDLE: state_o = (!(&empty) && !tlast) ? HEADER : IDLE;
     
-                HEADER: state = (tlast) ? IDLE : PAYLOAD;
+                HEADER: state_o = (tlast) ? IDLE : PAYLOAD;
                 
-                PAYLOAD: state = (tlast) ? IDLE : PAYLOAD;
+                PAYLOAD: state_o = (tlast) ? IDLE : PAYLOAD;
+                
+                default: state_o = IDLE;
             endcase 
         end
         else begin
-            state = state_prev;
+            state_o = state_prev;
         end
     end
+    
+    assign state = state_o;
 
 endmodule
