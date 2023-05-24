@@ -5,7 +5,8 @@
 # Now, it works for the edge cases too: This is helpful since now even if the two client nodes send packet at the same time (as long as the switch ahas enogh buffer to store instead of dropping udp packet -- this means that the input packet size shouldnt be very large) then the reduction logic still works.
 # This is the order: 
 # 1) local node starts (lb_wh = lb.start(size))
-# 2) remote NIC 1 post receive (start_new_thread(socket_receive_threaded, (sock,size,)))
+# 2) remote NIC 1 posts a receive (start_new_thread(socket_receive_threaded, (sock,size,)))
+# 3) remote NIC 2 posts a receive
 # 4) remote NIC 1 sends (sock.sendto) 
 # 5) remote NIC 2 sends (sock.sendto) 
 # 6) local node waits (lb_wh.wait())
