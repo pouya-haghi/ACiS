@@ -44,7 +44,7 @@ to global memory via memory mapped interface */
 #define TDWIDTH 16
 #define UWIDTH 96
 #define NUM_RANK 2
-#define MAX_BUFFER_SIZE 11264 // 1408*8
+#define MAX_BUFFER_SIZE 22528 // 1408*8*NUM_RANK(=2) -- it should be multiples of 1408 -- in this example, we have 8 tlast for input stream and 2*8 tlast for output stream (b/c its allgether)
 
 // template<int D,int U,int TI,int TD>
 // struct ap_axis{
@@ -175,7 +175,7 @@ data_mover:
       buffer_idx_mux = buffer_idx_rank0;
     }
     else{
-      buffer_idx_mux = buffer_idx_rank1;
+      buffer_idx_mux = buffer_idx_rank1 + num_iter_local;
     }
     /*. For larger # of nodes, use:
     buffer_idx_mux = buffer_idx[this_rank];
@@ -184,25 +184,26 @@ data_mover:
 
     // ---------- Perform the processing (accumulation)
     // unroll
-    acc_buf0[buffer_idx_mux] += pkt_in.data.range(31,0);
-    acc_buf1[buffer_idx_mux] += pkt_in.data.range(63,32);
-    acc_buf2[buffer_idx_mux] += pkt_in.data.range(95,64);
-    acc_buf3[buffer_idx_mux] += pkt_in.data.range(127,96);
-    acc_buf4[buffer_idx_mux] += pkt_in.data.range(159,128);
-    acc_buf5[buffer_idx_mux] += pkt_in.data.range(191,160);
-    acc_buf6[buffer_idx_mux] += pkt_in.data.range(223,192);
-    acc_buf7[buffer_idx_mux] += pkt_in.data.range(255,224);
-    acc_buf8[buffer_idx_mux] += pkt_in.data.range(287,256);
-    acc_buf9[buffer_idx_mux] += pkt_in.data.range(319,288);
-    acc_buf10[buffer_idx_mux] += pkt_in.data.range(351,320);
-    acc_buf11[buffer_idx_mux] += pkt_in.data.range(383,352);
-    acc_buf12[buffer_idx_mux] += pkt_in.data.range(415,384);
-    acc_buf13[buffer_idx_mux] += pkt_in.data.range(447,416);
-    acc_buf14[buffer_idx_mux] += pkt_in.data.range(479,448);
-    acc_buf15[buffer_idx_mux] += pkt_in.data.range(511,480);
+    acc_buf0[buffer_idx_mux] = pkt_in.data.range(31,0);
+    acc_buf1[buffer_idx_mux] = pkt_in.data.range(63,32);
+    acc_buf2[buffer_idx_mux] = pkt_in.data.range(95,64);
+    acc_buf3[buffer_idx_mux] = pkt_in.data.range(127,96);
+    acc_buf4[buffer_idx_mux] = pkt_in.data.range(159,128);
+    acc_buf5[buffer_idx_mux] = pkt_in.data.range(191,160);
+    acc_buf6[buffer_idx_mux] = pkt_in.data.range(223,192);
+    acc_buf7[buffer_idx_mux] = pkt_in.data.range(255,224);
+    acc_buf8[buffer_idx_mux] = pkt_in.data.range(287,256);
+    acc_buf9[buffer_idx_mux] = pkt_in.data.range(319,288);
+    acc_buf10[buffer_idx_mux] = pkt_in.data.range(351,320);
+    acc_buf11[buffer_idx_mux] = pkt_in.data.range(383,352);
+    acc_buf12[buffer_idx_mux] = pkt_in.data.range(415,384);
+    acc_buf13[buffer_idx_mux] = pkt_in.data.range(447,416);
+    acc_buf14[buffer_idx_mux] = pkt_in.data.range(479,448);
+    acc_buf15[buffer_idx_mux] = pkt_in.data.range(511,480);
     // -------------
 
     // ------------- update the indices
+    // making indices to zero is not necessary
     global_idx++;
     if (this_rank == 0){
       if (buffer_idx_rank0 == num_iter_local - 1)
@@ -227,7 +228,7 @@ data_mover:
   }
     // literally doing a multicast
     // write to output stream (rank 0)
-    for (int i = 0; i < num_iter_local; i++) {
+    for (int i = 0; i < num_iter_local*NUM_RANK; i++) {
         #pragma HLS LATENCY min=1 max=1000
         #pragma HLS PIPELINE
         pkt_out.data.range(31,0) = acc_buf0[i];
@@ -255,7 +256,7 @@ data_mover:
         k2n.write(pkt_out);
     }
       // write to output stream (rank 1)
-      for (int i = 0; i < num_iter_local; i++) {
+      for (int i = 0; i < num_iter_local*NUM_RANK; i++) {
         #pragma HLS LATENCY min=1 max=1000
         #pragma HLS PIPELINE
         pkt_out.data.range(31,0) = acc_buf0[i];

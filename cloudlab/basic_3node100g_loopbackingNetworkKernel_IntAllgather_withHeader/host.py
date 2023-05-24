@@ -1,287 +1,168 @@
-/**********
-Copyright (c) 2019-2020, Xilinx, Inc.
-All rights reserved.
+# 3 nodes (one FPGA and two 100 Gb NIC) - using vnx-basic - using fpga-NIC profile - status: working
+# the kernel is simply adding each 32 bit element with constant 1 and then looping back the networking kernel
+# You just populate the socket table with two NICs once and run the kernel once. Each node gets the correct data. I think the reason is that each NIC sends data at different time but if they were to send data at the same time packet loss can happen and either you dont get part of data or you get the data from another wrong node. One thing we should do in future is to process packets based on src IP address.
+# This is the order: 
+# 1) local node starts (lb_wh = lb.start(size))
+# 2) remote NIC 1 posts receive (start_new_thread(socket_receive_threaded, (sock,size,)))
+# 3) NIC2 posts receive
+# 4) remote NIC 1 sends (sock.sendto) 
+# 5) remote NIC 2 sends (sock.sendto) 
+# 6) local node waits (lb_wh.wait())
+# 7) remote NIC 1 prints (print(udp_message_global) , print(recv_data_global)) -- these two arrays should be the same
 
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
+# Local (FPGA):
+import pynq
+import numpy as np
+from _thread import *
+import threading 
+import socket
+from vnx_utils import *
+from timeit import default_timer as timer
 
-1. Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
+for i in range(len(pynq.Device.devices)):
+    print("{}) {}".format(i, pynq.Device.devices[i].name))
 
-2. Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
+currentDevice = pynq.Device.devices[0]
+xclbin = '../binary/vnx_basic_if0.xclbin'
+ol = pynq.Overlay(xclbin,device=currentDevice)
+print(ol.ip_dict)
 
-3. Neither the name of the copyright holder nor the names of its contributors
-may be used to endorse or promote products derived from this software
-without specific prior written permission.
+print("Link interface 0 {}".format(ol.cmac_0.link_status()))
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED.
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION)
-HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-THIS SOFTWARE,
-EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-**********/
-/* This is a stream to memory mapped data mover kernel which takes input from a
-stream and writes data
-to global memory via memory mapped interface */
+# THE FOLLOWING IP ADDRESS SHOULD BE IN THE SAME SUBNET
+alveo_ipaddr = '192.168.40.8'
+print(ol.networklayer_0.set_ip_address(alveo_ipaddr, debug=True))
 
-#include "ap_axi_sdata.h"
-#include "ap_int.h"
-#include "hls_stream.h"
+!ifconfig enp175s0
+!ping -c 5 $alveo_ipaddr
 
-#define DWIDTH 512
-#define TDWIDTH 16
-#define UWIDTH 96
-#define NUM_RANK 2
-#define MAX_BUFFER_SIZE 22528 // 1408*8*NUM_RANK(=2) -- it should be multiples of 1408 -- in this example, we have 8 tlast for input stream and 2*8 tlast for output stream (b/c its allgether)
+# YOU MUST GET THE FOLLOWING IP ADDRESS FROM 100GB NIC
+sw_ip1 = '192.168.40.11'
+sw_ip2 = '192.168.40.12'
+ol.networklayer_0.sockets[0] = (sw_ip1, 50446, 60133, True) # This is dont care because we never use its port (50446)
+ol.networklayer_0.sockets[1] = (sw_ip1, 38656, 62781, True) # This is used since we are using its port (38656) in remote NIC 1
+ol.networklayer_0.sockets[2] = (sw_ip2, 60417, 62781, True) # This is used since we are using its port (60417) in remote NIC 2
+ol.networklayer_0.populate_socket_table(debug=True)
 
-// template<int D,int U,int TI,int TD>
-// struct ap_axis{
-//  ap_int<D> data;
-//  ap_uint<D/8> keep;
-//  ap_uint<D/8> strb;
-//  ap_uint<U> user;
-//  ap_uint<1> last;
-//  ap_uint<TI> id;
-//  ap_uint<TD> dest;
-// };
+lb = ol.krnl_loopback_0
+size = 1408 * 8 # sum of all of elements from NIC 1 (1408*50) and (+) NIC 2 (1408*50). 
+lb_wh = lb.start(size)
+# now send packet from NIC using sock.sendto
+lb_wh.wait()
+# ===========================================
+# Remote (NIC) 1
+import numpy as np
+from _thread import *
+import threading 
+import socket
+# from vnx_utils import *
 
-// template<int D,int U,int TI,int TD>
-// struct ap_axiu{
-//  ap_uint<D> data;
-//  ap_uint<D/8> keep;
-//  ap_uint<D/8> strb;
-//  ap_uint<U> user;
-//  ap_uint<1> last;
-//  ap_uint<TI> id;
-//  ap_uint<TD> dest;
-// };
+!ifconfig
+# THE FOLLOWING IP ADDRESS SHOULD BE IN THE SAME SUBNET
+alveo_ipaddr = '192.168.40.8'
+# wait until fpga is programmed
+!ping -c 5 $alveo_ipaddr
 
-// Note: tvalid and tready are always there! In other words, when you use "void example(int A[50], int B[50]) { #pragma HLS INTERFACE axis port=A"
-// then you will have mandatory signals {tdata, tvalid, tready} but when you use ap_axiu struct you are adding optional signals like keep, strb, ... to
-// {tdata, tvalid, tready}. They will be left unconnected if the downstream does not use them. 
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+sock.bind(('', 38656))
 
-typedef ap_axiu<DWIDTH, UWIDTH, 1, TDWIDTH> pkt;
+size = 1408 * 16
+shape = (size,1)
 
-extern "C" {
-void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
-	               hls::stream<pkt> &k2n,
-                   unsigned int     size     // Size in bytes (size-local)
-               ) {
-#pragma HLS INTERFACE axis port = n2k
-#pragma HLS INTERFACE axis port = k2n
+print_lock = threading.Lock() 
+# thread function 
+def socket_receive_threaded(sock, size): 
+    BYTES_PER_PACKET = 1408
+    shape_global = (size,1)
+    shape_local = (BYTES_PER_PACKET,1)
+    global recv_data_global
+    recv_data_global = np.empty(shape_global, dtype = np.uint8)
+    data_partial = np.empty(shape_local, dtype = np.uint8)
+    num_it = (size // BYTES_PER_PACKET)
+    sum_bytes = 0
+    connection = 'None'
+    for m in range(num_it):
+        res = sock.recvfrom_into(data_partial) 
+        recv_data_global[(m * BYTES_PER_PACKET) : ((m * BYTES_PER_PACKET) \
+                        + BYTES_PER_PACKET)] = data_partial
+        sum_bytes = sum_bytes + int(res[0])
+        connection = res[1]
 
-  unsigned int bytes_per_beat = (DWIDTH / 8);
-  unsigned int size_tot = NUM_RANK * size;
-  unsigned int num_iter_local = (size / bytes_per_beat);
-  unsigned int num_iter_global = (size_tot / bytes_per_beat);
-  //unsigned int count = 0:
 
-data_mover:
-//   int i = 0;
-  unsigned int buffer_idx_rank0 = 0;
-  unsigned int buffer_idx_rank1 = 0;
-  unsigned int buffer_idx_mux = 0;
-  /*. For larger # of nodes, use:
-  static unsigned int buffer_idx[NUM_RANK] = {0, 0};
-  #pragma HLS ARRAY_PARTITION variable=buffer_idx complete dim=0
-  #pragma HLS UNROLL
-  */
-  unsigned int global_idx = 0;
-  pkt pkt_in;
-  pkt pkt_out;
-  // unsigned int recvd_rank = 0;
-  ap_uint<8> recvd_this_IP;
-  ap_uint<8> recvd_this_Port;
-  // ap_uint<8> recvd_theirIP_0, recvd_theirIP_1;
-  // ap_uint<8> recvd_theirPort_0, recvd_theirPort_1;
-  ap_uint<8> this_rank;
+print_lock.acquire() 
+start_new_thread(socket_receive_threaded, (sock,size,))
+# now you can send the data
 
-  static ap_uint<32> acc_buf0[MAX_BUFFER_SIZE] = {0}; // when u use static you dont need to spend cycles for the initialization of memory and it is instead embedded into bitstream generation
-  #pragma HLS BIND_STORAGE variable=acc_buf0 type=RAM_2P impl=BRAM
+size = 1408 * 8
+shape = (size,1)
+udp_message_global = np.random.randint(low=0, high=((2**8)-1), size=shape, dtype=np.uint8)
+BYTES_PER_PACKET = 1408
+num_pkts = size//BYTES_PER_PACKET
+alveo_port = 62781
+for m in range(num_pkts):
+    udp_message_local = udp_message_global[(m * BYTES_PER_PACKET) : \
+                        ((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)]
+    sock.sendto(udp_message_local, (alveo_ipaddr, alveo_port))
 
-  static ap_uint<32> acc_buf1[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf1 type=RAM_2P impl=BRAM
+# now call lb_wh.wait() from local node
+print(udp_message_global)
+print(recv_data_global)
 
-  static ap_uint<32> acc_buf2[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf2 type=RAM_2P impl=BRAM
+# ===========================================
+# Remote (NIC) 2
+import numpy as np
+from _thread import *
+import threading 
+import socket
+# from vnx_utils import *
 
-  static ap_uint<32> acc_buf3[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf3 type=RAM_2P impl=BRAM
+!ifconfig
+# THE FOLLOWING IP ADDRESS SHOULD BE IN THE SAME SUBNET
+alveo_ipaddr = '192.168.40.8'
+# wait until fpga is programmed
+!ping -c 5 $alveo_ipaddr
 
-  static ap_uint<32> acc_buf4[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf4 type=RAM_2P impl=BRAM
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+sock.bind(('', 60417))
 
-  static ap_uint<32> acc_buf5[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf5 type=RAM_2P impl=BRAM
+size = 1408 * 16
+shape = (size,1)
 
-  static ap_uint<32> acc_buf6[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf6 type=RAM_2P impl=BRAM
+print_lock = threading.Lock() 
+# thread function 
+def socket_receive_threaded(sock, size): 
+    BYTES_PER_PACKET = 1408
+    shape_global = (size,1)
+    shape_local = (BYTES_PER_PACKET,1)
+    global recv_data_global
+    recv_data_global = np.empty(shape_global, dtype = np.uint8)
+    data_partial = np.empty(shape_local, dtype = np.uint8)
+    num_it = (size // BYTES_PER_PACKET)
+    sum_bytes = 0
+    connection = 'None'
+    for m in range(num_it):
+        res = sock.recvfrom_into(data_partial) 
+        recv_data_global[(m * BYTES_PER_PACKET) : ((m * BYTES_PER_PACKET) \
+                        + BYTES_PER_PACKET)] = data_partial
+        sum_bytes = sum_bytes + int(res[0])
+        connection = res[1]
 
-  static ap_uint<32> acc_buf7[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf7 type=RAM_2P impl=BRAM
+print_lock.acquire() 
+start_new_thread(socket_receive_threaded, (sock,size,))
 
-  static ap_uint<32> acc_buf8[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf8 type=RAM_2P impl=BRAM
+# now you can send the data
 
-  static ap_uint<32> acc_buf9[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf9 type=RAM_2P impl=BRAM
+size = 1408 * 8
+shape = (size,1)
+udp_message_global = np.random.randint(low=0, high=((2**8)-1), size=shape, dtype=np.uint8)
+BYTES_PER_PACKET = 1408
+num_pkts = size//BYTES_PER_PACKET
+alveo_port = 62781
+for m in range(num_pkts):
+    udp_message_local = udp_message_global[(m * BYTES_PER_PACKET) : \
+                        ((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)]
+    sock.sendto(udp_message_local, (alveo_ipaddr, alveo_port))
 
-  static ap_uint<32> acc_buf10[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf10 type=RAM_2P impl=BRAM
-
-  static ap_uint<32> acc_buf11[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf11 type=RAM_2P impl=BRAM
-
-  static ap_uint<32> acc_buf12[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf12 type=RAM_2P impl=BRAM
-
-  static ap_uint<32> acc_buf13[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf13 type=RAM_2P impl=BRAM
-
-  static ap_uint<32> acc_buf14[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf14 type=RAM_2P impl=BRAM
-
-  static ap_uint<32> acc_buf15[MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf15 type=RAM_2P impl=BRAM
-//   float temp = 2.0f; 
-//   float data_d0, data_d1, data_d2, data_d3, data_d4, data_d5, data_d6, data_d7, data_d8, data_d9, data_d10, data_d11, data_d12, data_d13, data_d14, data_d15;
-
-  // Auto-pipeline is going to apply pipeline to this loop
-  while (global_idx < num_iter_global) {
-    //Read incoming packet
-    pkt_in = n2k.read();
-
-    // ----------- compute the incoming rank
-    // recvd_this_IP = pkt_in.user.range(39,32);
-    // recvd_this_Port = pkt_in.user.range(7,0);
-    this_rank = pkt_in.user.range(7,0); //myPort
-    // this_rank = (ap_uint<16>(recvd_this_IP) << 8) | (ap_uint<16>(recvd_this_Port));
-    // -----------
-
-    // ----------- Pick the right index to update the buffer
-    if (this_rank == 0){
-      buffer_idx_mux = buffer_idx_rank0;
-    }
-    else{
-      buffer_idx_mux = buffer_idx_rank1 + num_iter_local;
-    }
-    /*. For larger # of nodes, use:
-    buffer_idx_mux = buffer_idx[this_rank];
-    */
-    // -----------
-
-    // ---------- Perform the processing (accumulation)
-    // unroll
-    acc_buf0[buffer_idx_mux] = pkt_in.data.range(31,0);
-    acc_buf1[buffer_idx_mux] = pkt_in.data.range(63,32);
-    acc_buf2[buffer_idx_mux] = pkt_in.data.range(95,64);
-    acc_buf3[buffer_idx_mux] = pkt_in.data.range(127,96);
-    acc_buf4[buffer_idx_mux] = pkt_in.data.range(159,128);
-    acc_buf5[buffer_idx_mux] = pkt_in.data.range(191,160);
-    acc_buf6[buffer_idx_mux] = pkt_in.data.range(223,192);
-    acc_buf7[buffer_idx_mux] = pkt_in.data.range(255,224);
-    acc_buf8[buffer_idx_mux] = pkt_in.data.range(287,256);
-    acc_buf9[buffer_idx_mux] = pkt_in.data.range(319,288);
-    acc_buf10[buffer_idx_mux] = pkt_in.data.range(351,320);
-    acc_buf11[buffer_idx_mux] = pkt_in.data.range(383,352);
-    acc_buf12[buffer_idx_mux] = pkt_in.data.range(415,384);
-    acc_buf13[buffer_idx_mux] = pkt_in.data.range(447,416);
-    acc_buf14[buffer_idx_mux] = pkt_in.data.range(479,448);
-    acc_buf15[buffer_idx_mux] = pkt_in.data.range(511,480);
-    // -------------
-
-    // ------------- update the indices
-    // making indices to zero is not necessary
-    global_idx++;
-    if (this_rank == 0){
-      if (buffer_idx_rank0 == num_iter_local - 1)
-          buffer_idx_rank0 = 0;
-      else
-          buffer_idx_rank0++;
-    }
-    else{
-      if (buffer_idx_rank1 == num_iter_local - 1)
-          buffer_idx_rank1 = 0;
-      else
-          buffer_idx_rank1++;
-    }
-    /*. For larger # of nodes, use:
-    if (buffer_idx[this_rank] == num_iter_local - 1)
-          buffer_idx[this_rank] = 0;
-      else
-          buffer_idx[this_rank]++;
-    */
-    // --------
-
-  }
-    // literally doing a multicast
-    // write to output stream (rank 0)
-    for (int i = 0; i < num_iter_local*NUM_RANK; i++) {
-        #pragma HLS LATENCY min=1 max=1000
-        #pragma HLS PIPELINE
-        pkt_out.data.range(31,0) = acc_buf0[i];
-        pkt_out.data.range(63,32) = acc_buf1[i];
-        pkt_out.data.range(95,64) = acc_buf2[i];
-        pkt_out.data.range(127,96) = acc_buf3[i];
-        pkt_out.data.range(159,128) = acc_buf4[i];
-        pkt_out.data.range(191,160) = acc_buf5[i];
-        pkt_out.data.range(223,192) = acc_buf6[i];
-        pkt_out.data.range(255,224) = acc_buf7[i];
-        pkt_out.data.range(287,256) = acc_buf8[i];
-        pkt_out.data.range(319,288) = acc_buf9[i];
-        pkt_out.data.range(351,320) = acc_buf10[i];
-        pkt_out.data.range(383,352) = acc_buf11[i];
-        pkt_out.data.range(415,384) = acc_buf12[i];
-        pkt_out.data.range(447,416) = acc_buf13[i];
-        pkt_out.data.range(479,448) = acc_buf14[i];
-        pkt_out.data.range(511,480) = acc_buf15[i];
-        pkt_out.keep = -1;
-        if ((((size / bytes_per_beat) - 1)==i) || ((((i + 1) * DWIDTH/8) % 1408) == 0))
-            pkt_out.last = 1;
-        else 
-            pkt_out.last = 0;
-        pkt_out.dest = 1; // sending to the first NIC (the second entry of Arp table)
-        k2n.write(pkt_out);
-    }
-      // write to output stream (rank 1)
-      for (int i = 0; i < num_iter_local*NUM_RANK; i++) {
-        #pragma HLS LATENCY min=1 max=1000
-        #pragma HLS PIPELINE
-        pkt_out.data.range(31,0) = acc_buf0[i];
-        pkt_out.data.range(63,32) = acc_buf1[i];
-        pkt_out.data.range(95,64) = acc_buf2[i];
-        pkt_out.data.range(127,96) = acc_buf3[i];
-        pkt_out.data.range(159,128) = acc_buf4[i];
-        pkt_out.data.range(191,160) = acc_buf5[i];
-        pkt_out.data.range(223,192) = acc_buf6[i];
-        pkt_out.data.range(255,224) = acc_buf7[i];
-        pkt_out.data.range(287,256) = acc_buf8[i];
-        pkt_out.data.range(319,288) = acc_buf9[i];
-        pkt_out.data.range(351,320) = acc_buf10[i];
-        pkt_out.data.range(383,352) = acc_buf11[i];
-        pkt_out.data.range(415,384) = acc_buf12[i];
-        pkt_out.data.range(447,416) = acc_buf13[i];
-        pkt_out.data.range(479,448) = acc_buf14[i];
-        pkt_out.data.range(511,480) = acc_buf15[i];
-        pkt_out.keep = -1;
-        if ((((size / bytes_per_beat) - 1)==i) || ((((i + 1) * DWIDTH/8) % 1408) == 0))
-            pkt_out.last = 1;
-        else 
-            pkt_out.last = 0;
-        pkt_out.dest = 2; // sending to the second NIC (the third entry of Arp table)
-        k2n.write(pkt_out);
-    }
-}
-}
+# now call lb_wh.wait() from local node
+print(udp_message_global)
+print(recv_data_global)
