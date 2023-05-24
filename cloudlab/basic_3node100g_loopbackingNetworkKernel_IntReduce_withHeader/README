@@ -1,6 +1,7 @@
 # 3 nodes (one FPGA and two 100 Gb NIC) - using vnx-basic - using fpga-NIC profile - status: working
 # the kernel is simply doing a Reduction for 2 ranks
 # This time I'm also considering the header (based on incoming port number, which is my rank id) I will put the data and accumulate at the right index of buffers
+# Right now, I will compute rank id based on only myPort. I intentionally use specific port numbers in my host code so it will result in rank=0 for the first NIC and rank=1 for the second NIC. In future releases, I should have a python function to generate the right port number for me by taking in the number of processes in the sysyem.
 # Now, it works for the edge cases too: This is helpful since now even if the two client nodes send packet at the same time (as long as the switch ahas enogh buffer to store instead of dropping udp packet -- this means that the input packet size shouldnt be very large) then the reduction logic still works.
 # This is the order: 
 # 1) local node starts (lb_wh = lb.start(size))
