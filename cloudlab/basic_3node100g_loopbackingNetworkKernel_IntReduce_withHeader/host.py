@@ -40,7 +40,7 @@ sw_ip1 = '192.168.40.11'
 sw_ip2 = '192.168.40.12'
 ol.networklayer_0.sockets[0] = (sw_ip1, 50446, 60133, True) # This is dont care because we never use its port (50446)
 ol.networklayer_0.sockets[1] = (sw_ip1, 38656, 62781, True) # This is used since we are using its port (38656) in remote NIC 1
-ol.networklayer_0.sockets[2] = (sw_ip2, 60416, 62781, True) # This is used since we are using its port (60416) in remote NIC 2
+ol.networklayer_0.sockets[2] = (sw_ip2, 60417, 62781, True) # This is used since we are using its port (60417) in remote NIC 2
 ol.networklayer_0.populate_socket_table(debug=True)
 
 lb = ol.krnl_loopback_0
@@ -120,7 +120,7 @@ alveo_ipaddr = '192.168.40.8'
 !ping -c 5 $alveo_ipaddr
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-sock.bind(('', 60416))
+sock.bind(('', 60417))
 
 size = 1408 * 8
 shape = (size,1)
