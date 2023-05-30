@@ -95,6 +95,7 @@ module data_path(
     logic [num_col-1:0] ap_done_decoder;
     logic ap_done_t;
     logic [(64*num_col)-1:0] HBM_offset;
+    logic [4:0] vs2;
     
     // Internal Stream in/out
     logic [SIMD_degree-1:0] tvalid_stream_in_lane;
@@ -227,7 +228,8 @@ module data_path(
              .op_scalar(op_scalar[((j+1)*3)-1:j*3]),
              .wen_RF_scalar(wen_RF_scalar[j]),
              .ap_done(ap_done_decoder[j]),
-             .done_steady(done_steady)
+             .done_steady(done_steady),
+             .vs2(vs2)
              );
              
              // Register pipeline: delay VD into auto_incr_vect vw
@@ -260,7 +262,8 @@ module data_path(
              .incr_PC(incr_PC[j]),
              .wen_ITR(wen_ITR[j]),
              .ITR_delay(ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd]),
-             .done(done_auto_incr[j]) // one clock pulse
+             .done(done_auto_incr[j]), // one clock pulse
+             .vs2(vs2)
              );
 
              // PC logic
@@ -344,7 +347,7 @@ module data_path(
              .ctrl_start(wen_ITR[j]),
              .ctrl_done(read_done_HBM[j]),    
 //             .ctrl_addr_offset({32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}),
-             .ctrl_addr_offset(HBM_offset[((j+1)*64)-1:j*64] + {22'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int], 10'b0}), // need  a variable amount of zero based on vsetivli, i put 1K=10 bits fro VLEN
+             .ctrl_addr_offset(HBM_offset[((j+1)*64)-1:j*64] + {32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}), // need  a variable amount of zero based on vsetivli, i put 1K=10 bits fro VLEN
 //             .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // 6'b0 because each VRF entry is 64 Bytes
              .ctrl_xfer_size_in_bytes({{(64-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}), // 6'b0 because each VRF entry is 64 Bytes. PH: no need to decrement as runtimeloadtable itself does it
              // -64 because AXI needs ITR-1 (length-1)
@@ -371,7 +374,7 @@ module data_path(
              .ctrl_start(wen_ITR[j]),              // Pulse high for one cycle to begin reading
              .ctrl_done(write_done_HBM[j]),               // Pulses high for one cycle when transfer request is complete
 //             .ctrl_addr_offset({32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}),        // Starting Address offset
-	         .ctrl_addr_offset(HBM_offset[((j+1)*64)-1:j*64] + {22'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int], 10'b0}), // need  a variable amount of zero based on vsetivli, i put 1K=10 bits fro VLEN               
+	         .ctrl_addr_offset(HBM_offset[((j+1)*64)-1:j*64] + {32'b0, rddata1_RF_scalar[((j+1)*dwidth_int)-1:j*dwidth_int]}), // need  a variable amount of zero based on vsetivli, i put 1K=10 bits fro VLEN               
 //             .ctrl_xfer_size_in_bytes({{(dwidth_aximm-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}-64'd64), // Length in number of bytes, limited by the address width.
              .ctrl_xfer_size_in_bytes({{(dwidth_aximm-dwidth_RFadd-6){1'b0}}, ITR_delay[((j+1)*dwidth_RFadd)-1:j*dwidth_RFadd], 6'b0}), //PH: no need to decrement as runtimeloadtable itself does it
              .m_axi_awvalid(awvalid_HBM[j]), 

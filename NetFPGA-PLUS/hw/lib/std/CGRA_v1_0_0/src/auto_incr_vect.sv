@@ -42,7 +42,8 @@ module auto_incr_vect(
     output logic [dwidth_RFadd-1:0] vr_addr1_auto_incr,
     output logic [dwidth_RFadd-1:0] vr_addr2_auto_incr,
     output logic [dwidth_RFadd-1:0] vw_addr_auto_incr,
-    output logic done // one clock pulse
+    output logic done, // one clock pulse
+    input logic [4:0] vs2
     );
     
     logic [dwidth_RFadd-1:0] ctr_ITR_rd, ctr_ITR_wr;// counter
@@ -156,7 +157,8 @@ module auto_incr_vect(
         end
     end
     
-    assign vr_addr1_auto_incr = (is_vmacc_vv) ? vr_addr1 : vr_addr1 + ctr_ITR_rd; // iterate if vstreamout, vse32 (serves as vr/vr1 for all/vmacc)
+//    assign vr_addr1_auto_incr = (is_vmacc_vv) ? vr_addr1 : vr_addr1 + ctr_ITR_rd; // iterate if vstreamout, vse32 (serves as vr/vr1 for all/vmacc)
+    assign vr_addr1_auto_incr = (is_vmacc_vv) ? {{(dwidth_RFadd-5){1'b0}}, vs2} : vr_addr1 + ctr_ITR_rd; // iterate if vstreamout, vse32 (serves as vr/vr1 for all/vmacc) -- for vmacc you should keep it scalar and no need to iterate (it should be a single VRF entry (that vs2 points to) in the first segment of VRF) 
     assign vr_addr2_auto_incr = vr_addr2 + ctr_ITR_rd; // iterate if vstreamout, vse32, vmacc (serves as vr2 for vmacc)
     assign vw_addr_auto_incr = vw_addr + ctr_ITR_wr; // iterate if vmacc, vle32
 endmodule

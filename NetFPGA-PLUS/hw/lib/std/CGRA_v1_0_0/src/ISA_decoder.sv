@@ -32,12 +32,13 @@ module ISA_decoder(
     output logic [2:0] op,
     output logic [2:0] op_scalar,
     output logic wen_RF_scalar,
-    output logic ap_done
+    output logic ap_done,
+    output logic [4:0] vs2
 //    output logic [dwidth_RFadd-1:0] VLEN_phy // to get the chunk size 
     // if it is v2 and VLEN_phy=32 then the correct base address is: 2*VLEN_phy
     );
     
-    logic [4:0] vs2, vd;
+    logic [4:0] vs2_t, vd;
 //    logic is_vsetivli; // configuration
     logic is_addi, is_add; // integer scalar
     logic [dwidth_int-1:0] lui_immediate, addi_immediate;
@@ -105,46 +106,46 @@ module ISA_decoder(
     assign is_vect = |{is_vmacc_vv, is_vle32_vv, is_vse32_vv, is_vmv_vi, is_vstreamout};
     assign is_not_vect = !is_vect;
     // vs1 is hardwire to O1 or O2 (no matter what you put in)
-    assign vs2 = (is_vse32_vv || is_vstreamout)? instr[11:7]: instr[24:20]; // vs2
+    assign vs2_t = (is_vse32_vv || is_vstreamout)? instr[11:7]: instr[24:20]; // vs2
     assign vd = instr[11:7]; // vd
    
    
     always_comb begin
         case(VLEN)
             3'b000: begin 
-                        vr_addr = {vs2[0], {(dwidth_RFadd-1){1'b0}}}; 
+                        vr_addr = {vs2_t[0], {(dwidth_RFadd-1){1'b0}}}; 
                         vw_addr = {vd[0], {(dwidth_RFadd-1){1'b0}}};
                     end
             3'b001: begin
-                        vr_addr = {vs2[1:0], {(dwidth_RFadd-2){1'b0}}}; 
+                        vr_addr = {vs2_t[1:0], {(dwidth_RFadd-2){1'b0}}}; 
                         vw_addr = {vd[1:0],  {(dwidth_RFadd-2){1'b0}}};
                     end
             3'b010: begin
-                        vr_addr = {vs2[2:0], {(dwidth_RFadd-3){1'b0}}}; 
+                        vr_addr = {vs2_t[2:0], {(dwidth_RFadd-3){1'b0}}}; 
                         vw_addr = {vd[2:0],  {(dwidth_RFadd-3){1'b0}}};    
                     end
             3'b011: begin
-                        vr_addr = {vs2[3:0], {(dwidth_RFadd-4){1'b0}}}; 
+                        vr_addr = {vs2_t[3:0], {(dwidth_RFadd-4){1'b0}}}; 
                         vw_addr = {vd[3:0],  {(dwidth_RFadd-4){1'b0}}};    
                     end
             3'b100: begin
-                        vr_addr = {vs2[4:0], {(dwidth_RFadd-5){1'b0}}}; 
+                        vr_addr = {vs2_t[4:0], {(dwidth_RFadd-5){1'b0}}}; 
                         vw_addr = {vd[4:0],  {(dwidth_RFadd-5){1'b0}}};    
                     end
             3'b101: begin 
-                        vr_addr = {1'b0, vs2[4:0], {(dwidth_RFadd-6){1'b0}}}; 
+                        vr_addr = {1'b0, vs2_t[4:0], {(dwidth_RFadd-6){1'b0}}}; 
                         vw_addr = {1'b0, vd[4:0], {(dwidth_RFadd-6){1'b0}}};
                     end
             3'b110: begin 
-                        vr_addr = {2'b0, vs2[4:0], {(dwidth_RFadd-7){1'b0}}}; 
+                        vr_addr = {2'b0, vs2_t[4:0], {(dwidth_RFadd-7){1'b0}}}; 
                         vw_addr = {2'b0, vd[4:0], {(dwidth_RFadd-7){1'b0}}};
                     end
             3'b111: begin 
-                        vr_addr = {3'b0, vs2[4:0], {(dwidth_RFadd-8){1'b0}}}; 
+                        vr_addr = {3'b0, vs2_t[4:0], {(dwidth_RFadd-8){1'b0}}}; 
                         vw_addr = {3'b0, vd[4:0], {(dwidth_RFadd-8){1'b0}}};
                     end
             default: begin 
-                        vr_addr = {vs2[0], {(dwidth_RFadd-1){1'b0}}}; 
+                        vr_addr = {vs2_t[0], {(dwidth_RFadd-1){1'b0}}}; 
                         vw_addr = {vd[0], {(dwidth_RFadd-1){1'b0}}};
                     end
         endcase
