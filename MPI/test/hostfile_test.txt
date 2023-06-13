@@ -1,0 +1,3 @@
+aa slots=2
+bb slots=2
+cc slots=2
