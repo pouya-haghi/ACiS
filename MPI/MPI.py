@@ -21,7 +21,7 @@ def node_config(remote_addr: AnyStr, config_script: AnyStr, exec_script: AnyStr,
         script_filename = config_script.split('/')[-1]
 
         # Execute setup script
-        result = conn.run(f'python {dest_dir}/{script_filename}', hide=True)
+        result = conn.run(f'python {dest_dir}/{script_filename}', hide=False)
 
         print(f'Output from {remote_addr}')
         print(result.stdout.strip)
@@ -102,8 +102,7 @@ def main():
                                                                     error_queue))
         config_processes.append(process)
         process.start()
-        print ('configuring:')
-        print(rank)
+        print('configuring: ', rank[1])
 
     # Check for errors and exit if errors are found
     while not error_queue.empty():
@@ -115,7 +114,7 @@ def main():
 
     for process in config_processes:
         process.join()
-        print('joined')
+        print('joined ', rank[1])
     error_queue.close()
 
 
@@ -124,6 +123,7 @@ def main():
     print('staring execute')
     for run in range(num_proc):
         for rank in ranks:
+            print('executing ', rank[1])
             process = multiprocessing.Process(target=node_execute, args=(rank[1], exec_script, dest, error_queue))
             execute_processes.append(process)
             process.start()
