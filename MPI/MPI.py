@@ -105,10 +105,6 @@ def main():
         print ('configuring:')
         print(rank)
 
-    for process in config_processes:
-        print('joining')
-        process.join()
-
     # Check for errors and exit if errors are found
     while not error_queue.empty:
         error = error_queue.get
@@ -116,6 +112,12 @@ def main():
         result = False
     if not result:
         sys.exit(1)
+
+    for process in config_processes:
+        print('joiningd')
+        process.join()
+
+
 
     # Execute script -np times on each node
     execute_processes = []
