@@ -106,8 +106,8 @@ def main():
         print(rank)
 
     # Check for errors and exit if errors are found
-    while not error_queue.empty:
-        error = error_queue.get
+    while not error_queue.empty():
+        error = error_queue.get()
         print(error)
         result = False
     if not result:
