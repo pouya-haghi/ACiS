@@ -114,13 +114,14 @@ def main():
         sys.exit(1)
 
     for process in config_processes:
-        print('joiningd')
         process.join()
-
+        print('joined')
+    error_queue.close()
 
 
     # Execute script -np times on each node
     execute_processes = []
+    print('staring execute')
     for run in range(num_proc):
         for rank in ranks:
             process = multiprocessing.Process(target=node_execute, args=(rank[1], exec_script, dest, error_queue))
