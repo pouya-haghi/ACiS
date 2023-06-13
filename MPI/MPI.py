@@ -72,6 +72,14 @@ def main():
         print("-np must be a positive integer")
         sys.exit(1)
 
+    if exec_script == None:
+        print('Must enter the path to the script to be executed.')
+        sys.exit(1)
+
+    if config_script == None:
+        print('Must enter the path to the configuration script.')
+        sys.exit(1)
+
     try:
         with open(hostfile, 'r') as file:
             for line in file:
@@ -88,13 +96,17 @@ def main():
     config_processes = []
     error_queue = multiprocessing.Queue
     result = True
+    print('starting config')
     for rank in ranks:
         process = multiprocessing.Process(target=node_config, args=(rank[1], config_script, exec_script, dest,
                                                                     error_queue))
         config_processes.append(process)
         process.start()
+        print ('configuring:')
+        print(rank)
 
     for process in config_processes:
+        print('joining')
         process.join()
 
     # Check for errors and exit if errors are found
