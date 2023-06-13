@@ -94,7 +94,7 @@ def main():
 
     # Configure nodes
     config_processes = []
-    error_queue = multiprocessing.Queue
+    error_queue = multiprocessing.Queue()
     result = True
     print('starting config')
     for rank in ranks:
