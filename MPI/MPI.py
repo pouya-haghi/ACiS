@@ -1,12 +1,12 @@
 import argparse
-from typing import AnyStr, List
+from typing import AnyStr
 import multiprocessing
 from fabric import Connection
 import sys
 
 
-def node_config(remote_addr: AnyStr, config_script: AnyStr, exec_script: AnyStr, dest_dir: AnyStr, error_que: \
-    multiprocessing.Queue):
+def node_config(remote_addr: AnyStr, config_script: AnyStr, exec_script: AnyStr, dest_dir: AnyStr, error_que:
+                multiprocessing.Queue):
     try:
         # Connect to remote host
         conn = Connection(remote_addr)
@@ -68,6 +68,10 @@ def main():
     config_script = args.config_script
     dest = '~/'
 
+    if num_proc < 1:
+        print("-np must be a positive integer")
+        sys.exit(1)
+
     try:
         with open(hostfile, 'r') as file:
             for line in file:
@@ -75,33 +79,44 @@ def main():
                 ranks.append((rankname,hostname))
     except FileNotFoundError:
         print(f"File '{hostfile}' not found.")
+        sys.exit(1)
     except IOError as err:
         print(f"Error opening hostfile: {err}")
+        sys.exit(1)
 
-    # Set up nodes
-    processes = []
+    # Configure nodes
+    config_processes = []
     error_queue = multiprocessing.Queue
     result = True
     for rank in ranks:
         process = multiprocessing.Process(target=node_config, args=(rank[1], config_script, exec_script, dest,
                                                                     error_queue))
-        processes.append(process)
+        config_processes.append(process)
         process.start()
 
-    for process in processes:
+    for process in config_processes:
         process.join()
 
     # Check for errors and exit if errors are found
-    while not error_queue.empty():
-        error = error_queue.get()
+    while not error_queue.empty:
+        error = error_queue.get
         print(error)
         result = False
     if not result:
         sys.exit(1)
 
-    for proc in num_proc:
+    # Execute script -np times on each node
+    execute_processes = []
+    for run in range(num_proc):
         for rank in ranks:
-        #process = multiprocessing.Process(target=)
+            process = multiprocessing.Process(target=node_execute, args=(rank[1], exec_script, dest, error_queue))
+            execute_processes.append(process)
+            process.start()
+        for process in execute_processes:
+            process.join()
+
+        # Clear list for next iteration
+        execute_processes.clear()
 
 
 if __name__ == '__main__':
