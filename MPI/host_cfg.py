@@ -1,10 +1,5 @@
 import pynq
-import numpy as np
-from _thread import *
-import threading
-import socket
 from vnx_utils import *
-from timeit import default_timer as timer
 import subprocess
 
 

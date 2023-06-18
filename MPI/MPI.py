@@ -1,12 +1,11 @@
-from typing import AnyStr
 import multiprocessing
 from fabric import Connection
 import sys
 import host_cfg as host
-import pynq
+import json
 
 
-def fread_args(filename: AnyStr):
+def fread_args(filename: str):
     arguments = {}
     try:
         with open(filename, 'r') as file:
@@ -22,52 +21,93 @@ def fread_args(filename: AnyStr):
 
     arguments.setdefault('np', None)
     arguments.setdefault('hostfile', None)
-    arguments.setdefault('node_exec', None)
-    arguments.setdefault('node_cfg', None)
+    arguments.setdefault('node_script', None)
     arguments.setdefault('host_cfg', None)
     arguments.setdefault('xclbin', None)
-    arguments.setdefault('alveo_ip', None)
-    arguments.setdefault('alveo_port', None)
+    arguments.setdefault('alveo_ip', '192.168.40.8')
+    arguments.setdefault('alveo_port', 62781)
+    arguments.setdefault('dir', '~/')
+    arguments.setdefault('node_ctrl', 'node_exec.py')
     return arguments
 
 
-def node_config(remote_addr: AnyStr, node_cfg: AnyStr, node_exec: AnyStr, dest_dir: AnyStr, error_que:
-                multiprocessing.Queue):
+def node_connect_and_transfer(ranks: list, node_ctrl_script: str, node_ex_script: str, dest_dir: str, error_que:
+                              multiprocessing.Queue, connections: list):
+    """
+    This function takes a list of a tuples with two elements (hostname, [port_list]) and establishes a connection then 
+    returns a a list of new tuples containing (input tuple, Connection object). 
+    """
     try:
-        # Connect to remote host
-        conn = Connection(remote_addr)
+        for rank in ranks:
 
-        # Transfer config script
-        conn.put(node_cfg, dest_dir)
+            remote_addr = rank[0]
 
-        # Transfer script to be executed
-        conn.put(node_exec, dest_dir)
+            # Connect to remote host
+            conn = Connection(remote_addr)
 
-        # Get configuration script filename
-        script_filename = node_cfg.split('/')[-1]
+            # Transfer control script
+            conn.put(node_ctrl_script, dest_dir)
 
-        # Execute setup script
-        conn.run(f'python {dest_dir}/{script_filename}', hide=False)
+            # Transfer script to be executed
+            conn.put(node_ex_script, dest_dir)
 
-        conn.close()
+            connections.append((conn, rank))
+
     except Exception as err:
         error_que.put(f'Error running script on {remote_addr}: {str(err)}')
 
 
-def node_execute(remote_addr: AnyStr, node_exec: AnyStr, dest_dir: AnyStr, error_que: multiprocessing.Queue):
-    try:
-        # Connect to remote host
-        conn = Connection(remote_addr)
+def node_execute(connection: tuple, ctrl_script: str, dest_dir: str, error_que: multiprocessing.Queue,
+                 size: int, alveo_ip: str, alveo_port: int):
+    conn = connection[0]
+    rank = connection[1]
+    remote_addr = rank[0]
+    rank_ports = rank[1]
+    rank_json = json.dumps(rank_ports)
 
+    try:
         # Get configuration script filename
-        script_filename = node_exec.split('/')[-1]
 
         # Execute setup script
-        conn.run(f'python {dest_dir}/{script_filename}', hide=False)
+        conn.run(f'python {dest_dir}/{ctrl_script} {alveo_ip} {alveo_port} {size} -port_list "{rank_json}"',
+                 hide=False)
 
-        conn.close()
     except Exception as err:
         error_que.put(f'Error executing script on {remote_addr}: {str(err)}')
+        conn.close()
+
+
+def hostfile_extract(hostfile_path: str):
+    """
+    This function takes in a path to the hostfile, parses the hostfile and returns a list of tuples, each consisting
+    of (hostname, [list of port numbers equal to the number of slots]) for each rank. The port numbers are
+    incremented by one starting from 61440.
+    """
+    rank_data = []
+    port_num = 61440  # Hex value F000
+    try:
+        with open(hostfile_path, 'r') as file:
+            for index, line in enumerate(file):
+                hostname, slots = line.strip().split(' slots=')
+                slots = int(slots)
+                if slots < 1:
+                    print("Error: Invalid slots value. The slots value must be a positive integer.")
+                    sys.exit(1)
+                rank_ports = []
+                for i in range(1, slots+1):
+                    rank_ports.append(port_num)
+                    port_num = port_num + 1
+                rank_data.append((hostname, rank_ports))
+    except FileNotFoundError:
+        print(f"File '{hostfile_path}' not found.")
+        sys.exit(1)
+    except ValueError:
+        print("Error: Invalid slots value. The slots value must be a positive integer.")
+        sys.exit(1)
+    except IOError as err:
+        print(f"Error opening hostfile: {err}")
+        sys.exit(1)
+    return rank_data
 
 
 def main():
@@ -77,13 +117,13 @@ def main():
     ranks = []
     num_proc = arguments['np']
     hostfile = arguments['hostfile']
-    node_exec = arguments['node_exec']
-    node_cfg = arguments['node_cfg']
+    node_script = arguments['node_script']
+    node_ctrl = arguments['node_ctrl']
     host_cfg = arguments['host_cfg']
     xclbin = arguments['xclbin']
     alveo_ip = arguments['alveo_ip']
     alveo_port = arguments['alveo_port']
-    dest = '~/'
+    dest = arguments['dir']
 
     # Error check
     if (num_proc == None):
@@ -99,29 +139,20 @@ def main():
             print("Input file must have np value and np must be a positive integer (eg. np=1)")
             sys.exit(1)
 
-    if (alveo_port == None):
-        print("Input file must have alveo port number and port number must be a positive integer (eg. "
-              "alveo_port=2222)")
-        sys.exit(1)
-    else:
+    if (alveo_port != 62781):
         try:
             alveo_port = int(alveo_port)
         except ValueError:
             print("Input file must have alveo port number and port number must be a positive integer (eg. "
-                  "alveo_port=2222)")
+                  "alveo_port=62781)")
             sys.exit(1)
         if alveo_port < 1:
             print("Input file must have alveo port number and port number must be a positive integer (eg. "
-                  "alveo_port=2222)")
+                  "alveo_port=62781)")
             sys.exit(1)
 
-
-    if node_exec == None:
-        print('Input file must have the path to the script to be executed on nodes. (eg. node_exec=path/to/script.py)')
-        sys.exit(1)
-
-    if node_cfg == None:
-        print('Input file must have the path to the node configuration script.(eg. node_cfg=path/to/script.py)')
+    if node_script == None:
+        print('Input file must have the path to the script to be executed on nodes. (eg. node_script=path/to/script.py)')
         sys.exit(1)
 
     if host_cfg == None:
@@ -132,74 +163,39 @@ def main():
         print('Input file must have the path to the xclbin file. (eg. xclbin=path/to/script.py)')
         sys.exit(1)
 
-    if alveo_ip == None:
-        print('Input file must have the alveo_ip address. (eg. alveo_ip=127.0.0.1)')
-        sys.exit(1)
-
-    # Get hostname and port num pair
-    try:
-        with open(hostfile, 'r') as file:
-            for line in file:
-                hostname, port_num = line.strip().split(' port=')
-                ranks.append((hostname, port_num))
-    except FileNotFoundError:
-        print(f"File '{hostfile}' not found.")
-        sys.exit(1)
-    except IOError as err:
-        print(f"Error opening hostfile: {err}")
-        sys.exit(1)
+    # Get hostname, slots and assign port numbers
+    ranks = hostfile_extract(hostfile)
 
     # Configure Host
-    op = host.setup_host(xclbin, alveo_ip)
+    lb = host.setup_host(xclbin, alveo_ip)
 
-
-    # Configure nodes
-    config_processes = []
     error_queue = multiprocessing.Queue()
     result = True
-    """
-    print('starting config')
-    for rank in ranks:
-        process = multiprocessing.Process(target=node_config, args=(rank[0], node_cfg, node_exec, dest,
-                                                                    error_queue))
-        config_processes.append(process)
-        process.start()
-        print('configuring: ', rank[0])
+    execute_processes = []
+    connections = []
 
-    # Check for errors and exit if errors are found
-    while not error_queue.empty():
-        error = error_queue.get()
-        print(error)
-        result = False
-    if not result:
-        sys.exit(1)
-
-    for process in config_processes:
-        process.join()
-        print('joined ', rank[0])
-    error_queue.close()
-    """
+    # Setup connections and transfer files to nodes
+    node_connect_and_transfer(ranks, node_ctrl, node_script, dest, error_queue, connections)
 
     # Get host ready to receive data from nodes
     size = 1408 * 8
 
     lb_wh = lb.start(size)
 
-    # Execute script -np times on each node and send data
-    execute_processes = []
-    print('staring execute')
-    for run in range(num_proc):
-        for rank in ranks:
-            print('executing ', rank[0])
-            process = multiprocessing.Process(target=node_execute, args=(rank[0], node_exec, dest, error_queue, size,
-                                                                         alveo_ip, ))
-            execute_processes.append(process)
-            process.start()
-        for process in execute_processes:
-            process.join()
+    ctrl_script_name = node_ctrl.split('/')[-1]
 
-        # Clear list for next iteration
-        execute_processes.clear()
+    print('staring execute')
+    for rank in ranks:
+        print('executing ', rank[0])
+        process = multiprocessing.Process(target=node_execute, args=(connections, ctrl_script_name, dest, error_queue,
+                                                                     size, alveo_ip))
+        execute_processes.append(process)
+        process.start()
+    for process in execute_processes:
+        process.join()
+
+    # Clear list for next iteration
+    execute_processes.clear()
 
     while not error_queue.empty():
         error = error_queue.get()

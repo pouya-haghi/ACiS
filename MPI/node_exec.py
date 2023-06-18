@@ -1,13 +1,15 @@
 import numpy as np
+from multiprocessing import Process, Lock
 from _thread import *
 import threading
 import socket
 import sys
 import subprocess
 
+BYTES_PER_PACKET = 1408
+
 
 def socket_receive_threaded(sock, size):
-    BYTES_PER_PACKET = 1408
     shape_global = (size,1)
     shape_local = (BYTES_PER_PACKET,1)
     global recv_data_global
@@ -23,13 +25,16 @@ def socket_receive_threaded(sock, size):
         sum_bytes = sum_bytes + int(res[0])
         connection = res[1]
 
+def send_udp_messages(udp_message_global, alveo_ip, alveo_port)
+
 
 if __name__ == "__main__":
     # Get args
     alveo_ip = sys.argv[1]
     alveo_port = int(sys.argv[2])
     port_num = int(sys.argv[3])
-    size = int(sys.argv[4])
+    slots = int(sys.argv[4])
+    size = int(sys.argv[5])
 
     # Ping FPGA
     subprocess.run(['ping', '-c', '5', alveo_ip], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
@@ -46,7 +51,6 @@ if __name__ == "__main__":
     start_new_thread(socket_receive_threaded, (sock, size,))
 
     udp_message_global = np.random.randint(low=0, high=((2 ** 8) - 1), size=shape, dtype=np.uint8)
-    BYTES_PER_PACKET = 1408
     num_pkts = size // BYTES_PER_PACKET
     for m in range(num_pkts):
         udp_message_local = udp_message_global[(m * BYTES_PER_PACKET): \

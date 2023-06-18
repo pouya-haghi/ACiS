@@ -1,0 +1,5 @@
+np=1
+hostfile='test/hostfile_test.txt'
+node_script=test
+host_cfg=test
+xclbin="test"
