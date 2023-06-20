@@ -37,7 +37,6 @@ cd ~
 git clone https://github.com/Xilinx/xup_vitis_network_example.git --recursive
 
 
-
 cd ~/G-FPin_HW/MPI
 cp MPI.py ~/xup_vitis_network_example/Notebooks
 cp host_cfg.py ~/xup_vitis_network_example/Notebooks
@@ -48,8 +47,4 @@ mkdir ~/xup_vitis_network_example/Notebooks/binary
 cp vnx_basic_if0.xclbin ~/xup_vitis_network_example/Notebooks/binary
 cd ~/xup_vitis_network_example/Notebooks
 
-# Define the file path
-file_path="~/xup_vitis_network_example/Notebooks/vnx_utils.py"
-
-# Replace ("valid", np.bool) with ("valid", bool) in the file
-sed -i 's/("valid", np\.bool)/("valid", bool)/' "$file_path"
+sudo ifconfig enp175s0 192.168.40.12

@@ -127,6 +127,7 @@ def main():
 
     print(host_cfg)
     print(node_ctrl)
+    print(xclbin)
     # Error check
     if (num_proc == None):
         print("Input file must have np value and np must be a positive integer (eg. np=1)")
@@ -168,7 +169,7 @@ def main():
     print(ranks)
 
     # Configure Host
-    lb = host.setup_host(xclbin, alveo_ip)
+    lb = host.setup_host(ranks, alveo_port, xclbin, alveo_ip)
 
     error_queue = multiprocessing.Queue()
     result = True

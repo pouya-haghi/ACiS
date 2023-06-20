@@ -2,4 +2,4 @@ np=1
 hostfile=~/xup_vitis_network_example/Notebooks/test/hostfile_test.txt
 node_script=test
 host_cfg=test
-xclbin=~/xup_vitis_network_example/Notebooks/binary/vnx_basic_if0.xclbin
+xclbin=binary/vnx_basic_if0.xclbin
