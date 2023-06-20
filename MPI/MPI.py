@@ -125,6 +125,8 @@ def main():
     alveo_port = arguments['alveo_port']
     dest = arguments['dir']
 
+    print(host_cfg)
+    print(node_ctrl)
     # Error check
     if (num_proc == None):
         print("Input file must have np value and np must be a positive integer (eg. np=1)")
@@ -159,12 +161,11 @@ def main():
         print('Input file must have the path to the host configuration script. (eg. host_cfg=path/to/script.py)')
         sys.exit(1)
 
-    if xclbin == None:
-        print('Input file must have the path to the xclbin file. (eg. xclbin=path/to/script.py)')
-        sys.exit(1)
 
     # Get hostname, slots and assign port numbers
     ranks = hostfile_extract(hostfile)
+
+    print(ranks)
 
     # Configure Host
     lb = host.setup_host(xclbin, alveo_ip)

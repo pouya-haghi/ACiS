@@ -1,21 +1,55 @@
 #!/bin/bash
 
-# Install pyenv
-curl https://pyenv.run | bash
+# Update and upgrade
+sudo apt update
+N | sudo apt upgrade -y
 
-# Configure pyenv
-echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
-echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
-echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
+sudo N | apt install python3-pip -y
+source /opt/xilinx/xrt/setup.sh
 
-# Reload the shell
-source ~/.bashrc
+sudo N | apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev
+libffi-dev wget
 
-# Install Python 3.10.0 with automatic "yes" responses
-yes | pyenv install 3.10.0
+wget https://www.python.org/ftp/python/3.10.12/Python-3.10.12.tgz
 
-# Set Python 3.10.0 as the global version
-pyenv global 3.10.0
+tar -xf Python-3.10.12.tgz
 
-# Verify the installation
-python --version
+cd Python-3.10.12
+
+./configure --enable-optimizations
+
+make -j$(nproc)
+
+sudo make altinstall
+
+python3.10 -m venv devenv
+
+source devenv/bin/activate
+pip3.10 install pynq==2.8.0.dev0
+pip3.10 install Fabric
+
+cd ~
+
+git clone https://github.com/pouya-haghi/G-FPin_HW.git
+cd G-FPin_HW
+git checkout -b Ian origin/Ian
+cd ~
+git clone https://github.com/Xilinx/xup_vitis_network_example.git --recursive
+
+
+
+cd ~/G-FPin_HW/MPI
+cp MPI.py ~/xup_vitis_network_example/Notebooks
+cp host_cfg.py ~/xup_vitis_network_example/Notebooks
+cp node_exec.py ~/xup_vitis_network_example/Notebooks
+cp -r test ~/xup_vitis_network_example/Notebooks
+cd ~/G-FPin_HW/cloudlab/basic_3node100g_loopbackingNetworkKernel_IntAllreduce_withHeader
+mkdir ~/xup_vitis_network_example/Notebooks/binary
+cp vnx_basic_if0.xclbin ~/xup_vitis_network_example/Notebooks/binary
+cd ~/xup_vitis_network_example/Notebooks
+
+# Define the file path
+file_path="~/xup_vitis_network_example/Notebooks/vnx_utils.py"
+
+# Replace ("valid", np.bool) with ("valid", bool) in the file
+sed -i 's/("valid", np\.bool)/("valid", bool)/' "$file_path"
