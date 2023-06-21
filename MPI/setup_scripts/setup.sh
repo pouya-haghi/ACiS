@@ -7,7 +7,7 @@ N | sudo apt upgrade -y
 sudo N | apt install python3-pip -y
 source /opt/xilinx/xrt/setup.sh
 
-sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget
+sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget -y
 
 wget https://www.python.org/ftp/python/3.10.12/Python-3.10.12.tgz
 
@@ -21,13 +21,13 @@ make -j$(nproc)
 
 sudo make altinstall
 
+cd ~
+
 python3.10 -m venv devenv
 
 source devenv/bin/activate
 pip3.10 install pynq==2.8.0.dev0
 pip3.10 install Fabric
-
-cd ~
 
 git clone https://github.com/pouya-haghi/G-FPin_HW.git
 cd G-FPin_HW
@@ -46,4 +46,8 @@ mkdir ~/xup_vitis_network_example/Notebooks/binary
 cp vnx_basic_if0.xclbin ~/xup_vitis_network_example/Notebooks/binary
 cd ~/xup_vitis_network_example/Notebooks
 
-sudo ifconfig enp175s0 192.168.40.8
+# Copy key over
+nano key
+chmod key 600
+
+sudo ifconfig enp175s0 192.168.40.11

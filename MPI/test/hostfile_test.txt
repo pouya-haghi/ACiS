@@ -1,3 +1,2 @@
-hostname1 slots=2
-hostname2 slots=2
-hostname3 slots=2
+192.168.40.11 slots=1
+192.168.40.12 slots=1
