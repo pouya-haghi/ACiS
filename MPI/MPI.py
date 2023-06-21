@@ -22,7 +22,6 @@ def fread_args(filename: str):
     arguments.setdefault('np', None)
     arguments.setdefault('hostfile', None)
     arguments.setdefault('node_script', None)
-    arguments.setdefault('host_cfg', None)
     arguments.setdefault('xclbin', None)
     arguments.setdefault('alveo_ip', '192.168.40.8')
     arguments.setdefault('alveo_port', 62781)
@@ -119,15 +118,11 @@ def main():
     hostfile = arguments['hostfile']
     node_script = arguments['node_script']
     node_ctrl = arguments['node_ctrl']
-    host_cfg = arguments['host_cfg']
     xclbin = arguments['xclbin']
     alveo_ip = arguments['alveo_ip']
     alveo_port = arguments['alveo_port']
     dest = arguments['dir']
 
-    print(host_cfg)
-    print(node_ctrl)
-    print(xclbin)
     # Error check
     if (num_proc == None):
         print("Input file must have np value and np must be a positive integer (eg. np=1)")
@@ -156,10 +151,6 @@ def main():
 
     if node_script == None:
         print('Input file must have the path to the script to be executed on nodes. (eg. node_script=path/to/script.py)')
-        sys.exit(1)
-
-    if host_cfg == None:
-        print('Input file must have the path to the host configuration script. (eg. host_cfg=path/to/script.py)')
         sys.exit(1)
 
 

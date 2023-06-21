@@ -1,5 +1,4 @@
 np=1
-hostfile=~/xup_vitis_network_example/Notebooks/test/hostfile_test.txt
-node_script=test
-host_cfg=test
+hostfile=test/hostfile_test.txt
+node_script=test/test_exec.py
 xclbin=binary/vnx_basic_if0.xclbin

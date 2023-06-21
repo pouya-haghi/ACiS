@@ -19,7 +19,7 @@ def setup_host(rank_list,  alveo_port, xclbin_path='/binary/vnx_basic_if0.xclbin
     print(ol.networklayer_0.set_ip_address(alveo_ipaddr, debug=True))
 
     # Execute ifconfig command
-    ifconfig_output = subprocess.check_output(["ifconfig", "enp175s0", alveo_ipaddr]).decode("utf-8")
+    ifconfig_output = subprocess.check_output(["ifconfig", "enp175s0"]).decode("utf-8")
     print(ifconfig_output)
 
     # Execute ping command
@@ -51,7 +51,7 @@ def setup_host(rank_list,  alveo_port, xclbin_path='/binary/vnx_basic_if0.xclbin
         sys.exit(1)
 
     # This is dont care because we never use its port (50446)
-    ol.networklayer_0.sockets[0] = (rank_list[0], 50446, 60133, True)
+    ol.networklayer_0.sockets[0] = (rank_list[0][0], 50446, 60133, True)
 
     # These are the nodes and ports we do care about
     index = 1
