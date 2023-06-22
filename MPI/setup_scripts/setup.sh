@@ -48,6 +48,6 @@ cd ~/xup_vitis_network_example/Notebooks
 
 # Copy key over
 nano key
-chmod key 600
+chmod 600 key
 
 sudo ifconfig enp175s0 192.168.40.11

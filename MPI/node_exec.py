@@ -1,10 +1,10 @@
 import numpy as np
-from multiprocessing import Process, Lock
 from _thread import *
 import threading
 import socket
 import sys
 import subprocess
+import time
 
 BYTES_PER_PACKET = 1408
 
@@ -25,10 +25,9 @@ def socket_receive_threaded(sock, size):
         sum_bytes = sum_bytes + int(res[0])
         connection = res[1]
 
-def send_udp_messages(udp_message_global, alveo_ip, alveo_port)
-
 
 if __name__ == "__main__":
+    print("Executing")
     # Get args
     alveo_ip = sys.argv[1]
     alveo_port = int(sys.argv[2])
@@ -36,9 +35,36 @@ if __name__ == "__main__":
     slots = int(sys.argv[4])
     size = int(sys.argv[5])
 
+    
+    print("Executing Ping")
     # Ping FPGA
-    subprocess.run(['ping', '-c', '5', alveo_ip], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+    # Execute ping command
+    max_attempts = 5
+    attempts = 0
 
+    while attempts < max_attempts:
+        try:
+            # Execute ping command
+            ping_output = subprocess.run(["ping", "-c", "5", alveo_ip], capture_output=True, text=True)
+
+            if ping_output.returncode == 0:
+                print(ping_output.stdout)
+                break
+            else:
+                attempts += 1
+                print(f"Attempt {attempts}: Ping command failed with return code {ping_output.returncode}")
+                print(ping_output.stderr)
+
+        except subprocess.CalledProcessError as err:
+            attempts += 1
+            print(f"Attempt {attempts}: Error executing ping command: {str(err)}")
+
+        # Sleep for a few seconds before the next attempt
+        time.sleep(1)
+
+    if attempts == max_attempts:
+        print(f"Failed to reach the target IP after {max_attempts} attempts. Exiting.")
+        sys.exit(1)
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
 
     sock.bind(('', port_num))
@@ -58,3 +84,5 @@ if __name__ == "__main__":
         sock.sendto(udp_message_local, (alveo_ip, alveo_port))
 
     print_lock.release()
+
+    print(udp_message_global)

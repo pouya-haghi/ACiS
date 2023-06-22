@@ -25,7 +25,7 @@ def fread_args(filename: str):
     arguments.setdefault('xclbin', None)
     arguments.setdefault('alveo_ip', '192.168.40.8')
     arguments.setdefault('alveo_port', 62781)
-    arguments.setdefault('dir', '~/')
+    arguments.setdefault('dir', '/users/ianjc/')
     arguments.setdefault('node_ctrl', 'node_exec.py')
     arguments.setdefault('key_path', None)
     return arguments
@@ -182,9 +182,11 @@ def main():
 
     ctrl_script_name = node_ctrl.split('/')[-1]
 
+    print(connections)
+
     print('staring execute')
     for connection in connections:
-        print('executing ', connection[0][0] )
+        print('executing ', connection[1][0] )
         process = multiprocessing.Process(target=node_execute, args=(connection, ctrl_script_name, dest, error_queue,
                                                                      size, alveo_port, alveo_ip))
         execute_processes.append(process)

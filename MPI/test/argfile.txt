@@ -1,4 +1,5 @@
 np=1
 hostfile=test/hostfile_test.txt
-node_script=test/test_exec.py
+node_script=test/
 xclbin=binary/vnx_basic_if0.xclbin
+key_path=key
