@@ -27,12 +27,16 @@ def socket_receive_threaded(sock, size):
 
 
 if __name__ == "__main__":
-    print("Executing")
+    print("Executing Node")
     # Get args
     alveo_ip = sys.argv[1]
+    print(alveo_ip)
     alveo_port = int(sys.argv[2])
+    print(alveo_port)
     port_num = int(sys.argv[3])
+    print(port_num)
     slots = int(sys.argv[4])
+    print(slots)
     size = int(sys.argv[5])
 
     

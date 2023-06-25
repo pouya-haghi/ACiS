@@ -74,6 +74,8 @@ def node_execute(connection: tuple, ctrl_script: str, dest_dir: str, error_que: 
     else:
         activate_cmd = f'source {env_path}/bin/activate'
 
+    print(f'Got here on {remote_addr}')
+
     command = f'''
     cd {dest_dir}
     {activate_cmd}
@@ -82,10 +84,13 @@ def node_execute(connection: tuple, ctrl_script: str, dest_dir: str, error_que: 
     try:
         # Execute setup script
         conn.run(command,hide=False)
+        print(f'Running command {command}')
 
     except Exception as err:
         error_que.put(f'Error executing script on {remote_addr}: {str(err)}.\nCommand was {command}.\nExiting and closing connection.')
         conn.close()
+    
+    
 
 
 def hostfile_extract(hostfile_path: str):
