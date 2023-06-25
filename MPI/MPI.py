@@ -1,8 +1,21 @@
 import multiprocessing
+import paramiko
 from fabric import Connection
 import sys
 import host_cfg as host
 import json
+
+def create_ssh_connection(ip_address: str, port: int, username: str, key_path: str = None) -> paramiko.SSHClient:
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    if key_path is not None:
+        private_key = paramiko.RSAKey.from_private_key_file(key_path)
+        ssh.connect(hostname=ip_address, port=port, username=username, pkey=private_key)
+    else:
+        ssh.connect(hostname=ip_address, port=port, username=username)
+
+    return ssh
 
 def fread_args(filename: str):
     arguments = {}
@@ -39,20 +52,22 @@ def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str
     """
     try:
         for rank in ranks:
-
             remote_addr = rank[0]
 
-            # Connect to remote host
-            if key_path != None:
-                conn = Connection(remote_addr, connect_kwargs={'key_filename': key_path})
+            # Create SSH connection
+            if key_path is not None:
+                conn = create_ssh_connection(remote_addr, 22, 'ianjc', key_path=key_path)
             else:
-                conn = Connection(remote_addr)
+                conn = create_ssh_connection(remote_addr, 22, 'ianjc')
 
             # Transfer control script
-            conn.put(node_ctrl_script, dest_dir)
+            sftp = conn.open_sftp()
+            sftp.put(node_ctrl_script, f"{dest_dir}/{node_ctrl_script}")
 
             # Transfer script to be executed
-            conn.put(node_ex_script, dest_dir)
+            sftp.put(node_ex_script, f"{dest_dir}/{node_ex_script}")
+
+            sftp.close()
 
             connections.append((conn, rank))
 
@@ -60,7 +75,7 @@ def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str
         error_que.put(f'Error running script on {remote_addr}: {str(err)}')
 
 
-def node_execute(connection: tuple, ctrl_script: str, node_script: str, dest_dir: str, error_que: multiprocessing.Queue,
+def node_execute(connection: tuple, ctrl_script: str, node_script: str, dest_dir: str, error_que: Queue,
                  size: int, alveo_ip: str, alveo_port: int, env_path: str):
     conn = connection[0]
     rank = connection[1]
@@ -68,29 +83,34 @@ def node_execute(connection: tuple, ctrl_script: str, node_script: str, dest_dir
     rank_ports = rank[1]
     rank_json = json.dumps(rank_ports)
 
-    if env_path == None:
+    if env_path is None:
         activate_cmd = ''
     else:
         activate_cmd = f'source {env_path}/bin/activate'
+
+    command = "echo test String"
 
     # command = f''''
     # cd {dest_dir}
     # {activate_cmd}
     # python {ctrl_script} {node_script} {alveo_ip} {alveo_port} {size} \'{rank_json}'
     # '''
-    command = "echo Will this complete"
+
     try:
-        print(f'Running command {command}')
         # Execute setup script
-        conn.run(command,hide=False, pty=True)
-        print(f'Finished command')
+        stdin, stdout, stderr = conn.exec_command(command)
+        output = stdout.read()
+        error = stderr.read()
+        if error:
+            error_que.put(f'Error executing script on {remote_addr}: {error.decode()}')
+        else:
+            print(f'Remote command output on {remote_addr}: {output.decode()}')
 
     except Exception as err:
-        error_que.put(f'Error executing script on {remote_addr}: {str(err)}.\nCommand was {command}.\nExiting and closing connection.')
-        conn.close()
-    
-    
+        error_que.put(f'Error executing script on {remote_addr}: {str(err)}')
 
+    
+    
 def hostfile_extract(hostfile_path: str):
     """
     This function takes in a path to the hostfile, parses the hostfile and returns a list of tuples, each consisting
