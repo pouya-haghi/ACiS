@@ -32,7 +32,7 @@ def fread_args(filename: str):
     return arguments
 
 
-def node_connect_and_transfer(ranks: list, node_ctrl_script: str, node_ex_script: str, dest_dir: str, error_que:
+def node_connect_and_transfer(ranks: list, node_ex_script: str, dest_dir: str, error_que:
                               multiprocessing.Queue, connections: list, key_path: str):
     """
     This function takes a list of a tuples with two elements (hostname, [port_list]) and establishes a connection then 
