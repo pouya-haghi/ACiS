@@ -234,6 +234,7 @@ def main():
     node_processes.clear()
 
     while not error_queue.empty():
+        print("test")
         error = error_queue.get()
         print(error)
         result = False
