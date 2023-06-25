@@ -2,9 +2,6 @@ import numpy as np
 from _thread import *
 import threading
 import socket
-import sys
-import subprocess
-import time
 
 BYTES_PER_PACKET = 1408
 

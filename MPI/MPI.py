@@ -4,7 +4,6 @@ import sys
 import host_cfg as host
 import json
 
-
 def fread_args(filename: str):
     arguments = {}
     try:
@@ -74,13 +73,17 @@ def node_execute(connection: tuple, ctrl_script: str, node_script: str, dest_dir
     else:
         activate_cmd = f'source {env_path}/bin/activate'
 
-    command = f'cd {dest_dir} ;{activate_cmd} ;python {ctrl_script} {node_script} {alveo_ip} {alveo_port} {size} \"{rank_json}"'
+    # command = f''''
+    # cd {dest_dir}
+    # {activate_cmd}
+    # python {ctrl_script} {node_script} {alveo_ip} {alveo_port} {size} \'{rank_json}'
+    # '''
+    command = "echo Will this complete"
     try:
         print(f'Running command {command}')
         # Execute setup script
-        conn.run(command,hide=False)
+        conn.run(command,hide=False, pty=True)
         print(f'Finished command')
-       
 
     except Exception as err:
         error_que.put(f'Error executing script on {remote_addr}: {str(err)}.\nCommand was {command}.\nExiting and closing connection.')
