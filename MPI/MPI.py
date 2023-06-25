@@ -240,7 +240,7 @@ def main():
     if not result:
         sys.exit(1)
 
-    lb_wh.wait()
+    #lb_wh.wait()
 
 if __name__ == '__main__':
     main()
