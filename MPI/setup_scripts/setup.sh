@@ -4,10 +4,10 @@
 sudo apt update
 N | sudo apt upgrade -y
 
-sudo N | apt install python3-pip -y
+sudo apt install python3-pip -y
 source /opt/xilinx/xrt/setup.sh
 
-sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget -y
+sudo N | apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget -y
 
 wget https://www.python.org/ftp/python/3.10.12/Python-3.10.12.tgz
 

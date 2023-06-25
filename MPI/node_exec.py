@@ -45,7 +45,7 @@ if __name__ == "__main__":
     while attempts < max_attempts:
         try:
             # Execute ping command
-            ping_output = subprocess.run(["ping", "-c", "5", alveo_ip], capture_output=True, text=True)
+            ping_output = subprocess.run(["ping", alveo_ip], capture_output=True, text=True)
 
             if ping_output.returncode == 0:
                 print(ping_output.stdout)

@@ -25,9 +25,10 @@ def fread_args(filename: str):
     arguments.setdefault('xclbin', None)
     arguments.setdefault('alveo_ip', '192.168.40.8')
     arguments.setdefault('alveo_port', 62781)
-    arguments.setdefault('dir', '/users/ianjc/')
+    arguments.setdefault('dir', None)
     arguments.setdefault('node_ctrl', 'node_exec.py')
     arguments.setdefault('key_path', None)
+    arguments.setdefault('env_path', None)
     return arguments
 
 
@@ -61,22 +62,29 @@ def node_connect_and_transfer(ranks: list, node_ctrl_script: str, node_ex_script
 
 
 def node_execute(connection: tuple, ctrl_script: str, dest_dir: str, error_que: multiprocessing.Queue,
-                 size: int, alveo_ip: str, alveo_port: int):
+                 size: int, alveo_ip: str, alveo_port: int, env_path: str):
     conn = connection[0]
     rank = connection[1]
     remote_addr = rank[0]
     rank_ports = rank[1]
     rank_json = json.dumps(rank_ports)
 
-    try:
-        # Get configuration script filename
+    if env_path == None:
+        activate_cmd = ''
+    else:
+        activate_cmd = f'source {env_path}/bin/activate'
 
+    command = f'''
+    cd {dest_dir}
+    {activate_cmd}
+    python {ctrl_script} {alveo_ip} {alveo_port} {size} -port_list "{rank_json}"
+    '''
+    try:
         # Execute setup script
-        conn.run(f'python {dest_dir}/{ctrl_script} {alveo_ip} {alveo_port} {size} -port_list "{rank_json}"',
-                 hide=False)
+        conn.run(command,hide=False)
 
     except Exception as err:
-        error_que.put(f'Error executing script on {remote_addr}: {str(err)}')
+        error_que.put(f'Error executing script on {remote_addr}: {str(err)}.\nCommand was {command}.\nExiting and closing connection.')
         conn.close()
 
 
@@ -127,6 +135,7 @@ def main():
     alveo_port = arguments['alveo_port']
     key_path = arguments['key_path']
     dest = arguments['dir']
+    env_path = arguments['env_path']
 
     # Error check
     if (num_proc == None):
@@ -173,7 +182,7 @@ def main():
     connections = []
 
     # Setup connections and transfer files to nodes
-    node_connect_and_transfer(ranks, node_ctrl, node_script, dest, error_queue, connections=connections, key_path=key_path)
+    node_connect_and_transfer(ranks, node_ctrl, node_script, dest, error_queue, connections=connections, key_path=key_path, env_path=env_path)
 
     # Get host ready to receive data from nodes
     size = 1408 * 8
@@ -188,7 +197,7 @@ def main():
     for connection in connections:
         print('executing ', connection[1][0] )
         process = multiprocessing.Process(target=node_execute, args=(connection, ctrl_script_name, dest, error_queue,
-                                                                     size, alveo_port, alveo_ip))
+                                                                     size,alveo_ip, alveo_port, env_path))
         execute_processes.append(process)
         process.start()
     for process in execute_processes:
