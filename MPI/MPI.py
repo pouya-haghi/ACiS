@@ -74,11 +74,7 @@ def node_execute(connection: tuple, ctrl_script: str, node_script: str, dest_dir
     else:
         activate_cmd = f'source {env_path}/bin/activate'
 
-    command = f'''
-    cd {dest_dir}
-    {activate_cmd}
-    python {ctrl_script} {node_script} {alveo_ip} {alveo_port} {size} \'{rank_json}'
-    '''
+    command = f'cd {dest_dir} ;{activate_cmd} ;python {ctrl_script} {node_script} {alveo_ip} {alveo_port} {size} \"{rank_json}"'
     try:
         print(f'Running command {command}')
         # Execute setup script
