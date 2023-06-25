@@ -85,4 +85,4 @@ if __name__ == "__main__":
 
     print_lock.release()
 
-    print(udp_message_global)
+    print(f'From port num:{port_num}\nResult:\n{udp_message_global}')

@@ -21,12 +21,12 @@ def fread_args(filename: str):
 
     arguments.setdefault('np', None)
     arguments.setdefault('hostfile', None)
-    arguments.setdefault('node_script', None)
+    arguments.setdefault('node_script', 'node_exec.py')
     arguments.setdefault('xclbin', None)
     arguments.setdefault('alveo_ip', '192.168.40.8')
     arguments.setdefault('alveo_port', 62781)
     arguments.setdefault('dir', None)
-    arguments.setdefault('node_ctrl', 'node_exec.py')
+    #arguments.setdefault('node_ctrl',None)
     arguments.setdefault('key_path', None)
     arguments.setdefault('env_path', None)
     return arguments
@@ -49,8 +49,8 @@ def node_connect_and_transfer(ranks: list, node_ctrl_script: str, node_ex_script
             else:
                 conn = Connection(remote_addr)
 
-            # Transfer control script
-            conn.put(node_ctrl_script, dest_dir)
+            # # Transfer control script
+            # conn.put(node_ctrl_script, dest_dir)
 
             # Transfer script to be executed
             conn.put(node_ex_script, dest_dir)
@@ -129,7 +129,7 @@ def main():
     num_proc = arguments['np']
     hostfile = arguments['hostfile']
     node_script = arguments['node_script']
-    node_ctrl = arguments['node_ctrl']
+    #node_ctrl = arguments['node_ctrl']
     xclbin = arguments['xclbin']
     alveo_ip = arguments['alveo_ip']
     alveo_port = arguments['alveo_port']
@@ -182,21 +182,21 @@ def main():
     connections = []
 
     # Setup connections and transfer files to nodes
-    node_connect_and_transfer(ranks, node_ctrl, node_script, dest, error_queue, connections=connections, key_path=key_path, env_path=env_path)
+    node_connect_and_transfer(ranks, node_script, dest, error_queue, connections=connections, key_path=key_path)
 
     # Get host ready to receive data from nodes
     size = 1408 * 8
 
     lb_wh = lb.start(size)
 
-    ctrl_script_name = node_ctrl.split('/')[-1]
+    node_script_name = node_script.split('/')[-1]
 
     print(connections)
 
     print('staring execute')
     for connection in connections:
         print('executing ', connection[1][0] )
-        process = multiprocessing.Process(target=node_execute, args=(connection, ctrl_script_name, dest, error_queue,
+        process = multiprocessing.Process(target=node_execute, args=(connection, node_script_name, dest, error_queue,
                                                                      size,alveo_ip, alveo_port, env_path))
         execute_processes.append(process)
         process.start()
