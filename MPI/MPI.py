@@ -1,4 +1,5 @@
-import multiprocessing
+import queue
+import concurrent.futures
 import paramiko
 from fabric import Connection
 import sys
@@ -45,7 +46,7 @@ def fread_args(filename: str):
 
 
 def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str, dest_dir: str, error_que:
-                              multiprocessing.Queue, connections: list, key_path: str):
+                              queue.Queue, connections: list, key_path: str):
     """
     This function takes a list of a tuples with two elements (hostname, [port_list]) and establishes a connection then 
     returns a a list of new tuples containing (input tuple, Connection object). 
@@ -75,7 +76,7 @@ def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str
         error_que.put(f'Error running script on {remote_addr}: {str(err)}')
 
 
-def node_execute(connection: tuple, ctrl_script: str, node_script: str, dest_dir: str, error_que: Queue,
+def node_execute(connection: tuple, ctrl_script: str, node_script: str, dest_dir: str, error_que: queue.Queue,
                  size: int, alveo_ip: str, alveo_port: int, env_path: str):
     conn = connection[0]
     rank = connection[1]
@@ -199,7 +200,7 @@ def main():
     # Configure Host
     lb = host.setup_host(ranks, alveo_port, xclbin, alveo_ip)
 
-    error_queue = multiprocessing.Queue()
+    error_queue = queue.Queue()
     result = True
     node_processes = []
     connections = []
@@ -216,15 +217,18 @@ def main():
 
     print(connections)
 
-    print('staring execute')
-    for connection in connections:
-        print('executing ', connection[1][0] )
-        process = multiprocessing.Process(target=node_execute, args=(connection, ctrl_script_name, node_script_name, dest, error_queue,
-                                                                     size,alveo_ip, alveo_port, env_path))
-        node_processes.append(process)
-        process.start()
-    for process in node_processes:
-        process.join()
+    print('starting execute')
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        # Submit tasks to the thread pool
+        futures = []
+        for connection in connections:
+            future = executor.submit(node_execute, connection, ctrl_script_name, node_script_name, dest, error_queue,
+                                     size, alveo_ip, alveo_port, env_path)
+            futures.append(future)
+
+        # Wait for all tasks to complete
+        concurrent.futures.wait(futures)
 
     # Clear list for next iteration
     node_processes.clear()
@@ -237,7 +241,6 @@ def main():
         sys.exit(1)
 
     lb_wh.wait()
-
 
 if __name__ == '__main__':
     main()
