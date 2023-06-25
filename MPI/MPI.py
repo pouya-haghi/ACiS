@@ -141,8 +141,6 @@ def main():
     dest = arguments['dir']
     env_path = arguments['env_path']
 
-    print(size)
-
     # Error check
     if (num_proc == None):
         print("Input file must have np value and np must be a positive integer (eg. np=1)")

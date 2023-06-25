@@ -40,6 +40,7 @@ cd ~/G-FPin_HW/MPI
 cp MPI.py ~/xup_vitis_network_example/Notebooks
 cp host_cfg.py ~/xup_vitis_network_example/Notebooks
 cp node_exec.py ~/xup_vitis_network_example/Notebooks
+cp node_ctrl.py ~/xup_vitis_network_example/Notebooks
 cp -r test ~/xup_vitis_network_example/Notebooks
 cd ~/G-FPin_HW/cloudlab/basic_3node100g_loopbackingNetworkKernel_IntAllreduce_withHeader
 mkdir ~/xup_vitis_network_example/Notebooks/binary
