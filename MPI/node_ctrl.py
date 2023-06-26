@@ -58,5 +58,12 @@ if __name__ == "__main__":
         # Save output to separate files
         for future, port in futures.items():
             output_file = f"{port}_output.txt"
-            with open(output_file, "w") as file:
-                file.write(future.result().decode())
+            result = future.result()
+            if isinstance(result, Exception):
+                # Write the error to the file
+                with open(output_file, "w") as file:
+                    file.write(f"Error executing function for port {port}: {str(result)}")
+            else:
+                # Write the result to the file
+                with open(output_file, "w") as file:
+                    file.write(result.decode())

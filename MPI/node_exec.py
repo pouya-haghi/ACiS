@@ -25,25 +25,23 @@ def socket_receive_threaded(sock, size):
 
 def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     print(f'Executing on {alveo_ip} port:{port_num}')
-    
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
 
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
     sock.bind(('', port_num))
 
     shape = (size, 1)
-
     print_lock = threading.Lock()
-
     print_lock.acquire()
     start_new_thread(socket_receive_threaded, (sock, size,))
 
     udp_message_global = np.random.randint(low=0, high=((2 ** 8) - 1), size=shape, dtype=np.uint8)
     num_pkts = size // BYTES_PER_PACKET
     for m in range(num_pkts):
-        udp_message_local = udp_message_global[(m * BYTES_PER_PACKET): \
-                                               ((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)]
+        udp_message_local = udp_message_global[(m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)]
         sock.sendto(udp_message_local, (alveo_ip, alveo_port))
 
     print_lock.release()
 
     print(f'From port num:{port_num}\nResult:\n{udp_message_global}')
+    
+    return udp_message_global.tobytes()  # Return the result as bytes
