@@ -118,8 +118,6 @@ def node_execute(connection: tuple, ctrl_script: str, node_script: str, dest_dir
 
     except Exception as err:
         error_que.put(f'Error executing script on {remote_addr}: {str(err)}')
-
-
     
     
 def hostfile_extract(hostfile_path: str):
