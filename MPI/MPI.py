@@ -1,3 +1,4 @@
+import os
 import queue
 import concurrent.futures
 import paramiko
@@ -89,13 +90,11 @@ def node_execute(connection: tuple, ctrl_script: str, node_script: str, dest_dir
     else:
         activate_cmd = f'source {env_path}/bin/activate'
 
-    command = "echo test String"
-
-    # command = f''''
-    # cd {dest_dir}
-    # {activate_cmd}
-    # python {ctrl_script} {node_script} {alveo_ip} {alveo_port} {size} \'{rank_json}'
-    # '''
+    command = f''''
+    cd {dest_dir}
+    {activate_cmd}
+    python {ctrl_script} {node_script} {alveo_ip} {alveo_port} {size} \'{rank_json}'
+    '''
 
     try:
         # Execute setup script
@@ -105,7 +104,17 @@ def node_execute(connection: tuple, ctrl_script: str, node_script: str, dest_dir
         if error:
             error_que.put(f'Error executing script on {remote_addr}: {error.decode()}')
         else:
-            print(f'Remote command output on {remote_addr}: {output.decode()}')
+            # Generate unique output file name
+            output_file = f'output_{remote_addr}.txt'
+
+            # Write output to file on remote computer
+            with open(f"{dest_dir}/{output_file}", 'a') as file:
+                file.write(f'Remote command output on {remote_addr}: {output.decode()}')
+
+            # Transfer output file from remote computer to host computer
+            sftp = conn.open_sftp()
+            sftp.get(f"{dest_dir}/{output_file}", f"{dest_dir}/{output_file}")
+            sftp.close()
 
     except Exception as err:
         error_que.put(f'Error executing script on {remote_addr}: {str(err)}')
@@ -234,14 +243,26 @@ def main():
     node_processes.clear()
 
     while not error_queue.empty():
-        print("test")
         error = error_queue.get()
         print(error)
         result = False
     if not result:
         sys.exit(1)
-
-    #lb_wh.wait()
+    
+    with open('results.txt', 'a') as file:
+        for connection in connections:
+            conn = connection[0]
+            sftp = conn.open_sftp()
+            for port in connection[1][1]:
+                remote_file = f"{dest}/{port}_output.txt"
+                local_file = f"{port}_output.txt"
+                sftp.get(remote_file, local_file)
+                print(f"Retrieved output file: {remote_file}")
+                with open(local_file, 'r') as output_file:
+                    file.write(output_file.read() + '\n')
+                os.remove(local_file)  # Remove the local file after appending its content
+            sftp.close()
+        print(file)
 
 if __name__ == '__main__':
     main()
