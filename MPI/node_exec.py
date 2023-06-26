@@ -44,4 +44,4 @@ def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
 
     print(f'From port num:{port_num}\nResult:\n{udp_message_global}')
     
-    return udp_message_global.tobytes()  # Return the result as bytes
+    return udp_message_global.tostring().decode("utf-8")
