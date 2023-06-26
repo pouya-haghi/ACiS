@@ -59,4 +59,4 @@ if __name__ == "__main__":
         for future, port in futures.items():
             output_file = f"{port}_output.txt"
             with open(output_file, "w") as file:
-                file.write(future.result())
+                file.write(future.result().decode())
