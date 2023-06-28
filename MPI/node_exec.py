@@ -42,6 +42,5 @@ def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
 
     print_lock.release()
 
-    print(f'From port num:{port_num}\nResult:\n{udp_message_global}')
+    np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
     
-    return udp_message_global.tostring().decode("utf-8")

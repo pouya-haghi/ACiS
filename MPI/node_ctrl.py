@@ -55,20 +55,20 @@ if __name__ == "__main__":
         # Wait for all futures to complete
         concurrent.futures.wait(futures)
 
-        # Save output to separate files
-        for future, port in futures.items():
-            output_file = f"{port}_output.txt"
-            result = future.result()
+        # # Save output to separate files
+        # for future, port in futures.items():
+        #     output_file = f"{port}_output.txt"
+        #     result = future.result()
 
-            if isinstance(result, Exception):
-                # Write the error to the file
-                with open(output_file, "w") as file:
-                    file.write(f"Error executing function for port {port}: {str(result)}")
-            else:
-                # Write the result to the file
-                if isinstance(result, bytes):
-                    with open(output_file, "wb") as file:
-                        file.write(result)
-                else:
-                    with open(output_file, "w") as file:
-                        file.write(result)
+        #     if isinstance(result, Exception):
+        #         # Write the error to the file
+        #         with open(output_file, "w") as file:
+        #             file.write(f"Error executing function for port {port}: {str(result)}")
+        #     else:
+        #         # Write the result to the file
+        #         if isinstance(result, bytes):
+        #             with open(output_file, "wb") as file:
+        #                 file.write(result)
+        #         else:
+        #             with open(output_file, "w") as file:
+        #                 file.write(result)
