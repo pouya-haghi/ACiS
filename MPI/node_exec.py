@@ -43,4 +43,6 @@ def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     print_lock.release()
 
     np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
+
+    np.savetxt(f'{port_num}_recv_data.txt', recv_data_global, fmt='%d')
     
