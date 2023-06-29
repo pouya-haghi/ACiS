@@ -210,7 +210,6 @@ def main():
 
     error_queue = queue.Queue()
     result = True
-    node_processes = []
     connections = []
 
     # Setup connections and transfer files to nodes
@@ -238,9 +237,6 @@ def main():
         # Wait for all tasks to complete
         concurrent.futures.wait(futures)
 
-    # Clear list for next iteration
-    node_processes.clear()
-
     while not error_queue.empty():
         error = error_queue.get()
         print(error)
@@ -248,20 +244,20 @@ def main():
     if not result:
         sys.exit(1)
     
-    with open('results.txt', 'a') as file:
-        for connection in connections:
-            conn = connection[0]
-            sftp = conn.open_sftp()
-            for port in connection[1][1]:
-                remote_file = f"{dest}/{port}_output.txt"
-                local_file = f"{port}_output.txt"
-                sftp.get(remote_file, local_file)
-                print(f"Retrieved output file: {remote_file}")
-                with open(local_file, 'r') as output_file:
-                    file.write(output_file.read() + '\n')
-                os.remove(local_file)  # Remove the local file after appending its content
-            sftp.close()
-        print(file)
+    # with open('results.txt', 'a') as file:
+    #     for connection in connections:
+    #         conn = connection[0]
+    #         sftp = conn.open_sftp()
+    #         for port in connection[1][1]:
+    #             remote_file = f"{dest}/{port}_output.txt"
+    #             local_file = f"{port}_output.txt"
+    #             sftp.get(remote_file, local_file)
+    #             print(f"Retrieved output file: {remote_file}")
+    #             with open(local_file, 'r') as output_file:
+    #                 file.write(output_file.read() + '\n')
+    #             os.remove(local_file)  # Remove the local file after appending its content
+    #         sftp.close()
+    #     print(file)
 
 if __name__ == '__main__':
     main()
