@@ -111,8 +111,8 @@ data_mover:
   ap_uint<8> this_rank;
   ap_uint<DWIDTH> fetched;
   ap_uint<IWIDTH> instr0, instr1;
-  ap_uint<4> op0 = 0;
-  ap_uint<4> op1 = 0;
+  ap_uint<4> op0 = 1;
+  ap_uint<4> op1 = 1;
   ap_uint<RWIDTH> VLEN0_mux, VLEN1_mux;
   ap_uint<3> VLEN_mode0_mux, VLEN_mode1_mux;
   ap_uint<12> beq_immediate0, beq_immediate1;
