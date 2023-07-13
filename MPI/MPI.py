@@ -43,11 +43,13 @@ def fread_args(filename: str):
     arguments.setdefault('node_ctrl', 'node_ctrl.py')
     arguments.setdefault('key_path', None)
     arguments.setdefault('env_path', None)
+    arguments.setdefault('size', None)
+    arguments.setdefault('user', None)
     return arguments
 
 
 def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str, dest_dir: str, error_que:
-                              queue.Queue, connections: list, key_path: str):
+                              queue.Queue, connections: list, key_path: str, user: str):
     """
     This function takes a list of a tuples with two elements (hostname, [port_list]) and establishes a connection then 
     returns a a list of new tuples containing (input tuple, Connection object). 
@@ -58,9 +60,9 @@ def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str
 
             # Create SSH connection
             if key_path is not None:
-                conn = create_ssh_connection(remote_addr, 22, 'ianjc', key_path=key_path)
+                conn = create_ssh_connection(remote_addr, 22, user, key_path=key_path)
             else:
-                conn = create_ssh_connection(remote_addr, 22, 'ianjc')
+                conn = create_ssh_connection(remote_addr, 22, user)
 
             # Transfer control script
             sftp = conn.open_sftp()
@@ -168,6 +170,8 @@ def main():
     key_path = arguments['key_path']
     dest = arguments['dir']
     env_path = arguments['env_path']
+    size = arguments['size']
+    user = arguments['user']
 
     # Error check
     if (num_proc == None):
@@ -198,7 +202,23 @@ def main():
     if node_script == None:
         print('Input file must have the path to the script to be executed on nodes. (eg. node_script=path/to/script.py)')
         sys.exit(1)
-
+    
+    if user == None:
+        print("Input file must have a valid username to log into the remote machines. (eg. user=[username])")
+        sys.exit(1)
+    
+    if size == None:
+        print("Input file must have a value for size and must be a positive integer (eg. size=1)")
+        sys.exit(1)
+    else:
+        try:
+            size = int(size)
+        except:
+            print("Input file must have a value for size and must be a positive integer (eg. size=1)")
+            sys.exit(1)
+        if size < 1:
+            print("Input file must have a value for size and must be a positive integer (eg. size=1)")
+            sys.exit(1)
 
     # Get hostname, slots and assign port numbers
     ranks = hostfile_extract(hostfile)
@@ -206,19 +226,16 @@ def main():
     print(ranks)
 
     # Configure Host
-    lb = host.setup_host(ranks, alveo_port, xclbin, alveo_ip)
+    host.setup_host(ranks, alveo_port, size, xclbin, alveo_ip)
 
     error_queue = queue.Queue()
     result = True
     connections = []
 
     # Setup connections and transfer files to nodes
-    node_connect_and_transfer(ranks, ctrl_script_name, node_script, dest, error_queue, connections=connections, key_path=key_path)
+    node_connect_and_transfer(ranks, ctrl_script_name, node_script, dest, error_queue, connections=connections, key_path=key_path, user=user)
 
     # Get host ready to receive data from nodes
-    size = 1408 * 8
-
-    lb_wh = lb.start(size)
 
     node_script_name = node_script.split('/')[-1]
 

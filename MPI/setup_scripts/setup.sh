@@ -47,8 +47,11 @@ mkdir ~/xup_vitis_network_example/Notebooks/binary
 cp vnx_basic_if0.xclbin ~/xup_vitis_network_example/Notebooks/binary
 cd ~/xup_vitis_network_example/Notebooks
 
-# Copy key over
+# Use your cloudlab public key and name it
 nano key
 chmod 600 key
 
+# for each node 
 sudo ifconfig enp175s0 192.168.40.11
+
+#python MPI.py test/argfile.txt
