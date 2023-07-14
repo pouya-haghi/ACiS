@@ -4,7 +4,7 @@
 sudo apt update
 N | sudo apt upgrade -y
 
-sudo apt install python3-pip -y
+N | sudo apt install python3-pip -y
 source /opt/xilinx/xrt/setup.sh
 
 N | sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget -y
