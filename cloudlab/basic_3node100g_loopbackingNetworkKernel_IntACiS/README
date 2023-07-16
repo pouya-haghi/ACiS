@@ -1,0 +1,2 @@
+Plan for debugging: Use AXIMM to debug instructions in config tables.
+I'm using a deadline-based approach. First I set FIFO depth to 4K. First, there is a setup phase, where we execute all instructions till vmacc (for all of the ranks)This ensures everything is all set before packet processing. Then we have a while loop that executes till wfi. We use lock variable ensure the deadline.
