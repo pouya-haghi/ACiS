@@ -62,7 +62,7 @@ if hasattr(ol, 'HBM0'):
 else:
     mm_inst_buf = pynq.allocate(shape_inst, dtype=np.uint8, target=ol.bank1)
     mm_data0_buf = pynq.allocate(shape_data_mm, dtype=np.uint8, target=ol.bank1)
-    mm_data1_buf = pynq.allocate(shape_data_mm, dtype=np.uint8, target=ol.HBM0)    
+    mm_data1_buf = pynq.allocate(shape_data_mm, dtype=np.uint8, target=ol.bank1)    
 for k in range(immediate_data):
     mm_data0_buf[k] = 0
     mm_data1_buf[k] = 0
