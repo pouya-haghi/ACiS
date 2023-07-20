@@ -8,7 +8,7 @@
 #define UWIDTH 96
 #define IWIDTH 32 // integer size
 #define RWIDTH 12 //number of bits required for the address of vector register file
-#define NUM_RANK 1
+#define NUM_RANK 2
 #define NUM_COL 2
 // #define MAX_BUFFER_SIZE 22528 // 1408*8*NUM_RANK(=2) -- it should be multiples of 1408 -- in this example, we have 8 tlast for input stream and 2*8 tlast for output stream (b/c its allgether)
 #define DEPTH_CONFIG 512
