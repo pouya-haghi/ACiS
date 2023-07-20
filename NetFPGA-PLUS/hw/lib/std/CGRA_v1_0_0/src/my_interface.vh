@@ -1,6 +1,8 @@
 //parameter dwidth_double = 64;
 parameter clk_pd = 4;
 parameter delay_HBM = 6;
+parameter delay_read_HBM = 48;
+parameter delay_write_HBM = 42;
 parameter depth_RF = 4096;
 parameter depth_config = 64;//4096;
 parameter dwidth_RFadd = $clog2(depth_RF);
@@ -11,7 +13,7 @@ parameter dwidth_inst = 32;
 parameter dwidth_float = 32;
 parameter SIMD_degree = 16;
 parameter phit_size = 512;
-parameter num_col = 2; // up to 32
+parameter num_col = 1; // up to 32
 parameter entry_sz_state = 48;
 parameter sz_config = 36;
 parameter latencyPEA = 6;
@@ -24,7 +26,7 @@ parameter C_S_AXI_DATA_WIDTH = 32;
 parameter C_M_AXI_ADDR_WIDTH = 64;
 parameter packet_length = 16; // VLEN of vmacc
 parameter header_bytes = 34;
-parameter header_deg = 9;
+parameter header_deg = $ceil((header_bytes*SIMD_degree*8)/phit_size);
 function integer f_max (
   input integer a,
   input integer b

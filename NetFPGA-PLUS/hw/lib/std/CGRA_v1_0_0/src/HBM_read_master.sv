@@ -42,11 +42,17 @@ module HBM_read_master #(
   input  wire [C_M_AXI_DATA_WIDTH-1:0] m_axi_rdata,
   input  wire                          m_axi_rlast,
   // AXI4-Stream master interface
-  output wire                          m_axis_tvalid,
-  input wire                           m_axis_tready,
-  output wire [C_M_AXI_DATA_WIDTH-1:0] m_axis_tdata
-//  output wire                          m_axis_tlast,
-//  input wire                           is_vle32_vv
+  input  wire                          m_axis_aclk,	
+  input  wire                          m_axis_areset,	
+  output wire                          m_axis_tvalid,	
+  input  wire                          m_axis_tready,	
+  output wire [C_M_AXI_DATA_WIDTH-1:0] m_axis_tdata,	
+  output wire                          m_axis_tlast
+//  output wire                          m_axis_tvalid,
+//  input wire                           m_axis_tready,
+//  output wire [C_M_AXI_DATA_WIDTH-1:0] m_axis_tdata
+////  output wire                          m_axis_tlast,
+////  input wire                           is_vle32_vv
 );
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -220,14 +226,63 @@ inst_ar_to_r_transaction_cntr (
 // AXI Read Channel
 ///////////////////////////////////////////////////////////////////////////////
   // All signals pass through.
-  assign m_axis_tvalid = m_axi_rvalid;
-  assign m_axis_tdata  = m_axi_rdata;
-  assign m_axi_rready  = m_axis_tready;
+//  assign m_axis_tvalid = m_axi_rvalid;
+//  assign m_axis_tdata  = m_axi_rdata;
+//  assign m_axi_rready  = m_axis_tready;
 //  assign m_axis_tlast  = m_axi_rlast;
+
+ xpm_fifo_sync # (
+    .FIFO_MEMORY_TYPE    ( "auto"               ) , // string; "auto", "block", "distributed", or "ultra";
+    .ECC_MODE            ( "no_ecc"             ) , // string; "no_ecc" or "en_ecc";
+    .FIFO_WRITE_DEPTH    ( LP_FIFO_DEPTH        ) , // positive integer
+    .WRITE_DATA_WIDTH    ( C_M_AXI_DATA_WIDTH+1 ) , // positive integer
+    .WR_DATA_COUNT_WIDTH ( LP_FIFO_COUNT_WIDTH  ) , // positive integer, not used
+    .PROG_FULL_THRESH    ( 10                   ) , // positive integer, not used
+    .FULL_RESET_VALUE    ( 1                    ) , // positive integer; 0 or 1
+    .USE_ADV_FEATURES    ( "1F1F"               ) , // string; "0000" to "1F1F";
+    .READ_MODE           ( "fwft"               ) , // string; "std" or "fwft";
+    .FIFO_READ_LATENCY   ( LP_FIFO_READ_LATENCY ) , // positive integer;
+    .READ_DATA_WIDTH     ( C_M_AXI_DATA_WIDTH+1 ) , // positive integer
+    .RD_DATA_COUNT_WIDTH ( LP_FIFO_COUNT_WIDTH  ) , // positive integer, not used
+    .PROG_EMPTY_THRESH   ( 10                   ) , // positive integer, not used
+    .DOUT_RESET_VALUE    ( "0"                  ) , // string, don't care
+    .WAKEUP_TIME         ( 0                    ) // positive integer; 0 or 2;
+  )
+  inst_rd_xpm_fifo_sync (
+    .sleep         ( 1'b0                        ) ,
+    .rst           ( areset                      ) ,
+    .wr_clk        ( aclk                        ) ,
+    .wr_en         ( m_axi_rvalid                ) ,
+    .din           ( {m_axi_rlast,m_axi_rdata}   ) ,
+    .full          (                             ) ,
+    .overflow      (                             ) ,
+    .prog_full     (                             ) ,
+    .wr_data_count (                             ) ,
+    .almost_full   (                             ) ,
+    .wr_ack        (                             ) ,
+    .wr_rst_busy   (                             ) ,
+    .rd_en         ( m_axis_tready               ) ,
+    .dout          ( {m_axis_tlast,m_axis_tdata} ) ,
+    .empty         (                             ) ,
+    .prog_empty    (                             ) ,
+    .rd_data_count (                             ) ,
+    .almost_empty  (                             ) ,
+    .data_valid    ( m_axis_tvalid               ) ,
+    .underflow     (                             ) ,
+    .rd_rst_busy   (                             ) ,
+    .injectsbiterr ( 1'b0                        ) ,
+    .injectdbiterr ( 1'b0                        ) ,
+    .sbiterr       (                             ) ,
+    .dbiterr       (                             )
+  ) ;
+
+  assign m_axi_rready = 1'b1;
 
 assign rxfer = m_axi_rready & m_axi_rvalid;
 
-assign r_completed = m_axi_rvalid & m_axi_rready & m_axi_rlast;
+//assign r_completed = m_axi_rvalid & m_axi_rready & m_axi_rlast;
+	
+assign r_completed = m_axis_tvalid & m_axis_tready & m_axis_tlast;
 
 always_comb begin
   decr_r_transaction_cntr = rxfer & m_axi_rlast;
