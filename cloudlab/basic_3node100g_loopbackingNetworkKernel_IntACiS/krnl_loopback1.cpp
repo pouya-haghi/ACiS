@@ -600,12 +600,12 @@ data_mover:
     }
     else{
       if(op0 == 2){ // vsetivli
-        VLEN0[1] = instr0.range(29,18);
-        VLEN_mode0[1] = instr0.range(17,15);}
+        //VLEN0[1] = instr0.range(29,18);
+        //VLEN_mode0[1] = instr0.range(17,15);}
     
       if(op1 == 2){ // vsetivli
-        VLEN1[1] = instr1.range(29,18);
-        VLEN_mode1[1] = instr1.range(17,15);}
+        //VLEN1[1] = instr1.range(29,18);
+        //VLEN_mode1[1] = instr1.range(17,15);}
     }
     
     // Decode (third cycle) -- because these operations depend on either second_vs or VLEN_mode
@@ -618,10 +618,10 @@ data_mover:
       VLEN_mode1_mux = VLEN_mode1[0];
     }
     else{
-      VLEN0_mux = VLEN0[1];
-      VLEN_mode0_mux = VLEN_mode0[1];  
-      VLEN1_mux = VLEN1[1];
-      VLEN_mode1_mux = VLEN_mode1[1];
+    //   VLEN0_mux = VLEN0[1];
+    //   VLEN_mode0_mux = VLEN_mode0[1];  
+    //   VLEN1_mux = VLEN1[1];
+    //   VLEN_mode1_mux = VLEN_mode1[1];
     }
 
     // Decode (fourth cycle) -- because these operations depend on VLEN_mode_mux
@@ -695,10 +695,10 @@ data_mover:
       second_dr1 = rf1[second_rs1][0];
     }
     else{
-      first_dr0 = rf0[first_rs0][1];
-      second_dr0 = rf0[second_rs0][1];
-      first_dr1 = rf1[first_rs1][1];
-      second_dr1 = rf1[second_rs1][1];
+    //   first_dr0 = rf0[first_rs0][1];
+    //   second_dr0 = rf0[second_rs0][1];
+    //   first_dr1 = rf1[first_rs1][1];
+    //   second_dr1 = rf1[second_rs1][1];
     }
     
     // Exe (scalar)
@@ -718,19 +718,19 @@ data_mover:
         rf1[rd1][0] = lui_immediate1;
     }
     else{
-      if (op0 == 7) // add
-        rf0[rd0][1] = first_dr0 + second_dr0;
-      else if (op0 == 5) //addi
-        rf0[rd0][1] = first_dr0 + addi_immediate0;
-      else if (op0 == 6) //lui
-        rf0[rd0][1] = lui_immediate0;
+    //   if (op0 == 7) // add
+    //     rf0[rd0][1] = first_dr0 + second_dr0;
+    //   else if (op0 == 5) //addi
+    //     rf0[rd0][1] = first_dr0 + addi_immediate0;
+    //   else if (op0 == 6) //lui
+    //     rf0[rd0][1] = lui_immediate0;
 
-      if (op1 == 7) // add
-        rf1[rd1][1] = first_dr1 + second_dr1;
-      else if (op1 == 5) //addi
-        rf1[rd1][1] = first_dr1 + addi_immediate1;
-      else if (op1 == 6) //lui
-        rf1[rd1][1] = lui_immediate1;
+    //   if (op1 == 7) // add
+    //     rf1[rd1][1] = first_dr1 + second_dr1;
+    //   else if (op1 == 5) //addi
+    //     rf1[rd1][1] = first_dr1 + addi_immediate1;
+    //   else if (op1 == 6) //lui
+    //     rf1[rd1][1] = lui_immediate1;
     }
     
     // update PC
@@ -773,8 +773,8 @@ data_mover:
         srf_data1 = vrf1[vr_addr1][0];
       }
       else{
-        srf_data0 = vrf0[vr_addr0][1];
-        srf_data1 = vrf1[vr_addr1][1];
+        // srf_data0 = vrf0[vr_addr0][1];
+        // srf_data1 = vrf1[vr_addr1][1];
       }
       for (vs_count0=0; vs_count0<VLEN0_mux; vs_count0++){
         #pragma HLS PIPELINE II=1
@@ -785,8 +785,8 @@ data_mover:
           vrf_data1 = vrf1[vrf_idx1][0]; // Read VRF
         }
         else{
-          vrf_data0 = vrf0[vrf_idx0][1]; // Read VRF
-          vrf_data1 = vrf1[vrf_idx1][1]; // Read VRF
+        //   vrf_data0 = vrf0[vrf_idx0][1]; // Read VRF
+        //   vrf_data1 = vrf1[vrf_idx1][1]; // Read VRF
         }
         // Processing
         // PUT AN IF HERE IF YOU WANNA SUPPORT OTHER ALU-LIKE OPERATIONS
@@ -836,8 +836,8 @@ data_mover:
           vrf1[vrf_idx1][0] = vrf_data_out1; //concatenate result to VRF
         }
         else{
-          vrf0[vrf_idx0][1] = vrf_data_out0; //concatenate result to VRF
-          vrf1[vrf_idx1][1] = vrf_data_out1; //concatenate result to VRF
+        //   vrf0[vrf_idx0][1] = vrf_data_out0; //concatenate result to VRF
+        //   vrf1[vrf_idx1][1] = vrf_data_out1; //concatenate result to VRF
         }
         global_in++;
       }
@@ -919,7 +919,7 @@ data_mover:
           vrf0[vrf_idx0][0] = fetched_mm0; // update vrf
         }
         else{
-          vrf0[vrf_idx0][1] = fetched_mm0; // update vrf
+        //   vrf0[vrf_idx0][1] = fetched_mm0; // update vrf
         }
       }
     }
@@ -935,7 +935,7 @@ data_mover:
           vrf1[vrf_idx1][0] = fetched_mm1; // update vrf
         }
         else{
-          vrf1[vrf_idx1][1] = fetched_mm1; // update vrf
+        //   vrf1[vrf_idx1][1] = fetched_mm1; // update vrf
         }
       }
     }
@@ -951,7 +951,7 @@ data_mover:
             pkt_out.last = (((((global_out0 + 1) * DWIDTH/8) % 1408) == 0))? 1: 0;
             global_out0++;}
           else{
-            pkt_out.data = vrf0[vrf_idx0][1];
+            // pkt_out.data = vrf0[vrf_idx0][1];
             pkt_out.dest = 1;
             pkt_out.last = (((((global_out1 + 1) * DWIDTH/8) % 1408) == 0))? 1: 0;
             global_out1++;}
@@ -967,7 +967,7 @@ data_mover:
             pkt_out.last = (((((global_out0 + 1) * DWIDTH/8) % 1408) == 0))? 1: 0;
             global_out0++;}
           else{
-            pkt_out.data = vrf1[vrf_idx1][1];
+            // pkt_out.data = vrf1[vrf_idx1][1];
             pkt_out.dest = 1;
             pkt_out.last = (((((global_out1 + 1) * DWIDTH/8) % 1408) == 0))? 1: 0;
             global_out1++;}
