@@ -14,7 +14,7 @@ module HBM_write_master #(
   // Range: 32, 64, 128, 256, 512, 1024
   parameter integer C_M_AXI_DATA_WIDTH  = 512,
   // Specifies the maximum number of AXI4 transactions that may be outstanding.
-  parameter integer C_MAX_OUTSTANDING   = 32
+  parameter integer C_MAX_OUTSTANDING   = 16
 )
 (
   // AXI Interface
@@ -43,14 +43,9 @@ module HBM_write_master #(
   input  wire                            m_axi_bvalid,
   output wire                            m_axi_bready,
   // AXI4-Stream interface
-//  input  wire                            s_axis_tvalid,
-////  input  wire                            is_vse32_vv 
-//  output wire                            s_axis_tready,
-//  input  wire  [C_M_AXI_DATA_WIDTH-1:0]  s_axis_tdata
-  input  wire                            s_axis_aclk,	
-  input  wire                            s_axis_areset,	
-  input  wire                            s_axis_tvalid,	
-  output wire                            s_axis_tready,	
+  input  wire                            s_axis_tvalid,
+//  input  wire                            is_vse32_vv 
+  output wire                            s_axis_tready,
   input  wire  [C_M_AXI_DATA_WIDTH-1:0]  s_axis_tdata
 
 );
@@ -173,57 +168,9 @@ end
 
   // Gate valid/ready signals with running so transfers don't occur before the
   // xfer size is known.
-//assign m_axi_wvalid  = s_axis_tvalid & w_running;
-//assign m_axi_wdata   = s_axis_tdata;
-//assign s_axis_tready = m_axi_wready & w_running;
- xpm_fifo_sync # (
-    .FIFO_MEMORY_TYPE    ( "distributed"        ) , // string; "auto", "block", "distributed", or "ultra";
-    .ECC_MODE            ( "no_ecc"             ) , // string; "no_ecc" or "en_ecc";
-    .FIFO_WRITE_DEPTH    ( LP_FIFO_DEPTH        ) , // positive integer
-    .WRITE_DATA_WIDTH    ( C_M_AXI_DATA_WIDTH   ) , // positive integer
-    .WR_DATA_COUNT_WIDTH ( LP_FIFO_COUNT_WIDTH  ) , // positive integer, not used
-    .PROG_FULL_THRESH    ( 10                   ) , // positive integer, not used
-    .FULL_RESET_VALUE    ( 1                    ) , // positive integer; 0 or 1
-    .USE_ADV_FEATURES    ( "1F1F"               ) , // string; "0000" to "1F1F";
-    .READ_MODE           ( "fwft"               ) , // string; "std" or "fwft";
-    .FIFO_READ_LATENCY   ( LP_FIFO_READ_LATENCY ) , // positive integer;
-    .READ_DATA_WIDTH     ( C_M_AXI_DATA_WIDTH   ) , // positive integer
-    .RD_DATA_COUNT_WIDTH ( LP_FIFO_COUNT_WIDTH  ) , // positive integer, not used
-    .PROG_EMPTY_THRESH   ( 10                   ) , // positive integer, not used
-    .DOUT_RESET_VALUE    ( "0"                  ) , // string, don't care
-    .WAKEUP_TIME         ( 0                    ) // positive integer; 0 or 2;
-  )
-  inst_xpm_fifo_sync (
-    .sleep         ( 1'b0                     ) ,
-    .rst           ( areset                   ) ,
-    .wr_clk        ( aclk                     ) ,
-    .wr_en         ( s_axis_tvalid            ) ,
-    .din           ( s_axis_tdata             ) ,
-    .full          ( s_axis_tready_n          ) ,
-    .overflow      (                          ) ,
-    .prog_full     (                          ) ,
-    .wr_data_count (                          ) ,
-    .almost_full   (                          ) ,
-    .wr_ack        (                          ) ,
-    .wr_rst_busy   (                          ) ,
-    .rd_en         ( m_axi_wready & w_running ) ,
-    .dout          ( m_axi_wdata              ) ,
-    .empty         (                          ) ,
-    .prog_empty    (                          ) ,
-    .rd_data_count (                          ) ,
-    .almost_empty  (                          ) ,
-    .data_valid    ( m_axi_wvalid_i           ) ,
-    .underflow     (                          ) ,
-    .rd_rst_busy   (                          ) ,
-    .injectsbiterr ( 1'b0                     ) ,
-    .injectdbiterr ( 1'b0                     ) ,
-    .sbiterr       (                          ) ,
-    .dbiterr       (                          )
-  );
-
-  assign s_axis_tready = ~s_axis_tready_n;
-  assign m_axi_wvalid = m_axi_wvalid_i & w_running;
-
+assign m_axi_wvalid  = s_axis_tvalid & w_running;
+assign m_axi_wdata   = s_axis_tdata;
+assign s_axis_tready = m_axi_wready & w_running;
 
 assign wxfer = m_axi_wvalid & m_axi_wready;
 

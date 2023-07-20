@@ -22,7 +22,6 @@ module emulate_stream_in(
     );
     
     
-    
     logic state, next_state;
     logic INACTIVE =  1'd0;
     logic STREAM_IN = 1'd1;
