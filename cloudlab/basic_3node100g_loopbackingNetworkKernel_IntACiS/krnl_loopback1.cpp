@@ -599,11 +599,11 @@ data_mover:
         VLEN_mode1[0] = instr1.range(17,15);}
     }
     else{
-      if(op0 == 2){ // vsetivli
+    //   if(op0 == 2){ // vsetivli
         //VLEN0[1] = instr0.range(29,18);
         //VLEN_mode0[1] = instr0.range(17,15);}
     
-      if(op1 == 2){ // vsetivli
+    //   if(op1 == 2){ // vsetivli
         //VLEN1[1] = instr1.range(29,18);
         //VLEN_mode1[1] = instr1.range(17,15);}
     }
