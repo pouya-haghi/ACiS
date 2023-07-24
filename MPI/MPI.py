@@ -1,4 +1,4 @@
-import os
+import logging
 import queue
 import concurrent.futures
 import paramiko
@@ -10,13 +10,14 @@ import json
 def create_ssh_connection(ip_address: str, port: int, username: str, key_path: str = None) -> paramiko.SSHClient:
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
+    logging.debug("Creating SSH connection.")
     if key_path is not None:
         private_key = paramiko.RSAKey.from_private_key_file(key_path)
         ssh.connect(hostname=ip_address, port=port, username=username, pkey=private_key)
     else:
         ssh.connect(hostname=ip_address, port=port, username=username)
 
+    logging.debug(f"Created SSH connection. {ssh}")
     return ssh
 
 def fread_args(filename: str):
@@ -49,7 +50,7 @@ def fread_args(filename: str):
     return arguments
 
 
-def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str, dest_dir: str, error_que:
+def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str, dest_dir: str, error_queue:
                               queue.Queue, connections: list, key_path: str, user: str):
     """
     This function takes a list of a tuples with two elements (hostname, [port_list]) and establishes a connection then 
@@ -58,6 +59,7 @@ def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str
     try:
         for rank in ranks:
             remote_addr = rank[0]
+            logging.debug(f"Args {remote_addr}, {node_ctrl_script}, {node_ex_script}, {dest_dir}, {error_queue}, {connections}, {key_path}, {user}")
 
             # Create SSH connection
             if key_path is not None:
@@ -65,19 +67,22 @@ def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str
             else:
                 conn = create_ssh_connection(remote_addr, 22, user)
 
+            logging.debug(f"Transfering node ctrl script to {remote_addr}.")
             # Transfer control script
             sftp = conn.open_sftp()
             sftp.put(node_ctrl_script, f"{dest_dir}/{node_ctrl_script}")
 
+            logging.debug(f"Transfering node exec script to {remote_addr}.")
             # Transfer script to be executed
             sftp.put(node_ex_script, f"{dest_dir}/{node_ex_script}")
 
             sftp.close()
 
+            logging.debug(f"Apppending connection {conn} and {rank} to connection list.")
             connections.append((conn, rank))
 
     except Exception as err:
-        error_que.put(f'Error running script on {remote_addr}: {str(err)}')
+        error_queue.put(f'Error running script on {remote_addr}: {str(err)}')
 
 
 def node_execute(connection: tuple, ctrl_script: str, dest_dir: str, error_que: queue.Queue,

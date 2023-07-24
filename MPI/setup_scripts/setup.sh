@@ -52,6 +52,6 @@ nano key
 chmod 600 key
 
 # for each node 
-sudo ifconfig enp175s0 192.168.40.11
+sudo ifconfig enp175s0 192.168.40.10
 
 #python MPI.py test/argfile.txt
