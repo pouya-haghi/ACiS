@@ -24,7 +24,6 @@ def socket_receive_threaded(sock, size):
 
 
 def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
-    print(f'Executing on {alveo_ip} port:{port_num}')
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
     sock.bind(('', port_num))

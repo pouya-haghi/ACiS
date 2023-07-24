@@ -34,6 +34,7 @@ def fread_args(filename: str):
         sys.exit(1)
 
     arguments.setdefault('np', None)
+    arguments.setdefault('n', 0)
     arguments.setdefault('hostfile', None)
     arguments.setdefault('node_script', 'node_exec.py')
     arguments.setdefault('xclbin', None)
@@ -79,7 +80,7 @@ def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str
         error_que.put(f'Error running script on {remote_addr}: {str(err)}')
 
 
-def node_execute(connection: tuple, ctrl_script: str, node_script: str, dest_dir: str, error_que: queue.Queue,
+def node_execute(connection: tuple, ctrl_script: str, dest_dir: str, error_que: queue.Queue,
                  size: int, alveo_ip: str, alveo_port: int, env_path: str):
     conn = connection[0]
     rank = connection[1]
@@ -95,7 +96,7 @@ def node_execute(connection: tuple, ctrl_script: str, node_script: str, dest_dir
     command = f'''
     cd {dest_dir}
     {activate_cmd}
-    python {ctrl_script} {node_script} {alveo_ip} {alveo_port} {size} \'{rank_json}\'
+    python {ctrl_script} {alveo_ip} {alveo_port} {size} \'{rank_json}\'
     '''
 
     try:
@@ -122,7 +123,7 @@ def node_execute(connection: tuple, ctrl_script: str, node_script: str, dest_dir
         error_que.put(f'Error executing script on {remote_addr}: {str(err)}')
     
     
-def hostfile_extract(hostfile_path: str):
+def hostfile_extract(hostfile_path: str, num_proc: int, nodes: int):
     """
     This function takes in a path to the hostfile, parses the hostfile and returns a list of tuples, each consisting
     of (hostname, [list of port numbers equal to the number of slots]) for each rank. The port numbers are
@@ -130,19 +131,74 @@ def hostfile_extract(hostfile_path: str):
     """
     rank_data = []
     port_num = 61440  # Hex value F000
+    proc_count = 0
     try:
         with open(hostfile_path, 'r') as file:
-            for index, line in enumerate(file):
-                hostname, slots = line.strip().split(' slots=')
+            first_line = file.readline().strip()
+            if "slots=" in first_line:
+                hostname, slots = first_line.strip().split(' slots=')
                 slots = int(slots)
                 if slots < 1:
                     print("Error: Invalid slots value. The slots value must be a positive integer.")
                     sys.exit(1)
                 rank_ports = []
-                for i in range(1, slots+1):
+                for i in range(slots):
+                    if proc_count < num_proc:
+                        rank_ports.append(port_num)
+                        port_num = port_num + 1
+                        proc_count = proc_count+1
+                rank_data.append((hostname, rank_ports))
+                for line in file:
+                    hostname, slots = line.strip().split(' slots=')
+                    slots = int(slots)
+                    if slots < 1:
+                        print("Error: Invalid slots value. The slots value must be a positive integer.")
+                        sys.exit(1)
+                    rank_ports = []
+                    if proc_count < num_proc:
+                        for i in range(slots):
+                            if proc_count < num_proc:
+                                rank_ports.append(port_num)
+                                port_num = port_num + 1
+                                proc_count = proc_count+1
+                        rank_data.append((hostname, rank_ports))
+                if proc_count < num_proc:
+                    print(f"Error: Not enough slots for processes. {proc_count} slots specified for {num_proc} processes.")
+                    sys.exit(1)
+            else:
+                if (nodes <= 0):
+                    print("If the nubmer of slots per node are not specified, the user must specify the total number of nodes.\nNumber of nodes must have a positive integer value (e.g. -n=2).")
+                    sys.exit(1)
+                processes = num_proc//nodes
+                remainder = num_proc % nodes
+                hostname = first_line.strip()
+                rank_ports = []
+                for i in range(processes):
+                        rank_ports.append(port_num)
+                        port_num = port_num + 1
+                if remainder > 0:
                     rank_ports.append(port_num)
                     port_num = port_num + 1
+                    remainder = remainder - 1
+                nodes_assigned = 1
                 rank_data.append((hostname, rank_ports))
+                for line in file:
+                    if (nodes_assigned < nodes) and (nodes_assigned < num_proc):
+                        hostname = line.strip()
+                        rank_ports = []
+                        for i in range(processes):
+                                rank_ports.append(port_num)
+                                port_num = port_num + 1
+                                proc_count = proc_count+1
+                        if remainder > 0:
+                            rank_ports.append(port_num)
+                            port_num = port_num + 1
+                            remainder = remainder - 1
+                        nodes_assigned = nodes_assigned +1
+                        rank_data.append((hostname, rank_ports))
+                if nodes_assigned < nodes:
+                    print(f"Error. Not enough IP addresses. There were {nodes_assigned} addresses in {hostfile_path} for {num_proc} number of processes.")
+                    sys.exit(1)
     except FileNotFoundError:
         print(f"File '{hostfile_path}' not found.")
         sys.exit(1)
@@ -161,6 +217,7 @@ def main():
     arguments = fread_args(argfile)
     ranks = []
     num_proc = arguments['np']
+    num_nodes = arguments['n']
     hostfile = arguments['hostfile']
     node_script = arguments['node_script']
     ctrl_script_name = arguments['node_ctrl']
@@ -186,6 +243,15 @@ def main():
         if num_proc < 1:
             print("Input file must have np value and np must be a positive integer (eg. np=1)")
             sys.exit(1)
+    
+    try:
+        num_nodes = int(num_nodes)
+        if num_nodes < 0:
+            print("When specifying number of nodes, the value must be equal to a positive integer. (eg. -n=3)")
+            sys.exit(1)
+    except ValueError:
+        print("When specifying number of nodes, the value must be equal to a positive integer. (eg. -n=3)")
+        sys.exit(1)    
 
     if (alveo_port != 62781):
         try:
@@ -220,8 +286,12 @@ def main():
             print("Input file must have a value for size and must be a positive integer (eg. size=1)")
             sys.exit(1)
 
+    if dir == None:
+        print("Desination directory on the the remote node must be provided. eg. dir=destination/directory/on/remote/node")
+        sys.exit(1)
+
     # Get hostname, slots and assign port numbers
-    ranks = hostfile_extract(hostfile)
+    ranks = hostfile_extract(hostfile, num_proc=num_proc, nodes=num_nodes)
 
     print(ranks)
 
@@ -236,9 +306,6 @@ def main():
     node_connect_and_transfer(ranks, ctrl_script_name, node_script, dest, error_queue, connections=connections, key_path=key_path, user=user)
 
     # Get host ready to receive data from nodes
-
-    node_script_name = node_script.split('/')[-1]
-
     print(connections)
 
     print('starting execute')
@@ -247,7 +314,7 @@ def main():
         # Submit tasks to the thread pool
         futures = []
         for connection in connections:
-            future = executor.submit(node_execute, connection, ctrl_script_name, node_script_name, dest, error_queue,
+            future = executor.submit(node_execute, connection, ctrl_script_name, dest, error_queue,
                                      size, alveo_ip, alveo_port, env_path)
             futures.append(future)
 
@@ -260,21 +327,6 @@ def main():
         result = False
     if not result:
         sys.exit(1)
-    
-    # with open('results.txt', 'a') as file:
-    #     for connection in connections:
-    #         conn = connection[0]
-    #         sftp = conn.open_sftp()
-    #         for port in connection[1][1]:
-    #             remote_file = f"{dest}/{port}_output.txt"
-    #             local_file = f"{port}_output.txt"
-    #             sftp.get(remote_file, local_file)
-    #             print(f"Retrieved output file: {remote_file}")
-    #             with open(local_file, 'r') as output_file:
-    #                 file.write(output_file.read() + '\n')
-    #             os.remove(local_file)  # Remove the local file after appending its content
-    #         sftp.close()
-    #     print(file)
 
 if __name__ == '__main__':
     main()

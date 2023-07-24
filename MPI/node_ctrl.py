@@ -1,74 +1,47 @@
 import subprocess
+import multiprocessing
 import sys
-import time
 import json
-import concurrent.futures
+import logging
 import node_exec as exec
 
-if __name__ == "__main__":
-    # Get args
-    node_script = sys.argv[1]
-    alveo_ip = sys.argv[2]
-    print(alveo_ip)
-    alveo_port = int(sys.argv[3])
-    print(alveo_port)
-    size = int(sys.argv[4])
-    port_json = sys.argv[5]
-    port_list = json.loads(port_json)
-
-    print("Executing Ping")
+def ping_fpga(alveo_ip):
     # Ping FPGA
-    # Execute ping command
     max_attempts = 5
-    attempts = 0
-
-    while attempts < max_attempts:
+    logging.debug(f"Establishing connection to FPGA at: {alveo_ip}")
+    for attempt in range(1, max_attempts + 1):
         try:
             # Execute ping command
-            ping_output = subprocess.run(["ping", "-c", "5", alveo_ip], capture_output=True, text=True)
-
-            if ping_output.returncode == 0:
-                print(ping_output.stdout)
-                break
-            else:
-                attempts += 1
-                print(f"Attempt {attempts}: Ping command failed with return code {ping_output.returncode}")
-                print(ping_output.stderr)
-
+            subprocess.run(["ping", "-c", "1", alveo_ip], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+            logging.debug(f"Successfully pinged {alveo_ip}")
+            return  # Exit the function if the ping is successful
         except subprocess.CalledProcessError as err:
-            attempts += 1
-            print(f"Attempt {attempts}: Error executing ping command: {str(err)}")
+            logging.debug(f"Ping attempt {attempt}/{max_attempts} failed: {str(err)}")
 
-        # Sleep for a few seconds before the next attempt
-        time.sleep(1)
+    logging.debug("Failed to ping the destination after 5 attempts. Exiting program.")
+    sys.exit(1)
 
-    if attempts == max_attempts:
-        print(f"Failed to reach the target IP after {max_attempts} attempts. Exiting.")
-        sys.exit(1)
+def execute_port(alveo_ip, alveo_port, port, size):
+    exec.execute(alveo_ip, alveo_port, port, size)
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        futures = {}
-        for port in port_list:
-            future = executor.submit(exec.execute, alveo_ip, alveo_port, port, size)
-            futures[future] = port
+if __name__ == "__main__":
+    logging.basicConfig(filename='node_ctrl.log', level=logging.DEBUG,
+                        format='%(asctime)s - %(levelname)s - %(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S')
+    logging.debug("Beginning node_ctrl.py.")
+    # Get args
+    alveo_ip = sys.argv[1]
+    alveo_port = int(sys.argv[2])
+    size = int(sys.argv[3])
+    port_json = sys.argv[4]
+    port_list = json.loads(port_json)
 
-        # Wait for all futures to complete
-        concurrent.futures.wait(futures)
+    logging.debug(f"\nInput: alveo_ip={alveo_ip}\nalveo_port={alveo_port}\nsize={size}\nport_list={port_list}")
 
-        # # Save output to separate files
-        # for future, port in futures.items():
-        #     output_file = f"{port}_output.txt"
-        #     result = future.result()
+    ping_fpga(alveo_ip=alveo_ip)
 
-        #     if isinstance(result, Exception):
-        #         # Write the error to the file
-        #         with open(output_file, "w") as file:
-        #             file.write(f"Error executing function for port {port}: {str(result)}")
-        #     else:
-        #         # Write the result to the file
-        #         if isinstance(result, bytes):
-        #             with open(output_file, "wb") as file:
-        #                 file.write(result)
-        #         else:
-        #             with open(output_file, "w") as file:
-        #                 file.write(result)
+    with multiprocessing.Pool() as pool:
+        args_list = [(alveo_ip, alveo_port, port, size) for port in port_list]
+        pool.starmap(execute_port, args_list)
+    
+    logging.debug("Multiprocessing complete in node_ctrl.py.")
