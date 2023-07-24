@@ -871,7 +871,8 @@ module test_top;
         initial begin
             s.itoa(c);
 //            path = {"/home/pouya/github/G-FPin_HW_old/G-FPin_HW/NetFPGA-PLUS/hw/lib/std/CGRA_v1_0_0/test/instructions/Cora/12/collective_",s,".bin"};
-            path = {"/home/pouya/Documents/CGRA_binaries/gcn_xv_",s,".bin"};
+            // path = {"/home/pouya/Documents/CGRA_binaries/gcn_xv_",s,".bin"};
+          path = {"../../../../../../toolchain/assembler/Assembly_code/gcn_xv_",s,".bin"};
             $readmemb(path,read_inst);
             #1;
             mem[c] = read_inst;
