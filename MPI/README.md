@@ -15,7 +15,7 @@
 #### Arguments File
 The program is designed to take in a single arguments file with each argument listed rather than have a long list of arguments in the command line. Each argument in the argument file needs to be on its own line. The format of specifying an argument is, `[argument name]=[value]`. Some of the arguments are required and others are optional. 
 
-###### The required arguments are:
+##### The required arguments are:
 - `np=[positive integer]` This is the total number of processes to to be run.
 - `hostfile=[path to hostfile]` This is the path to the hostfile (see hostfile below for more information).
 - `xclbin=[path to binary]` This is the path to the `.xclbin` binary file that is used to program the FPGA
@@ -32,3 +32,14 @@ The program is designed to take in a single arguments file with each argument li
 - `alveo_port=[port number]` This is defaulted to `62781` but if you are using a different port for the Alveo FPGA you can override it with this argument.
 - `node_ctrl=[path to node control script]` This is the script that executes the `node_script.py` file on the leaf nodes. Generally, it should not be changed unless you have moved or changed the file.
  
+#### Hostfile
+In the hostfile each node's IP address must be specified on its own line. If the number of slots are specified the program will attempt to fill the slots from top to bottom until `np` processes are created. With this option the `n` argument will be ignored.
+```
+192.168.40.11 slots=1
+192.168.40.12 slots=1
+```
+Alternatively, you can simply enter each IP address per line. If you choose this option, you must specify a valid argument for `n`.
+```
+192.168.40.11
+192.168.40.12
+```
