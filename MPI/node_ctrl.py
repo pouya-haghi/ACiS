@@ -16,7 +16,15 @@ def ping_fpga(alveo_ip):
             logging.debug(f"Successfully pinged {alveo_ip}")
             return  # Exit the function if the ping is successful
         except subprocess.CalledProcessError as err:
-            raise subprocess.CalledProcessError(f"Ping attempt {attempt}/{max_attempts} failed: {str(err)}")  
+            raise subprocess.CalledProcessError(
+                returncode=err.returncode,
+                cmd=err.cmd,
+                output=err.output,
+                stderr=err.stderr,
+                stdout=err.stdout,
+                stderr=err.stderr,
+                msg=f"Ping attempt {attempt}/{max_attempts} failed: {str(err)}",
+            )  
     raise Exception("Failed to ping the destination after 5 attempts. Exiting program.")
 
 def execute_port(alveo_ip, alveo_port, port, size):
@@ -45,5 +53,5 @@ if __name__ == "__main__":
         
         logging.debug("Multiprocessing complete in node_ctrl.py.")
     except Exception as err:
-        logging.debug(f"Failed! Did not complete execution! Error: {(str(err))}")
+        logging.debug(f"Failed in main! Did not complete execution! Error: {(str(err))}")
 
