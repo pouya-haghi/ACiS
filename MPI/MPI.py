@@ -1,5 +1,4 @@
 import logging
-import queue
 import concurrent.futures
 import paramiko
 from fabric import Connection
@@ -51,8 +50,8 @@ def fread_args(filename: str):
     return arguments
 
 
-def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str, dest_dir: str, error_queue:
-                              queue.Queue, connections: list, key_path: str, user: str):
+def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str, dest_dir: str,
+                              connections: list, key_path: str, user: str):
     """
     This function takes a list of a tuples with two elements (hostname, [port_list]) and establishes a connection then 
     returns a a list of new tuples containing (input tuple, Connection object). 
@@ -60,7 +59,7 @@ def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str
     try:
         for rank in ranks:
             remote_addr = rank[0]
-            logging.debug(f"Args {remote_addr}, {node_ctrl_script}, {node_ex_script}, {dest_dir}, {error_queue}, {connections}, {key_path}, {user}")
+            logging.debug(f"Args {remote_addr}, {node_ctrl_script}, {node_ex_script}, {dest_dir}, {connections}, {key_path}, {user}")
 
             # Create SSH connection
             if key_path is not None:
@@ -83,7 +82,7 @@ def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str
             connections.append((conn, rank))
 
     except Exception as err:
-        error_queue.put(f'Error running script on {remote_addr}: {str(err)}')
+        raise Exception(f'Error running script on {remote_addr}: {str(err)}')
 
 
 def node_execute(connection: tuple, ctrl_script: str, dest_dir: str, size: int, alveo_ip: str, alveo_port: int, env_path: str):
@@ -231,8 +230,6 @@ def main():
         env_path = arguments['env_path']
         size = arguments['size']
         user = arguments['user']
-        error_queue = queue.Queue()
-        result = True
         connections = []
 
         # Error check
@@ -292,18 +289,18 @@ def main():
         host.setup_host(ranks, alveo_port, size, xclbin, alveo_ip)
 
         # Setup connections and transfer files to nodes
-        node_connect_and_transfer(ranks, ctrl_script_name, node_script, dest, error_queue, connections=connections, key_path=key_path, user=user)
+        node_connect_and_transfer(ranks, ctrl_script_name, node_script, dest, connections=connections, key_path=key_path, user=user)
 
         # Get host ready to receive data from nodes
         logging.debug(f"Connections list values:\n{connections}")
 
-        logging.debug(f'Starting execute')
+        logging.debug(f'Starting execute.')
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             # Submit tasks to the thread pool
             futures = []
             for connection in connections:
-                future = executor.submit(node_execute, connection, ctrl_script_name, dest, error_queue,
+                future = executor.submit(node_execute, connection, ctrl_script_name, dest,
                                         size, alveo_ip, alveo_port, env_path)
                 futures.append(future)
 
@@ -318,12 +315,13 @@ def main():
         if connections:
             for connection in connections:
                 paramiko.SSHClient.close(connection[0])
+        logging.error(f"Error:{str(error)} encountered.\nProgram exiting.")
         print(f"Error:{str(error)} encountered.\nProgram exiting.")
         sys.exit(1)
 
 
 if __name__ == '__main__':
-    logging.basicConfig(filename='MPI.log', level=logging.DEBUG,
+    logging.basicConfig(filename='MPI.log', level=logging.NOTSET,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
     main()
