@@ -48,5 +48,7 @@ def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
 
         np.savetxt(f'{port_num}_recv_data.txt', recv_data_global, fmt='%d')
     except Exception as err:
-        raise Exception(f"Error! Could not compplete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")
+        print_lock.release()
+        raise Exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")
+        
     
