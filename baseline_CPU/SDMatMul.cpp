@@ -482,7 +482,9 @@ int main(int argc, char** argv)
 	
     // time XW matmul
 	//auto XW_start = std::chrono::steady_clock::now();
-    timeMPIMultiplication(argv[1], std::stoi(argv[3]));
+    
+	// timeMPIMultiplication(argv[1], std::stoi(argv[3]));
+	
 	//auto XW_end = std::chrono::steady_clock::now();
     //std::chrono::duration<double> XW_seconds = XW_end - XW_start;
     //std::cout << rank << " " << XW_seconds.count() << std::endl;

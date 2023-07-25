@@ -1,0 +1,35 @@
+TACC:  Starting up job 10066088 
+TACC:  Starting parallel tasks... 
+0 Citeseer_feat_L2.txt 0.000452631 0.000432989 1.9642e-05
+1 Citeseer_feat_L2.txt 8.0823e-05 6.1388e-05 1.9435e-05
+2 Citeseer_feat_L2.txt 0.000458123 0.000438234 1.9889e-05
+3 Citeseer_feat_L2.txt 7.279e-05 5.2784e-05 2.0006e-05
+4 Citeseer_feat_L2.txt 0.000463514 0.000433145 3.0369e-05
+5 Citeseer_feat_L2.txt 8.2592e-05 6.268e-05 1.9912e-05
+6 Citeseer_feat_L2.txt 0.000459536 0.000439414 2.0122e-05
+7 Citeseer_feat_L2.txt 7.4571e-05 5.4357e-05 2.0214e-05
+8 Citeseer_feat_L2.txt 0.00046353 0.000431779 3.1751e-05
+9 Citeseer_feat_L2.txt 7.8942e-05 5.8829e-05 2.0113e-05
+10 Citeseer_feat_L2.txt 0.000460302 0.000439941 2.0361e-05
+11 Citeseer_feat_L2.txt 7.1444e-05 5.1597e-05 1.9847e-05
+12 Citeseer_feat_L2.txt 0.000454541 0.000434122 2.0419e-05
+13 Citeseer_feat_L2.txt 7.9086e-05 5.9263e-05 1.9823e-05
+14 Citeseer_feat_L2.txt 0.000457876 0.0004379 1.9976e-05
+15 Citeseer_feat_L2.txt 7.5051e-05 5.3839e-05 2.1212e-05
+0 Citeseer_A.txt 0.000120519 0.000115515 5.004e-06
+1 Citeseer_A.txt 0.000129286 0.000125593 3.693e-06
+2 Citeseer_A.txt 8.2203e-05 7.8175e-05 4.028e-06
+3 Citeseer_A.txt 7.5742e-05 7.1138e-05 4.604e-06
+4 Citeseer_A.txt 0.000141822 0.000137041 4.781e-06
+5 Citeseer_A.txt 0.000144258 0.000139841 4.417e-06
+6 Citeseer_A.txt 8.7341e-05 8.1155e-05 6.186e-06
+7 Citeseer_A.txt 8.5797e-05 7.8312e-05 7.485e-06
+8 Citeseer_A.txt 0.000166531 0.000159633 6.898e-06
+9 Citeseer_A.txt 0.000133041 0.000125082 7.959e-06
+10 Citeseer_A.txt 8.5696e-05 7.68e-05 8.896e-06
+11 Citeseer_A.txt 8.1506e-05 7.0839e-05 1.0667e-05
+12 Citeseer_A.txt 0.00014793 0.000137033 1.0897e-05
+13 Citeseer_A.txt 0.000153315 0.000142254 1.1061e-05
+14 Citeseer_A.txt 9.0272e-05 8.1394e-05 8.878e-06
+15 Citeseer_A.txt 9.0813e-05 8.0874e-05 9.939e-06
+TACC:  Shutdown complete. Exiting. 
