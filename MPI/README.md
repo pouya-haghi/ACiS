@@ -1,7 +1,9 @@
-## MPI Runtime for FPGA
+# MPI Runtime for FPGA
+
+## Overview
+This is a lightweight MPI-like runtime environment for running the processes required for this project on several leaf nodes from the host node. This program takes in an argument file with several arguments which are described below. At a high level, it takes in the `hostfile` IP addresses of each rank and the number of processes (`np`) and calculates a new port and creates a new process on the leaf node for each port (which corresponds to the appropriate rank in the FPGA code).
 
 ## How to use
-
 ### Requirements
 - Python version = 3.10.12
 - Python Packages
@@ -43,3 +45,21 @@ Alternatively, you can simply enter each IP address per line. If you choose this
 192.168.40.11
 192.168.40.12
 ```
+#### Host Configuration Script
+The host configuration script must named `host_cfg.py` and put into the same directory as `MPI.py` on the host machine (see my example). The `host_cfg.py` file must have a function called `setup_host` with the follwoing arguments
+```
+setup_host(rank_list,  alveo_port, size, xclbin_path, alveo_ipaddr)
+```
+The argument `rank_list` is a list of tuples that are constructed like this:
+```
+[(IP_address_string, (tuple of port, integers),]
+Example: [('192.168.10.10', [1234, 5678]), ('192.168.10.11', (8765, 44321)]
+```
+The rest of the arguments to `setup_host()` have the same value as the inputs to the argument file, or the default value if they are optional arguments. When creating a `setup_host()` function the user must ensure that everything that is needed to set up the FPGA and the host is completed in the `setup_host()` function. See my example `host_cfg.py`.
+
+#### Node Execution Script
+The node execution script must be named `node_exec.py` and be put into the same directory as `MPI.py` on the host machine (see my example). This script contains a function called `execute()` with the follwoing arguments.
+```
+execute(alveo_ip, alveo_port, port_num, size)
+```
+The `port_num` argument is the port number that corresponds to the appropriate rank in the FPGA calculations. The other arguments have the same value as their corresponding arguments in the argument file. This function should perform whatever the user wishes to execute on the individual nodes.
