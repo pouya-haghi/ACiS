@@ -23,6 +23,7 @@ The required arguments are:
 - `size=[size in bits]` This is the decimal value of the size in bits that are to be transferred.
 - `user=[username on leaf nodes]` This is the username that is used to establish a SSH connection.
 - `n=[Integer value]` There are two ways to specify how many processes to run on nodes. If you do not specify the slot numbers for each node in the nodes, you must specify how many nodes exist with this argument.
+
 The optional arguments are:
 - `key_path=[key]` This is the path to the key needed for connecting to the leaf nodes.
 - `env_path=[users/someone/devenv]` This is the path to the environment directory if you have a virtual environment set up.
