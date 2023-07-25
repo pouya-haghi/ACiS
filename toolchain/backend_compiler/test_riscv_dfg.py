@@ -1,7 +1,7 @@
 import RiscV_dfg as RDFG
 import Data_Flow_Graph as DFG
 
-dfg = DFG.Data_Flow_Graph('gcn_strip_used.ll')
+dfg = DFG.Data_Flow_Graph('gcn_strip.ll')
 
 rdfg = RDFG.RiscV_dfg(dfg, False)
 
