@@ -15,7 +15,7 @@
 #### Arguments File
 The program is designed to take in a single arguments file with each argument listed rather than have a long list of arguments in the command line. Each argument in the argument file needs to be on its own line. The format of specifying an argument is, `[argument name]=[value]`. Some of the arguments are required and others are optional. 
 
-The required arguments are:
+###### The required arguments are:
 - `np=[positive integer]` This is the total number of processes to to be run.
 - `hostfile=[path to hostfile]` This is the path to the hostfile (see hostfile below for more information).
 - `xclbin=[path to binary]` This is the path to the `.xclbin` binary file that is used to program the FPGA
@@ -24,7 +24,7 @@ The required arguments are:
 - `user=[username on leaf nodes]` This is the username that is used to establish a SSH connection.
 - `n=[Integer value]` There are two ways to specify how many processes to run on nodes. If you do not specify the slot numbers for each node in the nodes, you must specify how many nodes exist with this argument.
 
-The optional arguments are:
+##### The optional arguments are:
 - `key_path=[key]` This is the path to the key needed for connecting to the leaf nodes.
 - `env_path=[users/someone/devenv]` This is the path to the environment directory if you have a virtual environment set up.
 - `node_script=node_script.py` This is the path to the script that you will be running on the leaf nodes. The default value is `node_exec.py`. However if you have moved the file or want to use a different one you can specify it here.
