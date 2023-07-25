@@ -1,7 +1,7 @@
 import RiscV_dfg as RDFG
 import Data_Flow_Graph as DFG
 
-dfg = DFG.Data_Flow_Graph('gcn3_strip.ll')
+dfg = DFG.Data_Flow_Graph('gcn_strip_used.ll')
 
 rdfg = RDFG.RiscV_dfg(dfg, False)
 
@@ -45,8 +45,6 @@ rdfg.Add_Load_Pointers()
 #     print(node.Get_RiscV_Instr())
 
 # print("\n\n")
-print("EVERYTHING ABOVE HERE IS DEBUG MESSAGES I STILL")
-print("HAVE TO TRACK DOWN!!")
 print("#######################################################")
 print(rdfg.Get_ASM_String())
 
