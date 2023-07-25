@@ -120,8 +120,12 @@ def node_execute(connection: tuple, ctrl_script: str, dest_dir: str, size: int, 
             output_file = f'output_{remote_addr}.txt'
 
             logging.debug(f"Write {output_file} on remote computer")
-            with open(f"{dest_dir}/{output_file}", 'a') as file:
-                file.write(f'Remote command output on {remote_addr}: {output.decode()}')
+            try:
+                with open(f"{dest_dir}/{output_file}", 'a') as file:
+                
+                    file.write(f'Remote command output on {remote_addr}: {output.decode()}')
+            except FileNotFoundError:
+                raise FileNotFoundError(f"Could not find {file} in directory {dest_dir}!")
 
     except Exception as err:
         raise Exception(f'Error executing script on {remote_addr}: {str(err)}')
