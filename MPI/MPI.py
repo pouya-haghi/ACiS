@@ -1,7 +1,6 @@
 import logging
 import concurrent.futures
 import paramiko
-from fabric import Connection
 import sys
 import host_cfg as host
 import json
