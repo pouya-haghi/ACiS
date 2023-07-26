@@ -22,7 +22,7 @@ The program is designed to take in a single arguments file with each argument li
 - `hostfile=[path to hostfile]` This is the path to the hostfile (see hostfile below for more information).
 - `xclbin=[path to binary]` This is the path to the `.xclbin` binary file that is used to program the FPGA
 - `dir=[path to working directory]` This is the path to where the files will be transferred and executed on the leaf nodes.
-- `size=[size in bits]` This is the decimal value of the size in bits that are to be transferred.
+- `size=[size in bits]` This is the decimal value of the size in bytes that are to be transferred.
 - `user=[username on leaf nodes]` This is the username that is used to establish a SSH connection.
 - `n=[Integer value]` There are two ways to specify how many processes to run on nodes. If you do not specify the slot numbers for each node in the nodes, you must specify how many nodes exist with this argument.
 
