@@ -1,7 +1,0 @@
-TACC:  Starting up job 10066073 
-TACC:  Starting parallel tasks... 
-0 Pubmed_feat_L1.txt 0.00935038 5.6569e-05 0.00929381
-1 Pubmed_feat_L1.txt 0.00988418 5.7201e-05 0.00982698
-0 Pubmed_A.txt 0.000763676 0.000221466 0.00054221
-1 Pubmed_A.txt 0.00177374 0.000221308 0.00155243
-TACC:  Shutdown complete. Exiting. 

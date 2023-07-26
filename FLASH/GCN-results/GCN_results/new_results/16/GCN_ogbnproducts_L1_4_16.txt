@@ -1,0 +1,35 @@
+TACC:  Starting up job 10809283 
+TACC:  Starting parallel tasks... 
+0 ogbnproducts_feat_L1.txt 0.276718 0.000158942 0.276559
+1 ogbnproducts_feat_L1.txt 0.279896 0.000154889 0.279741
+2 ogbnproducts_feat_L1.txt 0.276243 0.000161171 0.276082
+3 ogbnproducts_feat_L1.txt 0.276113 0.000159288 0.275954
+4 ogbnproducts_feat_L1.txt 0.276136 0.00016116 0.275974
+5 ogbnproducts_feat_L1.txt 0.276203 0.000166279 0.276037
+6 ogbnproducts_feat_L1.txt 0.276985 0.000160063 0.276825
+7 ogbnproducts_feat_L1.txt 0.276148 0.000155826 0.275992
+8 ogbnproducts_feat_L1.txt 0.276537 0.000153824 0.276383
+9 ogbnproducts_feat_L1.txt 0.27618 0.000166969 0.276013
+10 ogbnproducts_feat_L1.txt 0.276703 0.000156124 0.276547
+11 ogbnproducts_feat_L1.txt 0.277872 0.000156404 0.277716
+12 ogbnproducts_feat_L1.txt 0.276696 0.00015539 0.276541
+13 ogbnproducts_feat_L1.txt 0.278278 0.00016575 0.278113
+14 ogbnproducts_feat_L1.txt 0.2765 0.000155227 0.276345
+15 ogbnproducts_feat_L1.txt 0.276353 0.000152373 0.276201
+0 ogbnproducts_adj.txt 0.0300646 0.027092 0.00297262
+1 ogbnproducts_adj.txt 0.0253683 0.0224609 0.00290744
+2 ogbnproducts_adj.txt 0.0269836 0.0233395 0.0036441
+3 ogbnproducts_adj.txt 0.0270008 0.023327 0.00367377
+4 ogbnproducts_adj.txt 0.0265443 0.0235832 0.0029611
+5 ogbnproducts_adj.txt 0.0278144 0.0240897 0.00372471
+6 ogbnproducts_adj.txt 0.0274021 0.0244792 0.00292295
+7 ogbnproducts_adj.txt 0.0273978 0.02447 0.00292782
+8 ogbnproducts_adj.txt 0.0275978 0.0246335 0.00296426
+9 ogbnproducts_adj.txt 0.0285573 0.0247916 0.00376564
+10 ogbnproducts_adj.txt 0.028746 0.025792 0.00295394
+11 ogbnproducts_adj.txt 0.0291428 0.0261582 0.00298451
+12 ogbnproducts_adj.txt 0.0291531 0.0262006 0.0029525
+13 ogbnproducts_adj.txt 0.0299223 0.0261904 0.00373189
+14 ogbnproducts_adj.txt 0.0291105 0.0260815 0.00302905
+15 ogbnproducts_adj.txt 0.0300955 0.027089 0.00300651
+TACC:  Shutdown complete. Exiting. 
