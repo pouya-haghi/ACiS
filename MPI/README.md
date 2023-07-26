@@ -46,7 +46,7 @@ Alternatively, you can simply enter each IP address per line. If you choose this
 192.168.40.12
 ```
 #### Host Configuration Script
-The host configuration script must named `host_cfg.py` and put into the same directory as `MPI.py` on the host machine (see my example). The `host_cfg.py` file must have a function called `setup_host` with the follwoing arguments
+This is a helper function that is used internally to set up the FPGA. The host configuration script must named `host_cfg.py` and put into the same directory as `MPI.py` on the host machine (see my example). The `host_cfg.py` file must have a function called `setup_host` with the follwoing arguments
 ```
 setup_host(rank_list,  alveo_port, size, xclbin_path, alveo_ipaddr)
 ```
@@ -58,7 +58,7 @@ Example: [('192.168.10.10', [1234, 5678]), ('192.168.10.11', (8765, 44321)]
 The rest of the arguments to `setup_host()` have the same value as the inputs to the argument file, or the default value if they are optional arguments. When creating a `setup_host()` function the user must ensure that everything that is needed to set up the FPGA and the host is completed in the `setup_host()` function. See my example `host_cfg.py`.
 
 #### Node Execution Script
-The node execution script must be named `node_exec.py` and be put into the same directory as `MPI.py` on the host machine (see my example). This script contains a function called `execute()` with the follwoing arguments.
+This is a helper function to execute the process on the node. The node execution script must be named `node_exec.py` and be put into the same directory as `MPI.py` on the host machine (see my example `node_exec.py`). This script contains a function called `execute()` with the follwoing arguments.
 ```
 execute(alveo_ip, alveo_port, port_num, size)
 ```
