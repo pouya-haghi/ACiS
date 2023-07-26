@@ -6,6 +6,7 @@ This is a lightweight MPI-like runtime environment for running the processes req
 ## How to use
 ### Requirements
 - Python version = 3.10.12
+    - NOTE: with this version of Python you may need to change line 326 in `vnx_utils.py` to `bool` from `np.bool` since this is deprecated in this version of python and will not run if it is getting that error.
 - Python Packages
   - paramiko==3.2.0
   - pynq==2.8.0.dev0
