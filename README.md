@@ -69,7 +69,7 @@ You can use `ifconfig` to find the IP address of 100G NICs (`IP_100G_NIC`). It s
 
 Finally, run the corresponding part of `host.py` on each node (start with the FPGA node). Pay attention to the ordering for running the code on different nodes (documented in `host.py`).
 
-Note: `FLASH/FLASH-FaS` is designed and built incrementally from `collectives`.
+> Note: `FLASH/FLASH-FaS` is designed and built incrementally from `collectives`.
 
  ## FLASH-FiS: 
  Go to the following directory:
@@ -114,7 +114,7 @@ Packager takes in the binary file and outputs a `.pkg` file. The .pkg file is ne
 ### FLASH/GCN-training
 It trains different GCN datasets on a GPU device. We used an Nvidia V100 GPU. We used DGL library with PyTorch framework (CUDA 11.3 and PyTorch 1.10). Simply run `train_gpu.ipynb`. It has functions for saving weights and hidden features into `data` folder. 
 
-Note: There is a folder named `archive` that contains an older version of code for GCN training using a CPU device. 
+> Note: There is a folder named `archive` that contains an older version of code for GCN training using a CPU device. 
 
 ### FLASH/GCN-GPU
 It performs inference on different GCN datasets using a GPU device. We used an Nvidia V100 GPU. We used DGL library with PyTorch framework (CUDA 11.3 and PyTorch 1.10). Simply run `inference.ipynb`.  It loads data from previously stored during GCN training. It measures time in milliseconds.
@@ -131,8 +131,8 @@ sbatch script/script_16node_1rank
 
 For small-scale datasets, data needed by the code (adjacency matrix and hidden features) are included in `data` folder. There are also sample results for small-scale datasets in `GCN_results_16node`.
 
-Note: There are also codes using PETSc library.
-Note: The format of script files are: script_"#_OF_NODES"node_"#_OF_PROCESSES_PER_NODE"rank
+> Note: There are also codes using PETSc library.
+> Note: The format of script files are: script_"#_OF_NODES"node_"#_OF_PROCESSES_PER_NODE"rank
 
 ### FLASH/GCN-results
 It simulates the performance of both FLASH and baseline CPU (without FLASH) and reports the results (performance and breakdown of communication and computation). Simply run `GCN_results.ipynb`. It takes in the results from `GCN-CPU` (SpMM timings including process skew) and `FLASH-FiS`/`FLASH-FaS` depending on the acceleration scenario. For the FLASH, it considers the process skew when entering into FPGA offload. It has also helper functions for emulating a high-radix switch performance (queueing model) and emulating FLASH accelerator performance based on only the number of packet handler instructions, and finally an example for reduction. Some sample results (input to the simulator, not output) for 16 nodes are under `GCN_results` folder.
@@ -140,7 +140,7 @@ It simulates the performance of both FLASH and baseline CPU (without FLASH) and 
 ### collectives
 There are a set of collectives (Reduce, Allreduce, Allgather) for FaS acceleration type. The structures of files in tis directory is similar to that of `FLASH/FaS`. FPGA image binaries (`.xclbin`) are also provided for each collective. 
 
-Note: `archive` folder contains older versions. For example, `3node_IntReduce_stats` outputs some metadata information (port #, IP, etc) and `3node_loopback` simply loopbacks data to the source node.
+> Note: `archive` folder contains older versions. For example, `3node_IntReduce_stats` outputs some metadata information (port #, IP, etc) and `3node_loopback` simply loopbacks data to the source node.
 
 Inside `MPI` folder, there is a lightweight MPI-like runtime environment for running the processes required on several leaf nodes from the host node. Simply run `MPI.py`. This program takes in an argument file with several arguments which are described below. At a high level, it takes in the `hostfile` (that has IP addresses of each rank) and the number of processes (`np`). It does SSH to leaf nodes, creates new processes there (and assigns new port numbers for each). 
 
@@ -185,5 +185,9 @@ There is a sample fused collective (Allgather-op-allgather) where op is a reduct
 
 
 ## Architecture
+This is the FLASH architecture.
+![](img/cgra.pdf)
+
+**Data Plane:** is a 2D-array of PEs. The number of rows is equal to the number of SMD lanes (vectorization) and the number of col is equal to NUM_COL. At the input and output interface, there are a set of FIFOs. All of the PEs in the same column share an RF (on-chip memory) and an HBM (off-chip memory).
 
 ## Versions:
