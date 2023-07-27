@@ -27,10 +27,11 @@ FLASH benefits from the following features:
 - Deadline-based computing to improve reliability (packet loss)
 - Keeps track of progress of each MPI rank
 - Agnostic to the switch itself
+- Subset of vector & scalar RISC-V instruction support
 - Programmable stateful accelerator
 - Middleware (MPI) support
 - Application-level processing (GCN case study)
-- Complete toolchain from C/C++ to binary
+- Rapid full toolchain from C/C++ to binary
 
 ## Architecture
 This is the FLASH architecture.
