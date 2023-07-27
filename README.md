@@ -69,13 +69,15 @@ You can use `ifconfig` to find the IP address of 100G NICs (`IP_100G_NIC`). It s
 
 Finally, run the corresponding part of `host.py` on each node (start with the FPGA node). Pay attention to the ordering for running the code on different nodes (documented in `host.py`).
 
+Note: `FLASH/FLASH-FaS` is designed and built incrementally from `collectives`.
+
  ## FLASH-FiS: 
  Go to the following directory:
   ```sh
 cd FLASH/FLASH-FiS/hw/lib/std/CGRA_v1_0_0
 ```
 
-Open up Vivado tool (we used version 2021.2). Choose Alveo U280 board. Include `src`, `test`, and `constr` folders from this repository. Regenerate the IPs. This design comes with AXI interfaces and HBM access and it is based on RTL kernel specifications. The top-level module for design is `top.sv` and for test is `test_top.sv`. The latter is already setup to capture the transitions of `ap_done` and valid signals and it reports the final execution time (in ps). It also measures `total_time sout` and `total_time sin` which are useful for getting throughput at input and output streaming interfaces. Now, you can synthesize design. The testbench needs the binary files for each VPE. So, first run `FLASH/toolchain/assembler/RISCV_Assembler.ipynb` to get the binaries. To simulate, then just run `test_top.sv`. Also, the files in `test/sync_FIFO` implements *UVM-like* testing for `sync_FIFO` module. 
+Open up Vivado tool (we used version 2021.2). Choose Alveo U280 board. Include `src`, `test`, and `constr` folders from this repository. Regenerate the IPs. This design comes with AXI interfaces and HBM access and it is based on RTL kernel specifications. The top-level module for design is `top.sv` and for test is `test_top.sv`. The latter is already setup to capture the transitions of `ap_done` and valid signals and it reports the final execution time (in ps). It also measures `total_time sout` and `total_time sin` which are useful for getting throughput at input and output streaming interfaces. Now, you can synthesize design. The testbench needs the binary files for each VPE. So, first run `FLASH/toolchain/assembler/RISCV_Assembler.ipynb` to get the binaries. To simulate, then just run `test_top.sv`. Also, the files in `test/sync_FIFO` implements *UVM-like* testing in SystemVerilog for `sync_FIFO` module. 
 
  ### FLASH/toolchain:
  - Frontend Compiler:
@@ -138,7 +140,7 @@ It simulates the performance of both FLASH and baseline CPU (without FLASH) and 
 ### collectives
 There are a set of collectives (Reduce, Allreduce, Allgather) for FaS acceleration type. The structures of files in tis directory is similar to that of `FLASH/FaS`. FPGA image binaries (`.xclbin`) are also provided for each collective. 
 
-Note: `archive_IntReduce_stats` is an old version that outputs some metadata information (port #, IP, etc).
+Note: `archive` folder contains older versions. For example, `3node_IntReduce_stats` outputs some metadata information (port #, IP, etc) and `3node_loopback` simply loopbacks data to the source node.
 
 Inside `MPI` folder, there is a lightweight MPI-like runtime environment for running the processes required on several leaf nodes from the host node. Simply run `MPI.py`. This program takes in an argument file with several arguments which are described below. At a high level, it takes in the `hostfile` (that has IP addresses of each rank) and the number of processes (`np`). It does SSH to leaf nodes, creates new processes there (and assigns new port numbers for each). 
 
