@@ -1,9 +1,10 @@
 # Hardware Software Co-Design for Application-Level In-Switch/Near-Switch Processing 
 
-This repository contains codebase for different types of advanced computing in the network (in or close to switches) using reconfigurable devices (FPGAs) that are useful for machine learning (ML) and HPC applications. Part of this repository is based on the paper "FLASH: FPGA-Accelerated Smart Switches with GCN Case Study" published in [ICS'23](https://dl.acm.org/doi/abs/10.1145/3577193.3593739). FLASH is a programmable look-aside accelerator for ML and HPC applications that can be embedded into, or attached to, existing communication switches without significantly hampering throughput. This repository also contains codebase for running MPI collectives and examples of fused collectives. 
+This repository contains codebase for different types of advanced computing in the network (in or close to switches) using reconfigurable devices (FPGAs) that are useful for machine learning (ML) and HPC applications. Part of this repository is based on the paper "FLASH: FPGA-Accelerated Smart Switches with GCN Case Study" published in [ICS'23](https://dl.acm.org/doi/abs/10.1145/3577193.3593739). FLASH is a programmable stateful accelerator for ML and HPC applications that can be embedded into, or attached to, existing communication switches without significantly hampering throughput. This repository also contains codebase for running MPI collectives and examples of fused collectives. 
 
 For in-switch computing, our accelerator is placed in the [NetFPGA-PLUS](https://github.com/NetFPGA/NetFPGA-PLUS) pipeline on an FPGA (FPGA-integrated-into-switch, FiS). For near-switch computing, an FPGA is attached to existing switches (FPGA-attached-switch, FaS). We use [CloudLab](https://www.cloudlab.us/) infrastructure for this case. Our accelerator is integrated into VNx networking kernel. For both cases, we use Alveo U280 FPGA boards. Our approach serves as an initial effort to enable application-level programmable packet processing within in-switch computing infrastructures.
 
+## Repository Structure
 Here is the structure of this repository:
 
 ~~~
@@ -18,6 +19,24 @@ Here is the structure of this repository:
 ├── collectives: host and FPGA kernel code for a set of collectives with FLASH-FaS
 ├── fused-collectives: host and FPGA kernel code for a sample of fused collective
 ~~~
+
+## Features
+FLASH benefits from the following features:
+- Fine-granined communication 
+- Overlap of computaion (leaf nodes) and communication (between leaf nodes & switch accelerator) 
+- Deadline-based computing to improve reliability (packet loss)
+- Keeps track of progress of each MPI rank
+- Agnostic to the switch itself
+- Programmable stateful accelerator
+- Middleware (MPI) support
+- Application-level processing (GCN case study)
+- Complete toolchain from C/C++ to binary
+
+## Architecture
+This is the FLASH architecture.
+![Architecture](img/cgra.png)
+
+**Data Plane:** is a 2D-array of PEs. The number of rows is equal to the number of SMD lanes (vectorization) and the number of col is equal to NUM_COL. At the input and output interface, there are a set of FIFOs. All of the PEs in the same column share an RF (on-chip memory) and an HBM (off-chip memory).
 
 ## How to run?
 
@@ -183,11 +202,5 @@ Alternatively, you can simply enter each IP address per line. If you choose this
 ### fused-collectives
 There is a sample fused collective (Allgather-op-allgather) where op is a reduction of every grouped 16 elements. The structure of files is similar to `collectives` folder.
 
-
-## Architecture
-This is the FLASH architecture.
-![](img/cgra.pdf)
-
-**Data Plane:** is a 2D-array of PEs. The number of rows is equal to the number of SMD lanes (vectorization) and the number of col is equal to NUM_COL. At the input and output interface, there are a set of FIFOs. All of the PEs in the same column share an RF (on-chip memory) and an HBM (off-chip memory).
 
 ## Versions:
