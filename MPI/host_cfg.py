@@ -6,8 +6,8 @@ import time
 
 
 def setup_host(rank_list: list,  alveo_port: int, size: int, xclbin_path='/binary/vnx_basic_if0.xclbin', alveo_ipaddr='192.168.40.8'):
-    # for i in range(len(pynq.Device.devices)):
-    #     print(f'{i}) {pynq.Device.devices[i].name}')
+    for i in range(len(pynq.Device.devices)):
+        print(f'{i}) {pynq.Device.devices[i].name}')
 
     currentDevice = pynq.Device.devices[0]
     ol = pynq.Overlay(xclbin_path, device=currentDevice)
