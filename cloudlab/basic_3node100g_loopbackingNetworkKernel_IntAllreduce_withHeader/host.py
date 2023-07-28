@@ -16,8 +16,11 @@ import numpy as np
 from _thread import *
 import threading 
 import socket
+import time
 from vnx_utils import *
 from timeit import default_timer as timer
+
+start_time = time.time()
 
 for i in range(len(pynq.Device.devices)):
     print("{}) {}".format(i, pynq.Device.devices[i].name))
@@ -49,6 +52,8 @@ size = 1408 * 8 # sum of all of elements from NIC 1 (1408*50) and (+) NIC 2 (140
 lb_wh = lb.start(size)
 # now send packet from NIC using sock.sendto
 lb_wh.wait()
+end_time = time.time()
+print("Total time was: ", (end_time-start_time))
 # ===========================================
 # Remote (NIC) 1
 import numpy as np
