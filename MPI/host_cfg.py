@@ -40,6 +40,7 @@ def setup_host(rank_list: list,  alveo_port: int, size: int, xclbin_path='/binar
         # print(ifconfig_output)
 
         # Execute ping command
+        ping_fpga(alveo_ip=alveo_ipaddr)
 
         # This is dont care because we never use its port (50446)
         ol.networklayer_0.sockets[0] = (rank_list[0][0], 50446, 60133, True)
