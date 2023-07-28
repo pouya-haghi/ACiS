@@ -2,6 +2,7 @@ import logging
 import concurrent.futures
 import paramiko
 import sys
+import time
 import host_cfg as host
 import json
 
@@ -214,6 +215,7 @@ def hostfile_extract(hostfile_path: str, num_proc: int, nodes: int):
 
 
 def main():
+    start_time = time.time()
     try:    
         # Get Args
         argfile = sys.argv[1]
@@ -310,6 +312,10 @@ def main():
             # Wait for all tasks to complete
             concurrent.futures.wait(futures)
         
+        end_time = time.time()
+
+        print("Total time = ", end_time-start_time)
+
         logging.debug("Successfully completed. Program cleanup and exit.")
         if connections:
             for connection in connections:
