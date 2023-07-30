@@ -10,14 +10,14 @@ def create_ssh_connection(ip_address: str, port: int, username: str, key_path: s
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        #logging.debug("Creating SSH connection.")
+        logging.debug("Creating SSH connection.")
         if key_path is not None:
             private_key = paramiko.RSAKey.from_private_key_file(key_path)
             ssh.connect(hostname=ip_address, port=port, username=username, pkey=private_key)
         else:
             ssh.connect(hostname=ip_address, port=port, username=username)
 
-        #logging.debug(f"Created SSH connection. {ssh}")
+        logging.debug(f"Created SSH connection. {ssh}")
     except Exception as err:
         raise Exception(f"Error creating SSH connection on {ip_address}. Error: {str(err)}")
     return ssh
@@ -59,7 +59,7 @@ def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str
     try:
         for rank in ranks:
             remote_addr = rank[0]
-            #logging.debug(f"Args {remote_addr}, {node_ctrl_script}, {node_ex_script}, {dest_dir}, {connections}, {key_path}, {user}")
+            logging.debug(f"Args {remote_addr}, {node_ctrl_script}, {node_ex_script}, {dest_dir}, {connections}, {key_path}, {user}")
 
             # Create SSH connection
             if key_path is not None:
@@ -67,18 +67,18 @@ def node_connect_and_transfer(ranks: list, node_ctrl_script, node_ex_script: str
             else:
                 conn = create_ssh_connection(remote_addr, 22, user)
 
-            #logging.debug(f"Transfering node ctrl script to {remote_addr}.")
+            logging.debug(f"Transfering node ctrl script to {remote_addr}.")
             # Transfer control script
             sftp = conn.open_sftp()
             sftp.put(node_ctrl_script, f"{dest_dir}/{node_ctrl_script}")
 
-            #logging.debug(f"Transfering node exec script to {remote_addr}.")
+            logging.debug(f"Transfering node exec script to {remote_addr}.")
             # Transfer script to be executed
             sftp.put(node_ex_script, f"{dest_dir}/{node_ex_script}")
 
             sftp.close()
 
-            #logging.debug(f"Apppending connection {conn} and {rank} to connection list.")
+            logging.debug(f"Apppending connection {conn} and {rank} to connection list.")
             connections.append((conn, rank))
 
     except Exception as err:
@@ -95,7 +95,7 @@ def node_execute(connection: tuple, ctrl_script: str, dest_dir: str, size: int, 
     except ValueError as err:
         raise ValueError(f"Error during json.dumps() {str(err)}.")
 
-    #logging.debug(f"Beginning node_execute command on node {remote_addr}.")
+    logging.debug(f"Beginning node_execute command on node {remote_addr}.")
 
     if env_path is None:
         activate_cmd = ''
@@ -116,10 +116,10 @@ def node_execute(connection: tuple, ctrl_script: str, dest_dir: str, size: int, 
         if error:
             raise Exception(f'Error executing script on {remote_addr}: {error.decode()}')
         else:
-            #logging.debug(f"Generate unique output file name")
+            logging.debug(f"Generate unique output file name")
             output_file = f'output_{remote_addr}.txt'
 
-            #logging.debug(f"Write {output_file} on remote computer")
+            logging.debug(f"Write {output_file} on remote computer")
             try:
                 with open(f"{dest_dir}/{output_file}", 'a') as file:
                 
@@ -173,7 +173,7 @@ def hostfile_extract(hostfile_path: str, num_proc: int, nodes: int):
                 if proc_count < num_proc:
                     raise ValueError(f"Error: Not enough slots for processes. {proc_count} slots specified for {num_proc} processes.")
             else:
-                #logging.debug("Slots value NOT found. Computing ports for -n processes per node.")
+                logging.debug("Slots value NOT found. Computing ports for -n processes per node.")
                 if (nodes <= 0):
                     raise ValueError("If the nubmer of slots per node are not specified, the user must specify the total number of nodes.\nNumber of nodes must have a positive integer value (e.g. -n=2).")
                 processes = num_proc//nodes
@@ -219,7 +219,7 @@ def main():
     try:    
         # Get Args
         argfile = sys.argv[1]
-        #logging.debug("Extracting arguments.")
+        logging.debug("Extracting arguments.")
         arguments = fread_args(argfile)
         ranks = []
         num_proc = arguments['np']
@@ -238,7 +238,7 @@ def main():
         connections = []
 
         # Error check
-        #logging.debug("Error checking arguments.")
+        logging.debug("Error checking arguments.")
         if (num_proc == None):
             raise ValueError("Input file must have np value and np must be a positive integer (eg. np=1)")
         else:
@@ -288,7 +288,7 @@ def main():
         # Get hostname, slots and assign port numbers
         ranks = hostfile_extract(hostfile, num_proc=num_proc, nodes=num_nodes)
 
-        #logging.debug(f"Ranks values:\n{ranks})")
+        logging.debug(f"Ranks values:\n{ranks})")
 
         # Configure Host
         host.setup_host(ranks, alveo_port, size, xclbin, alveo_ip)
@@ -297,9 +297,9 @@ def main():
         node_connect_and_transfer(ranks, ctrl_script_name, node_script, dest, connections=connections, key_path=key_path, user=user)
 
         # Get host ready to receive data from nodes
-        #logging.debug(f"Connections list values:\n{connections}")
+        logging.debug(f"Connections list values:\n{connections}")
 
-        #logging.debug(f'Starting execute.')
+        logging.debug(f'Starting execute.')
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             # Submit tasks to the thread pool
