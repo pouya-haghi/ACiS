@@ -215,7 +215,7 @@ def hostfile_extract(hostfile_path: str, num_proc: int, nodes: int):
 
 
 def main():
-    start_time = time.time()
+
     try:    
         # Get Args
         argfile = sys.argv[1]
@@ -290,17 +290,21 @@ def main():
 
         logging.debug(f"Ranks values:\n{ranks})")
 
+        start_time = time.time()
         # Configure Host
         host.setup_host(ranks, alveo_port, size, xclbin, alveo_ip)
+        host_time = time.time()
 
         # Setup connections and transfer files to nodes
         node_connect_and_transfer(ranks, ctrl_script_name, node_script, dest, connections=connections, key_path=key_path, user=user)
+        transfer_time = time.time()
 
         # Get host ready to receive data from nodes
         logging.debug(f"Connections list values:\n{connections}")
 
         logging.debug(f'Starting execute.')
-
+    
+        exec_time = time.time()
         with concurrent.futures.ThreadPoolExecutor() as executor:
             # Submit tasks to the thread pool
             futures = []
@@ -314,7 +318,11 @@ def main():
         
         end_time = time.time()
 
-        print("Total time = ", end_time-start_time)
+        print(f"Host setup time = {host_time - start_time}")
+        print(f"Transfer time = {transfer_time-host_time}")
+        print(f"Execution time = {end_time-exec_time}")
+        print("Total time from setup_host(), to connect_and_transfer() to completion = ", end_time-start_time)
+
 
         logging.debug("Successfully completed. Program cleanup and exit.")
         if connections:

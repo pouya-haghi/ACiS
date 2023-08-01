@@ -3,6 +3,7 @@ import multiprocessing
 import sys
 import json
 import logging
+import time
 import node_exec as exec
 
 def ping_fpga(alveo_ip):
@@ -40,11 +41,15 @@ if __name__ == "__main__":
 
         ping_fpga(alveo_ip=alveo_ip)
 
+        start_time = time.time()
+
         with multiprocessing.Pool() as pool:
             args_list = [(alveo_ip, alveo_port, port, size) for port in port_list]
             pool.starmap(execute_port, args_list)
-        
-        logging.debug("Multiprocessing complete in node_ctrl.py.")
+
+        end_time = time.time()
+
+        logging.debug(f"Multiprocessing complete in node_ctrl.py. Elapsed time = {end_time-start_time} ")
     except Exception as err:
         logging.debug(f"Failed! Did not complete execution! Error: {(str(err))}")
 
