@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
         end_time = time.time()
 
-        logging.debug(f"Multiprocessing complete in node_ctrl.py.\nTotal Elapsed time = {end_time-start_time}\nPing time = {fpga_time-start_time}\n{fpga_time-start_time}")
+        logging.debug(f"Multiprocessing complete in node_ctrl.py.\nTotal Elapsed time = {end_time-start_time}\nPing time = {fpga_time-start_time}\nExecution time = {fpga_time-end_time}")
     except Exception as err:
         logging.debug(f"Failed! Did not complete execution! Error: {(str(err))}")
 
