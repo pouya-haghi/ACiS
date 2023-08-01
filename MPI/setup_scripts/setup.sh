@@ -52,6 +52,7 @@ nano key
 chmod 600 key
 
 # for each node 
-sudo ifconfig enp175s0 192.168.40.10 netmask 255.255.255.0 up
+sudo ifconfig enp175s0 192.168.40.12 netmask 255.255.255.0 up
 
 #python MPI.py test/argfile.txt
+#xbutil reset -d 0
