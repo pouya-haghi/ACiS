@@ -50,7 +50,7 @@ def setup_host(rank_list: list,  alveo_port: int, size: int, xclbin_path='/binar
     #     print(f"Failed to reach the target IP after {max_attempts} attempts. Exiting.")
     #     sys.exit(1)
 
-    ol.networklayer_1.arp_discovery()
+    ol.networklayer_0.arp_discovery()
 
     # This is dont care because we never use its port (50446)
     ol.networklayer_0.sockets[0] = (rank_list[0][0], 50446, 60133, True)
