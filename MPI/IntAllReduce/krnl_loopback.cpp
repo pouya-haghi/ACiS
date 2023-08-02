@@ -74,27 +74,39 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
     global_idx++;
   }
 
-  // Multicast the accumulated data back to each rank
-//   #pragma HLS INLINE
-  loop_multicast: for (int rank = 0; rank < num_rank; rank++) {
-    #pragma HLS LOOP_FLATTEN OFF
+  // Perform multicast for each rank
+pkt_out.dest = 1; // Set the destination to the first NIC (second entry of Arp table)
+
+loop_multicast: for (int rank = 0; rank < num_rank; rank++) {
+    #pragma HLS PIPELINE II=1
+    unsigned int base_idx = rank * MAX_BUFFER_SIZE;
+
+    // Loop unrolling for the multicast operation
     for (int i = 0; i < num_iter_local; i++) {
-        #pragma HLS LATENCY min=1 max=10
-        #pragma HLS PIPELINE II=1
-
-        // Calculate the base index for the current rank
-        unsigned int base_idx = rank * MAX_BUFFER_SIZE;
-
-        for (int j = 0; j < DWIDTH/32; j++) {
-            #pragma HLS UNROLL
-            pkt_out.data.range((j+1)*32-1, j*32) = acc_buf[base_idx + i + j];
-        }
+        #pragma HLS UNROLL
+        pkt_out.data.range(31,0) = acc_buf[base_idx + (i * (DWIDTH/32))];
+        pkt_out.data.range(63,32) = acc_buf[base_idx + (i * (DWIDTH/32)) + 1];
+        pkt_out.data.range(95,64) = acc_buf[base_idx + (i * (DWIDTH/32)) + 2];
+        pkt_out.data.range(127,96) = acc_buf[base_idx + (i * (DWIDTH/32)) + 3];
+        pkt_out.data.range(159,128) = acc_buf[base_idx + (i * (DWIDTH/32)) + 4];
+        pkt_out.data.range(191,160) = acc_buf[base_idx + (i * (DWIDTH/32)) + 5];
+        pkt_out.data.range(223,192) = acc_buf[base_idx + (i * (DWIDTH/32)) + 6];
+        pkt_out.data.range(255,224) = acc_buf[base_idx + (i * (DWIDTH/32)) + 7];
+        pkt_out.data.range(287,256) = acc_buf[base_idx + (i * (DWIDTH/32)) + 8];
+        pkt_out.data.range(319,288) = acc_buf[base_idx + (i * (DWIDTH/32)) + 9];
+        pkt_out.data.range(351,320) = acc_buf[base_idx + (i * (DWIDTH/32)) + 10];
+        pkt_out.data.range(383,352) = acc_buf[base_idx + (i * (DWIDTH/32)) + 11];
+        pkt_out.data.range(415,384) = acc_buf[base_idx + (i * (DWIDTH/32)) + 12];
+        pkt_out.data.range(447,416) = acc_buf[base_idx + (i * (DWIDTH/32)) + 13];
+        pkt_out.data.range(479,448) = acc_buf[base_idx + (i * (DWIDTH/32)) + 14];
+        pkt_out.data.range(511,480) = acc_buf[base_idx + (i * (DWIDTH/32)) + 15];
+        
         pkt_out.keep = -1;
         if ((((size / bytes_per_beat) - 1) == i) || ((((i + 1) * DWIDTH/8) % 1408) == 0))
             pkt_out.last = 1;
         else 
             pkt_out.last = 0;
-        pkt_out.dest = rank + 1; // Sending to the corresponding NIC
+
         k2n.write(pkt_out);
     }
   }
