@@ -13,9 +13,9 @@ typedef ap_axiu<DWIDTH, UWIDTH, 1, TDWIDTH> pkt;
 extern "C" {
 void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
 	               hls::stream<pkt> &k2n,
-                   unsigned int     size,    // Size in bytes (size-local)
+                   unsigned int     size, // Size in bytes (size-local)
                    unsigned int     num_rank // Number of ranks
-               ) {
+                   ) {
 #pragma HLS INTERFACE axis port = n2k
 #pragma HLS INTERFACE axis port = k2n
 
@@ -34,7 +34,7 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
   pkt pkt_out;
 
   // Define buffer arrays for each rank
-  static ap_uint<32> acc_buf[MAX_RANK][MAX_BUFFER_SIZE] = {0};
+  static ap_uint<512> acc_buf[MAX_RANK][MAX_BUFFER_SIZE] = {0};
   #pragma HLS ARRAY_PARTITION variable=acc_buf complete dim=1
   #pragma HLS BIND_STORAGE variable=acc_buf type=RAM_2P impl=BRAM
   
