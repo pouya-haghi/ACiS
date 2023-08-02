@@ -122,5 +122,5 @@ for (int i = 0; i < DWIDTH/32; i++) {
         k2n.write(pkt_out);
     }
 }
-
+}
 }
