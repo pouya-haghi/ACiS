@@ -41,7 +41,7 @@ if __name__ == "__main__":
         
         start_time = time.time()
 
-        ping_fpga(alveo_ip=alveo_ip)
+        # ping_fpga(alveo_ip=alveo_ip)
 
         fpga_time = time.time()
 

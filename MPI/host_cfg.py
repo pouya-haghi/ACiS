@@ -23,32 +23,34 @@ def setup_host(rank_list: list,  alveo_port: int, size: int, xclbin_path='/binar
     print(ifconfig_output)
 
     # Execute ping command
-    max_attempts = 5
-    attempts = 0
+    # max_attempts = 5
+    # attempts = 0
 
-    while attempts < max_attempts:
-        try:
-            # Execute ping command
-            ping_output = subprocess.run(["ping","-c", "5", alveo_ipaddr], capture_output=True, text=True)
+    # while attempts < max_attempts:
+    #     try:
+    #         # Execute ping command
+    #         ping_output = subprocess.run(["ping","-c", "5", alveo_ipaddr], capture_output=True, text=True)
 
-            if ping_output.returncode == 0:
-                print(ping_output.stdout)
-                break
-            else:
-                attempts += 1
-                print(f"Attempt {attempts}: Ping command failed with return code {ping_output.returncode}")
-                print(ping_output.stderr)
+    #         if ping_output.returncode == 0:
+    #             print(ping_output.stdout)
+    #             break
+    #         else:
+    #             attempts += 1
+    #             print(f"Attempt {attempts}: Ping command failed with return code {ping_output.returncode}")
+    #             print(ping_output.stderr)
 
-        except subprocess.CalledProcessError as err:
-            attempts += 1
-            print(f"Attempt {attempts}: Error executing ping command: {str(err)}")
+    #     except subprocess.CalledProcessError as err:
+    #         attempts += 1
+    #         print(f"Attempt {attempts}: Error executing ping command: {str(err)}")
 
-        # Sleep for a few seconds before the next attempt
-        time.sleep(1)
+    #     # Sleep for a few seconds before the next attempt
+    #     time.sleep(1)
 
-    if attempts == max_attempts:
-        print(f"Failed to reach the target IP after {max_attempts} attempts. Exiting.")
-        sys.exit(1)
+    # if attempts == max_attempts:
+    #     print(f"Failed to reach the target IP after {max_attempts} attempts. Exiting.")
+    #     sys.exit(1)
+
+    ol.networklayer_1.arp_discovery()
 
     # This is dont care because we never use its port (50446)
     ol.networklayer_0.sockets[0] = (rank_list[0][0], 50446, 60133, True)
