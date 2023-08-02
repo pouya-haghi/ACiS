@@ -36,7 +36,7 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
   // Define buffer arrays for each rank
   static ap_uint<512> acc_buf[MAX_RANK][MAX_BUFFER_SIZE] = {0};
   #pragma HLS BIND_STORAGE variable=acc_buf type=RAM_2P impl=BRAM
-  #pragma HLS ARRAY_PARTITION variable=acc_buf complete dim=0
+  #pragma HLS ARRAY_PARTITION variable=acc_buf complete dim=1
   #pragma HLS ARRAY_PARTITION variable=acc_buf cyclic factor=8
   
   // Initialize buffer indices for each rank
