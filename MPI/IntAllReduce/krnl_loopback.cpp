@@ -76,7 +76,7 @@ for (int i = 0; i < DWIDTH/32; i++) {
   }
 
   // Multicast the accumulated data back to each rank
-//   #pragma HLS INLINE
+  #pragma HLS INLINE
   loop_multicast: for (int rank = 0; rank < num_rank; rank++) {
     #pragma HLS LOOP_FLATTEN OFF
     for (int i = 0; i < num_iter_local; i++) {
@@ -84,7 +84,7 @@ for (int i = 0; i < DWIDTH/32; i++) {
         #pragma HLS PIPELINE II=1
         //#pragma HLS DEPENDENCE variable=acc_buf inter false
         for (int j = 0; j < DWIDTH/32; j++) {
-            //#pragma HLS UNROLL
+            #pragma HLS UNROLL
             pkt_out.data.range((j+1)*32-1, j*32) = acc_buf[rank][i + j];
         }
         pkt_out.keep = -1;
