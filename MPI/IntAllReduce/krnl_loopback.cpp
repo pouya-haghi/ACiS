@@ -37,7 +37,7 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
   static ap_uint<512> acc_buf[MAX_RANK][MAX_BUFFER_SIZE] = {0};
     #pragma HLS ARRAY_PARTITION variable=acc_buf complete dim=1
     // #pragma HLS ARRAY_PARTITION variable=acc_buf complete dim=2
-    #pragma HLS BIND_STORAGE variable=acc_buf type=uram impl=uram
+    #pragma HLS BIND_STORAGE variable=acc_buf type=RAM_2P impl=BRAM
   
   // Initialize buffer indices for each rank
   for (int rank = 0; rank < num_rank; rank++) {
@@ -59,7 +59,7 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
 
     // Perform the processing (accumulation)
     for (int i = 0; i < DWIDTH/32; i++) {
-        //#pragma HLS UNROLL
+        #pragma HLS UNROLL
         acc_buf[this_rank][buffer_idx_mux + i] += pkt_in.data.range((i+1)*32-1, i*32);
     }
 
@@ -74,9 +74,9 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
   }
 
   // Multicast the accumulated data back to each rank
-  //#pragma HLS INLINE
+//   #pragma HLS INLINE
   loop_multicast: for (int rank = 0; rank < num_rank; rank++) {
-    //#pragma HLS LOOP_FLATTEN off
+    // #pragma HLS LOOP_FLATTEN off
     for (int i = 0; i < num_iter_local; i++) {
         #pragma HLS LATENCY min=1 max=1000
         #pragma HLS PIPELINE II=1
