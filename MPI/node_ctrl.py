@@ -9,7 +9,8 @@ def execute_port(alveo_ip, alveo_port, port, size):
     exec.execute(alveo_ip, alveo_port, port, size)
 
 if __name__ == "__main__":
-    try:    
+    try:
+        start_time = time.time()    
         logging.basicConfig(filename='node_ctrl.log', level=logging.DEBUG,
                             format='%(asctime)s - %(levelname)s - %(message)s',
                             datefmt='%Y-%m-%d %H:%M:%S')
@@ -23,9 +24,7 @@ if __name__ == "__main__":
 
         logging.debug(f"\nInput: alveo_ip={alveo_ip}\nalveo_port={alveo_port}\nsize={size}\nport_list={port_list}")
         
-        start_time = time.time()
-
-        fpga_time = time.time()
+        exec_time = time.time()
 
         with multiprocessing.Pool() as pool:
             args_list = [(alveo_ip, alveo_port, port, size) for port in port_list]
@@ -33,7 +32,7 @@ if __name__ == "__main__":
 
         end_time = time.time()
 
-        logging.debug(f"Multiprocessing complete in node_ctrl.py.\nTotal Elapsed time = {end_time-start_time}\nPing time = {fpga_time-start_time}\nExecution time = {fpga_time-end_time}")
+        logging.debug(f"Multiprocessing complete in node_ctrl.py.\nTotal Elapsed time = {end_time-start_time}\nExecution time = {exec_time-end_time}")
     except Exception as err:
         logging.debug(f"Failed! Did not complete execution! Error: {(str(err))}")
 
