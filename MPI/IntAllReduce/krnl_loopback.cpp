@@ -55,13 +55,16 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
     ap_uint<8> this_rank = pkt_in.user.range(7,0); //myPort
 
     // Pick the right index to update the buffer
-    buffer_idx_mux = buffer_idx[this_rank];
+    unsigned int buffer_idx_this_rank = buffer_idx[this_rank];
+    buffer_idx_mux = buffer_idx_this_rank;
 
     // Perform the processing (accumulation)
-    for (int i = 0; i < DWIDTH/32; i++) {
-        #pragma HLS UNROLL
-        acc_buf[this_rank][buffer_idx_mux + i] += pkt_in.data.range((i+1)*32-1, i*32);
-    }
+for (int i = 0; i < DWIDTH/32; i++) {
+    #pragma HLS UNROLL
+    ap_uint<32> acc_buf_data = acc_buf[this_rank][buffer_idx_mux + i];
+    acc_buf_data += pkt_in.data.range((i+1)*32-1, i*32);
+    acc_buf[this_rank][buffer_idx_mux + i] = acc_buf_data;
+}
 
     // Update the buffer index for the current rank
     if (buffer_idx[this_rank] == num_iter_local - 1)
@@ -76,9 +79,9 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
   // Multicast the accumulated data back to each rank
 //   #pragma HLS INLINE
   loop_multicast: for (int rank = 0; rank < num_rank; rank++) {
-    // #pragma HLS LOOP_FLATTEN off
+    #pragma HLS LOOP_FLATTEN OFF
     for (int i = 0; i < num_iter_local; i++) {
-        #pragma HLS LATENCY min=1 max=1000
+        #pragma HLS LATENCY min=1 max=10
         #pragma HLS PIPELINE II=1
         //#pragma HLS DEPENDENCE variable=acc_buf inter false
         for (int j = 0; j < DWIDTH/32; j++) {
