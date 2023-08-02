@@ -34,10 +34,9 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
   pkt pkt_out;
 
   // Define buffer arrays for each rank
-  static ap_uint<512> acc_buf[MAX_RANK][MAX_BUFFER_SIZE] = {0};
-  #pragma HLS BIND_STORAGE variable=acc_buf type=RAM_2P impl=BRAM
-  #pragma HLS ARRAY_PARTITION variable=acc_buf complete dim=1
-  #pragma HLS ARRAY_PARTITION variable=acc_buf cyclic factor=8
+  // Define buffer array for all ranks
+    static ap_uint<512> acc_buf[MAX_BUFFER_SIZE * MAX_RANK] = {0};
+    #pragma HLS BIND_STORAGE variable=acc_buf type=RAM_2P impl=BRAM
   
   // Initialize buffer indices for each rank
   for (int rank = 0; rank < num_rank; rank++) {
@@ -58,12 +57,11 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
     unsigned int buffer_idx_this_rank = buffer_idx[this_rank];
     buffer_idx_mux = buffer_idx_this_rank;
 
-    // Perform the processing (accumulation)
-for (int i = 0; i < DWIDTH/32; i++) {
+   for (int i = 0; i < DWIDTH/32; i++) {
     #pragma HLS UNROLL
-    ap_uint<32> acc_buf_data = acc_buf[this_rank][buffer_idx_mux + i];
+    ap_uint<32> acc_buf_data = acc_buf[this_rank * MAX_BUFFER_SIZE + buffer_idx_mux + i];
     acc_buf_data += pkt_in.data.range((i+1)*32-1, i*32);
-    acc_buf[this_rank][buffer_idx_mux + i] = acc_buf_data;
+    acc_buf[this_rank * MAX_BUFFER_SIZE + buffer_idx_mux + i] = acc_buf_data;
 }
 
     // Update the buffer index for the current rank
@@ -83,10 +81,13 @@ for (int i = 0; i < DWIDTH/32; i++) {
     for (int i = 0; i < num_iter_local; i++) {
         #pragma HLS LATENCY min=1 max=10
         #pragma HLS PIPELINE II=1
-        //#pragma HLS DEPENDENCE variable=acc_buf inter false
+
+        // Calculate the base index for the current rank
+        unsigned int base_idx = rank * MAX_BUFFER_SIZE;
+
         for (int j = 0; j < DWIDTH/32; j++) {
-            //#pragma HLS UNROLL
-            pkt_out.data.range((j+1)*32-1, j*32) = acc_buf[rank][i + j];
+            #pragma HLS UNROLL
+            pkt_out.data.range((j+1)*32-1, j*32) = acc_buf[base_idx + i + j];
         }
         pkt_out.keep = -1;
         if ((((size / bytes_per_beat) - 1) == i) || ((((i + 1) * DWIDTH/8) % 1408) == 0))
