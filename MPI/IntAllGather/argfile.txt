@@ -1,0 +1,8 @@
+np=2
+hostfile=test/hostfile_test.txt
+xclbin=binary/vnx_basic_if0.xclbin
+key_path=key
+env_path=/users/ianjc/devenv
+dir=/users/ianjc
+size=22528
+user=ianjc
