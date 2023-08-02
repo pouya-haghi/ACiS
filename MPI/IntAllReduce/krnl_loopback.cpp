@@ -94,3 +94,5 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
         k2n.write(pkt_out);
     }
 }
+                   }
+}
