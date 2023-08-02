@@ -35,9 +35,9 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
 
   // Define buffer arrays for each rank
   static ap_uint<512> acc_buf[MAX_RANK][MAX_BUFFER_SIZE] = {0};
-  #pragma HLS ARRAY_PARTITION variable=acc_buf complete dim=1
-  #pragma HLS ARRAY_PARTITION variable=acc_buf complete dim=2
-  #pragma HLS BIND_STORAGE variable=acc_buf type=RAM_2P impl=BRAM
+    #pragma HLS ARRAY_PARTITION variable=acc_buf complete dim=1
+    #pragma HLS ARRAY_PARTITION variable=acc_buf complete dim=2
+    #pragma HLS BIND_STORAGE variable=acc_buf type=RAM_2P impl=BRAM
   
   // Initialize buffer indices for each rank
   for (int rank = 0; rank < num_rank; rank++) {
@@ -48,19 +48,19 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
   loop_main: while (global_idx < num_iter_global) {
     #pragma HLS PIPELINE II=1
 
-    // Read incoming packet
+    //Read incoming packet
     pkt_in = n2k.read();
 
     // Compute the incoming rank
-    ap_uint<8> this_rank = pkt_in.user.range(7, 0); // myPort
+    ap_uint<8> this_rank = pkt_in.user.range(7,0); //myPort
 
     // Pick the right index to update the buffer
     buffer_idx_mux = buffer_idx[this_rank];
 
     // Perform the processing (accumulation)
-    for (int i = 0; i < DWIDTH / 32; i++) {
+    for (int i = 0; i < DWIDTH/32; i++) {
         #pragma HLS UNROLL
-        acc_buf[this_rank][buffer_idx_mux + i] += pkt_in.data.range((i + 1) * 32 - 1, i * 32);
+        acc_buf[this_rank][buffer_idx_mux + i] += pkt_in.data.range((i+1)*32-1, i*32);
     }
 
     // Update the buffer index for the current rank
@@ -71,28 +71,28 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
 
     // Update the global index
     global_idx++;
-    }
+  }
 
   // Multicast the accumulated data back to each rank
   #pragma HLS INLINE
   loop_multicast: for (int rank = 0; rank < num_rank; rank++) {
-    #pragma HLS LOOP_FLATTEN off
+    //#pragma HLS LOOP_FLATTEN off
     for (int i = 0; i < num_iter_local; i++) {
         #pragma HLS LATENCY min=1 max=1000
         #pragma HLS PIPELINE II=1
         #pragma HLS DEPENDENCE variable=acc_buf inter false
-        for (int j = 0; j < DWIDTH / 32; j++) {
-            #pragma HLS UNROLL
-            pkt_out.data.range((j + 1) * 32 - 1, j * 32) = acc_buf[rank][i + j];
+        for (int j = 0; j < DWIDTH/32; j++) {
+            //#pragma HLS UNROLL
+            pkt_out.data.range((j+1)*32-1, j*32) = acc_buf[rank][i + j];
         }
         pkt_out.keep = -1;
-        if ((((size / bytes_per_beat) - 1) == i) || ((((i + 1) * DWIDTH / 8) % 1408) == 0))
+        if ((((size / bytes_per_beat) - 1) == i) || ((((i + 1) * DWIDTH/8) % 1408) == 0))
             pkt_out.last = 1;
-        else
+        else 
             pkt_out.last = 0;
         pkt_out.dest = rank + 1; // Sending to the corresponding NIC
         k2n.write(pkt_out);
     }
+  }
 }
-                   }
 }
