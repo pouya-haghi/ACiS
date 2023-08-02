@@ -35,12 +35,12 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
 
   // Define buffer arrays for each rank
   static ap_uint<32> acc_buf[MAX_RANK][MAX_BUFFER_SIZE] = {0};
-  #pragma HLS ARRAY_PARTITION variable=acc_buf complete dim=0
+  #pragma HLS ARRAY_PARTITION variable=acc_buf complete dim=1
   #pragma HLS BIND_STORAGE variable=acc_buf type=RAM_2P impl=BRAM
   
   // Initialize buffer indices for each rank
   for (int rank = 0; rank < num_rank; rank++) {
-    buffer_idx_mux[rank] = 0;
+    buffer_idx[rank] = 0;
   }
 
   while (global_idx < num_iter_global) {
@@ -59,10 +59,10 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
     }
 
     // Update the buffer index for the current rank
-    if (buffer_idx_mux[this_rank] == num_iter_local - 1)
-        buffer_idx_mux[this_rank] = 0;
+    if (buffer_idx[this_rank] == num_iter_local - 1)
+        buffer_idx[this_rank] = 0;
     else
-        buffer_idx_mux[this_rank]++;
+        buffer_idx[this_rank]++;
 
     // Update the global index
     global_idx++;
