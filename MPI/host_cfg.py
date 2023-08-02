@@ -1,8 +1,5 @@
 import pynq
 from vnx_utils import *
-import subprocess
-import sys
-import time
 
 
 def setup_host(rank_list: list,  alveo_port: int, size: int, xclbin_path='/binary/vnx_basic_if0.xclbin', alveo_ipaddr='192.168.40.8'):
@@ -11,16 +8,11 @@ def setup_host(rank_list: list,  alveo_port: int, size: int, xclbin_path='/binar
 
     currentDevice = pynq.Device.devices[0]
     ol = pynq.Overlay(xclbin_path, device=currentDevice)
-    # print(ol.ip_dict)
 
     print(f'Link interface 0 {ol.cmac_0.link_status()}')
 
     # THE FOLLOWING IP ADDRESS SHOULD BE IN THE SAME SUBNET
     ol.networklayer_0.set_ip_address(alveo_ipaddr, debug=True)
-
-    # Execute ifconfig command
-    # ifconfig_output = subprocess.check_output(["ifconfig", "enp175s0"]).decode("utf-8")
-    # print(ifconfig_output)
 
     ol.networklayer_0.arp_discovery()
 
