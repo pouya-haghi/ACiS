@@ -5,7 +5,7 @@
 #define DWIDTH 512
 #define TDWIDTH 16
 #define UWIDTH 96
-#define MAX_RANK 15
+#define MAX_RANK 8
 #define MAX_BUFFER_SIZE 11264 // 1408*8
 
 typedef ap_axiu<DWIDTH, UWIDTH, 1, TDWIDTH> pkt;
@@ -77,7 +77,7 @@ for (int i = 0; i < DWIDTH/32; i++) {
 
   // Multicast the accumulated data back to each rank
   loop_multicast: for (int rank = 0; rank < num_rank; rank++) {
-#pragma HLS LOOP_TRIPCOUNT min=1 max=MAX_RANK
+// #pragma HLS LOOP_TRIPCOUNT min=1 max=MAX_RANK
 #pragma HLS UNROLL
 
     int rank_offset = rank * num_iter_local * (DWIDTH / 32);
@@ -86,7 +86,7 @@ for (int i = 0; i < DWIDTH/32; i++) {
     ap_uint<DWIDTH> data_buffer = 0;
 
     for (int i = 0; i < num_iter_local; i++) {
-#pragma HLS LOOP_TRIPCOUNT min=1 max=MAX_BUFFER_SIZE / (DWIDTH / 32)
+// #pragma HLS LOOP_TRIPCOUNT min=1 max=MAX_BUFFER_SIZE / (DWIDTH / 32)
 #pragma HLS UNROLL
 
         pkt_out.keep = -1;
