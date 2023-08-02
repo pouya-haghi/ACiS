@@ -43,7 +43,10 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
     buffer_idx[rank] = 0;
   }
 
-  while (global_idx < num_iter_global) {
+  // Loop unrolling and pipelining for the main processing loop
+  loop_main: while (global_idx < num_iter_global) {
+    #pragma HLS PIPELINE II=1
+
     //Read incoming packet
     pkt_in = n2k.read();
 
@@ -69,10 +72,10 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
   }
 
   // Multicast the accumulated data back to each rank
-  for (int rank = 0; rank < num_rank; rank++) {
+  loop_multicast: for (int rank = 0; rank < num_rank; rank++) {
     for (int i = 0; i < num_iter_local; i++) {
         #pragma HLS LATENCY min=1 max=1000
-        #pragma HLS PIPELINE
+        #pragma HLS PIPELINE II=1
         for (int j = 0; j < DWIDTH/32; j++) {
             pkt_out.data.range((j+1)*32-1, j*32) = acc_buf[rank][i + j];
         }
