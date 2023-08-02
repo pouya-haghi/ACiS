@@ -34,7 +34,6 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
   pkt pkt_out;
 
   // Define buffer arrays for each rank
-  // Define buffer array for all ranks
     static ap_uint<512> acc_buf[MAX_BUFFER_SIZE * MAX_RANK] = {0};
     #pragma HLS BIND_STORAGE variable=acc_buf type=RAM_2P impl=BRAM
   
@@ -78,7 +77,7 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
 pkt_out.dest = 1; // Set the destination to the first NIC (second entry of Arp table)
 
 loop_multicast: for (int rank = 0; rank < num_rank; rank++) {
-    #pragma HLS PIPELINE II=1
+    // #pragma HLS PIPELINE II=1
     unsigned int base_idx = rank * MAX_BUFFER_SIZE;
 
     // Loop unrolling for the multicast operation
