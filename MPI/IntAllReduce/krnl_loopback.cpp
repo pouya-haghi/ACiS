@@ -5,7 +5,7 @@
 #define DWIDTH 512
 #define TDWIDTH 16
 #define UWIDTH 96
-#define MAX_RANK 16
+#define MAX_RANK 15
 #define MAX_BUFFER_SIZE 11264 // 1408*8
 
 typedef ap_axiu<DWIDTH, UWIDTH, 1, TDWIDTH> pkt;
