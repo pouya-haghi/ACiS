@@ -77,11 +77,14 @@ void krnl_loopback(hls::stream<pkt> &n2k,    // Internal Stream
 pkt_out.dest = 1; // Set the destination to the first NIC (second entry of Arp table)
 
 loop_multicast: for (int rank = 0; rank < num_rank; rank++) {
-    // #pragma HLS PIPELINE II=1
+    #pragma HLS PIPELINE II=1
+
+    pkt.out.data.range
+
     unsigned int base_idx = rank * MAX_BUFFER_SIZE;
 
     // Loop unrolling for the multicast operation
-    for (int i = 0; i < num_iter_local; i++) {
+    for (int i = 1; i < num_iter_local; i++) {
         #pragma HLS UNROLL
         pkt_out.data.range(31,0) = acc_buf[base_idx + (i * (DWIDTH/32))];
         pkt_out.data.range(63,32) = acc_buf[base_idx + (i * (DWIDTH/32)) + 1];
