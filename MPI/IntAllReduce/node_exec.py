@@ -8,29 +8,42 @@ import concurrent.futures
 BYTES_PER_PACKET = 1408
 
 
-async def socket_receive(loop, sock, size):  # Pass the loop as an argument
+async def socket_receive(loop, sock, size):
     try:    
-        shape_global = (size,1)
-        shape_local = (BYTES_PER_PACKET,1)
+        shape_global = (size, 1)
+        shape_local = (BYTES_PER_PACKET, 1)
         global recv_data_global
-        recv_data_global = np.empty(shape_global, dtype = np.uint8)
-        data_partial = np.empty(shape_local, dtype = np.uint8)
+        recv_data_global = np.empty(shape_global, dtype=np.uint8)
+        data_partial = np.empty(shape_local, dtype=np.uint8)
         num_it = (size // BYTES_PER_PACKET)
         sum_bytes = 0
         connection = 'None'
+
         for m in range(num_it):
-            res = sock.recvfrom_into(data_partial)
-            recv_data_global[(m * BYTES_PER_PACKET) : ((m * BYTES_PER_PACKET) \
-                            + BYTES_PER_PACKET)] = data_partial
-            sum_bytes = sum_bytes + int(res[0])
-            connection = res[1]
+            data_partial, _ = await loop.sock_recvfrom(sock, BYTES_PER_PACKET)
+            recv_data_global[(m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)] = data_partial
+            sum_bytes += len(data_partial)
+
+        connection = sock.getsockname()
     except Exception as err:
         raise Exception(f"Could not complete socket_receive() with socket {sock}! Error: {str(err)}")
 
+
 async def send_packets(loop, sock, udp_message_global, alveo_ip, alveo_port, num_pkts):
-    for m in range(num_pkts):
-        udp_message_local = udp_message_global[(m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)]
-        await loop.sock_sendto(sock, udp_message_local, (alveo_ip, alveo_port))
+    try:
+        transport, _ = await loop.create_datagram_endpoint(
+            lambda: asyncio.DatagramProtocol(),
+            remote_addr=(alveo_ip, alveo_port)
+        )
+
+        for m in range(num_pkts):
+            udp_message_local = udp_message_global[
+                (m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)
+            ]
+            transport.sendto(udp_message_local)
+        transport.close()
+    except Exception as err:
+        raise Exception(f"Could not complete send_packets() with socket {sock}! Error: {str(err)}")
 
 def sieve_of_eratosthenes(n):
     primes = []
@@ -59,7 +72,7 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
 
         # Run sieve_of_eratosthenes in a separate thread
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            primes_future = loop.run_in_executor(executor, sieve_of_eratosthenes, 150000000)
+            primes_future = loop.run_in_executor(executor, sieve_of_eratosthenes, 1500000)
             primes = await primes_future
 
         # Wait for the sending task to complete
