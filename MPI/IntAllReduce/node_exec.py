@@ -49,17 +49,18 @@ def socket_send_threaded(sock, udp_message_global, alveo_ip, alveo_port, size):
 
 def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     try:
-        logging.debug(f'Starting execute for {port_num}')
+        sieve_size = 15000000
+        logging.debug(f'Starting execute for {port_num}, sieve size={sieve_size}')
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
         sock.bind(('', port_num))
 
         shape = (size, 1)
         udp_message_global = np.random.randint(low=0, high=((2 ** 8) - 1), size=shape, dtype=np.uint8)
         np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
-        
+
         recv_thread = threading.Thread(target=socket_receive_threaded, args=(sock, size,port_num,))
         send_thread = threading.Thread(target=socket_send_threaded, args=(sock, udp_message_global, alveo_ip, alveo_port, size,))
-        sieve_thread = threading.Thread(target=sieve_of_eratosthenes, args=(15000000,))
+        sieve_thread = threading.Thread(target=sieve_of_eratosthenes, args=(sieve_size,))
 
         # Start the threads
         recv_thread.start()
