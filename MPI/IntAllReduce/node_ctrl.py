@@ -5,6 +5,10 @@ import time
 import node_exec as exec
 import asyncio
 
+async def main(alveo_ip, alveo_port, port_list, size):
+    tasks = [asyncio.create_task(execute_port_async(alveo_ip, alveo_port, port, size)) for port in port_list]
+    await asyncio.gather(*tasks)
+
 async def execute_port_async(alveo_ip, alveo_port, port, size):
     try:
         await exec.execute(alveo_ip, alveo_port, port, size)
@@ -36,9 +40,7 @@ if __name__ == "__main__":
         exec_time = time.time()
         
         logging.debug('About to create tasks...')
-        tasks = [asyncio.create_task(execute_port_async(alveo_ip, alveo_port, port, size)) for port in port_list]
-        asyncio.run(asyncio.gather(*tasks))
-
+        asyncio.run(main(alveo_ip, alveo_port, port_list, size))
         end_time = time.time()
 
         logging.debug(f"Async execution complete in node_ctrl.py.\nTotal Elapsed time = {end_time-start_time}\nExecution time = {exec_time-end_time}")
