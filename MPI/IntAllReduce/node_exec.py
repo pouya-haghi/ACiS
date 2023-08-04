@@ -20,17 +20,17 @@ class DatagramProtocol(asyncio.DatagramProtocol):
         self.data = data
         self.size = size
         self.buffer = np.empty((size, 1), dtype=np.uint8)
-        self.transport = None  # Initially set transport to None
+        self.transport = None
+        self.send_complete = asyncio.Event()  # Event to signal completion of sending
 
     def connection_made(self, transport):
-        # Called when a connection is made
         self.transport = transport
 
     def datagram_received(self, data, addr):
-        # when a datagram is received, convert it and store it in the buffer
-        data = np.frombuffer(data, dtype=np.uint8).reshape(-1, 1)
-        self.buffer[:data.shape[0]] = data
-
+        # wait for the send operation to complete before processing received data
+        if self.send_complete.is_set():
+            data = np.frombuffer(data, dtype=np.uint8).reshape(-1, 1)
+            self.buffer[:data.shape[0]] = data
 
 async def send_packets(protocol, udp_message_global, alveo_ip, alveo_port, num_pkts):
     for m in range(num_pkts):
@@ -38,6 +38,7 @@ async def send_packets(protocol, udp_message_global, alveo_ip, alveo_port, num_p
             (m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)
         ]
         protocol.transport.sendto(udp_message_local.tobytes(), (alveo_ip, alveo_port))
+    protocol.send_complete.set()  # set the event after send operation completes
 
 async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     logging.debug("Beginning execute.")
@@ -56,14 +57,11 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
         logging.debug('After create_datagram_endpoint')
 
         logging.debug('Before send_packets')
-        await send_packets(protocol, udp_message_global, alveo_ip, alveo_port, num_pkts)
+        # run send_packets and sieve_of_eratosthenes concurrently
+        await asyncio.gather(
+            send_packets(protocol, udp_message_global, alveo_ip, alveo_port, num_pkts),
+            asyncio.to_thread(sieve_of_eratosthenes, 1500000))
         logging.debug('After send_packets')
-
-        logging.debug('Before save files')
-        np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
-        np.savetxt(f'{port_num}_recv_data.txt', protocol.buffer, fmt='%d')
-        logging.debug('After save files')
-
-        transport.close()
     except Exception as err:
+        logging.exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}", exc_info=True)
         raise Exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")
