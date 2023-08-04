@@ -55,7 +55,7 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
         # Schedule the sending task asynchronously, pass the loop as an argument
         send_task = asyncio.ensure_future(send_packets(loop, sock, udp_message_global, alveo_ip, alveo_port, num_pkts))
 
-        primes = sieve_of_eratosthenes(15000000)
+        primes = sieve_of_eratosthenes(150000000)
 
         # Wait for the sending task to complete
         await send_task
