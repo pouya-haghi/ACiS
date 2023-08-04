@@ -45,7 +45,7 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
             local_addr=('localhost', port_num))
 
         # Run sieve_of_eratosthenes in a separate thread
-        sieve_task = asyncio.create_task(asyncio.to_thread(sieve_of_eratosthenes, 1500000))
+        sieve_task = asyncio.to_thread(sieve_of_eratosthenes, 1500000)
 
         # Send packets and perform the sieve concurrently
         send_task = asyncio.create_task(send_packets(protocol, udp_message_global, alveo_ip, alveo_port, num_pkts))
