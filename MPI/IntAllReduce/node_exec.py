@@ -34,9 +34,6 @@ async def send_packets(protocol, udp_message_global, alveo_ip, alveo_port, num_p
         protocol.transport.sendto(udp_message_local.tobytes(), (alveo_ip, alveo_port))
 
 async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
-    logging.basicConfig(filename=f'exec{port_num}.log', level=logging.DEBUG,
-                        format='%(asctime)s - %(levelname)s - %(message)s',
-                        datefmt='%Y-%m-%d %H:%M:%S')
     logging.debug("Beginning execute.")
 
     try:
@@ -64,6 +61,3 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
         transport.close()
     except Exception as err:
         raise Exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")
-    finally:
-        # Be sure to remove the handler at the end of the function execution
-        logging.removeHandler(handler)
