@@ -9,7 +9,7 @@ BYTES_PER_PACKET = 1408
 
 
 async def socket_receive(loop, sock, size):
-    try:    
+    try:
         shape_global = (size, 1)
         shape_local = (BYTES_PER_PACKET, 1)
         global recv_data_global
@@ -20,7 +20,7 @@ async def socket_receive(loop, sock, size):
         connection = 'None'
 
         for m in range(num_it):
-            data_partial, _ = await loop.sock_recvfrom(sock, BYTES_PER_PACKET)
+            data_partial = await loop.sock_recv(sock, BYTES_PER_PACKET)
             recv_data_global[(m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)] = np.frombuffer(data_partial, dtype=np.uint8)
             sum_bytes += len(data_partial)
 
@@ -28,14 +28,19 @@ async def socket_receive(loop, sock, size):
     except Exception as err:
         raise Exception(f"Could not complete socket_receive() with socket {sock}! Error: {str(err)}")
 
-
 async def send_packets(loop, sock, udp_message_global, alveo_ip, alveo_port, num_pkts):
     try:
+        transport, _ = await loop.create_datagram_endpoint(
+            lambda: asyncio.DatagramProtocol(),
+            remote_addr=(alveo_ip, alveo_port)
+        )
+
         for m in range(num_pkts):
             udp_message_local = udp_message_global[
                 (m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)
             ]
-            sock.sendto(udp_message_local.tobytes(), (alveo_ip, alveo_port))
+            await loop.sock_sendall(sock, udp_message_local.tobytes())
+        transport.close()
     except Exception as err:
         raise Exception(f"Could not complete send_packets() with socket {sock}! Error: {str(err)}")
 
@@ -64,6 +69,11 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
         # Schedule both sending and receiving tasks asynchronously
         send_task = asyncio.ensure_future(send_packets(loop, sock, udp_message_global, alveo_ip, alveo_port, num_pkts))
         recv_task = asyncio.ensure_future(socket_receive(loop, sock, size))
+
+        # Run sieve_of_eratosthenes in a separate thread
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            primes_future = loop.run_in_executor(executor, sieve_of_eratosthenes, 1500000)
+            primes = await primes_future
 
         # Wait for both tasks to complete
         await asyncio.gather(send_task, recv_task)
