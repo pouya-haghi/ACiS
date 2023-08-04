@@ -47,7 +47,7 @@ def socket_send_threaded(sock, udp_message_global, alveo_ip, alveo_port, size):
         raise Exception(f"Could not complete socket_send_threaded() with socket {sock}! Error: {str(err)}")
 
 
-def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int, sieve_size: int):
+def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     try:
         logging.debug(f'Starting execute for {port_num}')
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
@@ -58,7 +58,7 @@ def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int, sieve_size
 
         recv_thread = threading.Thread(target=socket_receive_threaded, args=(sock, size,port_num,))
         send_thread = threading.Thread(target=socket_send_threaded, args=(sock, udp_message_global, alveo_ip, alveo_port, size,))
-        sieve_thread = threading.Thread(target=sieve_of_eratosthenes, args=(sieve_size,))
+        sieve_thread = threading.Thread(target=sieve_of_eratosthenes, args=(15000000,))
 
         # Start the threads
         recv_thread.start()
