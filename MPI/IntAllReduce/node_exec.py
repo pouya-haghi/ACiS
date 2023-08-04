@@ -73,7 +73,7 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
         await send_task
 
         # Continue with other operations in parallel
-        recv_data_global = await socket_receive(sock, size)
+        recv_data_global = await socket_receive(loop, sock, size)
 
         np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
         np.savetxt(f'{port_num}_recv_data.txt', recv_data_global)
