@@ -77,6 +77,7 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
         np.savetxt(f'{port_num}_recv_data.txt', recv_data_global)
 
     except Exception as err:
+        sock.close()
         raise Exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")
     finally:
         sock.close()
