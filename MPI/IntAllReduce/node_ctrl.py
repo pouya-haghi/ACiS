@@ -36,7 +36,7 @@ if __name__ == "__main__":
         exec_time = time.time()
         
         logging.debug('About to create tasks...')
-        tasks = [execute_port_async(alveo_ip, alveo_port, port, size) for port in port_list]
+        tasks = [asyncio.create_task(execute_port_async(alveo_ip, alveo_port, port, size)) for port in port_list]
         asyncio.run(asyncio.gather(*tasks))
 
         end_time = time.time()
