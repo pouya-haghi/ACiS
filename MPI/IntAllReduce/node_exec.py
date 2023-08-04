@@ -1,4 +1,5 @@
 import numpy as np
+import aioudp
 from _thread import *
 import asyncio
 import socket
@@ -8,8 +9,8 @@ import concurrent.futures
 BYTES_PER_PACKET = 1408
 
 
-async def socket_receive(loop, sock, size):
-    try:
+async def socket_receive(sock, size):
+    try:    
         shape_global = (size, 1)
         shape_local = (BYTES_PER_PACKET, 1)
         global recv_data_global
@@ -20,27 +21,21 @@ async def socket_receive(loop, sock, size):
         connection = 'None'
 
         for m in range(num_it):
-            data_partial = await loop.sock_recv(sock, BYTES_PER_PACKET)
+            data_partial, _ = await sock.recv()
             recv_data_global[(m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)] = np.frombuffer(data_partial, dtype=np.uint8)
             sum_bytes += len(data_partial)
 
-        connection = sock.getsockname()
+        connection = sock._transport._sock.getsockname()
     except Exception as err:
         raise Exception(f"Could not complete socket_receive() with socket {sock}! Error: {str(err)}")
 
-async def send_packets(loop, sock, udp_message_global, alveo_ip, alveo_port, num_pkts):
+async def send_packets(sock, udp_message_global, alveo_ip, alveo_port, num_pkts):
     try:
-        transport, _ = await loop.create_datagram_endpoint(
-            lambda: asyncio.DatagramProtocol(),
-            remote_addr=(alveo_ip, alveo_port)
-        )
-
         for m in range(num_pkts):
             udp_message_local = udp_message_global[
                 (m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)
             ]
-            await loop.sock_sendall(sock, udp_message_local.tobytes())
-        transport.close()
+            await sock.sendto(udp_message_local.tobytes(), (alveo_ip, alveo_port))
     except Exception as err:
         raise Exception(f"Could not complete send_packets() with socket {sock}! Error: {str(err)}")
 
@@ -56,8 +51,7 @@ def sieve_of_eratosthenes(n):
 
 async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
-        sock.bind(('', port_num))
+        sock = await aioudp.create_socket()  # Create a UDP socket
 
         shape = (size, 1)
 
@@ -66,9 +60,12 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
 
         loop = asyncio.get_event_loop()  # Get the event loop
 
+        # Bind the socket to the port_num
+        await sock.bind(('0.0.0.0', port_num))
+
         # Schedule the sending and receiving tasks asynchronously
-        send_task = loop.create_task(send_packets(loop, sock, udp_message_global, alveo_ip, alveo_port, num_pkts))
-        receive_task = loop.create_task(socket_receive(loop, sock, size))
+        send_task = loop.create_task(send_packets(sock, udp_message_global, alveo_ip, alveo_port, num_pkts))
+        receive_task = loop.create_task(socket_receive(sock, size))
 
         # Run sieve_of_eratosthenes in a separate thread
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -84,5 +81,5 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     except Exception as err:
         raise Exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")
     finally:
-        sock.close()
+        await sock.close()
 
