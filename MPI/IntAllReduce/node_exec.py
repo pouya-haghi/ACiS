@@ -62,6 +62,9 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
             send_packets(protocol, udp_message_global, alveo_ip, alveo_port, num_pkts),
             asyncio.to_thread(sieve_of_eratosthenes, 1500000))
         logging.debug('After send_packets')
+
+        np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
+        np.savetxt(f'{port_num}_recv_data.txt', protocol.buffer, fmt='%d')
     except Exception as err:
         logging.exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}", exc_info=True)
         raise Exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")
