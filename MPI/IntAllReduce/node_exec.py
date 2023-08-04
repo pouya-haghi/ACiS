@@ -21,7 +21,7 @@ async def socket_receive(loop, sock, size):
 
         for m in range(num_it):
             data_partial, _ = await loop.sock_recvfrom(sock, BYTES_PER_PACKET)
-            recv_data_global[(m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)] = data_partial
+            recv_data_global[(m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)] = np.frombuffer(data_partial, dtype=np.uint8)
             sum_bytes += len(data_partial)
 
         connection = sock.getsockname()
@@ -31,17 +31,11 @@ async def socket_receive(loop, sock, size):
 
 async def send_packets(loop, sock, udp_message_global, alveo_ip, alveo_port, num_pkts):
     try:
-        transport, _ = await loop.create_datagram_endpoint(
-            lambda: asyncio.DatagramProtocol(),
-            remote_addr=(alveo_ip, alveo_port)
-        )
-
         for m in range(num_pkts):
             udp_message_local = udp_message_global[
                 (m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)
             ]
-            transport.sendto(udp_message_local)
-        transport.close()
+            sock.sendto(udp_message_local.tobytes(), (alveo_ip, alveo_port))
     except Exception as err:
         raise Exception(f"Could not complete send_packets() with socket {sock}! Error: {str(err)}")
 
