@@ -44,21 +44,20 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
             lambda: DatagramProtocol(udp_message_global, size),
             local_addr=('localhost', port_num))
 
-        # Send packets and perform the sieve concurrently
-        send_task = send_packets(protocol, udp_message_global, alveo_ip, alveo_port, num_pkts)
+        # Run sieve_of_eratosthenes in a separate thread
         sieve_future = loop.run_in_executor(None, sieve_of_eratosthenes, 1500000)
+        sieve_task = asyncio.create_task(sieve_future)
 
-        # Await both tasks to complete
-        done, _ = await asyncio.wait([send_task, sieve_future])
-
-        # Get the result from the sieve_future
-        primes = sieve_future.result()
+        # Send packets and perform the sieve concurrently
+        tasks = [
+            send_packets(protocol, udp_message_global, alveo_ip, alveo_port, num_pkts),
+            sieve_task
+        ]
+        await asyncio.gather(*tasks)
 
         np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
         np.savetxt(f'{port_num}_recv_data.txt', protocol.buffer, fmt='%d')
 
         transport.close()
     except Exception as err:
-        if transport is not None:
-            transport.close()
         raise Exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")
