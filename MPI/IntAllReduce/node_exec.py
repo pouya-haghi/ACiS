@@ -1,43 +1,8 @@
-import numpy as np
-from _thread import *
 import asyncio
-import socket
-import concurrent.futures
-
+import numpy as np
+from concurrent.futures import ThreadPoolExecutor
 
 BYTES_PER_PACKET = 1408
-
-
-async def socket_receive(loop, sock, size):
-    try:    
-        shape_global = (size, 1)
-        shape_local = (BYTES_PER_PACKET, 1)
-        global recv_data_global
-        recv_data_global = np.empty(shape_global, dtype=np.uint8)
-        data_partial = np.empty(shape_local, dtype=np.uint8)
-        num_it = (size // BYTES_PER_PACKET)
-        sum_bytes = 0
-        connection = 'None'
-
-        for m in range(num_it):
-            data_partial, _ = loop.sock_recvfrom(sock, BYTES_PER_PACKET)
-            recv_data_global[(m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)] = np.frombuffer(data_partial, dtype=np.uint8)
-            sum_bytes += len(data_partial)
-
-        connection = sock.getsockname()
-    except Exception as err:
-        raise Exception(f"Could not complete socket_receive() with socket {sock}! Error: {str(err)}")
-
-
-async def send_packets(loop, sock, udp_message_global, alveo_ip, alveo_port, num_pkts):
-    try:
-        for m in range(num_pkts):
-            udp_message_local = udp_message_global[
-                (m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)
-            ]
-            sock.sendto(udp_message_local.tobytes(), (alveo_ip, alveo_port))
-    except Exception as err:
-        raise Exception(f"Could not complete send_packets() with socket {sock}! Error: {str(err)}")
 
 def sieve_of_eratosthenes(n):
     primes = []
@@ -49,36 +14,47 @@ def sieve_of_eratosthenes(n):
                 sieve[i] = False
     return primes
 
+class DatagramProtocol(asyncio.DatagramProtocol):
+    def __init__(self, data, size):
+        self.data = data
+        self.size = size
+        self.buffer = np.empty((size, 1), dtype=np.uint8)
+
+    def datagram_received(self, data, addr):
+        # when a datagram is received, convert it and store it in the buffer
+        data = np.frombuffer(data, dtype=np.uint8).reshape(-1, 1)
+        self.buffer[:data.shape[0]] = data
+
+async def send_packets(protocol, udp_message_global, alveo_ip, alveo_port, num_pkts):
+    for m in range(num_pkts):
+        udp_message_local = udp_message_global[
+            (m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)
+        ]
+        protocol.transport.sendto(udp_message_local.tobytes(), (alveo_ip, alveo_port))
+
 async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
-        sock.bind(('', port_num))
+        loop = asyncio.get_running_loop()
 
         shape = (size, 1)
-
         udp_message_global = np.random.randint(low=0, high=((2 ** 8) - 1), size=shape, dtype=np.uint8)
         num_pkts = size // BYTES_PER_PACKET
 
-        loop = asyncio.get_event_loop()  # Get the event loop
+        transport, protocol = await loop.create_datagram_endpoint(
+            lambda: DatagramProtocol(udp_message_global, size),
+            local_addr=('localhost', port_num))
 
-        # Schedule both sending and receiving tasks asynchronously
-        send_task = asyncio.ensure_future(send_packets(loop, sock, udp_message_global, alveo_ip, alveo_port, num_pkts))
-        recv_task = asyncio.ensure_future(socket_receive(loop, sock, size))
-
-        # Run sieve_of_eratosthenes in a separate thread
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            primes_future = loop.run_in_executor(executor, sieve_of_eratosthenes, 1500000)
-            primes = await primes_future
-
-        # Wait for both tasks to complete
-        await asyncio.gather(send_task, recv_task)
+        # Send packets and perform the sieve concurrently
+        tasks = [
+            send_packets(protocol, udp_message_global, alveo_ip, alveo_port, num_pkts),
+            loop.run_in_executor(None, sieve_of_eratosthenes, 1500000)
+        ]
+        await asyncio.gather(*tasks)
 
         np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
-        np.savetxt(f'{port_num}_recv_data.txt', recv_data_global)
+        np.savetxt(f'{port_num}_recv_data.txt', protocol.buffer, fmt='%d')
 
+        transport.close()
     except Exception as err:
-        sock.close()
         raise Exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")
-    finally:
-        sock.close()
 

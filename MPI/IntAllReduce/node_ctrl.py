@@ -26,9 +26,8 @@ if __name__ == "__main__":
 
         exec_time = time.time()
 
-        loop = asyncio.get_event_loop()
         tasks = [execute_port_async(alveo_ip, alveo_port, port, size) for port in port_list]
-        loop.run_until_complete(asyncio.gather(*tasks))
+        asyncio.run(asyncio.gather(*tasks))
 
         end_time = time.time()
 
