@@ -71,3 +71,6 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     except Exception as err:
         logging.exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}", exc_info=True)
         raise Exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")
+    finally:
+        if transport:
+            transport.close()
