@@ -46,14 +46,12 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
 
         # Run sieve_of_eratosthenes in a separate thread
         sieve_future = loop.run_in_executor(None, sieve_of_eratosthenes, 1500000)
-        sieve_task = asyncio.create_task(sieve_future)
 
         # Send packets and perform the sieve concurrently
         send_task = asyncio.create_task(send_packets(protocol, udp_message_global, alveo_ip, alveo_port, num_pkts))
 
-        # await tasks individually
-        await send_task
-        await sieve_task
+        # gather tasks
+        await asyncio.gather(send_task, sieve_future, return_exceptions=True)
 
         np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
         np.savetxt(f'{port_num}_recv_data.txt', protocol.buffer, fmt='%d')
