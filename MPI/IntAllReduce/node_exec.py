@@ -1,8 +1,6 @@
 import asyncio
 import numpy as np
 import logging
-from concurrent.futures import ThreadPoolExecutor
-from queue import Queue
 
 
 BYTES_PER_PACKET = 1408
@@ -24,14 +22,14 @@ class DatagramProtocol(asyncio.DatagramProtocol):
         self.buffer = np.empty((size, 1), dtype=np.uint8)
         self.transport = None
         self.send_complete = asyncio.Event()  # Event to signal completion of sending
-        self.received_queue = Queue()  # Queue to store received data
+        self.received_queue = asyncio.Queue()  # asyncio.Queue to store received data
 
     def connection_made(self, transport):
         self.transport = transport
 
     def datagram_received(self, data, addr):
         # when a datagram is received, put it into the queue
-        self.received_queue.put(data)
+        self.received_queue.put_nowait(data)
 
 
 async def socket_receive_async(protocol, size):
@@ -45,7 +43,7 @@ async def socket_receive_async(protocol, size):
         connection = 'None'
 
         for m in range(num_it):
-            data_partial, _ = await protocol.received_queue.get()
+            data_partial = await protocol.received_queue.get()
             recv_data_global[(m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)] = np.frombuffer(data_partial, dtype=np.uint8)
             sum_bytes += len(data_partial)
 
