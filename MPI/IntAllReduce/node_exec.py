@@ -66,17 +66,17 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
 
         loop = asyncio.get_event_loop()  # Get the event loop
 
-        # Schedule both sending and receiving tasks asynchronously
-        send_task = asyncio.ensure_future(send_packets(loop, sock, udp_message_global, alveo_ip, alveo_port, num_pkts))
-        recv_task = asyncio.ensure_future(socket_receive(loop, sock, size))
+        # Schedule the sending and receiving tasks asynchronously
+        send_task = loop.create_task(send_packets(loop, sock, udp_message_global, alveo_ip, alveo_port, num_pkts))
+        receive_task = loop.create_task(socket_receive(loop, sock, size))
 
         # Run sieve_of_eratosthenes in a separate thread
         with concurrent.futures.ThreadPoolExecutor() as executor:
             primes_future = loop.run_in_executor(executor, sieve_of_eratosthenes, 1500000)
             primes = await primes_future
 
-        # Wait for both tasks to complete
-        await asyncio.gather(send_task, recv_task)
+        # Wait for both sending and receiving tasks to complete
+        await asyncio.gather(send_task, receive_task)
 
         np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
         np.savetxt(f'{port_num}_recv_data.txt', recv_data_global)
