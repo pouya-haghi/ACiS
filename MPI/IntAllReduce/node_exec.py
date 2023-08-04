@@ -2,6 +2,8 @@ import numpy as np
 from _thread import *
 import asyncio
 import socket
+import concurrent.futures
+
 
 BYTES_PER_PACKET = 1408
 
@@ -55,14 +57,16 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
         # Schedule the sending task asynchronously, pass the loop as an argument
         send_task = asyncio.ensure_future(send_packets(loop, sock, udp_message_global, alveo_ip, alveo_port, num_pkts))
 
-        primes = sieve_of_eratosthenes(150000000)
+        # Run sieve_of_eratosthenes in a separate thread
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            primes_future = loop.run_in_executor(executor, sieve_of_eratosthenes, 150000000)
+            primes = await primes_future
 
         # Wait for the sending task to complete
         await send_task
 
         # Continue with other operations in parallel
         recv_data_global = await socket_receive(sock, size)
-
 
         np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
         np.savetxt(f'{port_num}_recv_data.txt', recv_data_global)
@@ -72,4 +76,3 @@ async def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     finally:
         sock.close()
 
-    
