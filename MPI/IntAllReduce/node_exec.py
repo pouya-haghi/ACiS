@@ -20,7 +20,7 @@ async def socket_receive(loop, sock, size):
         connection = 'None'
 
         for m in range(num_it):
-            data_partial, _ = await loop.sock_recvfrom(sock, BYTES_PER_PACKET)
+            data_partial, _ = loop.sock_recvfrom(sock, BYTES_PER_PACKET)
             recv_data_global[(m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)] = np.frombuffer(data_partial, dtype=np.uint8)
             sum_bytes += len(data_partial)
 
