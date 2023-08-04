@@ -20,11 +20,17 @@ class DatagramProtocol(asyncio.DatagramProtocol):
         self.data = data
         self.size = size
         self.buffer = np.empty((size, 1), dtype=np.uint8)
+        self.transport = None  # Initially set transport to None
+
+    def connection_made(self, transport):
+        # Called when a connection is made
+        self.transport = transport
 
     def datagram_received(self, data, addr):
         # when a datagram is received, convert it and store it in the buffer
         data = np.frombuffer(data, dtype=np.uint8).reshape(-1, 1)
         self.buffer[:data.shape[0]] = data
+
 
 async def send_packets(protocol, udp_message_global, alveo_ip, alveo_port, num_pkts):
     for m in range(num_pkts):
