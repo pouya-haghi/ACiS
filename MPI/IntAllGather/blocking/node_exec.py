@@ -31,11 +31,11 @@ def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
         sock.bind(('', port_num))
-        size = size*2
+        rec_size = size*2
         shape = (size, 1)
         print_lock = threading.Lock()
         print_lock.acquire()
-        start_new_thread(socket_receive_threaded, (sock, size,))
+        start_new_thread(socket_receive_threaded, (sock, rec_size,))
 
         udp_message_global = np.random.randint(low=0, high=((2 ** 8) - 1), size=shape, dtype=np.uint8)
         num_pkts = size // BYTES_PER_PACKET
