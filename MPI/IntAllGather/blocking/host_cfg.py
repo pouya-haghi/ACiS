@@ -1,3 +1,4 @@
+#IntAllGather -blocking
 import pynq
 from vnx_utils import *
 
@@ -30,6 +31,6 @@ def setup_host(rank_list: list,  alveo_port: int, size: int, xclbin_path='/binar
 
     lb = ol.krnl_loopback_0
     
-    lb.start(size/2)
+    lb.start(size)
 
     return lb
