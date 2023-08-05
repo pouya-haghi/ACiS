@@ -43,13 +43,13 @@ def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
             udp_message_local = udp_message_global[(m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)]
             sock.sendto(udp_message_local, (alveo_ip, alveo_port))
 
-        print_lock.release()
-
         np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
 
         np.savetxt(f'{port_num}_recv_data.txt', recv_data_global, fmt='%d')
     except Exception as err:
         print_lock.release()
         raise Exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")
+    finally:
+        print_lock.release()
         
     
