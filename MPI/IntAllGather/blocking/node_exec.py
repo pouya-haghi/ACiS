@@ -1,6 +1,5 @@
 #IntAllGather - blocking
 import numpy as np
-from _thread import *
 import threading
 import socket
 
@@ -35,7 +34,10 @@ def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
         shape = (size, 1)
         print_lock = threading.Lock()
         print_lock.acquire()
-        start_new_thread(socket_receive_threaded, (sock, rec_size,))
+
+        # Create a thread object and start it
+        recv_thread = threading.Thread(target=socket_receive_threaded, args=(sock, rec_size))
+        recv_thread.start()
 
         udp_message_global = np.random.randint(low=0, high=((2 ** 8) - 1), size=shape, dtype=np.uint8)
         num_pkts = size // BYTES_PER_PACKET
@@ -43,13 +45,16 @@ def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
             udp_message_local = udp_message_global[(m * BYTES_PER_PACKET):((m * BYTES_PER_PACKET) + BYTES_PER_PACKET)]
             sock.sendto(udp_message_local, (alveo_ip, alveo_port))
 
-        np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
+        # Wait for the receiving thread to complete
+        recv_thread.join()
 
+        np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
         np.savetxt(f'{port_num}_recv_data.txt', recv_data_global, fmt='%d')
     except Exception as err:
         print_lock.release()
         raise Exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")
     finally:
         print_lock.release()
+
         
     
