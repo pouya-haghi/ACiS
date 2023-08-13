@@ -2,6 +2,8 @@
 import numpy as np
 import threading
 import socket
+import time
+import logging
 
 BYTES_PER_PACKET = 1408
 
@@ -28,6 +30,7 @@ def socket_receive_threaded(sock, size):
 
 def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     try:
+        start_time = time.time()
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
         sock.bind(('', port_num))
         rec_size = size*2
@@ -48,8 +51,12 @@ def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
         # Wait for the receiving thread to complete
         recv_thread.join()
 
+        end_time = time.time()
+        logging.debug(f'Execution time = {start_time-end_time}')
+
         np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
         np.savetxt(f'{port_num}_recv_data.txt', recv_data_global, fmt='%d')
+
     except Exception as err:
         print_lock.release()
         raise Exception(f"Error! Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")

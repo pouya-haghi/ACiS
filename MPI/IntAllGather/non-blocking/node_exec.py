@@ -2,6 +2,7 @@
 import threading
 import socket
 import logging
+import time
 import numpy as np
 
 BYTES_PER_PACKET = 1408
@@ -51,6 +52,8 @@ def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     try:
         sieve_size = 15000000
         logging.debug(f'Starting execute for {port_num}, sieve size={sieve_size}')
+        start_time = time.time()
+        
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
         sock.bind(('', port_num))
         rec_size = size *2
@@ -71,6 +74,9 @@ def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
         recv_thread.join()
         send_thread.join()
         sieve_thread.join()
+         
+        end_time = time.time()
+        logging.debug(f'Execution time = {start_time-end_time}')
 
     except Exception as err:
         raise Exception(f"Could not complete execute() on {alveo_ip}:{alveo_port}! Error: {str(err)}")

@@ -1,6 +1,8 @@
 import numpy as np
 from _thread import *
 import threading
+import logging
+import time
 import socket
 
 BYTES_PER_PACKET = 1408
@@ -28,9 +30,11 @@ def socket_receive_threaded(sock, size):
 
 def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
     try:
+        start_time = time.time()
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
         sock.bind(('', port_num))
 
+        
         shape = (size, 1)
         print_lock = threading.Lock()
         print_lock.acquire()
@@ -43,6 +47,9 @@ def execute(alveo_ip: str, alveo_port: int, port_num: int, size: int):
             sock.sendto(udp_message_local, (alveo_ip, alveo_port))
 
         print_lock.release()
+        
+        end_time = time.time()
+        logging.debug(f'Execution time = {start_time-end_time}')
 
         np.savetxt(f'{port_num}_output.txt', udp_message_global, fmt='%d')
 
