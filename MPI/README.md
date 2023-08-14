@@ -2,7 +2,7 @@
 
 ## Overview
 This is a lightweight MPI-like runtime environment for running the processes required for this project on several leaf nodes from the host node. This program takes in an argument file with several arguments which are described below. At a high level, it takes in the `hostfile` IP addresses of each rank and the number of processes (`np`) and calculates a new port and creates a new process on the leaf node for each port (which corresponds to the appropriate rank in the FPGA code).
-The `mpiFPGA` folder contains our runtime system for FPGA. The `mpi4py` contains the already existing mpi4py library with examples running on CloudLab. 
+The `mpiFPGA` folder contains our runtime system for FPGA. The `mpi4py` contains the already existing mpi4py library with examples running on CloudLab. The following provides information for `mpiFPGA` folder. 
 
 ## How to use
 ### Requirements
