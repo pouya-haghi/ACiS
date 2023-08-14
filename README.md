@@ -172,7 +172,7 @@ There are a set of collectives (Reduce, Allreduce, Allgather) for FaS accelerati
 
 > Note: `archive` folder contains older versions. For example, `3node_IntReduce_stats` outputs some metadata information (port #, IP, etc) and `3node_loopback` simply loopbacks data to the source node.
 
-Inside `MPI` folder (under `mpiFPGA`), there is a lightweight MPI-like runtime environment for running the processes required on several leaf nodes from the host node. There is also mpi4py example for non-FLASH baseline example under `mpi4py. For using our FLASH runtime system, go to `mpiFPGA` and simply run `MPI.py`. This program takes in an argument file with several arguments which are described below. At a high level, it takes in the `hostfile` (that has IP addresses of each rank) and the number of processes (`np`). It does SSH to leaf nodes, creates new processes there (and assigns new port numbers for each). 
+Inside `MPI` folder (under `mpiFPGA`), there is a lightweight MPI-like runtime environment for running the processes required on several leaf nodes from the host node. There is also mpi4py example for non-FLASH baseline example under `mpi4py`. For using our FLASH runtime system, go to `mpiFPGA` and simply run `MPI.py`. This program takes in an argument file with several arguments which are described below. At a high level, it takes in the `hostfile` (that has IP addresses of each rank) and the number of processes (`np`). It does SSH to leaf nodes, creates new processes there (and assigns new port numbers for each). 
 
 These are the versions we used:
 - Python version = 3.10.12
