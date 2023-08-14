@@ -40,6 +40,12 @@ This is the FLASH architecture.
 **Data Plane:** is a 2D-array of PEs. The number of rows is equal to the number of SMD lanes (vectorization) and the number of col is equal to NUM_COL. At the input and output interface, there are a set of FIFOs. All of the PEs in the same column share an RF (on-chip memory) and an HBM (off-chip memory).
 
 ## How to run?
+First, clone the repository:
+  ```sh
+git clone https://github.com/pouya-haghi/ACiS.git
+cd ACiS
+export WORKSPACE=$PWD
+```
 
  ### FLASH/toolchain:
  - Frontend Compiler:
@@ -47,7 +53,7 @@ This is the FLASH architecture.
 It takes C/C++ packet handler and outputs an LLVM IR file (`.ll`). First, install LLVM 11.1.0 using [this link](https://releases.llvm.org/11.0.1/docs/GettingStarted.html). Then add the installation path to your `PATH` environment variable. Then, run the below file:
 
   ```sh
-./compile_gcn.sh
+$WORKSPACE/toolchain/frontend_compiler/compile_gcn.sh
 ```
 
 It takes `gcn.cpp` and outputs `gcn.ll`.
@@ -62,7 +68,7 @@ sudo pip3 install pygraphviz
 sudo pip3 install networkx
 sudo pip3 install matplotlib
 sudo pip3 install regex
-python3 test_riscv_dfg.py
+python3 $WORKSPACE/toolchain/backend_compiler/test_riscv_dfg.py
 ```
 
 - Assembler:
@@ -77,7 +83,7 @@ Packager takes in the binary file and outputs a `.pkg` file. The .pkg file is ne
  - Development:
  First, clone this repository: 
  ```sh
-cd FLASH/FLASH-FaS/intACiS
+cd $WORKSPACE/FLASH/FLASH-FaS/intACiS
 git clone https://github.com/Xilinx/xup_vitis_network_example.git --recursive
 ```
 Then, use each file in the intACiS directory and replace the corresponding files in the VNx repo with them (left are the files in this repo and right are the files in VNx repo).
@@ -99,12 +105,12 @@ make all DESIGN=basic # INTERFACE=0
 
 To deploy it on CloudLab, go to [CloudLab](https://www.cloudlab.us/) website, click on `Start Experiment`, choose `oct-u280-nic` profile (each node has 100G NIC and an FPGA and both are connected to a 100G switch), and then use 3 nodes (you can increase the number of nodes but you should change the kernel and host files accordingly). Once all nodes are in ready status and startup is finished, either open an terminal for each or SSH to them. Consider one node as FPGA node and the rest as leaf nodes. Use the following code to setup the FPGA node. For this, you will need the output of `packager` from `FLASH/toolchain`.
  ```sh
+export CLOUDLAB_WORKSPACE=$PWD
 git clone https://github.com/Xilinx/xup_vitis_network_example.git
 git clone https://github.com/pouya-haghi/ACiS.git
-mkdir xup_vitis_network_example/binary
-cp ACiS/FLASH/FLASH-FaS/intACiS/vnx_basic_if0.xclbin xup_vitis_network_example/binary
-cp ACiS/FLASH/toolchain/packager/Assembly_code/sample_test_intACiS.pkg xup_vitis_network_example/binary
-cd xup_vitis_network_example/Notebooks
+mkdir $CLOUDLAB_WORKSPACE/xup_vitis_network_example/binary
+cp $CLOUDLAB_WORKSPACE/ACiS/FLASH/FLASH-FaS/intACiS/vnx_basic_if0.xclbin $CLOUDLAB_WORKSPACE/xup_vitis_network_example/binary
+cp $CLOUDLAB_WORKSPACE/ACiS/FLASH/toolchain/packager/Assembly_code/sample_test_intACiS.pkg $CLOUDLAB_WORKSPACE/xup_vitis_network_example/binary
 source /opt/xilinx/xrt/setup.sh
 ```
 
@@ -116,6 +122,7 @@ sudo apt update
 sudo apt install python3-pip  
 pip3 install pynq==2.8.0.dev0
 sudo apt install ipython3
+cd $CLOUDLAB_WORKSPACE/xup_vitis_network_example/Notebooks
 ipython3
 ```
 You can use `ifconfig` to find the IP address of 100G NICs (`IP_100G_NIC`). It should start with `enp175s0`. There is no need to use DASK.
@@ -127,7 +134,7 @@ Finally, run the corresponding part of `host.py` on each node (start with the FP
  ## FLASH-FiS: 
  Go to the following directory:
   ```sh
-cd FLASH/FLASH-FiS/hw/lib/std/CGRA_v1_0_0
+cd $WORKSPACE/FLASH/FLASH-FiS/hw/lib/std/CGRA_v1_0_0
 ```
 
 Open up Vivado tool (we used version 2021.2). Choose Alveo U280 board. Include `src`, `test`, and `constr` folders from this repository. Regenerate the IPs. This design comes with AXI interfaces and HBM access and it is based on RTL kernel specifications. The top-level module for design is `top.sv` and for test is `test_top.sv`. The latter is already setup to capture the transitions of `ap_done` and valid signals and it reports the final execution time (in ps). It also measures `total_time sout` and `total_time sin` which are useful for getting throughput at input and output streaming interfaces. Now, you can synthesize design. The testbench needs the binary files for each VPE. For this, you will need the outputs of `assembler` (`.bin` files, one for each VPE) from `FLASH/toolchain`. To simulate, simply replace the `.bin` file name in the testbench with yours and then just run `test_top.sv`. 
@@ -147,7 +154,7 @@ It performs inference on different GCN datasets using a GPU device. We used an N
 This is MPI code for the distributed GCN inference by breaking it into sparse matrix multiplications (SpMM). We followed the Allgather-based communication pattern for distributed SpMM. For small-scale datasets (PPI, Citeseer, Pubmed), use the following code to compile `SDMatMul.cpp` and then submit the batch job. For large-scale datasets (ogbn-mag, ogbn-products), modify `Makefile` to use `SDMatMul_largedataset.cpp` instead. We used Stampede2 cluster at TACC to run the code.
 
   ```sh
-cd FLASH/GCN-CPU
+cd $WORKSPACE/FLASH/GCN-CPU
 make all
 sbatch script/script_16node_1rank
 ```
@@ -165,7 +172,7 @@ There are a set of collectives (Reduce, Allreduce, Allgather) for FaS accelerati
 
 > Note: `archive` folder contains older versions. For example, `3node_IntReduce_stats` outputs some metadata information (port #, IP, etc) and `3node_loopback` simply loopbacks data to the source node.
 
-Inside `MPI` folder, there is a lightweight MPI-like runtime environment for running the processes required on several leaf nodes from the host node. Simply run `MPI.py`. This program takes in an argument file with several arguments which are described below. At a high level, it takes in the `hostfile` (that has IP addresses of each rank) and the number of processes (`np`). It does SSH to leaf nodes, creates new processes there (and assigns new port numbers for each). 
+Inside `MPI` folder (under `mpiFPGA`), there is a lightweight MPI-like runtime environment for running the processes required on several leaf nodes from the host node. There is also mpi4py example for non-FLASH baseline example under `mpi4py. For using our FLASH runtime system, go to `mpiFPGA` and simply run `MPI.py`. This program takes in an argument file with several arguments which are described below. At a high level, it takes in the `hostfile` (that has IP addresses of each rank) and the number of processes (`np`). It does SSH to leaf nodes, creates new processes there (and assigns new port numbers for each). 
 
 These are the versions we used:
 - Python version = 3.10.12
