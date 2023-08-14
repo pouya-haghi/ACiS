@@ -206,5 +206,3 @@ Alternatively, you can simply enter each IP address per line. If you choose this
 ### fused-collectives
 There is a sample fused collective (Allgather-op-allgather) where op is a reduction of every grouped 16 elements. The structure of files is similar to `collectives` folder.
 
-
-## Versions:
